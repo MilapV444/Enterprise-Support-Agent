@@ -1,0 +1,6780 @@
+{
+  "tldrawFileFormatVersion": 1,
+  "schema": {
+    "schemaVersion": 2,
+    "sequences": {
+      "com.tldraw.store": 5,
+      "com.tldraw.asset": 1,
+      "com.tldraw.camera": 1,
+      "com.tldraw.document": 2,
+      "com.tldraw.instance": 26,
+      "com.tldraw.instance_page_state": 5,
+      "com.tldraw.instance_presence": 6,
+      "com.tldraw.page": 1,
+      "com.tldraw.pointer": 1,
+      "com.tldraw.shape": 4,
+      "com.tldraw.asset.bookmark": 2,
+      "com.tldraw.asset.image": 5,
+      "com.tldraw.asset.video": 5,
+      "com.tldraw.shape.arrow": 8,
+      "com.tldraw.shape.bookmark": 2,
+      "com.tldraw.shape.draw": 4,
+      "com.tldraw.shape.embed": 4,
+      "com.tldraw.shape.frame": 1,
+      "com.tldraw.shape.geo": 11,
+      "com.tldraw.shape.group": 0,
+      "com.tldraw.shape.highlight": 3,
+      "com.tldraw.shape.image": 5,
+      "com.tldraw.shape.line": 5,
+      "com.tldraw.shape.note": 10,
+      "com.tldraw.shape.text": 4,
+      "com.tldraw.shape.video": 4,
+      "com.tldraw.binding": 0,
+      "com.tldraw.binding.arrow": 1
+    }
+  },
+  "records": [
+    {
+      "typeName": "document",
+      "id": "document:document",
+      "gridSize": 10,
+      "name": "",
+      "meta": {}
+    },
+    {
+      "typeName": "page",
+      "id": "page:page",
+      "name": "Enterprise Support Agent Architecture",
+      "index": "a1",
+      "meta": {}
+    },
+    {
+      "typeName": "camera",
+      "id": "camera:page:page",
+      "x": -20,
+      "y": -20,
+      "z": 0.42,
+      "meta": {}
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:t1",
+      "type": "text",
+      "x": 80,
+      "y": 20,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a12",
+      "meta": {},
+      "props": {
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ENTERPRISE AI SUPPORT AGENT  \u2014  SYSTEM ARCHITECTURE & LIFECYCLE"
+                }
+              ]
+            }
+          ]
+        },
+        "size": "xl",
+        "font": "sans",
+        "textAlign": "start",
+        "color": "black",
+        "w": 2400,
+        "scale": 1,
+        "autoSize": true
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:t2",
+      "type": "text",
+      "x": 80,
+      "y": 58,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a13",
+      "meta": {},
+      "props": {
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Complete End-to-End Flow  \u00b7  All 16 Capabilities  \u00b7  Clean Orthogonal Connectors with Integrated Numbering"
+                }
+              ]
+            }
+          ]
+        },
+        "size": "s",
+        "font": "sans",
+        "textAlign": "start",
+        "color": "grey",
+        "w": 2400,
+        "scale": 1,
+        "autoSize": true
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_t1",
+      "type": "geo",
+      "x": 60,
+      "y": 90,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a14",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1940,
+        "h": 185,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "blue",
+        "color": "blue",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2460  INGRESS & EDGE SECURITY TIER  (Capabilities 1, 7, 11)  \u2500\u2500  User Query Entry & Edge Validation"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_channels",
+      "type": "geo",
+      "x": 80,
+      "y": 145,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a15",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 1 ] User Channels & Ingress"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Web \u00b7 Mobile App \u00b7 Chat SDK"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Slack \u00b7 Teams \u00b7 Email Ingress"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_gateway",
+      "type": "geo",
+      "x": 590,
+      "y": 145,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a16",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 2 ] API Gateway & Identity"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "JWT / OAuth2 \u00b7 Session Mgmt"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Routing \u00b7 Tenant Permissions"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_reliability",
+      "type": "geo",
+      "x": 1100,
+      "y": 145,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a17",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 3 ] Reliability & Resilience"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Rate Limiting \u00b7 Token Bucket"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Circuit Breakers & Fallback"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_input_safe",
+      "type": "geo",
+      "x": 1610,
+      "y": 145,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a18",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 4 ] Input Safety Guardrails"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Prompt Injection Shield"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "PII Masking & Sanitization"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_t1_1",
+      "type": "arrow",
+      "x": 450,
+      "y": 202.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a19",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Query Payload"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_t1_2",
+      "type": "arrow",
+      "x": 960,
+      "y": 202.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1A",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Auth Verified"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_t1_3",
+      "type": "arrow",
+      "x": 1470,
+      "y": 202.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1B",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Rate Checked"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_t2",
+      "type": "geo",
+      "x": 570,
+      "y": 335,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1C",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1940,
+        "h": 375,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "violet",
+        "color": "violet",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2461  COGNITIVE REASONING & EXECUTION CORE  (Capabilities 2, 3, 4, 5, 6, 12)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_memory",
+      "type": "geo",
+      "x": 590,
+      "y": 395,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1D",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 6 ] Memory & State Engine"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Working Memory \u00b7 Session State"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Long-Term User Profile Store"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_rag",
+      "type": "geo",
+      "x": 590,
+      "y": 595,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1E",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 7 ] Knowledge & RAG Retrieval"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hybrid Vector + BM25 Search"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Document Reranking & Chunking"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_orch",
+      "type": "geo",
+      "x": 1100,
+      "y": 385,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1F",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 135,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 5 ] AGENT ORCHESTRATION CORE"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Intent Classification \u00b7 Planning"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "State Machine & Context Assembly"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_cost",
+      "type": "geo",
+      "x": 1100,
+      "y": 595,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1G",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ Cap 12 ] Cost & Resource Router"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Model Tier Routing \u00b7 Budgets"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Semantic Caching & Token Meter"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_llm",
+      "type": "geo",
+      "x": 1610,
+      "y": 395,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1H",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 8 ] Model Runtime & LLM"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Frontier / Fast Model Inference"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Reasoning & Token Optimization"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_multi",
+      "type": "geo",
+      "x": 1610,
+      "y": 595,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1I",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 10 ] Multi-Agent Sub-Agents"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Billing \u00b7 Tech \u00b7 Ops Specialists"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Delegation Protocol & State"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_tools",
+      "type": "geo",
+      "x": 2120,
+      "y": 395,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1J",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 9 ] Tools & Enterprise APIs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "CRM \u00b7 ERP \u00b7 Ticketing APIs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Schema Validation & Sandbox"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_in_to_orch",
+      "type": "arrow",
+      "x": 1795.0,
+      "y": 260,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1K",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -510.0,
+          "y": 125
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Sanitized Query"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_orch_mem_req",
+      "type": "arrow",
+      "x": 1100,
+      "y": 452.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1L",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fetch History"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_orch_mem_res",
+      "type": "arrow",
+      "x": 960,
+      "y": 452.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1M",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Session Loaded"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_orch_rag_req",
+      "type": "arrow",
+      "x": 1100,
+      "y": 652.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1N",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Retrieve Docs"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_orch_rag_res",
+      "type": "arrow",
+      "x": 960,
+      "y": 652.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1O",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Top-k Passages"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_orch_to_cost",
+      "type": "arrow",
+      "x": 1285.0,
+      "y": 520,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1P",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 75
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Token Budget"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_orch_to_llm",
+      "type": "arrow",
+      "x": 1470,
+      "y": 452.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1Q",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Assembled Prompt"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_llm_to_tools",
+      "type": "arrow",
+      "x": 1980,
+      "y": 452.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1R",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Tool Call"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_tools_to_llm",
+      "type": "arrow",
+      "x": 2120,
+      "y": 452.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1S",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Action Result"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_llm_to_multi",
+      "type": "arrow",
+      "x": 1795.0,
+      "y": 510,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1T",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 85
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Delegate"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_multi_to_llm",
+      "type": "arrow",
+      "x": 1795.0,
+      "y": 595,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1U",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": -85
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Subtask Answer"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_t3",
+      "type": "geo",
+      "x": 60,
+      "y": 770,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1V",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2430,
+        "h": 185,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "red",
+        "color": "red",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2462  GOVERNANCE, HUMAN-IN-THE-LOOP & RESPONSE DELIVERY TIER  (Caps 7, 13, 1)  \u2500\u2500  Right-to-Left Return Flow"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_hitl",
+      "type": "geo",
+      "x": 2120,
+      "y": 825,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1W",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ HITL ] Human Support Specialist"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Escalation Review \u00b7 Warm Handoff"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Specialist Override Console"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_confidence",
+      "type": "geo",
+      "x": 1610,
+      "y": 825,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1X",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 11 ] Confidence Gate & Eval"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Score Threshold (Auto / HITL)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Risk & Sentiment Boundary"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_out_safety",
+      "type": "geo",
+      "x": 1100,
+      "y": 825,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1Y",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 12 ] Output Safety Guardrails"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Hallucination & Factuality Shield"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Corporate Policy & Tone Check"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_delivery",
+      "type": "geo",
+      "x": 590,
+      "y": 825,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1Z",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 13 ] Response Delivery Engine"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SSE / WebSocket Streaming"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "State Commit & Session Sync"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_served",
+      "type": "geo",
+      "x": 80,
+      "y": 825,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1a",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 14 ] User Client (Served)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Response Rendered in UI"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Audit Logged \u00b7 Feedback Loop"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_exec_to_conf",
+      "type": "arrow",
+      "x": 1795.0,
+      "y": 710,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1b",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "red",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 115
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Candidate Draft"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_conf_to_hitl",
+      "type": "arrow",
+      "x": 1980,
+      "y": 882.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1c",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "red",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Low Conf (<90%)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Escalate"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_hitl_to_conf",
+      "type": "arrow",
+      "x": 2120,
+      "y": 882.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1d",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -140,
+          "y": 0.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Specialist"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Approved"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_conf_to_safety",
+      "type": "arrow",
+      "x": 1610,
+      "y": 882.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1e",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -140,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "High Conf Pass (>=90%)"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_safety_to_deliv",
+      "type": "arrow",
+      "x": 1100,
+      "y": 882.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1f",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -140,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Verified Safe"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_deliv_to_served",
+      "type": "arrow",
+      "x": 590,
+      "y": 882.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1g",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -140,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Stream to User"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_loop_complete",
+      "type": "arrow",
+      "x": 265.0,
+      "y": 825,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1h",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": -565
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Lifecycle Completed (Session Open)"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_t4",
+      "type": "geo",
+      "x": 60,
+      "y": 1015,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1i",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2430,
+        "h": 185,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "grey",
+        "color": "grey",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2463  ENTERPRISE FOUNDATION PLATFORM  (Capabilities 8, 9, 10, 14, 15, 16)  \u2500\u2500  Shared Telemetry, Persistence & LLMOps"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_qa_ops",
+      "type": "geo",
+      "x": 80,
+      "y": 1070,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1j",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Testing & LLMOps (Caps 14, 15)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Unit & E2E Suites \u00b7 CI/CD"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Model Registry \u00b7 Blue/Green"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_data",
+      "type": "geo",
+      "x": 590,
+      "y": 1070,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1k",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Data & Persistence (Cap 8)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "PostgreSQL \u00b7 Qdrant Vector"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "S3 Objects \u00b7 Audit Event DB"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_eval",
+      "type": "geo",
+      "x": 1100,
+      "y": 1070,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1l",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Evaluation & Benchmarks (Cap 10)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Ragas / Trulens \u00b7 Golden Eval"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "LLM-as-a-Judge \u00b7 Regression"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_obs",
+      "type": "geo",
+      "x": 1610,
+      "y": 1070,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1m",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Observability & Tracing (Cap 9)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "OpenTelemetry \u00b7 LangSmith"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Prometheus \u00b7 Cost Dashboards"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:n_ci",
+      "type": "geo",
+      "x": 2120,
+      "y": 1070,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1n",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 370,
+        "h": 115,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Continuous Improve (Cap 16)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "User Feedback \u00b7 Failure Triage"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Prompt & Few-Shot Evolution"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_deliv_to_data",
+      "type": "arrow",
+      "x": 775.0,
+      "y": 940,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1o",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 130
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "State Sync"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_safety_to_eval",
+      "type": "arrow",
+      "x": 1285.0,
+      "y": 940,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1p",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 130
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Eval Logs"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_conf_to_obs",
+      "type": "arrow",
+      "x": 1795.0,
+      "y": 940,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1q",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 130
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Traces"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:a_hitl_to_ci",
+      "type": "arrow",
+      "x": 2305.0,
+      "y": 940,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1r",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 130
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HITL Feedback"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:m_title1",
+      "type": "text",
+      "x": 80,
+      "y": 1320,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1s",
+      "meta": {},
+      "props": {
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ENTERPRISE AI SUPPORT AGENT  \u2014  COMPONENT & TRAJECTORY FAILURE MODES (2x2 UNKNOWNS)"
+                }
+              ]
+            }
+          ]
+        },
+        "size": "xl",
+        "font": "sans",
+        "textAlign": "start",
+        "color": "black",
+        "w": 2400,
+        "scale": 1,
+        "autoSize": true
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:m_title2",
+      "type": "text",
+      "x": 80,
+      "y": 1358,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1t",
+      "meta": {},
+      "props": {
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Knowns vs. Unknowns Taxonomy  \u00b7  Component-Level Vulnerabilities & Trajectory Breakdown Points  \u00b7  All 14 Architecture Nodes"
+                }
+              ]
+            }
+          ]
+        },
+        "size": "s",
+        "font": "sans",
+        "textAlign": "start",
+        "color": "grey",
+        "w": 2400,
+        "scale": 1,
+        "autoSize": true
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_q1",
+      "type": "geo",
+      "x": 80,
+      "y": 1420,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1u",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1175,
+        "h": 650,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "blue",
+        "color": "blue",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q1  \u00b7  KNOWN KNOWNS  \u2500\u2500  \"What's in your prompt\"  (Explicit Contracts, Hard Limits & Deterministic Rules)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:h_q1",
+      "type": "geo",
+      "x": 95,
+      "y": 1455,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1v",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1145,
+        "h": 65,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "KNOWN KNOWNS \u2014 EXPLICIT CONTRACT & SPECIFICATION BREACHES"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Violations of defined interfaces, hardcoded limits, known API schemas, and deterministic constraints."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Predictable, verifiable with unit/integration tests, and fully rule-governed."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q1_c1",
+      "type": "geo",
+      "x": 95,
+      "y": 1535,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1w",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 1 - 4 ] Ingress & Edge Rule Failures"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [2] Expired or signature-tampered JWT not rejected by Gateway"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [3] Token bucket exhausted; dropped without 429 Retry-After"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [4] Regex PII mask misses spaced/dashed SSN / Card patterns"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [1] Payload size exceeds max allowed HTTP body limit"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q1_c2",
+      "type": "geo",
+      "x": 698,
+      "y": 1535,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1x",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 5 - 7 ] State Machine & Context Breaches"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [5] State machine invalid transition (e.g. ticket close before triage)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [6] Key collision in Redis across concurrent sessions of same user"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [7] Document chunk boundary splits critical error code mid-string"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [Cap 12] Hard token budget ceiling reached; response abruptly clipped"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q1_c3",
+      "type": "geo",
+      "x": 95,
+      "y": 1800,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1y",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 8 - 10 ] Tool & Agent Interface Failures"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [8] LLM output violates required JSON schema for tool invocation"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [9] Unhandled HTTP 500 / 504 gateway timeout from Salesforce CRM"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [9] Expired OAuth refresh token for SAP ERP integration"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [10] Sub-agent missing required RPC payload arguments"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q1_c4",
+      "type": "geo",
+      "x": 698,
+      "y": 1800,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a1z",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 11 - 14 ] Governance & Delivery Breaks"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [11] Currency conversion error bypasses $1,000 refund threshold"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [HITL] Escalation ticket dispatched to empty off-hours staff queue"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [12] Static profanity/competitor blacklist bypassed via homoglyph"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [13] SSE connection drops on intermediate Nginx 60s timeout"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_q2",
+      "type": "geo",
+      "x": 1315,
+      "y": 1420,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a21",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1175,
+        "h": 650,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "orange",
+        "color": "orange",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q2  \u00b7  KNOWN UNKNOWNS  \u2500\u2500  \"Questions you know to ask\"  (Stochastic Model Variance, Latency & Ambiguity)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:h_q2",
+      "type": "geo",
+      "x": 1330,
+      "y": 1455,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a22",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1145,
+        "h": 65,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "KNOWN UNKNOWNS \u2014 STOCHASTIC VARIANCE & PROBABILISTIC UNCERTAINTIES"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Anticipated variability in model reasoning, semantic ambiguity, downstream network latency, and user fuzziness."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "We know these variables exist, but their exact values and trajectories fluctuate dynamically."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q2_c1",
+      "type": "geo",
+      "x": 1330,
+      "y": 1535,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a23",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 1 - 4 ] Input Ambiguity & Network Jitter"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [1] Highly vague user prompt ('System broken, please fix it')"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [2] Downstream IdP token validation jitter (50ms vs 3000ms)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [3] Transient cold-start latency spike tripping upstream gateways"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [4] Ambiguous injection classifier score (0.49 vs 0.50 threshold)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q2_c2",
+      "type": "geo",
+      "x": 1933,
+      "y": 1535,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a24",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 5 - 7 ] Intent Ambiguity & RAG Mismatch"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [5] 51/49% intent tie (Tech vs Billing); agent guesses instead of asking"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [6] Context compaction drops critical user constraint from 5 turns ago"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [7] High cosine similarity matches outdated runbook version"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [Cap 12] Down-routes to cheap SLM to save cost; model fails reasoning"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q2_c3",
+      "type": "geo",
+      "x": 1330,
+      "y": 1800,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a25",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 8 - 10 ] Non-Deterministic Tool & Swarm Paths"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [8] Temperature fluctuation produces inconsistent tool argument plans"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [9] CRM API returns 500 records when schema anticipated 1"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [10] Tech & Billing Sub-Agents return conflicting conclusions"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [9] Cloud Telemetry API latency drags to 12s under peak load"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q2_c4",
+      "type": "geo",
+      "x": 1933,
+      "y": 1800,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a26",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 11 - 14 ] Confidence Drift & User Abandonment"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [11] Model is 95% confident in an entirely hallucinated root cause"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [HITL] Specialist queue backlog delays review; user abandons chat"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [12] Subtle factual hallucination in SLA percentage passes check"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [13] High Time-To-First-Token (TTFT) creates perceived freeze"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_q3",
+      "type": "geo",
+      "x": 80,
+      "y": 2110,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a27",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1175,
+        "h": 650,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "violet",
+        "color": "violet",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q3  \u00b7  UNKNOWN KNOWNS  \u2500\u2500  \"I'll know it when I see it\"  (Tacit Enterprise Assumptions & Social Common Sense)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:h_q3",
+      "type": "geo",
+      "x": 95,
+      "y": 2145,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a28",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1145,
+        "h": 65,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "UNKNOWN KNOWNS \u2014 TACIT ASSUMPTIONS, BRAND TONE & ENTERPRISE ETIQUETTE"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Expectations so obvious to humans they were never explicitly coded into rules or prompts."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Immediately recognized as blunders by any human operator upon inspection."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q3_c1",
+      "type": "geo",
+      "x": 95,
+      "y": 2225,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a29",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 1 - 4 ] Tone Deafness & Overzealous Shields"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [1] Cheerful marketing emoji greeting to panicked outage user"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [4] PII filter over-masks technical log identifier 'admin' as [REDACTED]"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [1] Treating high-priority executive escalation as a routine tier-1 ticket"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [4] Forbidding diagnostic stack trace uploads as potential PII leaks"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q3_c2",
+      "type": "geo",
+      "x": 698,
+      "y": 2225,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2A",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 5 - 7 ] Common Sense Reasoning Blindspots"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [5] Sycophantic compliance: Agreeing with user's disastrous suggestion"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [6] Creepy over-personalization: Referencing 2-year-old closed personal ticket"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [7] Dumping 5-page generic boilerplate FAQ when user stated they tried it"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [5] Instructing user to 'clear browser cache' during total cloud outage"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q3_c3",
+      "type": "geo",
+      "x": 95,
+      "y": 2490,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2B",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 8 - 10 ] Unwritten Domain & Safety Etiquette"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [8] Pedantically lecturing senior engineers on basic networking terms"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [9] Applying configuration change to Production without explicit prompt"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [10] Sub-agents pass blame back and forth ('Not a billing/tech issue')"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [9] Querying private employee compensation data without need-to-know"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q3_c4",
+      "type": "geo",
+      "x": 698,
+      "y": 2490,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2C",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 11 - 14 ] Approval Fatigue & Bureaucratic Churn"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [11] Requesting human sign-off on trivial read-only documentation"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [HITL] Support specialist blindly rubber-stamps due to approval fatigue"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [12] Cold, robotic legal detachment during catastrophic data loss"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 [13] Dumping raw unformatted JSON stack traces into executive chat"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_q4",
+      "type": "geo",
+      "x": 1315,
+      "y": 2110,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2D",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1175,
+        "h": 650,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "red",
+        "color": "red",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q4  \u00b7  UNKNOWN UNKNOWNS  \u2500\u2500  \"What you never considered\"  (Emergent Cascades & Black-Swan Dynamics)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:h_q4",
+      "type": "geo",
+      "x": 1330,
+      "y": 2145,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2E",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1145,
+        "h": 65,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "UNKNOWN UNKNOWNS \u2014 EMERGENT MULTI-SYSTEM & CASCADING COLLAPSES"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Systemic, compounded failure modes arising from autonomous multi-agent interactions and feedback loops."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Potholes nobody anticipated the road could have until they occurred in production."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q4_c1",
+      "type": "geo",
+      "x": 1330,
+      "y": 2225,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2F",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 3, 5, 7 ] Thundering Herd Amplification Loop"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Minor cloud glitch prompts 500 concurrent users to ask identical query"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Orchestrator fires 500 simultaneous heavy hybrid RAG searches"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 RAG DB CPU spikes, causing timeouts across all agent instances"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 System retry storm amplifies minor glitch into total company outage"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q4_c2",
+      "type": "geo",
+      "x": 1933,
+      "y": 2225,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2G",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 4, 7, 8 ] Indirect Prompt Injection via Ingested Logs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Attacker embeds adversarial prompt inside an application error message"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Agent reads server error logs via monitoring tool / RAG retrieval"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Ingested log payload hijacks agent instructions mid-reasoning"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Model silently exfiltrates database credentials to external IP"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q4_c3",
+      "type": "geo",
+      "x": 1330,
+      "y": 2490,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2H",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 6, 12 ] Cross-Tenant Semantic Cache Poisoning"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Attacker crafts deceptive query yielding plausible hallucinated response"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Semantic cache stores hallucinated response with wide vector threshold"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Subsequent legitimate enterprise tenants receive corrupted advice"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Cache poisoning silently persists across hundreds of customer sessions"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q4_c4",
+      "type": "geo",
+      "x": 1933,
+      "y": 2490,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:page",
+      "index": "a2I",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 572,
+        "h": 250,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "[ 8, 9, 11, HITL ] Phantasm Action & Automation Seduction"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 LLM hallucinates it dispatched the refund API and confirms it to user"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 No actual API call dispatched; customer believes invoice credited"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Specialists develop Automation Seduction from 99% historic accuracy"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Catastrophic financial/legal discrepancy discovered weeks later"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "page",
+      "id": "page:lld_orchestration",
+      "name": "LLD - Agent Orchestration & Planning Core",
+      "index": "a2",
+      "meta": {}
+    },
+    {
+      "typeName": "camera",
+      "id": "camera:page:lld_orchestration",
+      "x": 0,
+      "y": 0,
+      "z": 0.46,
+      "meta": {}
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_title",
+      "type": "geo",
+      "x": 80,
+      "y": 40,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9E",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 65,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "COMPONENT [ 5 ]: AGENT RUNTIME & ORCHESTRATION CORE"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Dual-Process Cognition (System 1/2) \u00b7 Acuity Triage \u00b7 Durable Statecharts & Circuit Breakers"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:p1",
+      "type": "geo",
+      "x": 80,
+      "y": 120,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9F",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 75,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2460 Dual-Process Cognition"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 System 1: Fast deterministic SOPs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 System 2: Deliberative reasoning"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:p2",
+      "type": "geo",
+      "x": 737.5,
+      "y": 120,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9G",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 75,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2461 Clinical Acuity Triage"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Emergency Severity Index (ESI)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Intent & urgency routing"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:p3",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 120,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9H",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 75,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2462 Baddeley Working Memory"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Structured 5-slot token budget"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Prompt compaction & pruning"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:p4",
+      "type": "geo",
+      "x": 2052.5,
+      "y": 120,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9I",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 75,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2463 Reliability & Circuit Breaker"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Anti-loop tripwires (N \u2264 4)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Reflexion retry + HITL handoff"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_pipeline",
+      "type": "geo",
+      "x": 80,
+      "y": 215,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9J",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 530,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "blue",
+        "color": "blue",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "RUNTIME ORCHESTRATION PIPELINE (DUAL-PROCESS FLOW)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c1_asm",
+      "type": "geo",
+      "x": 110,
+      "y": 265,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9K",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 420,
+        "h": 170,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "1. Context Assembler & Ingress"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Receives query, channel ID & auth token"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Allocates 5 Baddeley token slots"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  (System, Profile, RAG, Chat, Scratchpad)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Compresses prompt payload via pruning"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c1_triage",
+      "type": "geo",
+      "x": 110,
+      "y": 485,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9L",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 420,
+        "h": 170,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "2. Acuity & Intent Triage Gate"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Classifies intent, entities & urgency"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Deterministic Routing Decision:"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  \u25ba Level 1/2: Standard SOP \u2192 System 1"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  \u25ba Level 4/5: Complex Issue \u2192 System 2"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  \u25ba Level 3: Ambiguous Intent \u2192 Clarify"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_asm_to_trg",
+      "type": "arrow",
+      "x": 320.0,
+      "y": 435,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9M",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 50
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c2_fsm",
+      "type": "geo",
+      "x": 680,
+      "y": 260,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9N",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 540,
+        "h": 140,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "System 1: Deterministic Statechart (FSM)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Fast LangGraph state machine for verified SOPs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Strict parameter validation & predictable execution"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 <300ms velocity \u00b7 Zero generative hallucinations"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c2_react",
+      "type": "geo",
+      "x": 680,
+      "y": 430,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9O",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 540,
+        "h": 160,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "System 2: Deliberative ReAct & Replanner"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Multi-step Plan-and-Solve reasoning DAG"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Diagnostics for complex multi-system outages"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Reflexion verbal self-critique (max 2 retries)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Anti-loop tripwire: Stops if steps > 4"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c2_clarify",
+      "type": "geo",
+      "x": 680,
+      "y": 620,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9P",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 540,
+        "h": 90,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Ambiguity Gate: Clarification Return"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Detects missing information or 50/50 intent ties"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Returns clarifying question to customer UI"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_trg_to_fsm",
+      "type": "arrow",
+      "x": 530,
+      "y": 570.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9Q",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 150,
+          "y": -240.0
+        },
+        "bend": -12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SOP Route"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_trg_to_react",
+      "type": "arrow",
+      "x": 530,
+      "y": 570.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9R",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 150,
+          "y": -60.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Complex Route"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_trg_to_clarify",
+      "type": "arrow",
+      "x": 530,
+      "y": 570.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9S",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 150,
+          "y": 95.0
+        },
+        "bend": 12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Ambiguous"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_fsm_to_react",
+      "type": "arrow",
+      "x": 950.0,
+      "y": 400,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9T",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 30
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c3_sand",
+      "type": "geo",
+      "x": 1370,
+      "y": 265,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9U",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 460,
+        "h": 160,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "3. Tool Execution Sandbox & Sagas"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Isolated MCP tool runner with RBAC checks"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Two-phase mutation checks & dry-run staging"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Distributed Saga compensating rollbacks"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c3_gate",
+      "type": "geo",
+      "x": 1370,
+      "y": 465,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9V",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 460,
+        "h": 190,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "4. Confidence & Policy Gate"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Evaluates citation groundedness & safety"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Human approval required for operations > $1,000"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Decision Threshold:"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  \u25ba Score \u2265 0.90: Approved \u2192 Persistence & Delivery"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  \u25ba Score < 0.90 / Breaker Tripped \u2192 Escalate to HITL"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_sand_to_gate",
+      "type": "arrow",
+      "x": 1600.0,
+      "y": 425,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9W",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 0.0,
+          "y": 40
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_fsm_to_sand",
+      "type": "arrow",
+      "x": 1220,
+      "y": 330.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9X",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 150,
+          "y": 15.0
+        },
+        "bend": -10,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SOP Action"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_react_to_sand",
+      "type": "arrow",
+      "x": 1220,
+      "y": 510.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9Y",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 150,
+          "y": -165.0
+        },
+        "bend": 6,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Plan Action"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c4_delivery",
+      "type": "geo",
+      "x": 1980,
+      "y": 265,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9Z",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 460,
+        "h": 170,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "5. Persistence & Response Delivery"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Temporal durable saga snapshot (zero data loss)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Real-time SSE / WebSocket token streaming to UI"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Async update to persistent customer memory"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Full OpenTelemetry trace & token cost logging"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:c4_hitl",
+      "type": "geo",
+      "x": 1980,
+      "y": 485,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9a",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 460,
+        "h": 170,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Human Specialist Escalation (HITL)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Dispatched on low confidence or repeated failure"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Full reasoning trajectory & citations presented"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Specialist reviews, edits, or approves action"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Human feedback feeds continuous evaluation"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_gate_to_delivery",
+      "type": "arrow",
+      "x": 1830,
+      "y": 560.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9b",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 150,
+          "y": -210.0
+        },
+        "bend": -12,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Score \u2265 0.90 (Approved)"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_a_gate_to_hitl",
+      "type": "arrow",
+      "x": 1830,
+      "y": 560.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9c",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "red",
+        "fill": "none",
+        "dash": "draw",
+        "size": "m",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 150,
+          "y": 10.0
+        },
+        "bend": 10,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Score < 0.90 / Tripped"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:lld_fail_hdr",
+      "type": "geo",
+      "x": 80,
+      "y": 765,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9d",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 45,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "COMPONENT [ 5 ] FAILURE MODES MATRIX (KNOWING YOUR UNKNOWNS)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q1",
+      "type": "geo",
+      "x": 80,
+      "y": 820,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9e",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 120,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q1 \u00b7 KNOWN KNOWNS (Deterministic Contract Breaches)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Token Overflow \u2192 Mitigated by strict Baddeley slot budget ceilings"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Illegal State Jump \u2192 Mitigated by typed LangGraph Pydantic StateGraph edges"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Tool Schema Rejection \u2192 Mitigated by Instructor grammar masks & validation"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Recursion Depth Ceiling \u2192 Mitigated by anti-loop StepCeilingGuard (N \u2264 4)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q2",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 820,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9f",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 120,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q2 \u00b7 KNOWN UNKNOWNS (Probabilistic Reasoning Variance)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Intent Ambiguity Tie \u2192 Mitigated by Level-3 Acuity Gate clarifying question"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 ReAct Reasoning Drift \u2192 Mitigated by Plan-and-Solve upfront DAG limits"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Context Compaction Loss \u2192 Mitigated by preserved negative constraint slots"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Latency Spikes \u2192 Mitigated by token chunk streaming & Temporal heartbeats"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q3",
+      "type": "geo",
+      "x": 80,
+      "y": 955,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9g",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 120,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q3 \u00b7 UNKNOWN KNOWNS (Tacit Enterprise Etiquette)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Sycophantic Compliance \u2192 Mitigated by hard policy forbidding destructive commands"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Outage Tone Dissonance \u2192 Mitigated by sentiment classifier enforcing clinical tone"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Over-Apologizing Loops \u2192 Mitigated by system prompt invariant forbidding repetitive apologies"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Premature Ticket Close \u2192 Mitigated by mandatory customer verification before resolution"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:q4",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 955,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9h",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 120,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q4 \u00b7 UNKNOWN UNKNOWNS (Emergent Cascades & Black Swans)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Cyclic Tool Deadlock \u2192 Mitigated by saga compensations explicitly mutating shared state"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Indirect Prompt Injection \u2192 Mitigated by sandboxed execution & isolated prompt boundaries"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Sub-Plan Explosion \u2192 Mitigated by global execution DAG tree depth ceiling (\u2264 2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Automation Seduction \u2192 Mitigated by forced active friction UI requiring manual inspection"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:f_lld_dec",
+      "type": "geo",
+      "x": 80,
+      "y": 1105,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9i",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 125,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "green",
+        "color": "green",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ARCHITECTURAL DECISION CHECKPOINTS (CONFIRMED FOR GENESIS INITIALIZATION)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:dec_1",
+      "type": "geo",
+      "x": 95.0,
+      "y": 1137,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9j",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 80,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u26a1 ADP-01: Planning Paradigm"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 Option C: Hybrid Dual-Process Statechart"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "(Deterministic LangGraph FSM + Scoped ReAct)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:dec_2",
+      "type": "geo",
+      "x": 742.5,
+      "y": 1137,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9k",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 80,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u26a1 ADP-02: Workflow Durability"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 Option C: Two-Tier Hybrid Substrate"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "(Temporal.io Outer Saga + LangGraph Inner Loop)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:dec_3",
+      "type": "geo",
+      "x": 1390.0,
+      "y": 1137,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9l",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 80,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u26a1 ADP-03: Context Compaction"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 Option C: Tripartite Structured Slot Allocator"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "(15% System | 15% Profile | 35% RAG | 25% Chat | 10% Scratch)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:dec_4",
+      "type": "geo",
+      "x": 2037.5,
+      "y": 1137,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_orchestration",
+      "index": "b9m",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 627.5,
+        "h": 80,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u26a1 ADP-04: Error Recovery"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 Option C: Dual-Process Circuit Breaker"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "(Max 2 Reflexion trials \u2192 Immediate HITL Escalation)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
