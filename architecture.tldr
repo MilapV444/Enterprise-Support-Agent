@@ -6775,6 +6775,3030 @@
           ]
         }
       }
+    },
+    {
+      "typeName": "page",
+      "id": "page:lld_user_app",
+      "name": "LLD - [1] User & Application",
+      "index": "a3",
+      "meta": {}
+    },
+    {
+      "typeName": "camera",
+      "id": "camera:page:lld_user_app",
+      "x": 0,
+      "y": 0,
+      "z": 0.4,
+      "meta": {}
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_f_declog",
+      "type": "geo",
+      "x": 80,
+      "y": 1847,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9E",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 311,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "green",
+        "color": "green",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "DECISION LOG SUMMARY (checkpoint.md \u00a75.6 \u2013 \u00a75.10)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_f_flowC",
+      "type": "geo",
+      "x": 1160,
+      "y": 753,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9F",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1520,
+        "h": 221,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "violet",
+        "color": "violet",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLOW C \u00b7 SESSION LIFECYCLE (independent scenarios)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_f_flowB",
+      "type": "geo",
+      "x": 80,
+      "y": 753,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9G",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 1040,
+        "h": 221,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "green",
+        "color": "green",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLOW B \u00b7 DEFERRED DELIVERY (HITL resolves while user is away)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_f_flowA",
+      "type": "geo",
+      "x": 80,
+      "y": 321,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9H",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 392,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "blue",
+        "color": "blue",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLOW A \u00b7 SYNCHRONOUS WEB TURN (Sarah @ acme-corp)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_title",
+      "type": "geo",
+      "x": 80,
+      "y": 40,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9I",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 70,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "COMPONENT [1/15]: USER & APPLICATION"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Web channel \u00b7 Decoupled API (POST 202 + resumable SSE) \u00b7 Tiered identity \u00b7 Sessions \u00b7 Typed response events"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_recv",
+      "type": "geo",
+      "x": 80.0,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9J",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "RECEIVES (upstream)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Raw user input from the web widget (HTTPS)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 IdP tokens (SSO) \u00b7 one-time codes (T1)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 On return: gated response envelope (Comp 7 / 9 / 13)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Deferred outcome events from workflows (Comp 2)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_hand",
+      "type": "geo",
+      "x": 956.6666666666666,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9K",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HANDS OFF (downstream)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 InboundTurnEnvelope \u2192 Safety (7) \u2192 Orchestration (2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Identity context + on-behalf-of token (sub = user, act = agent)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Rendered transcript + delivery receipts \u2192 Data (8), Observability (10)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_notown",
+      "type": "geo",
+      "x": 1833.3333333333333,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9L",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "DOES NOT OWN"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 PII masking, injection checks, output guardrails (7)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Rate limiting (11) \u00b7 tool permissions (5 / 7)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Memory content (4) \u00b7 workflow timers (2) \u00b7 transcript storage (8)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Confidence gate (9) \u00b7 escalation decision (13)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a1",
+      "type": "geo",
+      "x": 110.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9M",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 365.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2460 Web Widget"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Only channel in v1 (UA-D1)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Sends message + turn_id"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a2",
+      "type": "geo",
+      "x": 545.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9N",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 365.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2461 API: POST /turns"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 202 + turn_id (UA-D2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Idempotency-Key = turn_id"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Size / type / version checks"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a3",
+      "type": "geo",
+      "x": 980.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9O",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 365.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2462 Identity"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Validate token (24 h, UA-D9)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Tier: T0 anon \u00b7 T1 code \u00b7 T2 SSO"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Mint on-behalf-of token"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a4",
+      "type": "geo",
+      "x": 1415.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9P",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 365.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2463 Sessions"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Resolve / create session"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Owner check: principal + tenant"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 30 min idle / 12 h cap"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a5",
+      "type": "geo",
+      "x": 1850.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9Q",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 365.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2464 Request Envelope"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 tenant \u00b7 principal \u00b7 tier"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 session \u00b7 conversation \u00b7 turn"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 content \u00b7 attachment refs"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a6",
+      "type": "geo",
+      "x": 2285.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9R",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 365.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "grey",
+        "color": "grey",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "NOT OWNED \u2192"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Safety (7) \u2192 Orchestration (2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2192 Tools \u00b7 Memory \u00b7 RAG"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2192 Output guard + Confidence gate"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_r4",
+      "type": "geo",
+      "x": 110.0,
+      "y": 562,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9S",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 582.5,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2468 Widget Renders"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Citations & action cards"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Transcript as rendered \u2192 Data (8)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_r3",
+      "type": "geo",
+      "x": 762.5,
+      "y": 562,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9T",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 582.5,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2467 GET /events (SSE)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Resumable: event_id \u2192 Last-Event-ID"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Replays missed events from the log"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_r2",
+      "type": "geo",
+      "x": 1415.0,
+      "y": 562,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9U",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 582.5,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2466 Render Typed Events (UA-D7)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "status \u00b7 text_delta \u00b7 citation \u00b7 action_card"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "handoff \u00b7 final \u00b7 error"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Text before final? \u2192 UA-D8 OPEN"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_r1",
+      "type": "geo",
+      "x": 2067.5,
+      "y": 562,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9V",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 582.5,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "grey",
+        "color": "grey",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "NOT OWNED \u2190"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Gated OutboundResponseEnvelope"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "(after output safety + confidence gate)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_in0",
+      "type": "arrow",
+      "x": 475.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9W",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_in1",
+      "type": "arrow",
+      "x": 910.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9X",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_in2",
+      "type": "arrow",
+      "x": 1345.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9Y",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_in3",
+      "type": "arrow",
+      "x": 1780.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9Z",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_in4",
+      "type": "arrow",
+      "x": 2215.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9a",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_turn",
+      "type": "arrow",
+      "x": 2467.5,
+      "y": 492,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9b",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "grey",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -108.75,
+          "y": 70
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "final answer"
+                }
+              ]
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_out0",
+      "type": "arrow",
+      "x": 2067.5,
+      "y": 625.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9c",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_out1",
+      "type": "arrow",
+      "x": 1415.0,
+      "y": 625.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9d",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_out2",
+      "type": "arrow",
+      "x": 762.5,
+      "y": 625.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9e",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": -70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_b1",
+      "type": "geo",
+      "x": 105.0,
+      "y": 798,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9f",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 290.0,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "grey",
+        "color": "grey",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "NOT OWNED"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HITL approves the $12,400 credit memo hours later (Temporal signal, Comp 2 / 13)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_b2",
+      "type": "geo",
+      "x": 455.0,
+      "y": 798,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9g",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 290.0,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Outbound event appended to the conversation log"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_b3",
+      "type": "geo",
+      "x": 805.0,
+      "y": 798,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9h",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 290.0,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "User online?"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Yes \u2192 live on SSE"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 No \u2192 inbox on next visit (UA-Q2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 No email notice in v1"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_b12",
+      "type": "arrow",
+      "x": 395.0,
+      "y": 873.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9i",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 60.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_a_b23",
+      "type": "arrow",
+      "x": 745.0,
+      "y": 873.5,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9j",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 60.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_c1",
+      "type": "geo",
+      "x": 1185.0,
+      "y": 798,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9k",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 348.75,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Resume"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Reconnect with Last-Event-ID \u2192 missed events replayed"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_c2",
+      "type": "geo",
+      "x": 1558.75,
+      "y": 798,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9l",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 348.75,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Step-up"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Downstream asks for a higher tier: T0 \u2192 T1 (code) \u2192 T2 (SSO), then the turn resumes"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_c3",
+      "type": "geo",
+      "x": 1932.5,
+      "y": 798,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9m",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 348.75,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Expiry"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "30 min idle (any authed request incl. open SSE, UA-Q3) \u00b7 12 h cap. Conversation outlives the session"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_c4",
+      "type": "geo",
+      "x": 2306.25,
+      "y": 798,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9n",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 348.75,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Channel switch"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "UA-D5 OPEN (session vs conversation vs case). Moot in web-only v1"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_sub_hdr",
+      "type": "geo",
+      "x": 80,
+      "y": 1014,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9o",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 45,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SUB-COMPONENTS \u00b7 MECHANIC + STATUS"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_s1",
+      "type": "geo",
+      "x": 80.0,
+      "y": 1074,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9p",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 226,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "CHANNELS / UI"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Web widget only; renders typed events. Channel-agnostic envelope keeps later Slack / Teams / Email adapters additive."
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D1 Web-only v1: CONFIRMED"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_s2",
+      "type": "geo",
+      "x": 606.0,
+      "y": 1074,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9q",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 226,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "API"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Submit and receive are separate. POST /turns \u2192 202 + turn_id; GET /events is a resumable SSE stream."
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D2 Decoupled POST + SSE: CONFIRMED"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_s3",
+      "type": "geo",
+      "x": 1132.0,
+      "y": 1074,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9r",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 226,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "IDENTITY"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Validates tokens, sets tier, issues step-up, mints on-behalf-of tokens."
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D3 Tiered T0 / T1 / T2: CONFIRMED"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D4 On-behalf-of tokens, T0 read-only: CONFIRMED (conditional)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D9 24 h user token: CONFIRMED"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_s4",
+      "type": "geo",
+      "x": 1658.0,
+      "y": 1074,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9s",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 226,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SESSIONS"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Binds principal \u2194 session \u2194 conversation. Owns the keys, not the content."
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D6 30 min idle / 12 h: CONFIRMED"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-Q3 Open stream counts as activity"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u25cc UA-D5 Scoping: OPEN \u2192 Comp 4 / 13"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_s5",
+      "type": "geo",
+      "x": 2184.0,
+      "y": 1074,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9t",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 226,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "REQUEST / RESPONSE"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Builds the inbound envelope; renders and delivers gated responses (live or deferred)."
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D7 Typed events: CONFIRMED"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-Q2 Inbox-only deferred delivery"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u25cc UA-D8 Stream vs gate: OPEN \u2192 Comp 7 / 9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_fail_hdr",
+      "type": "geo",
+      "x": 80,
+      "y": 1340,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9u",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 45,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FAILURE MODES (KNOWN / UNKNOWN) \u00b7 WITH STEP-9 EFFECT"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_q1",
+      "type": "geo",
+      "x": 80,
+      "y": 1400,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9v",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 201,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q1 \u00b7 KNOWN KNOWNS (contract breaches)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK1 Duplicate turn on client retry \u2192 FIXED (D2 idempotency)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK2 Proxy timeout cuts SSE mid-answer \u2192 loss FIXED (D2 replay); gap still visible"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK3 Token expiry / revocation on open stream \u2192 expiry FIXED (D9); revocation + 24 h theft window OWNED"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK4 Reading another user's conversation by ID \u2192 MITIGATED (owner check); final model waits on D5"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK5 One-time code guessed / replayed \u2192 OWNED (limits \u2192 Comp 7 / 11)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK6 On-behalf-of token outlives logout \u2192 MITIGATED (short-lived); revocation OWNED"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_q2",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1400,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9w",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 201,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q2 \u00b7 KNOWN UNKNOWNS (magnitude unknown)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU1 Corporate proxies hold back SSE \u2192 MITIGATED (D2); no fallback, OWNED"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU2 Drop-off at step-up login \u2192 MITIGATED (D3); unmeasured"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU3 Capacity: 12 h open streams + replay log \u2192 OWNED (Comp 11 / 8)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU4 Users never return to the inbox \u2192 OWNED, accepted (Q2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU5 Answer speed while D8 is open \u2192 OWNED until Comp 7 / 9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_q3",
+      "type": "geo",
+      "x": 80,
+      "y": 1631,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9x",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q3 \u00b7 UNKNOWN KNOWNS (tacit conventions)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK1 No \"you're talking to an AI\" notice \u2192 OWNED (cheap fix)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK2 Streamed text floods screen readers \u2192 MITIGATED only if renderer batches (D7)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK3 Anonymous user's claimed identity trusted \u2192 FIXED for actions (D4 T0 read-only)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK4 Inbox item without the original question \u2192 MITIGATED (turn_id link, D7)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK5 Shared computer stays logged in 12 h \u2192 OWNED, accepted (Q3)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_q4",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1631,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9y",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q4 \u00b7 UNKNOWN UNKNOWNS (emergent from combined decisions)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU1 Replayed approval card clicked twice (D2 \u00d7 D7) \u2192 OWNED \u2192 action idempotency, Comp 5"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU2 T0 read-only scope creeps into enumerable lookups \u2192 OWNED \u2192 Comp 7"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU3 Earlier anonymous turns inherit later T2 authority \u2192 OWNED, revisit with D5"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU4 Renderer leaks data via model-written links / images \u2192 MITIGATED (D7) + Comp 7"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU5 All 12 h streams reconnect after a deploy \u2192 OWNED \u2192 Comp 11"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_dl1",
+      "type": "geo",
+      "x": 100.0,
+      "y": 1887,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "b9z",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1265.0,
+        "h": 251,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "CONFIRMED"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D1 Web-only v1"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D2 POST 202 + resumable SSE"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D3 Tiered identity T0 / T1 / T2 + step-up"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D4 On-behalf-of tokens, T0 read-only (conditional)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D6 30 min idle / 12 h cap"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D7 Typed event envelope"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-D9 24 h user token"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 UA-Q2 Inbox-only deferred delivery \u00b7 UA-Q3 Open stream = activity"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:ua_dl2",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1887,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_user_app",
+      "index": "bA1",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1265.0,
+        "h": 251,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "OPEN (logged, not dropped)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u25cc UA-D5 Session / conversation / case \u2192 revisit at Comp 4 & 13"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u25cc UA-D8 Streaming vs safety gate \u2192 revisit after Comp 7 & 9 (likely experiment)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "OWNED RISKS TO WATCH"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "KK3 revocation \u00b7 KU4 inbox never read \u00b7 UK5 shared devices \u00b7 UU1 replayed cards"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Full reasoning: checkpoint.md \u00a75"
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
   ]
 }
