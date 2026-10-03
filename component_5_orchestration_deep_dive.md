@@ -99,12 +99,12 @@ The **Agent Orchestration Core** serves as the central cognitive control plane o
 
 ### Stage 4: Execution Sandbox & Verification Gate
 * **Sandboxed Tool Execution:**
-  * Model Context Protocol (MCP) tool caller with rate-limiting and circuit breakers.
+  * Plain Python tools run as Temporal activities, one task queue and worker pool per external system (TA-D2, TA-Q2, TA-D11), with retries for reads and idempotent writes only and a circuit breaker per system (TA-D10).
   * Two-Phase mutation checks (dry-run staging before writing side-effects).
   * Distributed Saga coordinator with compensating transactions for multi-system actions.
 * **Confidence & Policy Gate:**
   * Computes semantic entropy and checks citation density against retrieved RAG chunks.
-  * Enforces statutory compliance (GDPR/HIPAA/PCI-DSS) and financial risk limits (> $1,000 mandates human review).
+  * Enforces statutory compliance (GDPR/HIPAA/PCI-DSS) and financial risk limits (per-call financial writes at or above the tenant's threshold, platform default $1,000, need human approval; TA-D5, TA-Q1).
   * **Score $\ge 0.90$:** Verified & Approved $\to$ Advance to Stage 5.
   * **Score $< 0.90$ OR Breaker Tripped:** Immediate escalation to Human Specialist.
 

@@ -3,6 +3,7 @@
 > **Companion Document:** [`architecture.md`](./architecture.md)  
 > **Visual Diagram Canvas:** [`architecture.tldr`](./architecture.tldr)  
 > **Source Capabilities:** [`thoughts.md`](./thoughts.md)  
+> **Decisions reflected:** [`checkpoint.md`](./checkpoint.md) through component 11/15 (UA, KR, MS, TA, MA, SG, DP, EV, OB, RP, CR, ADP). Components not yet designed (Confidence Gate, HITL, Delivery) are shown as originally sketched.  
 
 ---
 
@@ -18,9 +19,9 @@
 2. **Sensitive & Masked Identifiers:** Carries PII, account tokens, and financial invoice records.
 3. **Context Enrichment:** Requires **Memory & State** (SLA tiers, topology, ticket history) and **Knowledge RAG** (v4.2 upgrade release notes, known issue database).
 4. **Tools & Enterprise APIs:** Interacts with Cloud Telemetry / CloudWatch and ERP / Billing systems.
-5. **Multi-Agent Coordination:** Orchestrates between specialized sub-agents (Tech Ops Specialist + Billing Specialist).
-6. **Confidence & HITL Governance:** Technical explanation is high confidence (96%), but the $12,400 refund exceeds the autonomous financial threshold ($1,000 max), triggering the **Human-in-the-Loop (HITL)** specialist review.
-7. **Streaming Response & Foundation Telemetry:** Emits real-time SSE chunks back to the user client while asynchronously updating OpenTelemetry traces, PostgreSQL persistence, and evaluation suites.
+5. **Multi-Agent Coordination:** A coordinator delegates to specialists (Technical + Billing) and writes the only reply. Specialists make low-risk writes themselves; higher-risk ones, like this credit memo, are proposed (MA-D1, D9, D12).
+6. **Confidence & HITL Governance:** Technical explanation is high confidence (96%), but the $12,400 credit memo is at/above Acme's approval threshold (tenant-configurable, platform default $1,000; TA-D5, TA-Q1), so Tools requires **Human-in-the-Loop (HITL)** approval before it runs.
+7. **Streaming Response & Foundation Telemetry:** Streams `status` events while the reply is generated and checked, then the checked reply over SSE (EV-D11), while asynchronously updating OpenTelemetry traces, PostgreSQL persistence, and evaluation suites.
 
 ---
 
@@ -70,11 +71,14 @@
 
   {
     "session_id": "sess_88429b",
+    "conversation_id": "conv_5f21c0",
+    "client_message_id": "msg_01J8Z6",
     "channel": "web_portal",
     "timestamp": "2026-09-09T18:15:00Z",
     "message": "Our production DB replica failed over after yesterday's v4.2 upgrade, and invoice #INV-9821 shows an unexpected $12,400 overage surcharge. Can you check why the failover happened and refund the unauthorized charge?"
   }
   ```
+* **Response:** `202 Accepted` with the turn ID. The answer arrives on the conversation's resumable SSE stream as typed events (`status`, `text_delta`, `citation`, `action_card`, `final`), so a reconnect or a later HITL outcome uses the same path (UA-D2, UA-D7). `client_message_id` makes the submit idempotent.
 
 #### `[ 2 ] API Gateway & Identity`
 * **Action:** 
@@ -83,23 +87,23 @@
      * `tenant_id`: `"acme-corp"`
      * `user_id`: `"usr_sarah_chen"`
      * `roles`: `["cloud_admin", "billing_viewer"]`
-  3. Verifies active enterprise support contract (Enterprise Platinum tier).
+  3. Identity tier **T2** (SSO), so account tools are available (UA-D3). Exchanges Sarah's token for a short-lived on-behalf-of token (`sub` = Sarah, `act` = agent) for downstream calls (UA-D4).
+  4. The support contract tier (Enterprise Platinum) is read later from the CRM tool when needed, not from the token or memory (MS-D6).
 
 #### `[ 3 ] Reliability & Resilience`
 * **Action:**
-  1. Checks **Token Bucket Rate Limiting** for `tenant:acme-corp` (Tenant limit: 120 req/min; Current usage: 8 req/min → **Approved**).
-  2. Evaluates downstream **Circuit Breakers** (All systems green).
-  3. Injects OpenTelemetry distributed tracing header:
+  1. Checks rate limits for Acme (tenant), Sarah (user) and this conversation, plus Acme's tokens-per-minute counter (RP-D1, D14) → **within limits**.
+  2. Checks that no other turn is active in this conversation (RP-D3) → none, so the turn starts. Circuit breakers for billing and monitoring are closed; no incident is declared (RP-D6).
+  3. Latency budget for this route (multi-specialist): first `status` ≤ 1 s, final reply p95 45 s, excluding the human approval wait (RP-D8).
+  4. Injects OpenTelemetry distributed tracing header:
      `traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01`
 
 #### `[ 4 ] Input Safety Guardrails`
 * **Action:**
-  1. **Prompt Injection Shield:** Inspects text for jailbreaks, prompt override commands, or system prompt exfiltration (Injection score: 0.01 → Passed).
-  2. **PII Masking & Sanitization:** Verifies query does not leak raw credentials or unencrypted secret keys. Identifies and tokenizes entities:
-     * `[INVOICE_ID: #INV-9821]`
-     * `[VERSION_TAG: v4.2]`
-     * `[AMOUNT: $12,400.00]`
-* **Output:** Sanitized query envelope forwarded to Tier 2.
+  1. **Normalize:** Unicode NFKC + confusables check; size OK.
+  2. **PII tokenization (SG-D4, D5):** no personal data in this message. `INV-9821`, `v4.2` and `$12,400.00` are technical / business identifiers on the allow-list, so they stay as written (masking them would break search and tools). Had Sarah pasted her email or a card number, it would become a deterministic token (e.g. `<EMAIL_7f3a…>`) held in the vault; models see only the token.
+  3. **Screening (SG-D2, D3):** Llama Guard 3 (hazards) and the injection classifier (score 0.01) → **pass** band for a user message.
+* **Output:** Screened envelope forwarded to Tier 2. Retrieved passages and tool outputs are screened the same way later, then spotlighted (marked as data) in prompts (SG-D1).
 
 ---
 
@@ -132,42 +136,31 @@
 
 #### `[ 5 ] AGENT ORCHESTRATION CORE` (The Brain)
 * **Action:**
-  1. **Intent Classification:** Classifies the request as a **Composite Multi-Domain Intent**:
-     * Intent A: `tech_incident.database_failover_investigation`
-     * Intent B: `billing.overage_dispute_and_refund`
-  2. **Plan Synthesis:**
-     * Step 1: Query Memory for customer cluster details and past maintenance tickets.
-     * Step 2: Query Knowledge Base (RAG) for v4.2 upgrade notes and failover incident reports.
-     * Step 3: Call Monitoring API for database metrics and replica failover logs.
-     * Step 4: Delegate refund handling to Billing Specialist Sub-Agent.
+  1. **Load state:** LangGraph checkpoint for `conv_5f21c0` from Postgres (MS-D8). Case: none open yet → a Jev `Choice` over Sarah's open cases returns "new case" → case `INV-9821 dispute` created (MS-D1, MS-Q1).
+  2. **Triage (one Jev request, ADP-05):** `Choice` intent → technical incident (lead), `Noul` billing needed → yes, `Score` urgency → high; `Noul` missing details → no. Confidence above the act band, so no clarifying question.
+  3. **Delegation (Jev, MA-D3):** lead specialist = **Technical**; **Billing** also needed. Billing depends on the technical finding, so they run in sequence (MA-D6). Budget: 2 steps per specialist, 6 per turn (MA-D8).
 
 #### `[ 6 ] Memory & State Engine`
-* **Action:** Orchestrator queries `fetch_session_and_profile(tenant_id="acme-corp", user_id="usr_sarah_chen")`.
+* **Action:** The coordinator loads conversation memory and Sarah's long-term facts.
 * **Retrieved State:**
   ```json
   {
-    "tenant_name": "Acme Corp",
-    "tier": "Enterprise Platinum",
-    "sla_uptime_target": "99.99%",
-    "infrastructure": {
-      "cluster_id": "db-acme-prod",
-      "primary_region": "us-east-1",
-      "secondary_replica": "us-east-2"
-    },
-    "recent_history": [
-      {
-        "ticket_id": "T-4412",
-        "date": "2026-09-08",
-        "title": "Scheduled v4.2 maintenance window executed"
-      }
+    "conversation": {"verbatim_turns": [], "summary": null, "pinned": []},
+    "long_term_facts": [
+      {"fact": "Prefers CLI steps over console screenshots", "valid_from": "2026-06-02", "valid_to": null},
+      {"fact": "Primary DB in us-east-1, replica in us-east-2", "valid_from": "2026-03-14", "valid_to": null}
+    ],
+    "episodes": [
+      {"case": "T-4412", "date": "2026-09-08", "summary": "Scheduled v4.2 maintenance window executed"}
     ]
   }
   ```
+* **Not from memory:** the account tier (Enterprise Platinum) and SLA target come from the CRM tool when needed (MS-D6).
 
 #### `[ 7 ] Knowledge & RAG Retrieval`
-* **Action:** Hybrid vector embedding + BM25 search over enterprise technical documentation, followed by cross-encoder reranking:
+* **Action:** Standalone rewrite + identifier extraction (`v4.2`, `INV-9821`, `Err 504`), then BM25 + dense over the public index and Acme's private index, fused with RRF. Candidates are screened as untrusted text, then an LLM reranks them to the top-10 parent sections; internal-only chunks are dropped (KR-D7, D8, D9, D10, D14):
   * Query: `v4.2 upgrade release notes database failover known issues replication bandwidth`
-* **Top-k Passages Retrieved:**
+* **Top passages (of 10) returned:**
   * **Passage 1 (Relevance 0.94):**
     > *"Release v4.2 introduces dynamic connection pooling. Under spike loads during schema migration, standby replicas may trigger transient heartbeat timeouts (Err 504), causing an automatic failover to the secondary zone."*
   * **Passage 2 (Relevance 0.89):**
@@ -175,18 +168,17 @@
 
 #### `[ Cap 12 ] Cost & Resource Router`
 * **Action:**
-  1. Evaluates reasoning complexity: Composite multi-turn incident + cross-domain financial delegation.
-  2. **Model Tier Selection:** Routes to Frontier Reasoning Model (e.g. Claude 3.5 Sonnet / GPT-4o) rather than lightweight SLM.
-  3. **Token Budgeting:** Allocates 4,000 completion tokens. Semantic cache checked (Miss: unique invoice ID).
+  1. **Answer cache:** a Jev `Noul` says this needs account data (invoice, cluster), so it is not cache-eligible (CR-D3).
+  2. **Model tier:** a Jev `Score` rates the turn as hard (incident + billing dispute), so the coordinator and specialists use the frontier tier; easy turns would go to the self-hosted model (CR-D1, CR-Q1).
+  3. **Budgets:** the multi-specialist route's token budget per turn applies (with room for one cascade step); Acme is at 34 % of its monthly budget, so no soft cap (CR-D4, D5). Usage is added to Acme's exact counter (RP-D14).
 
 #### `[ 8 ] Model Runtime & LLM`
-* **Action:** The LLM receives the compiled context window (System prompt + Acme profile + RAG excerpts + Tool schemas + User query) and produces structured function calls:
-  1. Tool Call 1: `query_cloud_monitoring(cluster_id="db-acme-prod", timerange="24h")`
-  2. Tool Call 2: `get_invoice_breakdown(invoice_id="INV-9821")`
-  3. Sub-Agent Delegation: `delegate_to_subagent(agent="billing_specialist", ...)`
+* **Action:** Each specialist gets a typed task brief (goal, IDs, pinned constraints, evidence references; MA-D4, D5). For each step, code filters the tools to those Sarah's tier and role allow, Jev shortlists and picks the tool and closed-set arguments, and the LLM writes the plan and free-text fields (TA-D1, ADP-05):
+  1. Technical specialist: `query_cloud_monitoring(cluster_id="db-acme-prod", timerange="24h")`. `cluster_id` traces to Sarah's long-term fact, a valid source (TA-D3).
+  2. Billing specialist: `get_invoice_breakdown(invoice_id="INV-9821")`. `invoice_id` traces to Sarah's own words.
 
 #### `[ 9 ] Tools & Enterprise APIs`
-* **Action:** Executes external API calls in a secure sandbox:
+* **Action:** Both calls are reads, so they run automatically; the Jev gate returns "allow" (TA-D5, D6). Each runs as a Temporal activity in its system's worker pool (monitoring, billing) with an outbound allow-list, using the on-behalf-of token (TA-D4, D11, Q2). Outputs are screened before any LLM reads them; the full ledger is stored by reference with a summary (TA-D9, MS-D7). Each call writes an audit record (TA-D12).
   1. **Cloud Monitoring Tool Response:**
      ```json
      {
@@ -215,14 +207,15 @@
      ```
 
 #### `[ 10 ] Multi-Agent Sub-Agents`
-* **Billing Specialist Sub-Agent Execution:**
-  * Analyzes invoice line item against the telemetry root cause (`BUG-8192`).
-  * Determines that the $12,400 bandwidth surcharge was an erroneous billing bug caused by the failover resync.
-  * Checks Autonomous Authority Limits:
-    * *Autonomous refund ceiling:* **$1,000.00**
-    * *Requested refund:* **$12,400.00** → Exceeds autonomous limit!
-  * Prepares action proposal: `apply_credit_memo(tenant="acme-corp", amount=12400.00)` with `requires_human_approval: true`.
-* **Output:** Candidate draft and action payload returned to the Orchestrator.
+* **Technical specialist result (typed, MA-D4):** `status: done` · finding: failover caused by a heartbeat timeout during the v4.2 schema migration (BUG-8192); resync generated cross-region traffic · evidence: monitoring event + Passage 1 and 2.
+* **Billing specialist (own identity; reads + low-risk writes; MA-D9):**
+  * Links the `NET-DATA-INGRESS` $12,400 line to the resync described in BUG-8192 (Passage 2).
+  * Adds a case note ("$12,400 line linked to BUG-8192 resync") directly: a low-risk write, run through Tools and read back.
+  * A $12,400 credit is financial and above low-risk, so it can't do that itself. Returns `status: done` with a **proposed action** `apply_credit_memo(invoice_id="INV-9821", amount=12400.00)`; the amount traces to the `get_invoice_breakdown` result, an allow-listed field (TA-D3, D13). It describes the credit as proposed, not done (MA-D14).
+* **Coordinator:**
+  * Merge: no conflicting claims and no numeric disagreement, so no Jev claim scoring or HITL needed at this point (MA-D7, D16).
+  * Sends the proposed write through Tools: financial write, $12,400 ≥ Acme's threshold (default $1,000, per call) → **human approval required** (TA-D5, D14, Q1). The billing API supports a dry run, so the preview goes on the approval card (TA-D7). Checkpoint before the call (MS-D9); Temporal waits for the approval signal.
+* **Output:** Draft reply (technical explanation + "credit requested, awaiting approval") and the pending approval → Tier 3.
 
 ---
 
@@ -268,9 +261,8 @@
 #### `[ 11 ] Confidence Gate & Eval`
 * **Action:**
   * Evaluates factual groundedness score: `0.96` (High confidence).
-  * Evaluates financial risk policy: The proposed action is a financial refund of `$12,400.00`.
-  * **Gate Rule:** Any financial action exceeding `$1,000.00` must be routed to a human specialist.
-  * **Decision:** Route to **[HITL] Human Support Specialist Console**.
+  * Reads the approval flag set by Tools: the `$12,400.00` credit memo is at/above Acme's threshold (TA-D5), so it is already pending human approval.
+  * **Decision:** Route the pending action to **[HITL] Human Support Specialist Console**; the technical explanation can be sent now with the credit shown as "awaiting approval".
 
 #### `[ HITL ] Human Support Specialist (Escalation Review)`
 * **Action:**
@@ -286,18 +278,21 @@
        - AWS CloudWatch failover event at 2026-09-08 22:14:02 UTC
        - ERP Line Item: NET-DATA-INGRESS ($12,400.00)
      ```
-  2. Senior Support Specialist *Alex* validates the log correlation and clicks **[Approve $12,400 Refund & Release Response]**.
+  2. Senior Support Specialist *Alex* validates the log correlation and the dry-run preview, and clicks **[Approve $12,400 Credit Memo]**.
+  3. **On approval (Temporal signal):** the wait was under 1 h, so no re-fetch is needed (MS-D18). Tools runs `apply_credit_memo` with idempotency key `checkpoint_id + tool_call_id`, checkpoints after the call, and **reads back** the credit memo (`CM-4109`) before anyone tells Sarah it is done (MS-D9, TA-D10, MA-D14). Audit record includes before/after invoice state (TA-D12).
 
 #### `[ 12 ] Output Safety Guardrails`
 * **Action:**
-  1. **Hallucination & Factuality Shield:** Asserts that all factual claims match the verified logs and RAG passages.
-  2. **Corporate Policy & Tone:** Confirms tone is apologetic, transparent, and authoritative.
-  3. **Credential & Privacy Check:** Verifies no internal IP addresses, backend hostnames, or auth tokens leaked into output.
+  1. **Leakage check (SG-D6):** no PII, secrets, internal IPs / hostnames or system-prompt text in the reply.
+  2. **URL / markdown sanitization (SG-D6):** citations are structured `citation` events; no remote images or unlisted links.
+  3. **Promise check (SG-D15):** "credited $12,400" matches a commitment phrase, and it is backed by the verified credit memo `CM-4109` (MA-D14), so the reply passes. Before approval, the same sentence would have been held and rewritten as "requested, awaiting approval".
+  4. **Redirect check (MA-D13):** the reply doesn't send Sarah to another team.
+  5. *Factual grounding (claims vs. logs and passages) is Confidence Boundaries (Comp 13), not output safety.* Tone is not checked (SG-D6).
 
 #### `[ 13 ] Response Delivery Engine`
 * **Action:**
-  1. Establishes Server-Sent Events (SSE) stream back to Sarah's active browser connection.
-  2. Commits updated session history and financial action record (`CreditMemo #CM-4109`) to persistence.
+  1. While the reply was being generated and checked, only `status` events were streamed ("Checking your invoice…", "Waiting for specialist approval…"); the reply itself is held until every check passes (EV-D11, resolves UA-D8). It then sends typed events on the conversation's SSE stream (UA-D2, D7): `text_delta` for the explanation, `citation` for BUG-8192 and the release note, an `action_card` for the verified credit memo, then `final`. If Sarah's tab had closed, the same events wait in the conversation inbox (UA-Q2).
+  2. Appends the turn and delivered reply to conversation memory; the audit record for `CM-4109` is already written by Tools.
 
 #### `[ 14 ] User Client (Served)`
 * **What Sarah Chen Receives in Her Web UI:**
@@ -324,11 +319,11 @@ While the request moved through Tiers 1–3, the Foundation layer captured telem
 
 | Foundation Component | Capability | Action Performed During This Lifecycle |
 | :--- | :--- | :--- |
-| **`Data & Persistence`** | Cap 8 | Stored conversation transcript, updated session state in Redis/PostgreSQL, and committed immutable audit log `#CM-4109`. |
-| **`Observability & Tracing`** | Cap 9 | Emitted distributed OpenTelemetry trace: Total execution latency = 1,420 ms (LLM & Tools) + 34 s (Specialist HITL review). Total tokens: 3,140 ($0.042 cost). |
-| **`Evaluation & Benchmarks`** | Cap 10 | Evaluated interaction with Ragas/Trulens; logged as a "Golden Multi-Intent Reference" for technical incident + billing resolution. |
+| **`Data & Persistence`** | Cap 8 | Everything stays in Acme's region (DP-D10). Stored the conversation transcript and LangGraph checkpoints in PostgreSQL under row-level security, the ledger blob by reference in object storage, and the append-only audit record for `#CM-4109` (Sarah's personal fields encrypted with her own data key, wrapped by Acme's KMS key). Long-term facts are extracted later, when the case resolves (MS-D5). |
+| **`Observability & Tracing`** | Cap 9 | One OpenTelemetry trace for the turn (Jev answers + confidence on the spans), PII-scrubbed by the collector and **kept in full** because it contains an escalation (tail sampling). Stored in Acme's regional Jaeger for 7 days. Total execution latency = 1,420 ms (LLM & Tools) + 34 s (Specialist HITL review). Total tokens: 3,140 ($0.042 cost). |
+| **`Evaluation & Benchmarks`** | Cap 10 | Acme has opted in (EV-D15), so this conversation is a candidate production sample: PII-tokenized, kept in Acme's region, and erasable. It may be scored by the sampled LLM judge (EV-D8) and curated as a risk-tier end-to-end episode (financial write with approval). |
 | **`Continuous Improve`** | Cap 16 | Sarah clicks **[ 👍 Yes ]**. Feedback is tagged with `BUG-8192` to enhance few-shot prompt examples for the Billing Sub-Agent. |
-| **`Testing & LLMOps`** | Caps 14, 15 | Added test case to the CI/CD regression suite verifying that refund requests > $1,000 always block on HITL approval. |
+| **`Testing & LLMOps`** | Caps 14, 15 | Added test case to the CI/CD regression suite verifying that financial writes at/above the tenant threshold (default $1,000) always block on HITL approval, and that success is only reported after read-back. |
 
 ---
 
@@ -340,14 +335,14 @@ While the request moved through Tiers 1–3, the Foundation layer captured telem
 | **2** | [ 2 ] API Gateway | [ 3 ] Reliability | Internal Middleware | Authenticated tenant context (`acme-corp`) |
 | **3** | [ 3 ] Reliability | [ 4 ] Input Safety | Internal Middleware | Rate limit & circuit breaker verified |
 | **4** | [ 4 ] Input Safety | [ 5 ] Orchestrator | Internal Event Bus | Sanitized query & masked entity tokens |
-| **5** | [ 5 ] Orchestrator | [ 6 ] Memory & State | Redis / Cache | Load customer SLA, DB topology & past tickets |
-| **6** | [ 5 ] Orchestrator | [ 7 ] RAG Retrieval | Vector DB / Search | Retrieve v4.2 upgrade runbooks & `BUG-8192` |
-| **7** | [ 5 ] Orchestrator | [Cap 12] Cost Router | Routing Engine | Frontier model selected within 4k token budget |
-| **8** | [ 5 ] Orchestrator | [ 8 ] Model Runtime | LLM Inference API | Context assembled; model reasons & plans actions |
-| **9** | [ 8 ] Model Runtime | [ 9 ] Tools & APIs | Secure API Sandbox | Queries CloudWatch metrics & ERP invoice breakdown |
-| **10** | [ 8 ] Model Runtime | [ 10 ] Sub-Agents | Agent Messaging Bus | Delegates refund evaluation to Billing Sub-Agent |
-| **11** | [ 10 ] Sub-Agents | [ 11 ] Confidence Gate | Policy Engine | Candidate draft flagged: refund > $1k requires HITL |
-| **12** | [ 11 ] Confidence Gate | [ HITL ] Specialist | Support Dashboard | Human specialist reviews evidence & approves $12.4k credit |
+| **5** | [ 5 ] Orchestrator | [ 6 ] Memory & State | PostgreSQL (checkpointer + facts) | Load checkpoint, conversation memory, Sarah's facts; link case (Jev) |
+| **6** | [ 5 ] Orchestrator | [ 7 ] RAG Retrieval | Hybrid search + screened LLM rerank | Top-10 sections incl. v4.2 notes & `BUG-8192` |
+| **7** | [ 5 ] Orchestrator | [Cap 12] Cost Router | Routing Engine | Jev difficulty score → frontier tier; not cache-eligible; within turn budget |
+| **8** | [ 5 ] Orchestrator | [ 10 ] Sub-Agents | LangGraph subgraphs, typed contracts | Jev delegation: Technical, then Billing |
+| **9** | [ 10 ] Sub-Agents | [ 9 ] Tools & APIs | Temporal activities, pool per system | Jev-picked reads: monitoring event, invoice breakdown |
+| **10** | [ 10 ] Sub-Agents | [ 5 ] Coordinator | Typed result | Billing adds a case note (low-risk, direct) and proposes `apply_credit_memo` (financial) |
+| **11** | [ 5 ] Coordinator | [ 9 ] Tools & APIs | Action validation | $12,400 ≥ tenant threshold → approval required, dry-run preview |
+| **12** | [ 9 ] Tools / [ 11 ] Gate | [ HITL ] Specialist | Support Dashboard + Temporal signal | Specialist approves; Tools executes, reads back `CM-4109` |
 | **13** | [ 11 ] Confidence Gate | [ 12 ] Output Safety | Guardrail Pipeline | Factuality & corporate policy checks verify response |
 | **14** | [ 12 ] Output Safety | [ 13 ] Response Engine | Internal Streamer | Verified markdown response committed to state |
 | **15** | [ 13 ] Response Engine | [ 14 ] User Client | SSE Stream | Resolution rendered in Sarah's UI; session stays open |

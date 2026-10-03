@@ -228,13 +228,13 @@ def build():
 
     # 1C: Reliability & Traffic Control (Col 3)
     R.append(box("shape:n_reliability",
-                 "[ 3 ] Reliability & Resilience\nRate Limiting · Token Bucket\nCircuit Breakers & Fallback",
+                 "[ 3 ] Reliability & Resilience\nLimits · fallbacks · incident mode\n→ see LLD - [10] Reliability / Performance / Scale",
                  COL3, T1_NODE_Y, NW, NH, "orange", "semi", idx))
     reg("n_reliability", COL3, T1_NODE_Y)
 
     # 1D: Input Safety Guardrails (Col 4)
     R.append(box("shape:n_input_safe",
-                 "[ 4 ] Input Safety Guardrails\nPrompt Injection Shield\nPII Masking & Sanitization",
+                 "[ 4 ] Input Safety Guardrails\nPII tokens · screening bands · spotlighting\n→ see LLD - [6] Safety, Security & Governance",
                  COL4, T1_NODE_Y, NW, NH, "orange", "semi", idx))
     reg("n_input_safe", COL4, T1_NODE_Y)
 
@@ -256,7 +256,7 @@ def build():
 
     # ─── Context & Knowledge (Col 2) ──────────────────────────────
     R.append(box("shape:n_memory",
-                 "[ 6 ] Memory & State Engine\nWorking Memory · Session State\nLong-Term User Profile Store",
+                 "[ 6 ] Memory & State Engine\nCase-scoped dialogue · per-user facts · checkpoints\n→ see LLD - [3] Memory & State",
                  COL2, T2_ROW1_Y, NW, NH, "light-blue", "semi", idx))
     reg("n_memory", COL2, T2_ROW1_Y)
 
@@ -273,7 +273,7 @@ def build():
     reg("n_orch", COL3, T2_ROW1_Y - 10, NW, ORCH_H)
 
     R.append(box("shape:n_cost",
-                 "[ Cap 12 ] Cost & Resource Router\nModel Tier Routing · Budgets\nSemantic Caching & Token Meter",
+                 "[ Cap 12 ] Cost & Resource Router\nJev tier routing · budgets · cache\n→ see LLD - [11] Cost & Resource Management",
                  COL3, T2_ROW2_Y, NW, NH, "violet", "semi", idx))
     reg("n_cost", COL3, T2_ROW2_Y)
 
@@ -284,13 +284,13 @@ def build():
     reg("n_llm", COL4, T2_ROW1_Y)
 
     R.append(box("shape:n_multi",
-                 "[ 10 ] Multi-Agent Sub-Agents\nBilling · Tech · Ops Specialists\nDelegation Protocol & State",
+                 "[ 10 ] Multi-Agent Sub-Agents\nCoordinator + Jev-routed specialists · one voice\n→ see LLD - [5] Multi-Agent & Communication",
                  COL4, T2_ROW2_Y, NW, NH, "yellow", "semi", idx))
     reg("n_multi", COL4, T2_ROW2_Y)
 
     # ─── Tools & Actions (Col 5) ─────────────────────────────────
     R.append(box("shape:n_tools",
-                 "[ 9 ] Tools & Enterprise APIs\nCRM · ERP · Ticketing APIs\nSchema Validation & Sandbox",
+                 "[ 9 ] Tools & Enterprise APIs\nJev-picked Python tools · tiered approval · sagas\n→ see LLD - [4] Tools & Actions",
                  COL5, T2_ROW1_Y, NW, NH, "yellow", "semi", idx))
     reg("n_tools", COL5, T2_ROW1_Y)
 
@@ -354,7 +354,7 @@ def build():
 
     # 3B: Output Safety Guardrails (Col 3)
     R.append(box("shape:n_out_safety",
-                 "[ 12 ] Output Safety Guardrails\nHallucination & Factuality Shield\nCorporate Policy & Tone Check",
+                 "[ 12 ] Output Safety Guardrails\nLeakage · URL sanitizing · promise check\n→ see LLD - [6] Safety, Security & Governance",
                  COL3, T3_NODE_Y, NW, NH, "orange", "semi", idx))
     reg("n_out_safety", COL3, T3_NODE_Y)
 
@@ -413,9 +413,9 @@ def build():
     # 5 Cards aligned exactly under the 5 columns:
     found_cards = [
         ("n_qa_ops",  "Testing & LLMOps (Caps 14, 15)\nUnit & E2E Suites · CI/CD\nModel Registry · Blue/Green", COL1),
-        ("n_data",    "Data & Persistence (Cap 8)\nPostgreSQL · Qdrant Vector\nS3 Objects · Audit Event DB",    COL2),
-        ("n_eval",    "Evaluation & Benchmarks (Cap 10)\nRagas / Trulens · Golden Eval\nLLM-as-a-Judge · Regression", COL3),
-        ("n_obs",     "Observability & Tracing (Cap 9)\nOpenTelemetry · LangSmith\nPrometheus · Cost Dashboards",COL4),
+        ("n_data",    "Data & Persistence (Cap 8)\nPostgres + Qdrant · US / EU regions\n→ see LLD - [7] Data & Persistence",    COL2),
+        ("n_eval",    "Evaluation & Benchmarks (Cap 10)\nComponent + risk-tier suites · LLM judge\n→ see LLD - [8] Evaluation & Experimentation", COL3),
+        ("n_obs",     "Observability & Tracing (Cap 9)\nOTel · Jaeger + OpenSearch · 7 days\n→ see LLD - [9] Observability & Monitoring",COL4),
         ("n_ci",      "Continuous Improve (Cap 16)\nUser Feedback · Failure Triage\nPrompt & Few-Shot Evolution",COL5),
     ]
 
