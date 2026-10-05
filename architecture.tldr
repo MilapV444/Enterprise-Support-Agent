@@ -1672,7 +1672,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "Escalation Review \u00b7 Warm Handoff"
+                  "text": "Queues \u00b7 approval cards \u00b7 cold handoff"
                 }
               ]
             },
@@ -1681,7 +1681,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "Specialist Override Console"
+                  "text": "\u2192 see LLD - [12] Human-in-the-Loop"
                 }
               ]
             }
@@ -1733,7 +1733,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "Score Threshold (Auto / HITL)"
+                  "text": "Jev draft gate \u00b7 3 bands"
                 }
               ]
             },
@@ -1742,7 +1742,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "Risk & Sentiment Boundary"
+                  "text": "\u2192 see LLD - [12] Human-in-the-Loop"
                 }
               ]
             }
@@ -2388,7 +2388,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "Unit & E2E Suites \u00b7 CI/CD"
+                  "text": "Tests \u2192 see LLD - [13] Testing & Quality"
                 }
               ]
             },
@@ -40109,6 +40109,5101 @@
                 {
                   "type": "text",
                   "text": "Full reasoning: checkpoint.md \u00a711"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "page",
+      "id": "page:lld_hitl",
+      "name": "LLD - [12] Human-in-the-Loop",
+      "index": "aE",
+      "meta": {}
+    },
+    {
+      "typeName": "camera",
+      "id": "camera:page:lld_hitl",
+      "x": 0,
+      "y": 0,
+      "z": 0.4,
+      "meta": {}
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_f_declog",
+      "type": "geo",
+      "x": 80,
+      "y": 1943,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9E",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 286,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "green",
+        "color": "green",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "DECISION LOG SUMMARY (checkpoint.md \u00a716.6 \u2013 \u00a716.10)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_f_handoff",
+      "type": "geo",
+      "x": 80,
+      "y": 843,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9F",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 196,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "blue",
+        "color": "blue",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLOWS C\u2013E \u00b7 HANDOFF, WAITING, FEEDBACK \u00b7 Console: self-hosted Retool per region (HL-D11)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_f_esc",
+      "type": "geo",
+      "x": 80,
+      "y": 557,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9G",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 246,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "violet",
+        "color": "violet",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLOW B \u00b7 ESCALATION + APPROVAL ($12,400 credit for Sarah \u2192 billing senior queue)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_f_gate",
+      "type": "geo",
+      "x": 80,
+      "y": 321,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9H",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 196,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "green",
+        "color": "green",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLOW A \u00b7 CONFIDENCE GATE ON A DRAFT"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_title",
+      "type": "geo",
+      "x": 80,
+      "y": 40,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9I",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 70,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "COMPONENT [12/15]: HUMAN-IN-THE-LOOP"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Jev draft gate \u00b7 Send / co-pilot / hand off \u00b7 One escalation packet \u00b7 Skills queues with SLAs \u00b7 Approval by role and amount \u00b7 Field-by-field approval \u00b7 Cold handoff \u00b7 Retool per region"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_recv",
+      "type": "geo",
+      "x": 80.0,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9J",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "RECEIVES (upstream)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Draft replies + evidence (coordinator)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Approval-required calls + dry-run previews (Tools)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Escalations: Tools, Multi-Agent, Safety, Memory, Reliability"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 'Talk to a human' (Comp 1) \u00b7 triage acuity (Jev)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_hand",
+      "type": "geo",
+      "x": 956.6666666666666,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9K",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HANDS OFF (downstream)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Gate verdicts \u2192 Orchestration / Delivery"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Approval / cancel signals \u2192 Temporal (Tools executes)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Human replies \u2192 conversation (Comp 1)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Reason codes \u2192 Evaluation (9), Improvement (16)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_notown",
+      "type": "geo",
+      "x": 1833.3333333333333,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9L",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "DOES NOT OWN"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Executing actions (Tools) \u00b7 output checks (Safety)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Calibrating thresholds (EV-D9)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Staffing (operations) \u00b7 rendering (Comp 1)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_g1",
+      "type": "geo",
+      "x": 110.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9M",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2460 Draft (coordinator)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Passed output checks"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  (SG-D6, D15)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_g2",
+      "type": "geo",
+      "x": 632.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9N",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2461 Jev gate (HL-D1)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Noul: claims supported?"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Score: relevance"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Agent-written evidence counts less"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_g3",
+      "type": "geo",
+      "x": 1154.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9O",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2462 Numbers rule (HL-D13)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Money or SLA figures"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  \u2192 co-pilot band"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_g4",
+      "type": "geo",
+      "x": 1676.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9P",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2463 Bands (HL-D2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 \u2265 0.90 send"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 0.50\u20130.90 co-pilot (staffed routes)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 < 0.50 hand off"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_g5",
+      "type": "geo",
+      "x": 2198.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9Q",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2464 Out"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Send \u2192 Delivery"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Co-pilot: human edits, then send"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Hand off \u2192 escalation packet"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_g0",
+      "type": "arrow",
+      "x": 562.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9R",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_g1",
+      "type": "arrow",
+      "x": 1084.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9S",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_g2",
+      "type": "arrow",
+      "x": 1606.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9T",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_g3",
+      "type": "arrow",
+      "x": 2128.0,
+      "y": 429.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9U",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_e1",
+      "type": "geo",
+      "x": 110.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9V",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SOURCES"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Approvals (TA-D5, D16, D18, SG-D10)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Low confidence / blocked / numbers"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  (MA-D3, D4, D16, TA-Q3)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Review band, significant decisions"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  (SG-D3, D14) \u00b7 24 h holds (RP-D7)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_e2",
+      "type": "geo",
+      "x": 632.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9W",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "PACKET (HL-D12)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Reason code, case, summary"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Evidence refs, proposed action"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Diagnostic, deadline"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_e3",
+      "type": "geo",
+      "x": 1154.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9X",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "QUEUES (HL-D3)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Billing \u00b7 technical \u00b7 account; tier"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Priority: Jev acuity + tenant tier"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 SLA: handoff 15 min, approval 1 h,"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  review 1 business day \u2192 senior"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_e4",
+      "type": "geo",
+      "x": 1676.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9Y",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "APPROVAL (HL-D4, D5)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Senior \u2265 tenant amount (default $5,000)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Approver \u2260 handler (Cedar)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Confirm amount, account, target"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Signal \u2192 Temporal; first signal wins"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_e5",
+      "type": "geo",
+      "x": 2198.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9Z",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "STUCK (HL-D9)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Aging alerts to the queue lead"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Undecided after 3 days \u2192 cancelled,"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  user told + offered review"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_e0",
+      "type": "arrow",
+      "x": 562.0,
+      "y": 690.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9a",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_e1",
+      "type": "arrow",
+      "x": 1084.0,
+      "y": 690.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9b",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_e2",
+      "type": "arrow",
+      "x": 1606.0,
+      "y": 690.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9c",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "violet",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_h1",
+      "type": "geo",
+      "x": 110.0,
+      "y": 888,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9d",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "'TALK TO A HUMAN' (HL-D7)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Button or Jev Noul detects it"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Immediate handoff"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_h2",
+      "type": "geo",
+      "x": 632.0,
+      "y": 888,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9e",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "WAITING (HL-D7, D8)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Agent answers low-risk questions"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Status, wait estimate, cancel"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_h3",
+      "type": "geo",
+      "x": 1154.0,
+      "y": 888,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9f",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "COLD HANDOFF (HL-D6)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Human takes over from the packet"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Agent stops"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_h4",
+      "type": "geo",
+      "x": 1676.0,
+      "y": 888,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9g",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HUMAN REPLIES (HL-D14)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Same output checks as warnings"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Override with a logged reason"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_h5",
+      "type": "geo",
+      "x": 2198.0,
+      "y": 888,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9h",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FEEDBACK (HL-D10)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Approve / reject"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Reason code on reject or edit"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 \u2192 Evaluation, Improvement"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_h0",
+      "type": "arrow",
+      "x": 562.0,
+      "y": 951.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9i",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_h1",
+      "type": "arrow",
+      "x": 1084.0,
+      "y": 951.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9j",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_a_h2",
+      "type": "arrow",
+      "x": 1606.0,
+      "y": 951.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9k",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_sub_hdr",
+      "type": "geo",
+      "x": 80,
+      "y": 1079,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9l",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 45,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SUB-COMPONENTS \u00b7 MECHANIC + STATUS"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_s1",
+      "type": "geo",
+      "x": 80.0,
+      "y": 1139,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9m",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "CONFIDENCE BOUNDARIES"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D1 Jev draft gate"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D2 Three bands"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D13 Numbers \u2192 co-pilot"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_s2",
+      "type": "geo",
+      "x": 606.0,
+      "y": 1139,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9n",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ESCALATION"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D3 Skills queues + SLAs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D9 Aging + 3-day cancel"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D12 One packet"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D11 Retool per region"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_s3",
+      "type": "geo",
+      "x": 1132.0,
+      "y": 1139,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9o",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "APPROVAL"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D4 Role + amount"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D5 Field-by-field"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_s4",
+      "type": "geo",
+      "x": 1658.0,
+      "y": 1139,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9p",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HANDOFF"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D6 Cold"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D7 Human on request"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D8 Wait estimate + cancel"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D14 Checks on human replies"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_s5",
+      "type": "geo",
+      "x": 2184.0,
+      "y": 1139,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9q",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 496.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HUMAN FEEDBACK"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D10 Reason codes"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_jev",
+      "type": "geo",
+      "x": 80.0,
+      "y": 1345,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9r",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "JEV IN THIS COMPONENT (masked input only)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Draft gate: Noul claims supported + Score relevance (HL-D1) \u00b7 uses 6, 9"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 'Is the user asking for a human?' Noul (HL-D7) \u00b7 use 4"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Queue priority: triage acuity Score reused (HL-D3) \u00b7 use 4"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_nojev",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1345,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9s",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "NOT JEV"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Money / SLA figures: always a human (HL-D13)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Amount rules, timers, signal ordering: code"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_fail_hdr",
+      "type": "geo",
+      "x": 80,
+      "y": 1511,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9t",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 45,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FAILURE MODES (KNOWN / UNKNOWN) \u00b7 WITH STEP-9 EFFECT"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_q1",
+      "type": "geo",
+      "x": 80,
+      "y": 1571,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9u",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q1 \u00b7 KNOWN KNOWNS (contract breaches)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK1 Approval signal lost / duplicated \u2192 FIXED (Temporal + idempotency)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK2 Wrong approver \u2192 FIXED (Cedar policy)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK3 Escalation without evidence \u2192 FIXED (typed packet)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_q2",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1571,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9v",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q2 \u00b7 KNOWN UNKNOWNS (magnitude unknown)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU1 Jev gate accuracy \u2192 MITIGATED (EV calibration)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU2 Human workload \u2192 OWNED (worsened by D13; operations)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU3 Retool limits at scale \u2192 OWNED"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_q3",
+      "type": "geo",
+      "x": 80,
+      "y": 1727,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9w",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q3 \u00b7 UNKNOWN KNOWNS (tacit conventions)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK1 Automation bias \u2192 MITIGATED (field-by-field)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK2 Repeating yourself after transfer \u2192 MITIGATED (packet summary)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK3 Specialist pastes internal notes \u2192 MITIGATED (D14 warnings)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_q4",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1727,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9x",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q4 \u00b7 UNKNOWN UNKNOWNS (emergent from combined decisions)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU1 Wrong numbers pass the gate \u2192 FIXED (D13)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU2 Cancel vs. approve race \u2192 MITIGATED (first signal wins)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU3 Auto-cancel = silent refusal \u2192 MITIGATED (told + review offer)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU4 Middle band floods handoffs \u2192 MITIGATED (calibration)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU5 Missed 'I want a human' \u2192 MITIGATED (button always shown)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_dl1",
+      "type": "geo",
+      "x": 100.0,
+      "y": 1983,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9y",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1265.0,
+        "h": 226,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "CONFIRMED (14 decisions + 5 follow-ups, none open)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D1 Jev gate \u00b7 D2 bands 0.90 / 0.50 \u00b7 D3 skills queues + SLAs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D4 senior \u2265 $5,000 default, approver \u2260 handler \u00b7 D5 field-by-field"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D6 cold handoff \u00b7 D7 human on request \u00b7 D8 wait estimate + cancel"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D9 3-day cancel \u00b7 D10 reason codes \u00b7 D11 Retool per region"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D12 one packet \u00b7 D13 money / SLA \u2192 human \u00b7 D14 checks on human replies"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:hl_dl2",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1983,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_hitl",
+      "index": "b9z",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1265.0,
+        "h": 226,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HAND-OFFS TO OTHER COMPONENTS"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 1: wait estimate, cancel, 'talk to a human', in-review status"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 7: Cedar approval rights, checks on human replies"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 8: tenant senior amount, packets with the case"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 9: gate calibration, reason codes as labels"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 10: queue size, SLA breaches, overrides \u00b7 Operations: staffing"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Full reasoning: checkpoint.md \u00a716"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "page",
+      "id": "page:lld_testing",
+      "name": "LLD - [13] Testing & Quality",
+      "index": "aF",
+      "meta": {}
+    },
+    {
+      "typeName": "camera",
+      "id": "camera:page:lld_testing",
+      "x": 0,
+      "y": 0,
+      "z": 0.4,
+      "meta": {}
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_f_declog",
+      "type": "geo",
+      "x": 80,
+      "y": 1476,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9E",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 236,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "green",
+        "color": "green",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "DECISION LOG SUMMARY (checkpoint.md \u00a717.6 \u2013 \u00a717.10)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_f_pipe",
+      "type": "geo",
+      "x": 80,
+      "y": 557,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9F",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 196,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "green",
+        "color": "green",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLOWS A\u2013D \u00b7 PULL REQUEST \u2192 MERGE GATE \u2192 NIGHTLY \u2192 RELEASE \u00b7 Test data: synthetic personas + tokenized opted-in samples (TQ-D12)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_f_inv",
+      "type": "geo",
+      "x": 80,
+      "y": 321,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9G",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "dashed",
+        "url": "",
+        "w": 2600,
+        "h": 196,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "red",
+        "color": "red",
+        "fill": "none",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SAFETY INVARIANTS \u00b7 property-based tests over random model outputs (TQ-D2) \u00b7 never retried (TQ-D13)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_title",
+      "type": "geo",
+      "x": 80,
+      "y": 40,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9H",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 70,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "COMPONENT [13/15]: TESTING & QUALITY"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Mocked models \u00b7 Property tests of safety invariants \u00b7 Contracts \u00b7 Policy + RLS checks in CI \u00b7 8 scenario E2E tests \u00b7 No retries for safety tests"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_recv",
+      "type": "geo",
+      "x": 80.0,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9I",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "RECEIVES (upstream)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Pull requests: code, prompts, Jev questions,"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  policies, migrations"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Evaluation suites + verdicts (Comp 9)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Staging + fakes (EV-D4)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_hand",
+      "type": "geo",
+      "x": 956.6666666666666,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9J",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HANDS OFF (downstream)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Merge + release verdicts \u2192 Deployment (15)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Failures \u2192 owners"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Test-run telemetry \u2192 Observability (10)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_notown",
+      "type": "geo",
+      "x": 1833.3333333333333,
+      "y": 130,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9K",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 846.6666666666666,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "DOES NOT OWN"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Quality scoring + calibration (9): what a model says"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Deploying + rolling back (15)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Production alerting (10) \u00b7 fixing failures (16)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_i1",
+      "type": "geo",
+      "x": 110.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9L",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 605.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "MONEY"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 No financial write \u2265 threshold"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  without approval (TA-D5)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Approver \u2260 handler (HL-D4)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_i2",
+      "type": "geo",
+      "x": 755.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9M",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 605.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "REPLIES"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 No reply before checks (EV-D11)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Success only after read-back"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  (MA-D14)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_i3",
+      "type": "geo",
+      "x": 1400.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9N",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 605.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "CONCURRENCY"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 One active turn (RP-D3)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Specialists write only alone"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  (MA-D18) \u00b7 cancel vs. approve"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_i4",
+      "type": "geo",
+      "x": 2045.0,
+      "y": 366,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9O",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 605.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "DATA"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Models see PII tokens only (SG-D4)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Tenant isolation (DP-D2)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Writes denied if Cedar down (SG-D17)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_p1",
+      "type": "geo",
+      "x": 110.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9P",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2460 Pull request"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Unit tests, models mocked"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  (TQ-D1)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Agent-behaviour + property tests"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_p2",
+      "type": "geo",
+      "x": 632.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9Q",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2461 Merge gate (TQ-D9)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Integration + contracts (TQ-D5)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Policy + RLS + tool checks (TQ-D4)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Trace test (TQ-D11) \u00b7 EV smoke"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_p3",
+      "type": "geo",
+      "x": 1154.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9R",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2462 Nightly (EV-D6)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Full EV suites on staging"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 8 scenario E2E tests (TQ-D6)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Fixed injection set (TQ-D3)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_p4",
+      "type": "geo",
+      "x": 1676.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9S",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2463 Release"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Load + chaos on staging (TQ-D10)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 EV release gate (EV-D5)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Old checkpoints load (TQ-D14)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_p5",
+      "type": "geo",
+      "x": 2198.0,
+      "y": 602,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9T",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 452.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FLAKY TESTS (TQ-D8, D13)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Retried automatically"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 Except invariant, property,"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "  policy, security tests"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_a_p0",
+      "type": "arrow",
+      "x": 562.0,
+      "y": 665.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9U",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_a_p1",
+      "type": "arrow",
+      "x": 1084.0,
+      "y": 665.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9V",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_a_p2",
+      "type": "arrow",
+      "x": 1606.0,
+      "y": 665.0,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9W",
+      "meta": {},
+      "props": {
+        "kind": "arc",
+        "labelColor": "black",
+        "color": "green",
+        "fill": "none",
+        "dash": "draw",
+        "size": "s",
+        "arrowheadStart": "none",
+        "arrowheadEnd": "arrow",
+        "font": "sans",
+        "start": {
+          "x": 0,
+          "y": 0
+        },
+        "end": {
+          "x": 70.0,
+          "y": 0.0
+        },
+        "bend": 0,
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph"
+            }
+          ]
+        },
+        "labelPosition": 0.5,
+        "scale": 1,
+        "elbowMidPoint": 0.5
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_sub_hdr",
+      "type": "geo",
+      "x": 80,
+      "y": 793,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9X",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 45,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "blue",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "SUB-COMPONENTS \u00b7 MECHANIC + STATUS  \u00b7  No Jev use (calls mocked; question sets contract-tested)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_s1",
+      "type": "geo",
+      "x": 80.0,
+      "y": 853,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9Y",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 408.3333333333333,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "UNIT"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D1 Models mocked"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D4 Cedar tests"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_s2",
+      "type": "geo",
+      "x": 518.3333333333333,
+      "y": 853,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9Z",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 408.3333333333333,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "INTEGRATION"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D5 Contracts"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D11 One trace"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_s3",
+      "type": "geo",
+      "x": 956.6666666666666,
+      "y": 853,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9a",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 408.3333333333333,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "E2E"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D6 8 scenarios"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D12 Persona + samples"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_s4",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 853,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9b",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 408.3333333333333,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "AGENT BEHAVIOR"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D2 Scripted outputs"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "   + property tests"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_s5",
+      "type": "geo",
+      "x": 1833.3333333333333,
+      "y": 853,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9c",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 408.3333333333333,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "ADVERSARIAL"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D3 Fixed injection set"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_s6",
+      "type": "geo",
+      "x": 2271.6666666666665,
+      "y": 853,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9d",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 408.3333333333333,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "REGRESSION"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D7, D14 Migrations"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D8, D13 Retries"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D9 Merge gate"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D10 Load + chaos"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_fail_hdr",
+      "type": "geo",
+      "x": 80,
+      "y": 1069,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9e",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 2600,
+        "h": 45,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "red",
+        "fill": "semi",
+        "size": "m",
+        "font": "sans",
+        "align": "middle",
+        "verticalAlign": "middle",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "FAILURE MODES (KNOWN / UNKNOWN) \u00b7 WITH STEP-9 EFFECT"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_q1",
+      "type": "geo",
+      "x": 80,
+      "y": 1129,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9f",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-blue",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q1 \u00b7 KNOWN KNOWNS (contract breaches)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK1 Tenant table without RLS \u2192 FIXED (CI check)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK2 Tool without risk class / needs_pii \u2192 FIXED (CI check)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK3 Shared format change breaks others \u2192 FIXED (contracts)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KK4 Migration breaks code / old checkpoints \u2192 MITIGATED (D14)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_q2",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1129,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9g",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 151,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "orange",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q2 \u00b7 KNOWN UNKNOWNS (magnitude unknown)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU1 Merge time + model cost \u2192 OWNED (Comp 12 / 15)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU2 Random outputs miss rare states \u2192 MITIGATED (scripted cases)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 KU3 Injection set goes stale \u2192 OWNED, accepted"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_q3",
+      "type": "geo",
+      "x": 80,
+      "y": 1310,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9h",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-violet",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q3 \u00b7 UNKNOWN KNOWNS (tacit conventions)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UK1 No fresh attacks before big releases \u2192 OWNED, accepted"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_q4",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1310,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9i",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1285.0,
+        "h": 126,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "light-red",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Q4 \u00b7 UNKNOWN UNKNOWNS (emergent from combined decisions)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU1 Retries hide races \u2192 FIXED (D13)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU2 Mocks drift from real models \u2192 MITIGATED (EV uses real models)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2022 UU3 Erased users in staging fixtures \u2192 MITIGATED (erasure inventory)"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_dl1",
+      "type": "geo",
+      "x": 100.0,
+      "y": 1516,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9j",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1265.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "green",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "CONFIRMED (14 decisions, none open)"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D1 mocked models \u00b7 D2 property tests \u00b7 D3 fixed injection set"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D4 policy + RLS + tool checks \u00b7 D5 contracts \u00b7 D6 8 scenario E2E"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D7 SQL migrations by review \u00b7 D8 retries \u00b7 D9 merge gate"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D10 load + chaos on staging \u00b7 D11 trace tests \u00b7 D12 test data"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "\u2714 D13 no retries for safety tests \u00b7 D14 old checkpoints load"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "typeName": "shape",
+      "id": "shape:tq_dl2",
+      "type": "geo",
+      "x": 1395.0,
+      "y": 1516,
+      "rotation": 0,
+      "isLocked": false,
+      "opacity": 1,
+      "parentId": "page:lld_testing",
+      "index": "b9k",
+      "meta": {},
+      "props": {
+        "geo": "rectangle",
+        "dash": "draw",
+        "url": "",
+        "w": 1265.0,
+        "h": 176,
+        "growY": 0,
+        "scale": 1,
+        "labelColor": "black",
+        "color": "yellow",
+        "fill": "semi",
+        "size": "s",
+        "font": "sans",
+        "align": "start",
+        "verticalAlign": "start",
+        "richText": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "HAND-OFFS TO OTHER COMPONENTS"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 8: staging fixtures in the erasure inventory"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 12: model cost of the merge gate"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Comp 15: merge / release verdicts, merge time, checkpoint sample library"
+                }
+              ]
+            },
+            {
+              "type": "paragraph"
+            },
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Full reasoning: checkpoint.md \u00a717"
                 }
               ]
             }

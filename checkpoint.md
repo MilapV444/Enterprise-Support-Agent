@@ -15,7 +15,9 @@
 > &nbsp;&nbsp;&nbsp;&nbsp;[8/15] Evaluation & Experimentation — ✅ CLOSED (page `LLD - [8] Evaluation & Experimentation`; page-1 foundation node trimmed to pointer)  
 > &nbsp;&nbsp;&nbsp;&nbsp;[9/15] Observability & Monitoring — ✅ CLOSED (page `LLD - [9] Observability & Monitoring`; page-1 foundation node trimmed to pointer)  
 > &nbsp;&nbsp;&nbsp;&nbsp;[10/15] Reliability / Performance / Scale — ✅ CLOSED (page `LLD - [10] Reliability / Performance / Scale`; page-1 node [3] trimmed to pointer)  
-> &nbsp;&nbsp;&nbsp;&nbsp;[11/15] Cost & Resource Management — ✅ CLOSED (page `LLD - [11] Cost & Resource Management`; page-1 node [Cap 12] trimmed to pointer)
+> &nbsp;&nbsp;&nbsp;&nbsp;[11/15] Cost & Resource Management — ✅ CLOSED (page `LLD - [11] Cost & Resource Management`; page-1 node [Cap 12] trimmed to pointer)  
+> &nbsp;&nbsp;&nbsp;&nbsp;[12/15] Human-in-the-Loop — ✅ CLOSED (page `LLD - [12] Human-in-the-Loop`; page-1 nodes [11], [HITL] trimmed to pointers)  
+> &nbsp;&nbsp;&nbsp;&nbsp;[13/15] Testing & Quality — ✅ CLOSED (page `LLD - [13] Testing & Quality`; page-1 node `Testing & LLMOps` updated)
 
 ---
 
@@ -136,7 +138,7 @@ Below are the finalized **Architectural Decisions** established for Component [ 
 | **ADP-05-Q1** | ADP-04 Reflexion: Jev cannot write the verbal critique. | **(i)** Keep the LLM verbal critique. After each attempt, a Jev `Noul` "did this step succeed?" decides: success → continue; failure → next Reflexion trial (max 2); failure after trial 2, or low confidence → trip to HITL. Amends ADP-04. | ✅ CONFIRMED 2026-09-25 |
 | **ADP-05-Q2** | Confidence thresholds per route. | **TypeSafe's bands as starting thresholds:** > ~0.9 act · 0.5–0.9 confirm / clarify / flag · < 0.5 human or clarify. Routes that change data (refunds, credential resets, account changes) get stricter thresholds. All thresholds are calibrated on golden sets (Comp 9) and kept in config, not code. | ✅ CONFIRMED 2026-09-25 |
 | **ADP-05-Q3** | Data leaving the boundary: Jev is a hosted API, so `state` (customer text) goes to TypeSafe. | **(i)** Send `state` to Jev only after Comp 7 PII masking. `decisions.py` accepts only the masked envelope, and nothing is sent before masking runs. | ✅ CONFIRMED 2026-09-25 |
-| **ADP-05-Q4** | Jev outside orchestration (not in scope of this decision). | Candidates, each to be decided in its own loop: KR-D9/D12/D14 reranker (reopens a closed component) · KR-D11 judge · ~~Comp 7 guardrails~~ → **not Jev** (SG-D2, D6, D7) · Comp 9 confidence gate · ~~Comp 10 supervisor routing~~ → resolved by **MA-D3** · ~~Comp 12 model-tier routing~~ → resolved by **CR-D1** (Jev) · ~~Memory fact reconciliation~~ → resolved by **MS-D12** (plus MS-Q1, MS-Q2, MS-D15 in the same loop) | 🔵 OPEN (other items) |
+| **ADP-05-Q4** | Jev outside orchestration (not in scope of this decision). | Candidates, each to be decided in its own loop: KR-D9/D12/D14 reranker (reopens a closed component) · KR-D11 judge · ~~Comp 7 guardrails~~ → **not Jev** (SG-D2, D6, D7) · ~~Comp 9 confidence gate~~ → resolved by **HL-D1** (Jev; the gate lives in Comp 13) · ~~Comp 10 supervisor routing~~ → resolved by **MA-D3** · ~~Comp 12 model-tier routing~~ → resolved by **CR-D1** (Jev) · ~~Memory fact reconciliation~~ → resolved by **MS-D12** (plus MS-Q1, MS-Q2, MS-D15 in the same loop) | 🔵 OPEN (other items) |
 
 ---
 
@@ -316,6 +318,34 @@ Below are the finalized **Architectural Decisions** established for Component [ 
 | **CR-D12** | Cost & Resources | Release gate | **≤ 10 % rise per release; ceiling 1.5 × first month's cost per route** | CR-Q3 (i), Q4 (i). | 2026-10-03 | ✅ CONFIRMED |
 | **CR-D13** | Cost & Resources | Key storage | **Separate key store per region, 1-day backup retention** | UU1 mitigated. | 2026-10-03 | ✅ CONFIRMED |
 | **CR-D14** | Cost & Resources | Cache key | **Question + tenant + version + KB index; version questions not cached** | UK1 mitigated. | 2026-10-03 | ✅ CONFIRMED |
+| **HL-D1** | Human-in-the-Loop | Confidence gate | **Jev: claims supported (Noul) + relevance (Score) per draft** | Numbers → UU1. | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D2** | Human-in-the-Loop | Gate bands | **Send ≥ 0.90 · co-pilot 0.50–0.90 (staffed routes) · hand off < 0.50** | HL-Q1 (ii). | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D3** | Human-in-the-Loop | Queues | **Skills-based; SLA: handoff 15 min, approval 1 h, review 1 business day → senior queue** | HL-Q2 (i). | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D4** | Human-in-the-Loop | Approval rights | **By role and amount (senior ≥ tenant setting, default $5,000); approver ≠ handler** | HL-Q3 (iii). | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D5** | Human-in-the-Loop | Approval card | **Evidence + dry-run; confirm key fields one by one** |  | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D6** | Human-in-the-Loop | Handoff | **Cold: human takes over, agent stops** |  | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D7** | Human-in-the-Loop | Human request | **Immediate handoff; agent answers low-risk while waiting; Jev Noul detects** |  | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D8** | Human-in-the-Loop | Waiting UX | **Status + inbox + wait estimate + cancel pending action** |  | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D9** | Human-in-the-Loop | Stuck items | **Aging alerts; undecided approvals cancelled after 3 days** | HL-Q4 (i). | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D10** | Human-in-the-Loop | Feedback | **Approve / reject + reason codes** |  | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D11** | Human-in-the-Loop | Console | **Self-hosted Retool per region** | HL-Q5 (i). | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D12** | Human-in-the-Loop | Escalation format | **One typed escalation packet for all sources** |  | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D13** | Human-in-the-Loop | Numbers in drafts | **Money / SLA figures → co-pilot band** | UU1 fixed; more human load. | 2026-10-05 | ✅ CONFIRMED |
+| **HL-D14** | Human-in-the-Loop | Human replies | **Same output checks as warnings, override with reason** | UK3 mitigated. | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D1** | Testing & Quality | Model calls in tests | **Always mocked; model behaviour only in Evaluation** |  | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D2** | Testing & Quality | Control logic | **Deterministic tests + property-based invariant tests** |  | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D3** | Testing & Quality | Adversarial | **Fixed injection / jailbreak set in CI** | Goes stale (accepted). | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D4** | Testing & Quality | Policy + security | **Cedar unit tests + CI checks (RLS, tool declarations, policy tests)** |  | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D5** | Testing & Quality | Contracts | **Contract tests for shared formats incl. Jev question sets** |  | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D6** | Testing & Quality | E2E | **One E2E test per framework scenario (8) on staging** |  | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D7** | Testing & Quality | Migrations | **Code review only** | KK4 owned. | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D8** | Testing & Quality | Flaky tests | **Automatic retries** | Can hide races (UU1). | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D9** | Testing & Quality | Merge gate | **Unit + integration + contracts + policy + EV smoke** |  | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D10** | Testing & Quality | Load / chaos | **Staging before each release** | As RP-D12. | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D11** | Testing & Quality | Trace context | **Integration tests for one trace end to end** | Closes OB KK2 in tests. | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D12** | Testing & Quality | Test data | **Synthetic personas + tokenized opted-in production samples** | Fixtures in erasure inventory. | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D13** | Testing & Quality | Safety-test retries | **No retries for invariant / property / policy / security tests** | UU1 fixed. | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D14** | Testing & Quality | Checkpoint migrations | **Automated test: old stored checkpoints load via migrations** | KK4 mitigated. | 2026-10-05 | ✅ CONFIRMED |
 | **UA-Q2** | User & Application | Deferred delivery | **Inbox only (no email notification in v1)** | Accepted risk: users who never return miss outcomes. | 2026-09-23 | ✅ CONFIRMED |
 | **UA-Q3** | User & Application | Idle-timer activity | **Any authenticated request incl. open SSE** | Open tab keeps session to the 12 h cap; accepted (KK3/UK5/UU5). | 2026-09-23 | ✅ CONFIRMED |
 | **UA-D5** | User & Application | Session scoping | **Resolved by MS-D1: session → conversation → case** | Conversation outlives the session; several conversations can link to one case. | 2026-09-26 | ✅ CONFIRMED |
@@ -3129,3 +3159,454 @@ User: "F13 c, F14 c".
 * **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) Component [Cap 12], the Data encryption line and the matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) `[Cap 12]` step, hop 7 and the Tier 4 data row.
 
 **Hand-offs from this loop:** Comp 1: budget alerts to tenant admins, soft-cap banner for users (UK2), usage reports UI (CR-D7) · Comp 8: per-region key store with 1-day backups (CR-D13), answer-cache store · Comp 9: EV baselines per tier and for compressed passages (KU3, UU2); calibrate the difficulty score (KU1) · Comp 10: cache hit rate, tier mix, cascade rate · Comp 11: key store in restore drills (CR-D13).
+
+---
+
+## 16. Component Loop [12/15] — Human-in-the-Loop
+
+> **Loop status:** ✅ CLOSED (2026-10-05) · Steps 1–11 complete · Page-1 `[11]`, `[HITL]` trimmed to pointers  
+> **Decision ID prefix:** `HL-` (forks `HL-F#`, decisions `HL-D#`)  
+> **Architecture mapping:** thoughts.md Component 13 ≈ architecture nodes `[11] Confidence Gate & Evaluation Boundary` + `[HITL] Human Support Specialist Console` · existing sketch in [`low_level_design.md`](./low_level_design.md) Components [11] and [HITL]
+
+### 16.1 GROUND — Raw Material (not decisions)
+
+**Already decided upstream (inputs, not reopened):**
+* **ADP-02:** Temporal holds waits and approval signals. **ADP-04:** after 2 Reflexion trials or the step cap, an `IncidentDiagnosticPacket` goes to a human. **ADP-05:** Jev confidence bands (> ~0.9 act · 0.5–0.9 confirm · < 0.5 human), calibrated per route (EV-D9).
+* **TA-D5 / Q1:** financial writes at/above the tenant threshold (default $1,000), destructive or irreversible actions need human approval; **TA-Q4:** Jev gate "ask" → user for low-risk, **specialist** above; **TA-D7:** dry-run preview on the approval card; **TA-D16 / D18:** unreviewed risky tools and no-undo saga steps need approval; **TA-D17:** failed compensation → human; **TA-Q3:** low-confidence tool shortlist → human.
+* **MA-D3:** low-confidence delegation → human; **MA-D4:** "blocked" results; **MA-D16:** numeric disagreement → human; **MA-D12:** only the coordinator speaks to the user.
+* **SG-D3:** "review" band → read-only turn or human; **SG-D10:** blackout windows → approval; **SG-D14 / Q5:** AI disclosure, **"talk to a human" always available**, human review offered for account closure / suspension, refund or dispute rejection, contract or plan changes.
+* **MS-D13:** unknown checkpoint version → human; **MS-D18:** after waits > 1 h, re-fetch and re-check before acting.
+* **RP-D3 / Q2:** a conversation waiting on approval is locked for new messages; **RP-D5:** Jev down → fallback classifier, guards fail-safe; **RP-D7 / Q4:** requests held up to 24 h for a broken system, then a human.
+* **EV-D11:** replies are buffered until checks pass; `status` events meanwhile. **OB-D10:** Temporal UI only, so stuck approvals are seen only if someone looks (OB UU3).
+* **UA-D2 / Q2:** deferred answers land in the conversation inbox (no email in v1).
+
+**Hand-offs waiting here:**
+
+| From | Item |
+| :--- | :--- |
+| KR-D10, KR UU2, KR UU5 | The "should we answer at all" decision; judge relevance, not citation presence; discount agent-written evidence |
+| SG note, EV §12.1 | **The runtime confidence gate** (answer grounding) belongs here; Evaluation only measures it |
+| TA, MA, SG, MS, RP | All the human-bound paths above: approvals, "ask" specialist, blocked / low-confidence / numeric conflicts, review band, significant decisions, failed compensation, unknown checkpoints, 24 h holds |
+| OB UU3 | Approval waiting times so stuck items are noticed |
+| UA | Escalation / handoff decision and human queues (Channels only render them) |
+
+**From the master report and deep dive:**
+* **Three-tier gate:** composite confidence C = w₁(1 − semantic entropy) + w₂ grounding (Luna NLI) + w₃(1 − ECE) + w₄·rails; **≥ 0.90 auto-send · 0.70–0.90 human co-pilot (AI draft edited by a human) · < 0.70 warm handoff**. Semantic entropy costs 2–4 s of extra sampling.
+* **Two-Person Rule / four-eyes:** an initiator and an independent approver for actions above a threshold; SOX §404 audit; GDPR Art. 22 human review.
+* **Erlang A** queueing (abandonment while waiting); tiered escalation T1 → T2 → T3; SLA queues (e.g. 80 % in 20 s).
+* Deep-dive failure **"Automation Seduction":** a specialist approves a bad plan because the AI was right 99 % of the time; mitigation "forced active friction UI requiring parameter review".
+* **De-escalation:** hostile for two consecutive turns → human (SG-D7 chose persona guidance only).
+
+**From general engineering practice:**
+* Automation bias / complacency (Parasuraman & Manzey, 2010): reviewers over-trust automated suggestions, more so under workload; countermeasures are active verification of key fields and occasional seeded errors.
+* Warm vs. cold transfer in contact centres; context loss on handoff is a top driver of customer effort (Dixon et al., 2010: having to repeat yourself).
+* Skills-based routing, priority queues, SLA timers, queue aging.
+* Helpdesk platforms (Zendesk, Salesforce Service Cloud) offer queues, SLAs and agent workspaces; custom apps embed the agent's evidence.
+
+**Jev reference uses** (standing rule): **9 confidence gate** and **6 evals** (score a draft's support and relevance) · **4 triage** (queue priority, "is the user asking for a human?") · **7 labelling** (reason codes from specialist edits). Offered in HL-F1, F3, F7, F10.
+
+**Pre-existing items elsewhere:** `low_level_design.md` [11]: multi-factor scorer (citation density, logprobs, semantic entropy), risk evaluator (now in Tools), sentiment detector; [HITL]: queue router, evidence presenter, warm handoff / override; Retool / Streamlit / Zendesk. Lifecycle example: Alex approves the $12,400 credit from a review card.
+
+### 16.2 DECOMPOSE
+
+| Sub-component | Mechanic (what it does) |
+| :--- | :--- |
+| **Confidence Boundaries** | The runtime gate on a draft reply: signals, bands, thresholds per route; what happens in each band. |
+| **Escalation** | Every path that sends work to a human: one packet format, queues, routing, priority, SLAs, aging. |
+| **Approval** | Approval cards for actions: who may approve what, what they must check, signal back to Temporal. |
+| **Handoff** | Moving a conversation to a human and (maybe) back; what the user sees while waiting; "talk to a human". |
+| **Human Feedback** | Capturing approvals, rejections, edits and reasons as data for Evaluation (9) and Improvement (16). |
+
+### 16.3 TRACE THE TRAJECTORY
+
+**Flow A — The gate on Sarah's draft**
+1. The coordinator's merged draft (MA-D15) passes output checks (SG-D6, D15).
+2. Confidence gate (**HL-F1**) → band (**HL-F2**): send / co-pilot / handoff.
+
+**Flow B — The $12,400 credit needs approval**
+1. Tools marks the call approval-required (TA-D5); Temporal waits (ADP-02); the conversation is locked (RP-D3).
+2. One escalation packet (**HL-F12**) → queue routing (**HL-F3**) → approver rights (**HL-F4**) → card and checks (**HL-F5**).
+3. Approve → Temporal signal → re-check if > 1 h (MS-D18) → execute → verify → reply. Reject → reply with reason; significant-decision review offered (SG-D14).
+4. While waiting, Sarah sees (**HL-F8**); if it stalls (**HL-F9**).
+
+**Flow C — A low-confidence or blocked case** (MA-D3, MA-D4, TA-Q3, ADP-04)
+1. Handoff mode (**HL-F6**); context packet; the human may hand it back.
+
+**Flow D — Sarah types "let me talk to a person"** (**HL-F7**)
+
+**Flow E — Feedback:** Alex edits the draft and rejects one claim (**HL-F10**) → Evaluation and Improvement.
+
+**Flow F — Console:** where specialists work (**HL-F11**).
+
+### 16.4 BOUNDARY
+
+| | |
+| :--- | :--- |
+| **Receives (upstream)** | Draft replies + evidence (coordinator) · approval-required calls with dry-run previews (Tools) · escalations from Tools, Multi-Agent, Safety, Memory, Reliability · "talk to a human" requests (Comp 1) · Jev triage acuity (ADP-05). |
+| **Hands off (downstream)** | Gate verdicts → Orchestration / Delivery · approval signals → Temporal (Tools executes) · human replies → the conversation (Comp 1) · feedback + reason codes → Evaluation (9), Improvement (16) · queue metrics → Observability (10). |
+| **Does NOT own** | **Executing actions** (Tools) · **output checks** (Safety) · **thresholds' calibration** (Evaluation measures, EV-D9) · **staffing and hiring** (operations) · **rendering** (Comp 1). |
+
+### 16.5 SURFACE THE FORKS (undecided; awaiting user)
+
+Each option was checked against confirmed decisions; options that would reopen one are labelled.
+
+| Fork | Sub-component | Tension | Options | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **HL-F1** | Confidence Boundaries | Cost and latency vs. strength of the signal | Gate signals on a draft: (a) Jev per draft: `Noul` "is every claim supported by the cited passages or tool results?" + `Score` relevance to the question; agent-written evidence (KR-D16) counts less (uses 6, 9) · (b) semantic entropy (several samples, 2–4 s) + citation check (report) · (c) a grounding classifier per sentence (Luna-class NLI) + a Jev relevance `Score` | ✅ → HL-D1 |
+| **HL-F2** | Confidence Boundaries | Automation vs. human load | Bands: (a) two: send / hand off · (b) three: send / **co-pilot** (a human edits the AI draft before it goes out) / hand off · (c) (b), with co-pilot only on routes that have a staffed queue; elsewhere the middle band hands off | ✅ → HL-D2 |
+| **HL-F3** | Escalation | Simplicity vs. right person, right time | Queues: (a) one shared queue, first in first out · (b) skills-based queues by domain (billing, technical, account) and tier, priority from Jev triage acuity and tenant tier · (c) (b) + an SLA timer per item; breaches move it to a senior queue | ✅ → HL-D3 |
+| **HL-F4** | Approval | Speed vs. control (Two-Person Rule) | Who may approve: (a) any specialist, any action · (b) rights by role and amount (e.g. a senior above a set amount); the approver may not be the person handling the conversation · (c) (b) + two human approvers above a high amount (four-eyes) | ✅ → HL-D4 |
+| **HL-F5** | Approval | Speed vs. automation bias | Approval card: (a) one-click approve with evidence and dry-run preview · (b) evidence + preview, and the approver must confirm the key fields (amount, account, target) one by one · (c) (b) + occasional seeded cards with a planted error, to measure attention | ✅ → HL-D5 |
+| **HL-F6** | Handoff | Continuity vs. clarity of ownership | Handoff mode: (a) cold: the human takes over, the agent stops · (b) warm: the human gets a summary + full context, and the agent suggests replies to the human · (c) (b) + the human can hand the conversation back to the agent | ✅ → HL-D6 |
+| **HL-F7** | Handoff | User control vs. queue load (SG-D14) | "Talk to a human": (a) immediate handoff whenever asked · (b) the agent offers once to keep helping, then hands off · (c) immediate handoff; if the wait is long, the agent keeps answering low-risk questions while the user waits. Detection of the request: a Jev `Noul` "is the user asking for a human?" (use 4) in every option | ✅ → HL-D7 |
+| **HL-F8** | Handoff | Transparency vs. effort | While waiting for a human: (a) `status` events + inbox delivery (as decided) · (b) (a) + an estimated wait time from queue statistics · (c) (b) + the user can cancel a pending action | ✅ → HL-D8 |
+| **HL-F9** | Escalation | Responsiveness vs. noise (OB UU3) | Stuck items: (a) SLA timers only · (b) aging alerts: items waiting longer than a set time page the queue lead · (c) (b) + approvals not decided within a set number of days are cancelled and the user is told | ✅ → HL-D9 |
+| **HL-F10** | Human Feedback | Effort vs. learning signal | Feedback captured: (a) approve / reject only · (b) + a reason code on every reject or edit · (c) (b) + specialist edits to drafts kept as labelled examples (tokenized, EV-D10), with reason codes suggested by a Jev `Choice` (use 7) | ✅ → HL-D10 |
+| **HL-F11** | Escalation / Approval | Build vs. buy | Specialist console: (a) built in-house · (b) an existing helpdesk (Zendesk / Salesforce Service Cloud) with a custom app for evidence and approvals (vendor must offer US / EU regions, DP-D10) · (c) low-code (Retool) | ✅ → HL-D11 |
+| **HL-F12** | Escalation | Consistency vs. effort | Escalation format: (a) each source sends its own payload · (b) one typed escalation packet for every source: reason code, case, conversation summary, evidence references, proposed action, ADP-04 diagnostic, deadline | ✅ → HL-D12 |
+
+### 16.6 RESOLVE — Step 6 (user decisions, 2026-10-05)
+
+User: "F1 a, F2 c, F3 c, F4 b, F5 b, F6 a, F7 c, F8 c, F9 c, F10 b, F11 c, F12 b".
+
+| ID | Sub-component | Decision | Status | Reasoning / consequences captured |
+| :--- | :--- | :--- | :--- | :--- |
+| **HL-D1** | Confidence Boundaries | **Jev gate on every draft:** `Noul` "is every claim supported by the cited passages or tool results?" + `Score` relevance to the question; agent-written evidence (KR-D16) counts less (uses 6, 9). Input PII-masked. | ✅ CONFIRMED | Resolves ADP-05-Q4 "Comp 9 confidence gate" as Jev; covers KR UU2 (relevance, not citation presence) and KR UU5. Cheap and fast. **Jev is weak at numbers**, so numeric claims are not reliably checked (→ UU1). |
+| **HL-D2** | Confidence Boundaries | **Three bands: send / co-pilot / hand off; co-pilot only on routes with a staffed queue,** elsewhere the middle band hands off. | ✅ CONFIRMED | Fewer full handoffs where staff can edit drafts. **Threshold values open (HL-Q1);** calibrated per route by EV-D9. |
+| **HL-D3** | Escalation | **Skills-based queues** (billing, technical, account; tier) **with priority from Jev triage acuity and tenant tier, and an SLA timer per item; a breach moves the item to a senior queue.** | ✅ CONFIRMED | Right person, bounded waits. **Timer values open (HL-Q2).** |
+| **HL-D4** | Approval | **Approval rights by role and amount** (a senior above a set amount); **the approver may not be the person handling the conversation.** Enforced as Cedar policy (SG-D8). | ✅ CONFIRMED | Two-Person Rule: the agent (or handler) proposes, an independent human approves. **Senior amount open (HL-Q3).** |
+| **HL-D5** | Approval | **Approval card with evidence + dry-run preview (TA-D7); the approver must confirm key fields (amount, account, target) one by one.** | ✅ CONFIRMED | Counters automation bias ("Automation Seduction"). No seeded test cards. |
+| **HL-D6** | Handoff | **Cold handoff:** the human takes over and the agent stops for that conversation. | ✅ CONFIRMED | Clear ownership. The human starts from the escalation packet's summary (HL-D12), so the user shouldn't have to repeat themselves. |
+| **HL-D7** | Handoff | **"Talk to a human" → immediate handoff;** while the user waits for pickup, the agent keeps answering low-risk questions. Detected by a **Jev `Noul` "is the user asking for a human?"** (use 4) and by the always-visible button (SG-D14). | ✅ CONFIRMED | Meets SG-D14. Once a human picks up, HL-D6 applies (agent stops). |
+| **HL-D8** | Handoff | **While waiting:** `status` events + inbox delivery + **an estimated wait time from queue statistics + the user can cancel a pending action.** | ✅ CONFIRMED | Transparent. Cancelling races with approving (→ UU2). |
+| **HL-D9** | Escalation | **Aging alerts** page the queue lead for items waiting too long; **approvals not decided within a set number of days are cancelled and the user is told.** | ✅ CONFIRMED | Fixes OB UU3 (forgotten workflows). A cancelled refund approval is effectively a refusal (→ UU3). **Days open (HL-Q4).** |
+| **HL-D10** | Human Feedback | **Approve / reject + a reason code on every reject or edit.** | ✅ CONFIRMED | Feeds Evaluation (EV-D8) and Improvement (16). Edits themselves are not kept as labelled examples. |
+| **HL-D11** | Escalation / Approval | **Specialist console in low-code (Retool).** | ✅ CONFIRMED | Fast to build. **Hosting vs. residency (DP-D10) open (HL-Q5).** Scale limits → KU3. |
+| **HL-D12** | Escalation | **One typed escalation packet for every source:** reason code, case, conversation summary, evidence references, proposed action, ADP-04 diagnostic, deadline. | ✅ CONFIRMED | One queue format for approvals, handoffs, reviews, blocked cases, held requests. |
+
+**Follow-up questions raised by combining decisions (asked 2026-10-05, awaiting user):**
+* **HL-Q1** (D2): starting thresholds for the bands, before per-route calibration (EV-D9). (i) The report's: send ≥ 0.90, co-pilot 0.70–0.90, hand off < 0.70 · (ii) TypeSafe's: send ≥ 0.90, co-pilot 0.50–0.90, hand off < 0.50 · (iii) other.
+* **HL-Q2** (D3): SLA timers per item type. (i) Handoffs 15 min · approvals 1 h · significant-decision reviews 1 business day · (ii) handoffs 30 min · approvals 4 h · reviews 2 business days · (iii) other; any of them can be tighter for higher tenant tiers.
+* **HL-Q3** (D4): amount above which a senior must approve. (i) $10,000 · (ii) $5,000 · (iii) a tenant setting with a platform default (value to choose).
+* **HL-Q4** (D9): days before an undecided approval is cancelled. (i) 3 days · (ii) 7 days · (iii) a tenant setting with a platform default.
+* **HL-Q5** (D11 × DP-D10): where Retool runs. (i) Self-hosted Retool in each region (US / EU), reading the regional backends · (ii) Retool Cloud as UI only, calling regional APIs (data passes through the vendor) · (iii) other.
+
+**Follow-up answers (user, 2026-10-05):**
+* **HL-Q1 → (ii)** Starting bands (TypeSafe's): **send ≥ 0.90 · co-pilot 0.50–0.90 · hand off < 0.50**; recalibrated per route by EV-D9.
+* **HL-Q2 → (i)** SLA timers: **handoffs 15 min · approvals 1 h · significant-decision reviews 1 business day** (may be tighter for higher tenant tiers).
+* **HL-Q3 → (iii)** The senior-approval amount is a **tenant setting with a platform default of $5,000** (user choice among $5,000 / $10,000 / $25,000). Sarah's $12,400 credit therefore needs a senior.
+* **HL-Q4 → (i)** Undecided approvals are cancelled after **3 days** (aging alerts fire before then).
+* **HL-Q5 → (i)** **Self-hosted Retool in each region** (US / EU), reading that region's backends; nothing crosses regions.
+
+Resulting status changes: HL-D2, D3, D4, D9, D11 → **✅ CONFIRMED**.
+
+### 16.7 EXPERIMENT CHECK — Step 7
+
+No fork was marked for experiment. Gate thresholds (HL-Q1) are a starting point; EV-D9 recalibrates them per route each release.
+
+### 16.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
+
+**Q1 — KNOWN KNOWNS (contract breaches)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KK1 | Approval | An approval signal is lost or delivered twice. |
+| KK2 | Approval | The approver lacks the rights for the amount, or is also the handler. |
+| KK3 | Escalation | An escalation arrives without the evidence the specialist needs. |
+
+**Q2 — KNOWN UNKNOWNS (magnitude unknown)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KU1 | Confidence Boundaries | Jev gate accuracy: bad drafts sent, good drafts handed off. |
+| KU2 | Escalation | Human workload: handoffs + approvals + reviews vs. staff; SLA breaches. |
+| KU3 | Escalation | Retool limits at scale (queue sizes, concurrent specialists). |
+
+**Q3 — UNKNOWN KNOWNS (tacit conventions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UK1 | Approval | Automation bias: approving because the AI is usually right ("Automation Seduction"). |
+| UK2 | Handoff | Customers hate repeating themselves after a transfer. |
+| UK3 | Handoff | Specialists make mistakes too: a human reply pastes internal notes (KR-D2 internal-audience text), a hostname or a token, and nothing checks it. |
+
+**Q4 — UNKNOWN UNKNOWNS (emergent from combined decisions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UU1 | Confidence Boundaries | **Numbers slip past the gate (D1 × Jev limits).** "Your SLA is 99.995 %" when the contract says 99.9 % (failure-matrix item) reads as supported to a model that can't compare numbers. |
+| UU2 | Approval | **Cancel vs. approve race (D8 × D4).** The user cancels at the same moment a specialist approves. |
+| UU3 | Escalation | **Silent refusals (D9 × SG-D14).** An auto-cancelled refund approval is effectively a refund rejection, which SG-D14 says must be offered human review. |
+| UU4 | Confidence Boundaries | **Middle band floods handoffs (D2).** On routes without staffed queues, miscalibrated thresholds push many drafts to full handoff. |
+| UU5 | Handoff | **Missed "I want a human" (D7).** The Jev detection misses an indirect request. |
+
+### 16.9 DESIGN AGAINST THE FAILURE MODES — Step 9
+
+Legend as §5.9: **FIXES** · **MITIGATES** · **WORSENS** · **OWNED RISK**.
+
+| Grid ID | Addressed by | Effect | Residual / owner |
+| :--- | :--- | :--- | :--- |
+| KK1 | Temporal signals are durable and ordered (ADP-02); execution uses idempotency keys (MS-D9) | **FIXES** | — |
+| KK2 | HL-D4 enforced as a Cedar policy (SG-D8) | **FIXES** | Policy tests → Comp 14. |
+| KK3 | **HL-D12** typed packet | **FIXES** | — |
+| KU1 | EV-D9 calibration; EV-D8 live scoring | **MITIGATES** | — |
+| KU2 | HL-D3 priorities + timers; RP-D6 incident mode · **HL-D13 WORSENS** (money / SLA drafts need a human) | **OWNED RISK** | Staffing → operations; queue metrics → Comp 10. |
+| KU3 | HL-D11 creates it | **OWNED RISK** | Revisit the console if limits are hit. |
+| UK1 | **HL-D5** field-by-field confirmation | **MITIGATES** | No seeded checks to measure it. |
+| UK2 | HL-D12 summary for the human | **MITIGATES** | — |
+| UK3 | **HL-D14** output checks on human replies as overridable warnings | **MITIGATES** | Overrides are logged. |
+| UU1 | **HL-D13** money / SLA drafts always reviewed by a human | **FIXES** | — |
+| UU2 | Rule: cancel and approve are both Temporal signals handled in order; the first one wins and the other party is told | **MITIGATES** | — |
+| UU3 | Rule: an auto-cancel is reported to the user as "not decided", with the SG-D14 human-review offer; aging alerts (HL-D9) fire well before | **MITIGATES** | — |
+| UU4 | EV-D9 calibration per route | **MITIGATES** | Feeds KU2. |
+| UU5 | The "talk to a human" button is always visible (SG-D14) | **MITIGATES** | — |
+
+**Summary (before §16.9a):** 3 FIXES · 7 MITIGATES · 4 OWNED RISKS. **Two candidate new forks (below).**
+
+#### 16.9a Candidate forks resolved (user decisions, 2026-10-05)
+
+Options were checked against confirmed decisions; any that would reopen one are labelled.
+
+| ID | Grid | Question | Options |
+| :--- | :--- | :--- | :--- |
+| **HL-F13** | UU1 | Numbers in drafts | (a) Accept: the Jev gate only · (b) code extracts numbers from the draft (amounts, percentages, dates) and compares them with the typed tool fields and cited passages; a mismatch drops the draft to the co-pilot band or hands off · (c) any draft that states money or SLA figures always goes to the co-pilot band |
+| **HL-F14** | UK3 | Checks on human-written replies | (a) None; specialists are trusted · (b) the same output checks as agent replies (leakage, internal-audience text, URLs) run as a warning the specialist can override with a reason (logged) · (c) (b) as a hard block |
+
+User: "F13 c, F14 b".
+
+| ID | Grid | Decision | Status | Effect on the grid / consequences |
+| :--- | :--- | :--- | :--- | :--- |
+| **HL-D13** | UU1 | **Any draft that states money or SLA figures goes to the co-pilot band** (a human checks it before it is sent); on routes without a staffed queue it hands off (HL-D2). | ✅ CONFIRMED | UU1 **FIXED** (no money or SLA figure reaches a user unchecked). **Worsens KU2:** many billing replies now need a human. |
+| **HL-D14** | UK3 | **Human-written replies run the same output checks as agent replies** (leakage, internal-audience text, URLs) **as a warning**; the specialist can override with a reason, which is logged (SG-D13). | ✅ CONFIRMED | UK3 **MITIGATED**. |
+
+**Summary (final, after §16.9a):** 4 FIXES (KK1, KK2, KK3, UU1) · 8 MITIGATES (KU1, UK1, UK2, UK3, UU2, UU3, UU4, UU5) · 2 OWNED RISKS (KU2 human workload, worsened by HL-D13 → operations / Comp 10; KU3 Retool limits).
+
+#### 16.9b Jev placements in this component
+
+| Where | Jev question | Use # | Decision |
+| :--- | :--- | :--- | :--- |
+| Confidence gate | `Noul` claims supported + `Score` relevance | 6, 9 | HL-D1 |
+| Human request | `Noul` "is the user asking for a human?" | 4 | HL-D7 |
+| Queue priority | Reuses the triage acuity `Score` (ADP-05) | 4 | HL-D3 |
+| **Not Jev** | Amount rules, timers, cancellation ordering, number comparison (if HL-F13 b) | — | Jev limits |
+
+### 16.10 DEFINITION OF DONE — Step 10 check
+
+| Criterion | Met? |
+| :--- | :--- |
+| Every sub-component has a Step-6 status | ✅ Confidence Boundaries D1, D2, D13 · Escalation D3, D9, D12 · Approval D4, D5 · Handoff D6, D7, D8, D14 · Human Feedback D10 · Console D11 (all CONFIRMED; none OPEN) |
+| Trajectory traced start to finish | ✅ Flows A–F (§16.3) |
+| Boundary explicit | ✅ §16.4 |
+| Failure grid exists + Step 9 run | ✅ §16.8, §16.9, §16.9a |
+| Logged with reasoning | ✅ §16.6–16.10 + decision table rows |
+
+### 16.11 MATERIALIZE — Step 11
+
+* **Page:** `architecture.tldr` → `LLD - [12] Human-in-the-Loop` (generator: [`generate_lld_hitl.py`](./generate_lld_hitl.py)). Contents: boundary, the gate and its bands, escalation sources → packet → queues, Flow B (approval of the $12,400 credit), handoff and waiting, 5 sub-component cards, Jev placements, failure grid with step-9 effects after §16.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** page-1 nodes `[11] Confidence Gate & Eval` and `[HITL] Human Support Specialist` **trimmed to pointers**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) components [11] and [HITL] and the matrix rows; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) `[11]` and `[HITL]` steps.
+
+**Hand-offs from this loop:** Comp 1: wait estimate + cancel button, "talk to a human" flow, reply-in-review status · Comp 5: approval signals and cancellations as Temporal signals (UU2 rule) · Comp 7: Cedar policies for approval rights (HL-D4), output checks on human replies (HL-D14) · Comp 8: tenant settings for senior amount; escalation packets stored with the case · Comp 9: gate calibration per route (HL-Q1), reason codes as labels · Comp 10: queue sizes, SLA breaches, aging alerts, override counts · Operations: staffing for the extra money / SLA reviews (KU2).
+
+---
+
+## 17. Component Loop [13/15] — Testing & Quality
+
+> **Loop status:** ✅ CLOSED (2026-10-05) · Steps 1–11 complete · Page-1 `Testing & LLMOps` node updated (shared with Comp 15)  
+> **Decision ID prefix:** `TQ-` (forks `TQ-F#`, decisions `TQ-D#`)  
+> **Architecture mapping:** thoughts.md Component 14 ≈ page-1 foundation node `Testing & LLMOps` (shared with Deployment, Comp 15)
+
+### 17.1 GROUND — Raw Material (not decisions)
+
+**Boundary with Evaluation (Comp 9), as used in this loop:** Evaluation measures **quality** statistically (judges, calibration, pass^k, live sampling; EV-D1 – D15). Testing & Quality owns **pass / fail checks of correctness**: code, contracts, policies, security, control logic, and the CI wiring that runs both. Behaviour that depends on what a model says is Evaluation's; what the system *does with* a model's answer is tested here.
+
+**Already decided upstream (inputs, not reopened):**
+* **EV-D3 / D4 / D6 / D14:** component suites + risk-tier end-to-end episodes; staging, stateful fakes for write integrations, recordings for read-only ones; smoke per commit, full nightly and before release; staging safety.
+* **RP-D12:** load tests before each release + chaos tests on staging.
+* **ADP-05:** Jev question wording is versioned and tested like code. **MA-D10 / DP-D12:** prompts, tools, specialists and Cedar policies live in code.
+* Invariants decided across loops that should never break: no financial write at/above the threshold without approval (TA-D5) · approver ≠ handler (HL-D4) · no reply before checks (EV-D11) · one active turn per conversation (RP-D3) · specialists write only when alone (MA-D18) · models see PII tokens only (SG-D4) · tenant isolation (DP-D2) · writes fail closed when the policy engine is down (SG-D17).
+
+**Hand-offs waiting here:**
+
+| From | Item |
+| :--- | :--- |
+| SG KK5, HL KK2 | Cedar policy tests (authorization, approval rights) |
+| DP KK1, KK2 | CI check that every tenant table has forced row-level security; migration contract tests (expand / contract) |
+| MS-D13 | Checkpoint version migrations |
+| TA KK6 | Per-tool authorization (agent-side user check) tests |
+| EV KK1, KK2, KU5 | CI wiring of smoke / nightly / release suites; staging resets; contract tests of fakes and recordings; flaky-test quarantine |
+| OB KK2 | Trace-context propagation across Temporal, Jev and SSE |
+| RP-D12 | Load and chaos tests in CI |
+
+**From existing docs:** `low_level_design.md` foundation "Testing & LLMOps": unit and E2E suites, CI/CD, model registry, blue / green. Evaluation framework **Scenario 5:** Base64-encoded prompt injection must be stopped at input safety. Failure matrix: injection via ingested logs, via error messages, homoglyph bypasses, cross-tenant cache poisoning.
+
+**From general engineering practice:**
+* Test pyramid; **recorded / replayed external calls** ("cassettes") for deterministic integration tests; **property-based testing** (Hypothesis) for invariants over random inputs.
+* **Consumer-driven contract tests** (Pact) between services.
+* Policy testing: Cedar has a built-in test and validation toolchain; OPA-style unit tests for policies.
+* LLM red-teaming tools: **garak**, **PyRIT**; OWASP LLM Top 10 as a test checklist; external red teams before major releases.
+* Database migrations: expand / contract; test against a copy of the production schema; backward compatibility between old and new code during rollout.
+* Flaky tests: quarantine with owners rather than blind retries (retries hide real races).
+* Synthetic monitoring: scripted end-to-end checks against production.
+
+**Jev reference uses** (standing rule): no strong fit. Jev question sets get **contract tests** here (types, closed sets, versions); their **accuracy** is Evaluation's (EV-D9). Failure classification of test runs could reuse OB-D11 (use 7); not proposed.
+
+### 17.2 DECOMPOSE
+
+| Sub-component | Mechanic (what it does) |
+| :--- | :--- |
+| **Unit** | Functions and modules: tools, policies, packing, budgets, parsers, Jev question schemas. |
+| **Integration** | Components together with real infrastructure (Postgres, Temporal, Qdrant, OpenSearch) and faked or recorded externals; contracts between components. |
+| **E2E** | Whole conversations through the gateway on staging; synthetic checks in production. |
+| **Agent Behavior** | The control logic around models: FSM transitions, guards, step caps, approval tiers, one active turn, budgets, fallbacks, given scripted model outputs (including malformed and hostile ones). |
+| **Adversarial** | Injection, jailbreaks, cross-tenant access, PII leakage, exfiltration attempts. |
+| **Regression** | What blocks a merge or a release; flaky tests; migrations; load and chaos. |
+
+### 17.3 TRACE THE TRAJECTORY
+
+**Flow A — A pull request changes the approval-tier code**
+1. Unit + agent-behaviour tests with scripted model outputs (**TQ-F1**, **TQ-F2**); policy and security checks (**TQ-F4**); contracts (**TQ-F5**).
+2. Merge gate decides (**TQ-F9**); flaky failures handled (**TQ-F8**).
+
+**Flow B — A schema migration adds a column to the audit table** (**TQ-F7**; DP KK1 forced RLS; MS-D13 checkpoint versions)
+
+**Flow C — Nightly:** full suites on staging (EV-D6), E2E scenarios (**TQ-F6**), adversarial runs (**TQ-F3**), trace-context checks (**TQ-F11**).
+
+**Flow D — Before a release:** load and chaos (**TQ-F10**, RP-D12); release verdict combines this component's results with EV-D5's gate.
+
+**Flow E — Test data for all of the above** (**TQ-F12**).
+
+### 17.4 BOUNDARY
+
+| | |
+| :--- | :--- |
+| **Receives (upstream)** | Code, prompts, Jev questions, policies, migrations (pull requests) · Evaluation suites and verdicts (Comp 9) · staging and fakes (EV-D4) · invariants from earlier loops. |
+| **Hands off (downstream)** | Merge and release verdicts → Deployment (Comp 15) · failures → owners · test-run telemetry → Observability (10). |
+| **Does NOT own** | **Quality scoring and calibration** (Comp 9) · **deploying and rolling back** (Comp 15) · **production alerting** (Comp 10) · **fixing failures** (owners / Comp 16). |
+
+### 17.5 SURFACE THE FORKS (undecided; awaiting user)
+
+Each option was checked against confirmed decisions; options that would reopen or extend one are labelled.
+
+| Fork | Sub-component | Tension | Options | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **TQ-F1** | Unit / Integration | Determinism vs. realism | Model and Jev calls in tests: (a) always mocked; model behaviour is tested only in Evaluation · (b) recorded real responses replayed ("cassettes"), re-recorded when a model, prompt or Jev question changes · (c) live calls in CI tests, with tolerant assertions | ✅ → TQ-D1 |
+| **TQ-F2** | Agent Behavior | Coverage vs. effort | Testing the control logic: (a) no separate tests; Evaluation covers it · (b) deterministic tests of FSM transitions, guards, step caps, approval tiers, one active turn, budgets and fallbacks, fed scripted model outputs including malformed and hostile ones · (c) (b) + property-based tests that check the invariants in §17.1 over random sequences of model outputs | ✅ → TQ-D2 |
+| **TQ-F3** | Adversarial | Depth vs. cost | Adversarial testing: (a) a fixed injection / jailbreak test set in CI · (b) (a) + automated red-team generation (garak / PyRIT) nightly against staging · (c) (b) + an external human red team before major releases | ✅ → TQ-D3 |
+| **TQ-F4** | Unit / Regression | Assurance vs. effort | Policy and security checks: (a) unit tests per Cedar policy · (b) (a) + CI checks: every tenant table has forced RLS; every tool declares risk class, idempotency, `needs_pii` and its integration type; every policy has tests · (c) (b) + a cross-tenant access suite on every release that tries to read another tenant's data through every API and tool | ✅ → TQ-D4 |
+| **TQ-F5** | Integration | Safety of independent changes vs. effort | Contracts: (a) none · (b) contract tests between components (escalation packet, typed results, events, tool schemas, Jev question sets) · (c) (b) + scheduled contract tests of fakes and recordings against staging APIs (EV KU5) | ✅ → TQ-D5 |
+| **TQ-F6** | E2E | Confidence vs. upkeep | End-to-end tests: (a) a few smoke flows on staging · (b) an E2E test per framework scenario (8) on staging · (c) (b) + synthetic monitoring in production: scripted conversations on a test tenant every few minutes | ✅ → TQ-D6 |
+| **TQ-F7** | Regression | Safety of schema changes vs. effort | Migrations (DP KK2, MS-D13): (a) code review only · (b) expand / contract rule + migration tests on a copy of the production schema + tests that stored old checkpoints still load · (c) (b) + compatibility tests: new code against the old schema, and old code against the new | ✅ → TQ-D7 |
+| **TQ-F8** | Regression | Green builds vs. honest signal | Flaky tests: (a) retry failed tests automatically · (b) quarantine flaky tests (tracked, not blocking) with an owner and a fix-by date · (c) (b) + no automatic retries in CI | ✅ → TQ-D8 |
+| **TQ-F9** | Regression | Speed vs. safety of merges | Merge gate: (a) unit tests + lint · (b) unit + integration + contracts + policy checks + the EV smoke subset · (c) (b) + a minimum coverage level | ✅ → TQ-D9 |
+| **TQ-F10** | Regression | Realism vs. risk | Load and chaos (RP-D12): (a) staging before each release (as decided) · (b) (a) + quarterly production "game days" with on-call and HITL staff warned (*extends RP-D12*) · (c) (a) + continuous chaos on staging | ✅ → TQ-D10 |
+| **TQ-F11** | Integration | Visibility vs. effort (OB KK2) | Trace-context tests: (a) none · (b) integration tests asserting one trace from gateway through Temporal, Jev and SSE · (c) (b) + a production check that alerts when sampled traces arrive in fragments | ✅ → TQ-D11 |
+| **TQ-F12** | E2E / Integration | Realism vs. privacy | Test data: (a) hand-made fixtures · (b) synthetic tenants, users and tickets generated from the evaluation personas; no production data · (c) (b) + tokenized production samples from opted-in tenants (EV-D10, D15) for E2E | ✅ → TQ-D12 |
+
+### 17.6 RESOLVE — Step 6 (user decisions, 2026-10-05)
+
+User: "F1 a, F2 c, F3 a, F4 b, F5 b, F6 b, F7 a, F8 a, F9 b, F10 a, F11 b, F12 c".
+
+| ID | Sub-component | Decision | Status | Reasoning / consequences captured |
+| :--- | :--- | :--- | :--- | :--- |
+| **TQ-D1** | Unit / Integration | **Model and Jev calls are always mocked in tests;** model behaviour is tested only in Evaluation (Comp 9). | ✅ CONFIRMED | Fast, deterministic, free. Mocks can drift from what real models return (→ UU2). |
+| **TQ-D2** | Agent Behavior | **Deterministic tests of the control logic** (FSM transitions, guards, step caps, approval tiers, one active turn, budgets, fallbacks) fed scripted model outputs, including malformed and hostile ones, **+ property-based tests of the §17.1 invariants** over random sequences of model outputs. | ✅ CONFIRMED | The strongest guarantee that safety rules hold whatever the model says. Many invariants are about concurrency (one active turn, MA-D18, cancel vs. approve) → UU1. |
+| **TQ-D3** | Adversarial | **A fixed injection / jailbreak test set in CI** (incl. framework Scenario 5, failure-matrix injection items). | ✅ CONFIRMED | Simple. New attack styles aren't covered until someone adds them (KU3). |
+| **TQ-D4** | Unit / Regression | **Cedar policy unit tests + CI checks:** every tenant table has forced RLS; every tool declares risk class, idempotency, `needs_pii` and integration type; every policy has tests. | ✅ CONFIRMED | Closes DP KK1 and SG KK5 / HL KK2 hand-offs. No cross-tenant attack suite. |
+| **TQ-D5** | Integration | **Contract tests between components:** escalation packet, typed specialist results, typed events, tool schemas, Jev question sets. | ✅ CONFIRMED | Independent changes can't silently break each other. Fakes / recordings are not contract-tested against staging (EV KU5 stays owned). |
+| **TQ-D6** | E2E | **An end-to-end test per framework scenario (8) on staging.** | ✅ CONFIRMED | Covers the documented journeys. Runs against staging, so inherits its flakiness (EV KK1). |
+| **TQ-D7** | Regression | **Migrations: code review only.** | ✅ CONFIRMED | Least effort. DP KK2 and MS-D13's checkpoint migrations have no automated check (→ KK4). |
+| **TQ-D8** | Regression | **Failed tests are retried automatically.** | ✅ CONFIRMED | Green builds. Retries can hide real race conditions (→ UU1). |
+| **TQ-D9** | Regression | **Merge gate: unit + integration + contracts + policy checks + the EV smoke subset.** | ✅ CONFIRMED | Strong merge safety. The smoke subset calls real models, so merges cost money and time (KU1). |
+| **TQ-D10** | Regression | **Load and chaos tests on staging before each release** (as RP-D12). | ✅ CONFIRMED | No production game days. |
+| **TQ-D11** | Integration | **Integration tests asserting one trace from the gateway through Temporal, Jev and SSE.** | ✅ CONFIRMED | Closes OB KK2 in tests; production fragmentation is noticed only through OB dashboards. |
+| **TQ-D12** | E2E / Integration | **Synthetic tenants, users and tickets from the evaluation personas + tokenized production samples from opted-in tenants** (EV-D10, D15) for end-to-end tests. | ✅ CONFIRMED | Realistic. Production samples in staging must be erasable (→ UU3). |
+
+### 17.7 EXPERIMENT CHECK — Step 7
+
+No fork was marked for experiment.
+
+### 17.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
+
+**Q1 — KNOWN KNOWNS (contract breaches)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KK1 | Regression | A new tenant table ships without forced RLS (DP KK1). |
+| KK2 | Regression | A tool is registered without risk class, idempotency or `needs_pii`. |
+| KK3 | Integration | A change to a shared format (packet, event, tool schema) breaks another component. |
+| KK4 | Regression | A migration breaks running code, or a stored old checkpoint no longer loads (DP KK2, MS-D13). |
+
+**Q2 — KNOWN UNKNOWNS (magnitude unknown)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KU1 | Regression | Time and model cost added to every merge by the EV smoke subset. |
+| KU2 | Agent Behavior | Whether random model-output sequences reach the rare states that matter. |
+| KU3 | Adversarial | How quickly the fixed injection set goes stale. |
+
+**Q3 — UNKNOWN KNOWNS (tacit conventions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UK1 | Adversarial | Security reviewers expect fresh attack attempts before big releases, not only last year's list. |
+
+**Q4 — UNKNOWN UNKNOWNS (emergent from combined decisions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UU1 | Regression | **Retries hide races (D8 × D2).** A property test that fails once in five runs on "one active turn" or "cancel vs. approve" passes on retry, so a real concurrency bug ships. |
+| UU2 | Unit / Integration | **Mocks drift from real models (D1).** Tests pass with scripted outputs the real model never produces, and miss shapes it does produce. |
+| UU3 | E2E | **Production samples in staging (D12 × DP-D13).** An erased user's tokenized sample stays in staging fixtures. |
+
+### 17.9 DESIGN AGAINST THE FAILURE MODES — Step 9
+
+Legend as §5.9: **FIXES** · **MITIGATES** · **WORSENS** · **OWNED RISK**.
+
+| Grid ID | Addressed by | Effect | Residual / owner |
+| :--- | :--- | :--- | :--- |
+| KK1 | **TQ-D4** CI check | **FIXES** | — |
+| KK2 | **TQ-D4** CI check | **FIXES** | — |
+| KK3 | **TQ-D5** contracts | **FIXES** | — |
+| KK4 | **TQ-D14** stored old checkpoints must load through registered migrations; SQL migrations reviewed | **MITIGATES** | SQL migrations (DP KK2). |
+| KU1 | TQ-D9 creates it | **OWNED RISK** | Cost → Comp 12; merge time → Comp 15. |
+| KU2 | TQ-D2 scripted hostile / malformed cases alongside the random ones | **MITIGATES** | — |
+| KU3 | TQ-D3 creates it | **OWNED RISK (accepted)** | — |
+| UK1 | TQ-D3 | **OWNED RISK (accepted)** | No external red team. |
+| UU1 | **TQ-D13** no retries for safety-critical tests | **FIXES** | — |
+| UU2 | Evaluation runs real models (EV-D3); TQ-D5 checks Jev question types | **MITIGATES** | Mock shapes reviewed when models change. |
+| UU3 | Rule: staging fixtures built from production samples are added to the DP-D13 erasure inventory | **MITIGATES** | Hand-off to Comp 8. |
+
+**Summary (before §17.9a):** 3 FIXES · 3 MITIGATES · 5 OWNED RISKS (2 accepted: KU3, UK1). **Two candidate new forks (below).**
+
+#### 17.9a Candidate forks resolved (user decisions, 2026-10-05)
+
+Options were checked against confirmed decisions; any that would reopen one are labelled.
+
+| ID | Grid | Question | Options |
+| :--- | :--- | :--- | :--- |
+| **TQ-F13** | UU1 | Retries for safety-critical tests | (a) Keep automatic retries everywhere · (b) no retries for invariant, property-based, policy and security tests; retries stay for the rest · (c) no retries anywhere (*reopens TQ-D8*) |
+| **TQ-F14** | KK4 | Checkpoint migrations (MS-D13) | (a) Code review only (as decided) · (b) keep review for SQL migrations, but add an automated test that stored checkpoints of every supported old version load through the registered migrations · (c) (b) + expand / contract migration tests on a copy of the production schema (*reopens TQ-D7*) |
+
+User: "F13 b, F14 b".
+
+| ID | Grid | Decision | Status | Effect on the grid / consequences |
+| :--- | :--- | :--- | :--- | :--- |
+| **TQ-D13** | UU1 | **No automatic retries for invariant, property-based, policy and security tests;** retries stay for the rest (TQ-D8). | ✅ CONFIRMED | UU1 **FIXED**: a flaky safety test fails the build and gets investigated. |
+| **TQ-D14** | KK4 | **SQL migrations: code review only; checkpoints: an automated test that stored checkpoints of every supported old version load through the registered migrations** (MS-D13). | ✅ CONFIRMED | KK4 **MITIGATED**: paused workflows are protected; SQL migrations still rely on review (DP KK2). Needs a library of stored sample checkpoints per version. |
+
+**Summary (final, after §17.9a):** 4 FIXES (KK1, KK2, KK3, UU1) · 4 MITIGATES (KK4, KU2, UU2, UU3) · 3 OWNED RISKS (KU1 merge cost / time → Comp 12 / 15; accepted: KU3 stale injection set, UK1 no external red team).
+
+#### 17.9b Jev placements in this component
+
+None decided. Jev question sets are contract-tested (TQ-D5); their accuracy is Evaluation's (EV-D9). Jev calls are mocked in tests (TQ-D1).
+
+### 17.10 DEFINITION OF DONE — Step 10 check
+
+| Criterion | Met? |
+| :--- | :--- |
+| Every sub-component has a Step-6 status | ✅ Unit D1, D4 · Integration D5, D11 · E2E D6, D12 · Agent Behavior D2 · Adversarial D3 · Regression D7, D8, D9, D10, D13, D14 (all CONFIRMED; none OPEN) |
+| Trajectory traced start to finish | ✅ Flows A–E (§17.3) |
+| Boundary explicit | ✅ §17.4 (incl. the Evaluation boundary in §17.1) |
+| Failure grid exists + Step 9 run | ✅ §17.8, §17.9, §17.9a |
+| Logged with reasoning | ✅ §17.6–17.10 + decision table rows |
+
+### 17.11 MATERIALIZE — Step 11
+
+* **Page:** `architecture.tldr` → `LLD - [13] Testing & Quality` (generator: [`generate_lld_testing.py`](./generate_lld_testing.py)). Contents: boundary with Evaluation, the invariants under test, the pipeline (pull request → merge gate → nightly → release), 6 sub-component cards, failure grid with step-9 effects after §17.9a, decision-log summary + hand-offs.
+* **Shared page-1 node:** `Testing & LLMOps (Caps 14, 15)` is shared with Deployment (Comp 15); its test line now points to this page, its deployment line stays until Comp 15 closes.
+* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) new "Foundation: TESTING & QUALITY" section and matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 testing row.
+
+**Hand-offs from this loop:** Comp 8: staging fixtures from production samples in the erasure inventory (UU3) · Comp 12: model cost of the merge gate's smoke subset (KU1) · Comp 15: merge / release verdicts, merge time (KU1), sample checkpoint library kept per release (TQ-D14).

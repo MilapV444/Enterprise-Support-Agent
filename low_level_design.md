@@ -354,18 +354,25 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 ---
 
 ### Component [ 11 ]: CONFIDENCE GATE & EVALUATION BOUNDARY
-* **Subcomponents:**
-  * Multi-Factor Confidence Scorer (Aggregates RAG citation density, LLM logprobs, and semantic entropy).
-  * Financial & Mutation Risk Evaluator. *Note: the dollar threshold is now enforced in Tools (TA-D5: per call, at/above the tenant threshold, default $1,000); this gate reads the approval flag.*
-  * Sentiment & Frustration Detector (Detects escalating user anger and routes to senior specialists).
-* **Tooling:** Custom Confidence Rule Engine / **TruLens Feedback Functions**.
+
+> **Decided design (Human-in-the-Loop, Confidence Boundaries):** [`checkpoint.md`](./checkpoint.md) §16 (HL-D1 – HL-D14) · diagram page `LLD - [12] Human-in-the-Loop`.
+
+* **Gate:** a Jev request on every draft: `Noul` "is every claim supported by the cited passages or tool results?" + `Score` relevance; agent-written evidence counts less (HL-D1).
+* **Bands (starting values, recalibrated per route by EV-D9):** send ≥ 0.90 · co-pilot 0.50–0.90 (a human edits the draft; only on routes with a staffed queue) · hand off < 0.50 (HL-D2, HL-Q1).
+* **Numbers:** any draft stating money or SLA figures goes to the co-pilot band (HL-D13).
+* **Approvals** for actions come from Tools (TA-D5); the gate reads that flag.
+* **Not used:** semantic entropy (2–4 s of extra sampling), logprob scoring.
 
 ### Component [ HITL ]: HUMAN SUPPORT SPECIALIST CONSOLE
-* **Subcomponents:**
-  * Escalation Queue Router (Routes priority tickets to available qualified specialists).
-  * Evidence & Context Presenter (Displays conversation transcript, tool logs, RAG citations, and one-click action buttons).
-  * Warm Handoff / Specialist Override Engine (Allows specialist to approve, edit, or take over conversation).
-* **Tooling:** **Retool** / **Streamlit** / **Zendesk Agent Workspace Custom App**.
+
+> **Decided design (Human-in-the-Loop):** [`checkpoint.md`](./checkpoint.md) §16.
+
+* **Escalation:** one typed packet for every source (reason code, case, summary, evidence, proposed action, diagnostic, deadline) (HL-D12) → skills-based queues (billing, technical, account; tier) with priority from Jev triage acuity and tenant tier; SLA timers: handoffs 15 min, approvals 1 h, reviews 1 business day, breaches move to a senior queue (HL-D3). Aging alerts; undecided approvals cancelled after 3 days and the user told (HL-D9).
+* **Approval:** rights by role and amount (senior at/above a tenant setting, default $5,000); the approver may not be the handler; enforced in Cedar (HL-D4). The card shows evidence + dry-run preview, and the approver confirms amount, account and target one by one (HL-D5).
+* **Handoff:** "talk to a human" (button or a Jev `Noul`) hands off immediately; the agent answers low-risk questions until a human picks up, then stops (cold handoff) (HL-D6, D7). Users see status, a wait estimate and can cancel a pending action (HL-D8).
+* **Human replies** run the same output checks as agent replies, as overridable warnings (HL-D14).
+* **Feedback:** approve / reject + reason codes (HL-D10).
+* **Tooling:** **self-hosted Retool in each region** (HL-D11).
 
 ### Component [ 12 ]: OUTPUT SAFETY GUARDRAILS
 * **Subcomponents:**
@@ -437,6 +444,19 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ---
 
+### Foundation: TESTING & QUALITY (Capability 14)
+
+> **Decided design:** [`checkpoint.md`](./checkpoint.md) §17 (TQ-D1 – TQ-D14) · diagram page `LLD - [13] Testing & Quality`. Quality *scoring* is Evaluation's (§12); this is pass / fail correctness.
+
+* **Unit:** model and Jev calls always mocked (TQ-D1); Cedar policy unit tests (TQ-D4).
+* **Agent behaviour:** deterministic tests of FSM transitions, guards, step caps, approval tiers, one active turn, budgets and fallbacks with scripted (incl. malformed / hostile) model outputs, plus property-based tests of the safety invariants (TQ-D2).
+* **Integration:** contract tests for shared formats (escalation packet, typed results, events, tool schemas, Jev question sets) (TQ-D5); one-trace-end-to-end tests across Temporal, Jev and SSE (TQ-D11).
+* **CI checks:** every tenant table has forced RLS; every tool declares risk class, idempotency, `needs_pii`, integration type; every policy has tests (TQ-D4).
+* **E2E:** one test per framework scenario (8) on staging, with synthetic persona data + tokenized opted-in production samples (TQ-D6, D12).
+* **Adversarial:** a fixed injection / jailbreak set in CI (TQ-D3).
+* **Regression:** merge gate = unit + integration + contracts + policy checks + EV smoke subset (TQ-D9); retries allowed except for invariant / property / policy / security tests (TQ-D8, D13); SQL migrations by review, checkpoint migrations tested against stored old versions (TQ-D7, D14); load + chaos on staging before each release (TQ-D10).
+* **Tooling:** pytest + Hypothesis (property tests) · Cedar test tooling · Pact-style contract tests.
+
 ## 6. Comprehensive Component-to-Tooling Mapping Matrix
 
 | Architecture Component | Primary Subcomponents | Recommended Frameworks & Tools | Key Trade-off / Decision |
@@ -452,10 +472,11 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 | **[ 8 ] Model Runtime** | Inference Provider, Structured Decoding | LiteLLM, vLLM, OpenAI / Anthropic APIs | Hosted commercial frontier models vs self-hosted open-weights on vLLM |
 | **[ 9 ] Tools & APIs** | Registry, Schemas, Invocation, Validation, Errors + Audit | Python + Pydantic v2, Temporal activities + sagas, Jev | Tiered approval ($1,000 default) with a Jev gate that only tightens (TA-D5, D6) |
 | **[ 10 ] Multi-Agent** | Specialists, Delegation, Communication, Coordination | LangGraph subgraphs, Pydantic contracts, Jev | Coordinator + specialists (low-risk writes direct, rest via coordinator), one voice (MA-D1, D9, D12) |
-| **[ 11 ] Confidence** | Metric Scorer, Risk Boundary, Escalation Gate | Custom Rule Engine, TruLens Feedback Functions | High automation rate vs conservative human escalation overhead |
-| **[ HITL ] Specialist** | Escalation Queue, Evidence UI, Override Console | Retool, Streamlit, Zendesk Custom Apps | Specialist review latency vs immediate unverified AI autonomy |
+| **[ 11 ] Confidence** | Jev Draft Gate, Bands, Numbers Rule | Jev | Send ≥ 0.90 · co-pilot 0.50–0.90 · hand off; money / SLA drafts reviewed (HL-D1, D2, D13) |
+| **[ HITL ] Specialist** | Packet, Queues + SLAs, Approval Cards, Handoff, Feedback | Retool (self-hosted per region), Temporal signals, Cedar | Field-by-field approval; cold handoff (HL-D5, D6) |
 | **[ 12 ] Output Safety** | Leakage Filter, URL Sanitizer, Promise Check | Rules + Comp [4] classifiers | Fast checks, no tone check; grounding lives in Comp 13 (SG-D6, D15) |
 | **[ 13 ] Delivery** | SSE Streamer, State Sync, Two-Phase Commit | FastAPI StreamingResponse, Redis Pub/Sub, Kafka | Chunk-by-chunk streaming UX vs whole-response atomic guardrail check |
 | **[ 14 ] User Client** | UI Render, Markdown, Micro-Feedback | React SDK, Web Components | Interactive action widgets vs static text responses |
 | **Platform: Obs** | Traces, Logs, Metrics, Tokens, Failures | OpenTelemetry, Jaeger + OpenSearch, Jev | Tail sampling + 7-day retention; costs estimated from kept traces (OB-D4, D5, D13) |
 | **Platform: Eval** | Datasets, Component + Risk-Tier Suites, Judge, Shadow / Canary | Ragas, DeepEval, Promptfoo, Langfuse | Assertions + cross-family LLM judge; zero risk-tier violations gate releases (EV-D2, D5) |
+| **Platform: Testing** | Unit, Agent Behaviour, Contracts, E2E, Adversarial, Regression | pytest + Hypothesis, Cedar tests, contract tests | Mocked models; property tests of invariants; no retries for safety tests (TQ-D1, D2, D13) |
