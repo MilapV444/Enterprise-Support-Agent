@@ -1,7 +1,7 @@
 # Enterprise Support Agent: Architectural Decision Checkpoint
 
-> **Status:** ✅ ACTIVE & CHECKPOINTED (Component [ 5 ] Finalized)  
-> **Component Under Review:** Component [ 5 ] — Agent Orchestration Core & Runtime  
+> **Status:** ✅ ACTIVE & CHECKPOINTED — Orchestration (ADP-01 – ADP-05) + all 15 component loops CLOSED (2026-10-06)  
+> **Component Under Review:** none (design loops complete; open items are the owned risks reviewed quarterly, CI-D9)  
 > **Genesis Readiness:** READY FOR SCAFFOLDING (Initial Specifications Checkpointed)  
 > **Reference Master Report:** [`Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md`](<./Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md>)  
 > **Visual Whiteboard Canvas:** [`architecture.tldr`](./architecture.tldr) (Page 2: `LLD - Agent Orchestration & Planning Core`)  
@@ -17,7 +17,9 @@
 > &nbsp;&nbsp;&nbsp;&nbsp;[10/15] Reliability / Performance / Scale — ✅ CLOSED (page `LLD - [10] Reliability / Performance / Scale`; page-1 node [3] trimmed to pointer)  
 > &nbsp;&nbsp;&nbsp;&nbsp;[11/15] Cost & Resource Management — ✅ CLOSED (page `LLD - [11] Cost & Resource Management`; page-1 node [Cap 12] trimmed to pointer)  
 > &nbsp;&nbsp;&nbsp;&nbsp;[12/15] Human-in-the-Loop — ✅ CLOSED (page `LLD - [12] Human-in-the-Loop`; page-1 nodes [11], [HITL] trimmed to pointers)  
-> &nbsp;&nbsp;&nbsp;&nbsp;[13/15] Testing & Quality — ✅ CLOSED (page `LLD - [13] Testing & Quality`; page-1 node `Testing & LLMOps` updated)
+> &nbsp;&nbsp;&nbsp;&nbsp;[13/15] Testing & Quality — ✅ CLOSED (page `LLD - [13] Testing & Quality`; page-1 node `Testing & LLMOps` updated)  
+> &nbsp;&nbsp;&nbsp;&nbsp;[14/15] Deployment & LLMOps — ✅ CLOSED (page `LLD - [14] Deployment & LLMOps`; page-1 node `Testing & LLMOps` points to [13] and [14])  
+> &nbsp;&nbsp;&nbsp;&nbsp;[15/15] Continuous Improvement — ✅ CLOSED (page `LLD - [15] Continuous Improvement`; page-1 node trimmed to pointer)
 
 ---
 
@@ -343,9 +345,33 @@ Below are the finalized **Architectural Decisions** established for Component [ 
 | **TQ-D9** | Testing & Quality | Merge gate | **Unit + integration + contracts + policy + EV smoke** |  | 2026-10-05 | ✅ CONFIRMED |
 | **TQ-D10** | Testing & Quality | Load / chaos | **Staging before each release** | As RP-D12. | 2026-10-05 | ✅ CONFIRMED |
 | **TQ-D11** | Testing & Quality | Trace context | **Integration tests for one trace end to end** | Closes OB KK2 in tests. | 2026-10-05 | ✅ CONFIRMED |
-| **TQ-D12** | Testing & Quality | Test data | **Synthetic personas + tokenized opted-in production samples** | Fixtures in erasure inventory. | 2026-10-05 | ✅ CONFIRMED |
+| **TQ-D12** | Testing & Quality | Test data | **Synthetic personas + tokenized opted-in production samples** | Fixtures in erasure inventory; EU samples excluded (DL-D12). | 2026-10-05 | ✅ CONFIRMED |
 | **TQ-D13** | Testing & Quality | Safety-test retries | **No retries for invariant / property / policy / security tests** | UU1 fixed. | 2026-10-05 | ✅ CONFIRMED |
 | **TQ-D14** | Testing & Quality | Checkpoint migrations | **Automated test: old stored checkpoints load via migrations** | KK4 mitigated. | 2026-10-05 | ✅ CONFIRMED |
+| **DL-D1** | Deployment & LLMOps | Environments | **Dev + one US staging + production per region** | EU samples → UU2. | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D2** | Deployment & LLMOps | Behaviour versioning | **Ship with code; CI path rule holds behaviour merges for the scheduled gated release** | DL-Q3 (i). | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D3** | Deployment & LLMOps | Model versions | **Latest aliases for LLM tiers; embedding model + Jev pinned** | DL-Q1 (ii). | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D4** | Deployment & LLMOps | Rollout | **Code all at once; behaviour / model releases shadow → canary → all** | DL-Q2 (i). | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D5** | Deployment & LLMOps | Rollback | **Manual** |  | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D6** | Deployment & LLMOps | In-flight workflows | **Continue-As-New at release boundaries** | Drain signals first (UU3). | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D7** | Deployment & LLMOps | Secrets | **Secrets manager per region, scheduled rotation** |  | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D8** | Deployment & LLMOps | Token key | **In each region's secrets manager; no rotation** | UU5 accepted. | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D9** | Deployment & LLMOps | Infrastructure | **Kubernetes per region + IaC** |  | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D10** | Deployment & LLMOps | Cadence | **Code continuous; behaviour + model changes scheduled through the gate** | DL-Q3 (i). | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D11** | Deployment & LLMOps | Re-index | **In place, in a maintenance window** |  | 2026-10-06 | ✅ CONFIRMED |
+| **DL-D12** | Deployment & LLMOps | Staging samples | **Only US tenants' samples in US staging** | UU2 fixed; amends TQ-D12 for EU. | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D1** | Continuous Improvement | Feedback | **Thumbs + reason codes + implicit signals + post-resolution survey** |  | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D2** | Continuous Improvement | Taxonomy | **Hierarchical, mapped to components, versioned; monthly new-category review** | Owner of OB-D11 taxonomy. | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D3** | Continuous Improvement | Reviews | **Weekly by volume × severity + postmortems for safety / financial incidents** |  | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D4** | Continuous Improvement | Levers | **Prompts, Jev questions, thresholds, tools, KB, few-shot + per-region fine-tuning of the self-hosted model** | CI-Q1 (ii) same opt-in, new terms; CI-Q2 (i) per region. | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D5** | Continuous Improvement | Few-shot | **Curated per route, tokenized, excluded from tests** | Closes EV KK4. | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D6** | Continuous Improvement | Articles | **Agent drafts, human reviews and publishes** |  | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D7** | Continuous Improvement | Failures → tests | **Every reviewed failure → test before fix; clustered** |  | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D8** | Continuous Improvement | Validation | **Gate + before / after on cluster + read-only A/B** |  | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D9** | Continuous Improvement | Evolution | **Monthly distribution check + quarterly owned-risk review** |  | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D10** | Continuous Improvement | Approval | **Normal code review** | UK2 accepted. | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D11** | Continuous Improvement | Free-text feedback | **Jev Choice category + Score severity** | Jev use 7. | 2026-10-06 | ✅ CONFIRMED |
+| **CI-D12** | Continuous Improvement | Erasure vs. weights | **Quarterly retraining without erased users' data** | UU1 mitigated. | 2026-10-06 | ✅ CONFIRMED |
 | **UA-Q2** | User & Application | Deferred delivery | **Inbox only (no email notification in v1)** | Accepted risk: users who never return miss outcomes. | 2026-09-23 | ✅ CONFIRMED |
 | **UA-Q3** | User & Application | Idle-timer activity | **Any authenticated request incl. open SSE** | Open tab keeps session to the 12 h cap; accepted (KK3/UK5/UU5). | 2026-09-23 | ✅ CONFIRMED |
 | **UA-D5** | User & Application | Session scoping | **Resolved by MS-D1: session → conversation → case** | Conversation outlives the session; several conversations can link to one case. | 2026-09-26 | ✅ CONFIRMED |
@@ -3610,3 +3636,437 @@ None decided. Jev question sets are contract-tested (TQ-D5); their accuracy is E
 * **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) new "Foundation: TESTING & QUALITY" section and matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 testing row.
 
 **Hand-offs from this loop:** Comp 8: staging fixtures from production samples in the erasure inventory (UU3) · Comp 12: model cost of the merge gate's smoke subset (KU1) · Comp 15: merge / release verdicts, merge time (KU1), sample checkpoint library kept per release (TQ-D14).
+
+---
+
+## 18. Component Loop [14/15] — Deployment & LLMOps
+
+> **Loop status:** ✅ CLOSED (2026-10-06) · Steps 1–11 complete · Page-1 `Testing & LLMOps` node now points to [13] and [14]  
+> **Decision ID prefix:** `DL-` (forks `DL-F#`, decisions `DL-D#`)  
+> **Architecture mapping:** thoughts.md Component 15 ≈ page-1 foundation node `Testing & LLMOps` (deployment half; the testing half is Comp 14 §17)
+
+### 18.1 GROUND — Raw Material (not decisions)
+
+**Already decided upstream (inputs, not reopened):**
+* **DP-D12 / MA-D10:** platform definitions live in code (tool registry, specialists, Cedar policies, prompts, Jev questions); tenant settings live in the database. Every behaviour change ships as a release.
+* **DP-D10:** US + EU regional deployments; every store runs per region. **HL-D11:** Retool per region. **RP-D4 / CR-D9:** self-hosted open-weights model per region (GPU serving). **RP-D9 / D10:** autoscaling, pre-warmed minimum, multi-AZ.
+* **ADP-02:** Temporal workflows can run for days (approvals up to 3 days, HL-D9; holds up to 24 h, RP-D7), so **workflow code changes while executions are in flight** (Temporal replays history deterministically). **MS-D13 / TQ-D14:** versioned LangGraph checkpoints with migrations; a sample library of old checkpoints per release.
+* **EV-D5 / D6 / D7 / D12 / D13:** release gate (component thresholds, risk-tier pass^k, cost / latency, live metrics, ≤ 10 % cost rise CR-D12); smoke per commit, full nightly and before release; shadow mode (writes recorded only) + canary / A/B on read-only routes; live evidence counts only for routes it covered. **TQ-D9:** merge gate. **EV-D9:** thresholds recalibrated each release.
+* **OB-D7 / D8:** internal SLOs with burn-rate alerts.
+* **KR KK5:** embedding model version is stamped on the index; a model change needs a re-index. **ADP-05:** Jev is a hosted API with a key (`TYPESAFE_API_KEY`) and a model version (e.g. `jev-1.13`).
+* **DP-Q2 residual:** the shared token key (global deterministic tokens, SG-D5) is one secret used in every region; custody and rotation were handed here.
+
+**Hand-offs waiting here:**
+
+| From | Item |
+| :--- | :--- |
+| TQ | Merge / release verdicts; merge time (KU1); checkpoint sample library kept per release (TQ-D14) |
+| EV-D7, D12, D13 | How shadow and canary actually run in production |
+| DP-Q2 | Custody and rotation of the shared token key |
+| KR KK5 | Embedding-model changes and re-indexing |
+| ADP-02, MS-D13 | Deploying while workflows and checkpoints are in flight |
+
+**From existing docs:** `low_level_design.md` foundation "Testing & LLMOps": model registry, blue / green. Page-1 node: "Model Registry · Blue/Green".
+
+**From general engineering practice:**
+* Environments: dev / staging / production; ephemeral preview environments per pull request.
+* **Temporal versioning:** the patching API (`patched` / `getVersion`) keeps replay deterministic; **worker versioning** keeps old executions on old workers until they finish; Continue-As-New moves long executions onto new code.
+* Progressive delivery: canary by traffic share, automated analysis and rollback (Argo Rollouts, Flagger); feature flags to switch behaviour off without a redeploy.
+* LLMOps: pin exact model versions (provider snapshots, weights hashes); prompts and evaluation sets versioned together; providers retire model versions on a schedule.
+* Secrets: cloud secrets managers with rotation; short-lived dynamic credentials (HashiCorp Vault); keys that never leave a KMS / HSM (HMAC computed inside the KMS).
+* **Rotating a deterministic-token key changes every token**, so search and joins over tokens break unless everything is re-tokenized.
+* Blue / green indexes: build the new index beside the old one and switch atomically.
+
+**Jev reference uses** (standing rule): no natural fit. Jev's model version is pinned and upgraded like any model (DL-F3); its outage fallback is RP-D5.
+
+### 18.2 DECOMPOSE
+
+| Sub-component | Mechanic (what it does) |
+| :--- | :--- |
+| **Environments** | Which environments exist, per region, and what data they hold. |
+| **CI/CD** | Pipeline from merge to production; release cadence; infrastructure as code. |
+| **Versioning** | Versions of code, prompts, Jev questions, policies, models, indexes, workflows and checkpoints, and how they move together. |
+| **Configuration / Secrets** | Platform configuration, API keys, database credentials, the shared token key; storage and rotation. |
+| **Deployment / Rollback** | Rollout strategy per region, health checks, rollback, deploying around in-flight workflows. |
+
+### 18.3 TRACE THE TRAJECTORY
+
+**Flow A — A new triage question wording + new thresholds ship**
+1. Merged (TQ-D9) → packaged (**DL-F2**) → release cadence (**DL-F10**) → EV-D5 gate.
+2. Rollout: shadow, then canary on read-only routes (EV-D7) (**DL-F4**); health from internal SLOs (OB-D7) and live signals; rollback if needed (**DL-F5**).
+
+**Flow B — A Temporal workflow change while Sarah's $12,400 approval is pending** (**DL-F6**; MS-D13 checkpoints)
+
+**Flow C — The LLM provider announces retirement of the pinned model; Jev ships jev-1.14** (**DL-F3**)
+
+**Flow D — The embedding model changes** (**DL-F11**)
+
+**Flow E — Secrets:** a database password and the shared token key (**DL-F7**, **DL-F8**)
+
+**Flow F — Environments and infrastructure** (**DL-F1**, **DL-F9**)
+
+### 18.4 BOUNDARY
+
+| | |
+| :--- | :--- |
+| **Receives (upstream)** | Merge and release verdicts (Comp 13 / 9) · infrastructure needs from every component · SLO health (Comp 10). |
+| **Hands off (downstream)** | Running releases per region · rollback events → Observability (10) · release records (what version is live where) → Data (8) audit · secrets to services. |
+| **Does NOT own** | **What the release gate requires** (EV-D5) · **tests** (Comp 13) · **alerting** (Comp 10) · **capacity targets** (Comp 11) · **tenant settings content** (tenants, DP-D12). |
+
+### 18.5 SURFACE THE FORKS (undecided; awaiting user)
+
+Each option was checked against confirmed decisions; options that would reopen one are labelled.
+
+| Fork | Sub-component | Tension | Options | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **DL-F1** | Environments | Fidelity vs. cost | Environments: (a) dev + staging + production, each per region (US, EU) · (b) dev + one staging (US) + production per region · (c) (a) + short-lived preview environments per pull request | ✅ → DL-D1 |
+| **DL-F2** | Versioning | One release vs. faster behaviour changes | How prompts, Jev questions, thresholds and policies ship: (a) with the code, in one release version · (b) as a separately versioned "behaviour bundle" in the same repository, released on its own through the same EV-D5 gate · (c) in a runtime prompt registry editable without a release (*reopens DP-D12*) | ✅ → DL-D2 |
+| **DL-F3** | Versioning | Stability vs. upkeep | Model versions (LLM tiers, self-hosted weights, embedding model, Jev): (a) pin exact versions; upgrades go through the release gate · (b) use providers' "latest" aliases · (c) (a) + an automatic upgrade pull request when a provider releases or announces a retirement | ✅ → DL-D3 |
+| **DL-F4** | Deployment / Rollback | Speed vs. blast radius | Rollout: (a) all at once per region · (b) shadow, then canary on a traffic share of read-only routes (EV-D7), then full · (c) (b) + regions one after the other: US first, EU after a soak period | ✅ → DL-D4 |
+| **DL-F5** | Deployment / Rollback | Effort vs. recovery speed | Rollback: (a) redeploy the previous version by hand · (b) automatic rollback when internal SLO burn rate or live signals breach during the canary · (c) (b) + feature flags to switch a new behaviour off without redeploying | ✅ → DL-D5 |
+| **DL-F6** | Versioning | Correctness of in-flight work vs. effort | Workflows running across a deploy: (a) Temporal's patching API in workflow code; old executions replay old branches · (b) Temporal worker versioning: old executions finish on old workers (drained within the 3-day approval limit) · (c) Continue-As-New at release boundaries moves long executions onto the new code | ✅ → DL-D6 |
+| **DL-F7** | Configuration / Secrets | Simplicity vs. exposure | Secrets: (a) environment variables injected by CI · (b) a cloud secrets manager per region with scheduled rotation; services read at start-up · (c) (b) + short-lived dynamic credentials for databases and internal APIs | ✅ → DL-D7 |
+| **DL-F8** | Configuration / Secrets | Exposure vs. token stability (DP-Q2) | Shared token key: (a) stored in each region's secrets manager · (b) held in KMS / HSM and never exported; tokenization is computed inside the KMS · (c) (b) + scheduled rotation, which re-tokenizes everything stored (vault, indexes, logs) each time | ✅ → DL-D8 |
+| **DL-F9** | CI/CD | Control vs. operations load | Infrastructure: (a) Kubernetes per region (Helm) with infrastructure as code · (b) managed containers (e.g. ECS Fargate / Cloud Run) + infrastructure as code · (c) Kubernetes only for GPU serving of the self-hosted model, managed containers for everything else | ✅ → DL-D9 |
+| **DL-F10** | CI/CD | Speed vs. risk | Release cadence: (a) deploy on every merge, behind flags (each merge must pass the EV-D5 gate) · (b) scheduled releases (e.g. weekly) through the full gate · (c) code continuously; behaviour bundles and model changes on a schedule through the full gate | ✅ → DL-D10 |
+| **DL-F11** | Versioning | Downtime vs. storage | Embedding model / index changes (KR KK5): (a) re-index in place during a maintenance window · (b) build the new index beside the old one and switch atomically; keep the old for rollback · (c) (b) + evaluate both indexes on the golden set before switching | ✅ → DL-D11 |
+
+### 18.6 RESOLVE — Step 6 (user decisions, 2026-10-06)
+
+User: "F1 b, F2 a, F3 b, F4 a, F5 a, F6 c, F7 b, F8 a, F9 a, F10 c, F11 a".
+
+| ID | Sub-component | Decision | Status | Reasoning / consequences captured |
+| :--- | :--- | :--- | :--- | :--- |
+| **DL-D1** | Environments | **Dev + one staging (US) + production per region (US, EU).** | ✅ CONFIRMED | Cheaper. EU-specific problems surface only in production (KU2). EU tenants' production samples can't go to US staging without moving data out of region (→ UU2). |
+| **DL-D2** | Versioning | **Prompts, Jev questions, thresholds and policies ship with the code, in one release version.** | ✅ CONFIRMED | Simple; one version tells you everything that ran. **Conflicts with DL-D10's split cadence (DL-Q3).** |
+| **DL-D3** | Versioning | **Providers' "latest" model aliases** (no exact pinning). | ✅ CONFIRMED | No upkeep. **Conflicts with KR KK5** (embedding version stamped on the index), **EV-D9** (Jev thresholds calibrated per release) and **CR-D12 / EV-D5** (behaviour and cost changes must pass the gate) → DL-Q1. |
+| **DL-D4** | Deployment / Rollback | **All at once per region.** | ✅ CONFIRMED | Fast. A bad release reaches every tenant in the region (KK1). **How EV-D7's shadow / canary fit: open (DL-Q2).** |
+| **DL-D5** | Deployment / Rollback | **Manual rollback** (redeploy the previous version). | ✅ CONFIRMED | Simple. Recovery speed depends on on-call noticing (OB-D8 alerts). |
+| **DL-D6** | Versioning | **Continue-As-New at release boundaries** moves long-running workflows onto the new code. | ✅ CONFIRMED | Fast cut-over, no old workers. *Consequences:* every workflow must be written to continue-as-new safely, with its LangGraph checkpoint migrated (MS-D13) and pending signals handled first (→ UU3). |
+| **DL-D7** | Configuration / Secrets | **A cloud secrets manager per region, with scheduled rotation;** services read secrets at start-up. | ✅ CONFIRMED | Includes the Jev API key and provider keys. Rotation needs a restart or reload. |
+| **DL-D8** | Configuration / Secrets | **The shared token key is stored in each region's secrets manager.** | ✅ CONFIRMED | Simple. *Logged consequence:* the key exists in two places, and anyone holding it can compute tokens for guessed values (emails, names) and re-identify tokens in any region; no rotation is planned (rotating would change every token) (→ UU5, accepted). |
+| **DL-D9** | CI/CD | **Kubernetes per region (Helm) with infrastructure as code.** | ✅ CONFIRMED | One platform for services and GPU serving (RP-D4 / CR-D9). |
+| **DL-D10** | CI/CD | **Code deploys continuously; behaviour changes and model changes ship on a schedule through the full gate** (EV-D5). | ✅ CONFIRMED | Fast fixes, gated behaviour. **Needs a rule for separating the two, given DL-D2 (DL-Q3).** |
+| **DL-D11** | Versioning | **Embedding model / index changes: re-index in place during a maintenance window.** | ✅ CONFIRMED | Simple. Retrieval is degraded during the window (KU1). Depends on the embedding model not changing by itself (DL-Q1). |
+
+**Follow-up questions raised by combining decisions (asked 2026-10-06, awaiting user):**
+* **DL-Q1** (D3 × KR KK5 × EV-D9 × CR-D12): with "latest" aliases, a provider can change the embedding model (index vectors no longer match queries), Jev's model (thresholds no longer calibrated) or an LLM (behaviour and cost change without the gate). (i) Accept for all models · (ii) "latest" for the three LLM tiers only; **pin the embedding model and Jev's version**, since the index and the thresholds depend on them · (iii) pin every model (*reopens DL-D3*).
+* **DL-Q2** (D4 × EV-D7 / D12 / D13): EV decided shadow + canary on read-only routes before approving changes. (i) Code rolls out all at once; behaviour and model releases (DL-D10's scheduled ones) go through shadow → canary first, then all at once · (ii) all at once for everything; EV-D7's shadow / canary run only as separate experiments, not as a release step (*weakens EV-D13: high-risk changes needed a shadow comparison*) · (iii) other.
+* **DL-Q3** (D2 × D10): behaviour ships with the code, but behaviour changes are meant to be scheduled. (i) A path rule in CI: a merge that touches prompts, Jev questions, thresholds, policies or model config is held for the next scheduled gated release; other merges deploy at once · (ii) everything deploys continuously, and every merge runs the full EV-D5 gate · (iii) everything ships on the schedule.
+
+**Follow-up answers (user, 2026-10-06; "a" / "b" read as options (i) / (ii)):**
+* **DL-Q1 → (ii)** **"Latest" aliases for the three LLM tiers only; the embedding model and Jev's version are pinned** (the index and the per-route thresholds depend on them). *Residual:* LLM tiers can still change behaviour and cost between releases without the gate; caught only by live sampling (EV-D8) and exact cost tracking (CR-D11).
+* **DL-Q2 → (i)** **Code rolls out all at once; scheduled behaviour and model releases go through shadow → canary on read-only routes → all at once** (EV-D7, D12, D13 kept as a release step).
+* **DL-Q3 → (i)** **A path rule in CI:** a merge touching prompts, Jev questions, thresholds, policies or model config is held for the next scheduled release through the full gate; other merges deploy at once.
+
+Resulting status changes: DL-D2, D3, D4, D10 → **✅ CONFIRMED**.
+
+### 18.7 EXPERIMENT CHECK — Step 7
+
+No fork was marked for experiment.
+
+### 18.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
+
+**Q1 — KNOWN KNOWNS (contract breaches)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KK1 | Deployment / Rollback | A bad release reaches every tenant of a region at once and stays until someone rolls it back by hand. |
+| KK2 | Configuration / Secrets | A leaked or stale secret (provider key, Jev key, database password). |
+| KK3 | Versioning | A workflow change breaks in-flight executions (Temporal replay non-determinism). |
+
+**Q2 — KNOWN UNKNOWNS (magnitude unknown)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KU1 | Versioning | Length and impact of in-place re-index windows. |
+| KU2 | Environments | Problems that only appear in the EU region, first seen in production. |
+
+**Q3 — UNKNOWN KNOWNS (tacit conventions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UK1 | Versioning | Enterprise customers expect notice before the assistant's behaviour changes; a provider's "latest" alias changes it silently. |
+
+**Q4 — UNKNOWN UNKNOWNS (emergent from combined decisions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UU1 | Versioning | **Silent model changes (D3 × KR KK5 × EV-D9).** Depends on DL-Q1. |
+| UU2 | Environments | **EU samples in US staging (D1 × TQ-D12 × DP-D10).** Tokenized samples are still pseudonymous personal data; copying EU tenants' samples to US staging moves data out of region. |
+| UU3 | Versioning | **Signals during Continue-As-New (D6 × HL).** An approval or cancel signal arriving while a workflow continues-as-new could be dropped. |
+| UU4 | CI/CD | **Ungated behaviour (D2 × D10).** Depends on DL-Q3. |
+| UU5 | Configuration / Secrets | **Token key exposure (D8 × SG-D5).** One stolen key re-identifies tokens in every region. |
+
+### 18.9 DESIGN AGAINST THE FAILURE MODES — Step 9
+
+Legend as §5.9: **FIXES** · **MITIGATES** · **WORSENS** · **OWNED RISK**.
+
+| Grid ID | Addressed by | Effect | Residual / owner |
+| :--- | :--- | :--- | :--- |
+| KK1 | **DL-Q2 (i)** behaviour / model releases go through shadow + canary; OB-D8 alerts · code still all at once, manual rollback (DL-D5) | **MITIGATES** | A code bug reaches the whole region until rolled back. |
+| KK2 | **DL-D7** scheduled rotation | **MITIGATES** | — |
+| KK3 | **DL-D6** Continue-As-New + MS-D13 migrations, tested by TQ-D14 | **MITIGATES** | Every workflow must support it. |
+| KU1 | DL-D11 creates it | **OWNED RISK** | — |
+| KU2 | DL-D1 creates it | **OWNED RISK (accepted)** | — |
+| UK1 | DL-Q1 (ii) pins the embedding model and Jev; LLM tiers stay on "latest" | **OWNED RISK (accepted)** | Change notices → Comp 1. |
+| UU1 | **DL-Q1 (ii)** embedding + Jev pinned; LLM drift caught by EV-D8 and CR-D11 | **MITIGATES** | LLM behaviour / cost drift between releases. |
+| UU2 | **DL-D12** only US samples in US staging | **FIXES** | — |
+| UU3 | Rule: before continuing-as-new, a workflow drains and handles all pending signals (Temporal's documented pattern) | **MITIGATES** | Tested by TQ-D2. |
+| UU4 | **DL-Q3 (i)** CI path rule holds behaviour changes for the gated release | **FIXES** | — |
+| UU5 | DL-D8 creates it | **OWNED RISK (accepted)** | — |
+
+**Summary (before §18.9a):** 0 FIXES · 3 MITIGATES · 8 OWNED RISKS (2 accepted: KU2, UU5). **One candidate new fork (below).**
+
+#### 18.9a Candidate forks resolved (user decisions, 2026-10-06)
+
+Options were checked against confirmed decisions; any that would reopen one are labelled.
+
+| ID | Grid | Question | Options |
+| :--- | :--- | :--- | :--- |
+| **DL-F12** | UU2 | Production samples in the single US staging | (a) Only US tenants' opted-in samples go to staging; EU tenants' samples are not used for E2E tests · (b) add a small EU staging used only for EU samples (*partly reopens DL-D1*) · (c) copy EU samples to US staging (*conflicts with DP-D10 residency*) |
+
+User: "F12 a".
+
+| ID | Grid | Decision | Status | Effect on the grid / consequences |
+| :--- | :--- | :--- | :--- | :--- |
+| **DL-D12** | UU2 | **Only US tenants' opted-in samples go to the US staging; EU tenants' samples are not used for end-to-end tests.** | ✅ CONFIRMED | UU2 **FIXED** (no EU data leaves the EU). Amends TQ-D12 for EU tenants. EU-specific behaviour gets less pre-production coverage (KU2). |
+
+**Summary (final, after §18.9a):** 2 FIXES (UU2, UU4) · 5 MITIGATES (KK1, KK2, KK3, UU1, UU3) · 4 OWNED RISKS (KU1 re-index windows; accepted: KU2 EU issues seen first in production, UK1 LLM tiers change without notice, UU5 token key exposure).
+
+#### 18.9b Jev placements in this component
+
+None. Jev's model version follows DL-Q1; its API key is a rotated secret (DL-D7); its outage fallback is RP-D5.
+
+### 18.10 DEFINITION OF DONE — Step 10 check
+
+| Criterion | Met? |
+| :--- | :--- |
+| Every sub-component has a Step-6 status | ✅ Environments D1, D12 · CI/CD D9, D10 · Versioning D2, D3, D6, D11 · Configuration / Secrets D7, D8 · Deployment / Rollback D4, D5 (all CONFIRMED; none OPEN) |
+| Trajectory traced start to finish | ✅ Flows A–F (§18.3) |
+| Boundary explicit | ✅ §18.4 |
+| Failure grid exists + Step 9 run | ✅ §18.8, §18.9, §18.9a |
+| Logged with reasoning | ✅ §18.6–18.10 + decision table rows |
+
+### 18.11 MATERIALIZE — Step 11
+
+* **Page:** `architecture.tldr` → `LLD - [14] Deployment & LLMOps` (generator: [`generate_lld_deployment.py`](./generate_lld_deployment.py)). Contents: environments, the two release tracks (code vs. behaviour / models), versioning, secrets, in-flight workflows, failure grid with step-9 effects after §18.9a, decision-log summary.
+* **Shared page-1 node:** `Testing & LLMOps (Caps 14, 15)` now points to both [13] and [14].
+* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) new "Foundation: DEPLOYMENT & LLMOPS" section and matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 testing / LLMOps row.
+
+**Hand-offs from this loop:** Comp 1: change notices to tenants when behaviour releases ship (UK1) · Comp 9: shadow / canary evidence for scheduled releases (DL-Q2), recalibration when Jev's pinned version is upgraded · Comp 10: deploy and rollback events on dashboards · Comp 11: on-call runbook for manual rollback (DL-D5) · Comp 13: test that every workflow continues-as-new safely and drains signals first (UU3).
+
+---
+
+## 19. Component Loop [15/15] — Continuous Improvement
+
+> **Loop status:** ✅ CLOSED (2026-10-06) · Steps 1–11 complete · Page-1 `Continuous Improve` node trimmed to pointer  
+> **Decision ID prefix:** `CI-` (forks `CI-F#`, decisions `CI-D#`)  
+> **Architecture mapping:** thoughts.md Component 16 ≈ page-1 foundation node `Continuous Improve (Cap 16)`
+
+### 19.1 GROUND — Raw Material (not decisions)
+
+**Already decided upstream (inputs, not reopened):**
+* **Signals:** live implicit signals + sampled judge scoring (EV-D8) · specialist approve / reject + reason codes (HL-D10) · failure categories by rules, then a Jev `Choice` (OB-D11) · retrieval gap signals (KR-D11: low rerank scores, judge context precision, re-asks, thumbs) · resolved episodes from Memory (MS boundary) · cost and tier mix (CR-D11) · live CSAT / FCR / CES feeding the next release (EV-D5).
+* **Data rules:** production conversations used for evaluation only from opted-in tenants, tokenized, regional, erasable (EV-D10, D15); EU samples not in US staging (DL-D12).
+* **Shipping rules:** prompts, Jev questions, thresholds, policies and model config ship in the scheduled, gated release with shadow + canary (DL-D2, D10, DL-Q2, DL-Q3); thresholds recalibrated each release (EV-D9); cost may rise ≤ 10 % per release (CR-D12).
+* **Knowledge loop (KR Flow C):** content gaps → articles; new articles are **internal by default** and need an explicit override to become customer-visible (KR-D13); agent-written text is labelled (KR-D16).
+* **Model rules:** LLM tiers on "latest", embedding model and Jev pinned (DL-D3); self-hosted open-weights tier per region (RP-D4, CR-D9).
+
+**Hand-offs waiting here:**
+
+| From | Item |
+| :--- | :--- |
+| OB-D11 | **Owner of the failure taxonomy** |
+| EV KK4 | A conversation used as a few-shot example must be excluded from test sets |
+| EV Flow C | A failure becomes a new test episode |
+| KR Flow C | Content-gap reports → articles |
+| HL-D10 | Reason codes as the main human signal |
+
+**From the master report / existing docs:** KCS (Knowledge-Centered Service): solve → capture → reuse; contact-centre QA scorecards and calibration; page-1 node "User Feedback · Failure Triage · Prompt & Few-Shot Evolution"; lifecycle example: Sarah's thumbs-up is tagged with `BUG-8192` to improve Billing few-shot examples.
+
+**From general engineering practice:**
+* Data flywheels: production failures → labelled cases → fixes → regression tests.
+* Error analysis by category (volume × severity) beats chasing individual complaints.
+* Blameless postmortems for incidents (Google SRE).
+* Few-shot examples from production help, but leak into evaluation if not separated (contamination).
+* Fine-tuning on customer conversations needs explicit permission for that use and a retraining / evaluation pipeline.
+* Distribution drift: intents and personas change after launches; the evaluation sampling should follow (the framework's assumed → observed distribution calibration).
+
+**Jev reference uses** (standing rule): **7 bulk labelling** (classify free-text feedback into the failure taxonomy; severity) · already in place: OB-D11 failure categories.
+
+### 19.2 DECOMPOSE
+
+| Sub-component | Mechanic (what it does) |
+| :--- | :--- |
+| **Production Feedback** | Collecting explicit and implicit signals per conversation and turning them into labelled records. |
+| **Failure Analysis** | Taxonomy, categorization, prioritization, reviews, postmortems. |
+| **Experimentation** | Trying a fix: offline on the failure cluster, then through EV-D7 shadow / canary. |
+| **Improvement** | The levers: prompts, Jev questions, thresholds, tool descriptions, KB articles, few-shot examples, models. |
+| **Validation** | Proving a fix helped and broke nothing: gate, before / after, regression tests. |
+| **Evolution** | Long-term: user-distribution drift, owned-risk reviews, architecture revisits. |
+
+### 19.3 TRACE THE TRAJECTORY
+
+**Flow A — Sarah's thumbs-up, and someone else's thumbs-down with "you told me to contact billing again"**
+1. Signals collected (**CI-F1**); free-text classified (**CI-F11**) into the taxonomy (**CI-F2**).
+
+**Flow B — The weekly review finds "redirect to another team" rising** (**CI-F3**)
+1. A fix: the Jev redirect question (MA-D13) gets new wording (**CI-F4**), approved (**CI-F10**).
+2. A test is added (**CI-F7**); validated (**CI-F8**); shipped in the scheduled release.
+
+**Flow C — Retrieval misses for a new product feature** → article drafted and published (**CI-F6**).
+
+**Flow D — Few-shot examples from good conversations** (**CI-F5**).
+
+**Flow E — Quarterly: the users have changed** (**CI-F9**).
+
+### 19.4 BOUNDARY
+
+| | |
+| :--- | :--- |
+| **Receives (upstream)** | Feedback and implicit signals (Comp 1, 10) · reason codes (13) · failure categories (10) · quality reports (9) · gap signals (3) · cost reports (12). |
+| **Hands off (downstream)** | Fixes as pull requests (→ 13 tests, 15 releases) · new test episodes (→ 9) · article drafts (→ 3, human review) · taxonomy (→ 10) · risk-review notes (→ checkpoint.md). |
+| **Does NOT own** | **Measuring quality** (9) · **telemetry** (10) · **releasing** (15) · **storing and indexing knowledge** (3) · **approving actions** (13). |
+
+### 19.5 SURFACE THE FORKS (undecided; awaiting user)
+
+Each option was checked against confirmed decisions; options that would reopen one are labelled.
+
+| Fork | Sub-component | Tension | Options | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **CI-F1** | Production Feedback | Signal volume vs. user burden | Signals: (a) thumbs + specialist reason codes · (b) (a) + implicit signals: re-asks, escalations, abandonment, cases reopened within a set number of days · (c) (b) + a one-question survey (CSAT / CES) after resolution | ✅ → CI-D1 |
+| **CI-F2** | Failure Analysis | Simplicity vs. actionability | Failure taxonomy: (a) a flat list owned by one team · (b) hierarchical, mapped to components (triage, retrieval, tools, delegation, safety, gate…) and to failure-matrix quadrants, versioned in code · (c) (b) + monthly review of unclassified failures to propose new categories | ✅ → CI-D2 |
+| **CI-F3** | Failure Analysis | Effort vs. responsiveness | Review cadence: (a) ad hoc · (b) weekly review of top categories by volume × severity, each given an owner · (c) (b) + a blameless postmortem for every safety or financial incident | ✅ → CI-D3 |
+| **CI-F4** | Improvement | Reach vs. risk | Allowed levers: (a) prompts and Jev questions only · (b) prompts, Jev questions, thresholds, tool descriptions, KB articles, few-shot examples · (c) (b) + fine-tuning the self-hosted model on curated conversations (*needs consent for training, beyond EV-D15's evaluation opt-in*) | ✅ → CI-D4 |
+| **CI-F5** | Improvement | Quality vs. contamination and context cost | Few-shot examples: (a) none; instructions only · (b) curated examples per route from good conversations, tokenized, excluded from test sets (EV KK4) · (c) (b) + chosen per turn by similarity (uses ADP-03 context budget) | ✅ → CI-D5 |
+| **CI-F6** | Improvement | Speed vs. accuracy of public content | Content gaps → articles: (a) gap reports to KB owners, who write articles · (b) the agent drafts an article from resolved cases (internal by default, KR-D13); a human reviews and publishes · (c) (b) + low-risk FAQ articles published automatically (*reopens KR-D13: public needs an explicit human override*) | ✅ → CI-D6 |
+| **CI-F7** | Validation | Coverage vs. effort | Failures → tests: (a) when someone remembers · (b) every reviewed failure becomes a test (EV episode or TQ test) before its fix ships · (c) (b) + failures clustered, one test per cluster | ✅ → CI-D7 |
+| **CI-F8** | Validation | Speed vs. evidence | Proving a fix: (a) the release gate only (EV-D5) · (b) gate + a before / after comparison on the failure cluster that motivated it · (c) (b) + an A/B on read-only routes for measurable outcomes (EV-D7) | ✅ → CI-D8 |
+| **CI-F9** | Evolution | Effort vs. staying current | Long-term: (a) nothing scheduled · (b) monthly comparison of observed vs. assumed user distribution; evaluation sampling updated (framework calibration) · (c) (b) + a quarterly review of all owned risks in checkpoint.md | ✅ → CI-D9 |
+| **CI-F10** | Improvement | Speed vs. control | Who approves behaviour changes: (a) normal code review · (b) a reviewer from the owning component + support operations · (c) (b) + an extra sign-off for safety or financial behaviours | ✅ → CI-D10 |
+| **CI-F11** | Production Feedback | Effort vs. coverage | Free-text feedback (thumbs-down comments, reason notes): (a) read manually · (b) a Jev `Choice` into the taxonomy (use 7), with a manual check on a sample · (c) (b) + a Jev `Score` of severity to rank them (use 7) | ✅ → CI-D11 |
+
+### 19.6 RESOLVE — Step 6 (user decisions, 2026-10-06)
+
+User: "F1 c, F2 c, F3 c, F4 c, F5 b, F6 b, F7 c, F8 c, F9 c, F10 a, F11 c".
+
+| ID | Sub-component | Decision | Status | Reasoning / consequences captured |
+| :--- | :--- | :--- | :--- | :--- |
+| **CI-D1** | Production Feedback | **Thumbs + specialist reason codes + implicit signals** (re-asks, escalations, abandonment, cases reopened within a set number of days) **+ a one-question survey (CSAT / CES) after resolution**, shown in the chat UI (no email, UA-Q2). | ✅ CONFIRMED | Rich signal. Survey response rates are low and biased toward strong opinions (KU1). Feeds EV-D5's live criteria. |
+| **CI-D2** | Failure Analysis | **Hierarchical failure taxonomy** mapped to components and failure-matrix quadrants, **versioned in code; owned here; monthly review of unclassified failures** to propose new categories. | ✅ CONFIRMED | Closes the OB-D11 hand-off (taxonomy owner). Changes to it ship like other code (DL-D2). |
+| **CI-D3** | Failure Analysis | **Weekly review of top categories by volume × severity, each with an owner + a blameless postmortem for every safety or financial incident.** | ✅ CONFIRMED | — |
+| **CI-D4** | Improvement | **Levers: prompts, Jev questions, thresholds, tool descriptions, KB articles, few-shot examples + fine-tuning the self-hosted model on curated conversations.** | ✅ CONFIRMED | Widest reach. **Training needs consent beyond EV-D15 (CI-Q1) and a residency rule (CI-Q2); erasure vs. trained weights → UU1.** Training only on curated, tokenized conversations (SG-D4). Fine-tuned weights pass the EV-D5 gate before replacing the self-hosted tier (DL-D10 model track). |
+| **CI-D5** | Improvement | **Curated few-shot examples per route** from good conversations, tokenized; **excluded from every test set.** | ✅ CONFIRMED | Closes EV KK4 (contamination). |
+| **CI-D6** | Improvement | **The agent drafts an article from resolved cases (internal by default, KR-D13); a human reviews and publishes it.** | ✅ CONFIRMED | Closes the KR Flow C loop. Agent drafts could carry agent errors into the KB (UK1); human review is the check. |
+| **CI-D7** | Validation | **Every reviewed failure becomes a test** (EV episode or TQ test) **before its fix ships; failures are clustered so one test covers a cluster.** | ✅ CONFIRMED | Closes the EV Flow C hand-off. |
+| **CI-D8** | Validation | **Release gate + a before / after comparison on the motivating failure cluster + an A/B on read-only routes** for measurable outcomes (EV-D7). | ✅ CONFIRMED | — |
+| **CI-D9** | Evolution | **Monthly observed-vs.-assumed user distribution comparison** (framework calibration; evaluation sampling updated) **+ a quarterly review of all owned risks in checkpoint.md.** | ✅ CONFIRMED | Keeps the design current; the owned-risk lists from §5 – §19 become a living backlog. |
+| **CI-D10** | Improvement | **Behaviour changes approved by normal code review.** | ✅ CONFIRMED | Fast. Safety-critical behaviour still passes the gated, canaried release (DL-Q3, DL-Q2), but without a dedicated reviewer (UK2, accepted). |
+| **CI-D11** | Production Feedback | **Free-text feedback classified by a Jev `Choice` into the taxonomy and ranked by a Jev `Score` of severity** (use 7), with a manual check on a sample. Input PII-masked (ADP-05-Q3). | ✅ CONFIRMED | Scales feedback triage. Accuracy measured by EV-D9 (KU2). |
+
+**Follow-up questions raised by combining decisions (asked 2026-10-06, awaiting user):**
+* **CI-Q1** (D4 × EV-D15): consent for training on conversations. (i) A separate per-tenant opt-in for training (tenant setting, DP-D12) · (ii) the same opt-in as evaluation, with updated terms · (iii) no customer conversations: train only on synthetic and public-KB data.
+* **CI-Q2** (D4 × DP-D10): where training happens. (i) Per region, on that region's opted-in data, giving a US model and an EU model · (ii) once, on US data only, with the weights deployed to both regions (EU data never used) · (iii) other.
+
+**Follow-up answers (user, 2026-10-06):**
+* **CI-Q1 → (ii)** Training uses **the same per-tenant opt-in as evaluation (EV-D15), with updated terms** that name training. *Logged consequence:* tenants who opted in under the old terms are not covered until they accept the new ones; their data stays out of training until then.
+* **CI-Q2 → (i)** **Training happens per region on that region's opted-in data**, giving a fine-tuned US model and a fine-tuned EU model. Each must pass its own routes' EV baseline before replacing the base self-hosted model (§19.7).
+
+Resulting status change: CI-D4 → **✅ CONFIRMED**.
+
+### 19.7 EXPERIMENT CHECK — Step 7
+
+Fine-tuning (CI-D4) is the natural experiment: a fine-tuned self-hosted model must beat the base model on its routes' EV baseline before replacing it.
+
+### 19.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
+
+**Q1 — KNOWN KNOWNS (contract breaches)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KK1 | Improvement | A few-shot example is also a test case (EV KK4). |
+| KK2 | Validation | A fix ships without a test, and the failure comes back. |
+
+**Q2 — KNOWN UNKNOWNS (magnitude unknown)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| KU1 | Production Feedback | Survey response rate and bias. |
+| KU2 | Production Feedback | Accuracy of Jev's categories and severity on free text. |
+| KU3 | Improvement | Fine-tuning gains vs. GPU and pipeline cost. |
+
+**Q3 — UNKNOWN KNOWNS (tacit conventions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UK1 | Improvement | Agent-drafted articles carry the agent's own mistakes into the KB (KR UU5 again). |
+| UK2 | Improvement | Safety and finance teams expect to sign off on changes to safety or money behaviour; normal code review doesn't guarantee that. |
+
+**Q4 — UNKNOWN UNKNOWNS (emergent from combined decisions)**
+| ID | Sub-comp | Failure |
+| :--- | :--- | :--- |
+| UU1 | Improvement | **Trained weights vs. erasure (D4 × MS-D14 × DP-D13).** An erased user's conversations stay encoded in fine-tuned weights; erasure can't reach them. |
+| UU2 | Improvement | **Training across regions (D4 × DP-D10).** Depends on CI-Q2. |
+| UU3 | Improvement | **Self-reinforcing training (D4 × D5).** Training on the agent's own "good" replies reinforces its style and its blind spots. |
+
+### 19.9 DESIGN AGAINST THE FAILURE MODES — Step 9
+
+Legend as §5.9: **FIXES** · **MITIGATES** · **WORSENS** · **OWNED RISK**.
+
+| Grid ID | Addressed by | Effect | Residual / owner |
+| :--- | :--- | :--- | :--- |
+| KK1 | **CI-D5** examples excluded from tests | **FIXES** | — |
+| KK2 | **CI-D7** test before the fix ships | **FIXES** | — |
+| KU1 | CI-D1 implicit signals alongside the survey | **MITIGATES** | — |
+| KU2 | EV-D9 measures Jev; manual sample check (CI-D11) | **MITIGATES** | — |
+| KU3 | CI-D4 creates it | **OWNED RISK** | Cost → Comp 12; experiment in §19.7. |
+| UK1 | **CI-D6** human review before publishing; KR-D16 labels agent text | **MITIGATES** | — |
+| UK2 | CI-D10 creates it; DL-Q3 gated release + EV-D5 gate still apply | **OWNED RISK (accepted)** | — |
+| UU1 | **CI-D12** quarterly retraining without erased users' data; tokenized training text | **MITIGATES** | Up to a quarter in live weights. |
+| UU2 | **CI-Q2 (i)** per-region training on per-region data | **FIXES** | — |
+| UU3 | Rule: training data = conversations with a positive human or outcome signal (approved, edited by a specialist, resolved without reopening), not just the agent's own output | **MITIGATES** | — |
+
+**Summary (before §19.9a):** 2 FIXES · 4 MITIGATES · 4 OWNED RISKS (1 accepted: UK2). **One candidate new fork (below).**
+
+#### 19.9a Candidate forks resolved (user decisions, 2026-10-06)
+
+Options were checked against confirmed decisions; any that would reopen one are labelled.
+
+| ID | Grid | Question | Options |
+| :--- | :--- | :--- | :--- |
+| **CI-F12** | UU1 | Erasure vs. fine-tuned weights | (a) Retrain on a schedule (e.g. quarterly) without erased users' data; older weights are retired · (b) train only on tokenized text (SG-D5), so weights hold tokens, not direct identifiers; no retraining for erasure · (c) (a) + (b) |
+
+User: "F12 a".
+
+| ID | Grid | Decision | Status | Effect on the grid / consequences |
+| :--- | :--- | :--- | :--- | :--- |
+| **CI-D12** | UU1 | **Retrain quarterly without erased users' data; older weights are retired.** | ✅ CONFIRMED | UU1 **MITIGATED**: an erased user's data can remain in live weights for up to a quarter. Training text is already tokenized (CI-D4, SG-D4), so the weights hold tokens rather than direct identifiers, though option (b)'s "no retraining" was not chosen. |
+
+**Summary (final, after §19.9a):** 3 FIXES (KK1, KK2, UU2) · 5 MITIGATES (KU1, KU2, UK1, UU1, UU3) · 2 OWNED RISKS (KU3 fine-tuning cost → Comp 12; accepted: UK2 no dedicated sign-off for safety / financial behaviour changes).
+
+#### 19.9b Jev placements in this component
+
+| Where | Jev question | Use # | Decision |
+| :--- | :--- | :--- | :--- |
+| Free-text feedback | `Choice` into the taxonomy + `Score` severity | 7 | CI-D11 |
+| Failed conversations | `Choice` failure category (already decided) | 7 | OB-D11 |
+
+### 19.10 DEFINITION OF DONE — Step 10 check
+
+| Criterion | Met? |
+| :--- | :--- |
+| Every sub-component has a Step-6 status | ✅ Production Feedback D1, D11 · Failure Analysis D2, D3 · Experimentation D8 · Improvement D4, D5, D6, D10, D12 · Validation D7, D8 · Evolution D9 (all CONFIRMED; none OPEN) |
+| Trajectory traced start to finish | ✅ Flows A–E (§19.3) |
+| Boundary explicit | ✅ §19.4 |
+| Failure grid exists + Step 9 run | ✅ §19.8, §19.9, §19.9a |
+| Logged with reasoning | ✅ §19.6–19.10 + decision table rows |
+
+### 19.11 MATERIALIZE — Step 11
+
+* **Page:** `architecture.tldr` → `LLD - [15] Continuous Improvement` (generator: [`generate_lld_improvement.py`](./generate_lld_improvement.py)). Contents: the improvement loop (signals → analysis → fix → test → validate → ship), levers, fine-tuning track, evolution reviews, failure grid with step-9 effects after §19.9a, decision-log summary.
+* **Shallower duplicates:** page-1 foundation node `Continuous Improve (Cap 16)` **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) new "Foundation: CONTINUOUS IMPROVEMENT" section and matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 improvement row.
+
+**Hand-offs from this loop:** Comp 1: post-resolution survey in the chat UI; updated terms for training consent (CI-Q1) · Comp 8: training datasets per region in the erasure inventory (CI-D12) · Comp 9: baselines for fine-tuned models; before / after comparisons per cluster · Comp 10: implicit signals (reopened cases, abandonment) · Comp 12: fine-tuning GPU cost (KU3) · Comp 15: fine-tuned weights ship on the model track (DL-D10).
+
+---
+
+## 20. Design Loop Completion (2026-10-06)
+
+All 15 component loops in thoughts.md order are **closed**, on top of the Orchestration decisions (ADP-01 – ADP-05). Every component has: grounding, decomposition, traced flows, an explicit boundary, resolved forks, a Known / Unknown failure grid with step-9 effects, a definition-of-done check and an LLD page in [`architecture.tldr`](./architecture.tldr).
+
+**Living items (reviewed quarterly per CI-D9):** the owned and accepted risks listed in each loop's §x.9 summary, and the hand-offs whose execution belongs to operations (staffing, contracts, runbooks).

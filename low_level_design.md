@@ -430,7 +430,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Foundation: EVALUATION & LLMOPS (Capabilities 9, 14, 15, 16)
 
-> **Decided design (Evaluation & Experimentation):** [`checkpoint.md`](./checkpoint.md) §12 (EV-D1 – EV-D15) · diagram page `LLD - [8] Evaluation & Experimentation`. Testing (14), Continuous Improvement (16) not yet designed.
+> **Decided design (Evaluation & Experimentation):** [`checkpoint.md`](./checkpoint.md) §12 (EV-D1 – EV-D15) · diagram page `LLD - [8] Evaluation & Experimentation`. Testing, Deployment and Continuous Improvement have their own sections below.
 
 * **Datasets:** synthetic Interaction Episodes from [`user_evaluation_framework.md`](./user_evaluation_framework.md) + hand-written seeds + curated production conversations, PII-tokenized, regional, erasable, only from tenants who opt in (EV-D1, D10, D15).
 * **Suites:** per-component suites (triage, retrieval, memory, tools, delegation, screening, reply checks) + an end-to-end suite for the **risk tier only** (EV-D3, EV-Q1).
@@ -457,6 +457,28 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 * **Regression:** merge gate = unit + integration + contracts + policy checks + EV smoke subset (TQ-D9); retries allowed except for invariant / property / policy / security tests (TQ-D8, D13); SQL migrations by review, checkpoint migrations tested against stored old versions (TQ-D7, D14); load + chaos on staging before each release (TQ-D10).
 * **Tooling:** pytest + Hypothesis (property tests) · Cedar test tooling · Pact-style contract tests.
 
+### Foundation: DEPLOYMENT & LLMOPS (Capability 15)
+
+> **Decided design:** [`checkpoint.md`](./checkpoint.md) §18 (DL-D1 – DL-D12) · diagram page `LLD - [14] Deployment & LLMOps`.
+
+* **Environments:** dev + one staging (US) + production per region (US, EU); only US tenants' samples in staging (DL-D1, D12).
+* **Two release tracks:** code deploys on merge, all at once per region; merges touching prompts, Jev questions, thresholds, policies or model config are held by a CI path rule for a scheduled release that passes the full EV-D5 gate and rolls out shadow → canary on read-only routes → all (DL-D2, D4, D10).
+* **Models:** "latest" aliases for the three LLM tiers; the embedding model and Jev's version are pinned (DL-D3). Embedding changes re-index in place in a maintenance window (DL-D11).
+* **In-flight workflows:** Continue-As-New at release boundaries, after draining pending signals; LangGraph checkpoints migrated (MS-D13) (DL-D6).
+* **Rollback:** manual redeploy of the previous version (DL-D5).
+* **Secrets:** a cloud secrets manager per region with scheduled rotation; the shared token key stored in each region's secrets manager, not rotated (DL-D7, D8).
+* **Infrastructure:** Kubernetes per region (Helm) with infrastructure as code, incl. GPU serving for the self-hosted tier (DL-D9).
+
+### Foundation: CONTINUOUS IMPROVEMENT (Capability 16)
+
+> **Decided design:** [`checkpoint.md`](./checkpoint.md) §19 (CI-D1 – CI-D12) · diagram page `LLD - [15] Continuous Improvement`.
+
+* **Signals:** thumbs, specialist reason codes, implicit signals (re-asks, escalations, abandonment, reopened cases), a one-question survey after resolution (CI-D1); free text classified and ranked by Jev (`Choice` category, `Score` severity) (CI-D11).
+* **Analysis:** a hierarchical failure taxonomy mapped to components, versioned in code, reviewed monthly for new categories (CI-D2); weekly reviews by volume × severity and blameless postmortems for safety or financial incidents (CI-D3).
+* **Levers:** prompts, Jev questions, thresholds, tool descriptions, KB articles (agent drafts, human publishes), curated few-shot examples excluded from tests, and per-region fine-tuning of the self-hosted model on opted-in, tokenized, positively-signalled conversations (CI-D4, D5, D6, CI-Q1, Q2).
+* **Validation:** every reviewed failure becomes a test before its fix ships (clustered); release gate + before / after on the cluster + read-only A/B (CI-D7, D8). Changes approved by normal code review (CI-D10).
+* **Evolution:** monthly user-distribution check; quarterly review of all owned risks; quarterly retraining without erased users' data (CI-D9, D12).
+
 ## 6. Comprehensive Component-to-Tooling Mapping Matrix
 
 | Architecture Component | Primary Subcomponents | Recommended Frameworks & Tools | Key Trade-off / Decision |
@@ -480,3 +502,5 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 | **Platform: Obs** | Traces, Logs, Metrics, Tokens, Failures | OpenTelemetry, Jaeger + OpenSearch, Jev | Tail sampling + 7-day retention; costs estimated from kept traces (OB-D4, D5, D13) |
 | **Platform: Eval** | Datasets, Component + Risk-Tier Suites, Judge, Shadow / Canary | Ragas, DeepEval, Promptfoo, Langfuse | Assertions + cross-family LLM judge; zero risk-tier violations gate releases (EV-D2, D5) |
 | **Platform: Testing** | Unit, Agent Behaviour, Contracts, E2E, Adversarial, Regression | pytest + Hypothesis, Cedar tests, contract tests | Mocked models; property tests of invariants; no retries for safety tests (TQ-D1, D2, D13) |
+| **Platform: Deployment** | Environments, Release Tracks, Versioning, Secrets, Rollback | Kubernetes + Helm, IaC, secrets manager, Temporal Continue-As-New | Code continuous, behaviour gated + canaried; LLMs on latest, embedding + Jev pinned (DL-D3, D10) |
+| **Platform: Improvement** | Feedback, Taxonomy, Levers, Validation, Evolution | Jev (feedback triage), EV suites, per-region fine-tuning | Every failure → test; fine-tune per region, retrain quarterly (CI-D4, D7, D12) |

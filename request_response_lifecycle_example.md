@@ -3,7 +3,7 @@
 > **Companion Document:** [`architecture.md`](./architecture.md)  
 > **Visual Diagram Canvas:** [`architecture.tldr`](./architecture.tldr)  
 > **Source Capabilities:** [`thoughts.md`](./thoughts.md)  
-> **Decisions reflected:** [`checkpoint.md`](./checkpoint.md) through component 13/15 (UA, KR, MS, TA, MA, SG, DP, EV, OB, RP, CR, HL, TQ, ADP). Components not yet designed (Confidence Gate, HITL, Delivery) are shown as originally sketched.  
+> **Decisions reflected:** [`checkpoint.md`](./checkpoint.md) through component 15/15 (UA, KR, MS, TA, MA, SG, DP, EV, OB, RP, CR, HL, TQ, DL, CI, ADP). Components not yet designed (Confidence Gate, HITL, Delivery) are shown as originally sketched.  
 
 ---
 
@@ -323,8 +323,8 @@ While the request moved through Tiers 1–3, the Foundation layer captured telem
 | **`Data & Persistence`** | Cap 8 | Everything stays in Acme's region (DP-D10). Stored the conversation transcript and LangGraph checkpoints in PostgreSQL under row-level security, the ledger blob by reference in object storage, and the append-only audit record for `#CM-4109` (Sarah's personal fields encrypted with her own data key, wrapped by Acme's KMS key). Long-term facts are extracted later, when the case resolves (MS-D5). |
 | **`Observability & Tracing`** | Cap 9 | One OpenTelemetry trace for the turn (Jev answers + confidence on the spans), PII-scrubbed by the collector and **kept in full** because it contains an escalation (tail sampling). Stored in Acme's regional Jaeger for 7 days. Total execution latency = 1,420 ms (LLM & Tools) + 34 s (Specialist HITL review). Total tokens: 3,140 ($0.042 cost). |
 | **`Evaluation & Benchmarks`** | Cap 10 | Acme has opted in (EV-D15), so this conversation is a candidate production sample: PII-tokenized, kept in Acme's region, and erasable. It may be scored by the sampled LLM judge (EV-D8) and curated as a risk-tier end-to-end episode (financial write with approval). |
-| **`Continuous Improve`** | Cap 16 | Sarah clicks **[ 👍 Yes ]**. Feedback is tagged with `BUG-8192` to enhance few-shot prompt examples for the Billing Sub-Agent. |
-| **`Testing & LLMOps`** | Caps 14, 15 | The rules this turn relied on are covered by property-based invariant tests with mocked model outputs (TQ-D2): no financial write at/above the threshold without approval, approver ≠ handler, success reported only after read-back, one active turn. These run without retries (TQ-D13). Scenario 3 has its own E2E test on staging (TQ-D6). |
+| **`Continuous Improve`** | Cap 16 | Sarah clicks **[ 👍 Yes ]** and answers the one-question survey (CI-D1). Because Acme opted in and Alex approved the outcome, the conversation is eligible (tokenized) as a curated Billing few-shot example, kept out of test sets (CI-D5), and for the next quarterly EU fine-tuning run (CI-D4, CI-Q2). |
+| **`Testing & LLMOps`** | Caps 14, 15 | The rules this turn relied on are covered by property-based invariant tests with mocked model outputs (TQ-D2): no financial write at/above the threshold without approval, approver ≠ handler, success reported only after read-back, one active turn. These run without retries (TQ-D13). Scenario 3 has its own E2E test on staging (TQ-D6). The triage wording and thresholds this turn used shipped in last week's scheduled behaviour release, which passed the gate and a canary on read-only routes (DL-D10, DL-Q2). If a release lands while the $12,400 approval waits, the workflow drains its signals and continues-as-new on the new code (DL-D6). |
 
 ---
 
