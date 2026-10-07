@@ -342,13 +342,13 @@ def build():
 
     # 3D: Human Specialist (Col 5)
     R.append(box("shape:n_hitl",
-                 "[ HITL ] Human Support Specialist\nEscalation Review · Warm Handoff\nSpecialist Override Console",
+                 "[ HITL ] Human Support Specialist\nQueues · approval cards · cold handoff\n→ see LLD - [12] Human-in-the-Loop",
                  COL5, T3_NODE_Y, NW, NH, "red", "semi", idx))
     reg("n_hitl", COL5, T3_NODE_Y)
 
     # 3C: Confidence Gate (Col 4)
     R.append(box("shape:n_confidence",
-                 "[ 11 ] Confidence Gate & Eval\nScore Threshold (Auto / HITL)\nRisk & Sentiment Boundary",
+                 "[ 11 ] Confidence Gate & Eval\nJev draft gate · 3 bands\n→ see LLD - [12] Human-in-the-Loop",
                  COL4, T3_NODE_Y, NW, NH, "red", "semi", idx))
     reg("n_confidence", COL4, T3_NODE_Y)
 
@@ -412,11 +412,11 @@ def build():
 
     # 5 Cards aligned exactly under the 5 columns:
     found_cards = [
-        ("n_qa_ops",  "Testing & LLMOps (Caps 14, 15)\nUnit & E2E Suites · CI/CD\nModel Registry · Blue/Green", COL1),
+        ("n_qa_ops",  "Testing & LLMOps (Caps 14, 15)\nTests → see LLD - [13] Testing & Quality\nDeploy → see LLD - [14] Deployment & LLMOps", COL1),
         ("n_data",    "Data & Persistence (Cap 8)\nPostgres + Qdrant · US / EU regions\n→ see LLD - [7] Data & Persistence",    COL2),
         ("n_eval",    "Evaluation & Benchmarks (Cap 10)\nComponent + risk-tier suites · LLM judge\n→ see LLD - [8] Evaluation & Experimentation", COL3),
         ("n_obs",     "Observability & Tracing (Cap 9)\nOTel · Jaeger + OpenSearch · 7 days\n→ see LLD - [9] Observability & Monitoring",COL4),
-        ("n_ci",      "Continuous Improve (Cap 16)\nUser Feedback · Failure Triage\nPrompt & Few-Shot Evolution",COL5),
+        ("n_ci",      "Continuous Improve (Cap 16)\nFeedback → test → fix → fine-tune\n→ see LLD - [15] Continuous Improvement",COL5),
     ]
 
     for nid, label, col_x in found_cards:

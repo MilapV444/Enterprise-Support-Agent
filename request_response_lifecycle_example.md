@@ -3,7 +3,7 @@
 > **Companion Document:** [`architecture.md`](./architecture.md)  
 > **Visual Diagram Canvas:** [`architecture.tldr`](./architecture.tldr)  
 > **Source Capabilities:** [`thoughts.md`](./thoughts.md)  
-> **Decisions reflected:** [`checkpoint.md`](./checkpoint.md) through component 11/15 (UA, KR, MS, TA, MA, SG, DP, EV, OB, RP, CR, ADP). Components not yet designed (Confidence Gate, HITL, Delivery) are shown as originally sketched.  
+> **Decisions reflected:** [`checkpoint.md`](./checkpoint.md) through component 15/15 (UA, KR, MS, TA, MA, SG, DP, EV, OB, RP, CR, HL, TQ, DL, CI, ADP). Components not yet designed (Confidence Gate, HITL, Delivery) are shown as originally sketched.  
 
 ---
 
@@ -260,9 +260,10 @@
 
 #### `[ 11 ] Confidence Gate & Eval`
 * **Action:**
-  * Evaluates factual groundedness score: `0.96` (High confidence).
-  * Reads the approval flag set by Tools: the `$12,400.00` credit memo is at/above Acme's threshold (TA-D5), so it is already pending human approval.
-  * **Decision:** Route the pending action to **[HITL] Human Support Specialist Console**; the technical explanation can be sent now with the credit shown as "awaiting approval".
+  * Jev gate on the draft (HL-D1): claims supported by BUG-8192, the monitoring event and the invoice line → `0.96`; relevance high.
+  * The draft states a money figure ($12,400), so it goes to the **co-pilot band** for a human check regardless of the score (HL-D13).
+  * Reads the approval flag set by Tools: the `$12,400.00` credit memo is at/above Acme's threshold (TA-D5), so it is pending human approval; $12,400 is also above the senior amount (default $5,000, HL-D4).
+  * **Decision:** one escalation packet (HL-D12) to the **billing senior queue** (SLA 1 h, HL-D3). Sarah sees status, a wait estimate and a "cancel" option (HL-D8).
 
 #### `[ HITL ] Human Support Specialist (Escalation Review)`
 * **Action:**
@@ -278,7 +279,7 @@
        - AWS CloudWatch failover event at 2026-09-08 22:14:02 UTC
        - ERP Line Item: NET-DATA-INGRESS ($12,400.00)
      ```
-  2. Senior Support Specialist *Alex* validates the log correlation and the dry-run preview, and clicks **[Approve $12,400 Credit Memo]**.
+  2. Senior Support Specialist *Alex* (not the conversation's handler) validates the log correlation and the dry-run preview, confirms amount, account and target one by one (HL-D5), checks the draft's figures (co-pilot), and clicks **[Approve $12,400 Credit Memo]**.
   3. **On approval (Temporal signal):** the wait was under 1 h, so no re-fetch is needed (MS-D18). Tools runs `apply_credit_memo` with idempotency key `checkpoint_id + tool_call_id`, checkpoints after the call, and **reads back** the credit memo (`CM-4109`) before anyone tells Sarah it is done (MS-D9, TA-D10, MA-D14). Audit record includes before/after invoice state (TA-D12).
 
 #### `[ 12 ] Output Safety Guardrails`
@@ -322,8 +323,8 @@ While the request moved through Tiers 1–3, the Foundation layer captured telem
 | **`Data & Persistence`** | Cap 8 | Everything stays in Acme's region (DP-D10). Stored the conversation transcript and LangGraph checkpoints in PostgreSQL under row-level security, the ledger blob by reference in object storage, and the append-only audit record for `#CM-4109` (Sarah's personal fields encrypted with her own data key, wrapped by Acme's KMS key). Long-term facts are extracted later, when the case resolves (MS-D5). |
 | **`Observability & Tracing`** | Cap 9 | One OpenTelemetry trace for the turn (Jev answers + confidence on the spans), PII-scrubbed by the collector and **kept in full** because it contains an escalation (tail sampling). Stored in Acme's regional Jaeger for 7 days. Total execution latency = 1,420 ms (LLM & Tools) + 34 s (Specialist HITL review). Total tokens: 3,140 ($0.042 cost). |
 | **`Evaluation & Benchmarks`** | Cap 10 | Acme has opted in (EV-D15), so this conversation is a candidate production sample: PII-tokenized, kept in Acme's region, and erasable. It may be scored by the sampled LLM judge (EV-D8) and curated as a risk-tier end-to-end episode (financial write with approval). |
-| **`Continuous Improve`** | Cap 16 | Sarah clicks **[ 👍 Yes ]**. Feedback is tagged with `BUG-8192` to enhance few-shot prompt examples for the Billing Sub-Agent. |
-| **`Testing & LLMOps`** | Caps 14, 15 | Added test case to the CI/CD regression suite verifying that financial writes at/above the tenant threshold (default $1,000) always block on HITL approval, and that success is only reported after read-back. |
+| **`Continuous Improve`** | Cap 16 | Sarah clicks **[ 👍 Yes ]** and answers the one-question survey (CI-D1). Because Acme opted in and Alex approved the outcome, the conversation is eligible (tokenized) as a curated Billing few-shot example, kept out of test sets (CI-D5), and for the next quarterly EU fine-tuning run (CI-D4, CI-Q2). |
+| **`Testing & LLMOps`** | Caps 14, 15 | The rules this turn relied on are covered by property-based invariant tests with mocked model outputs (TQ-D2): no financial write at/above the threshold without approval, approver ≠ handler, success reported only after read-back, one active turn. These run without retries (TQ-D13). Scenario 3 has its own E2E test on staging (TQ-D6). The triage wording and thresholds this turn used shipped in last week's scheduled behaviour release, which passed the gate and a canary on read-only routes (DL-D10, DL-Q2). If a release lands while the $12,400 approval waits, the workflow drains its signals and continues-as-new on the new code (DL-D6). |
 
 ---
 
