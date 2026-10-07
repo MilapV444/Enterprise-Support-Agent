@@ -8,7 +8,7 @@ failure grid with step-9 effects, and a decision-log summary.
 Only the page `page:lld_user_app` is replaced; every other page is left untouched.
 """
 
-from lld_layout import PageBuilder, est_h, write_page
+from lld_layout import PageBuilder, add_adp_section, est_h, write_page
 
 PID = "page:lld_user_app"
 TOTAL_W = 2600
@@ -183,6 +183,10 @@ def build_records():
     ], "green", x0=START_X + 20, width=TOTAL_W - 40, gap=GAP)
     pb.frame_behind("declog", "DECISION LOG SUMMARY (checkpoint.md §5.6 – §5.10)",
                     START_X, dl_y, TOTAL_W, hd + 60, "green")
+
+
+    # ── Architectural Decision Points (from the checkpoint.md decision log) ──
+    add_adp_section(pb, "UA", START_X, TOTAL_W)
 
     return pb.records("LLD - [1] User & Application", "a3")
 

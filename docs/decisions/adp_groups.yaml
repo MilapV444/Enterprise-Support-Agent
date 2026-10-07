@@ -1,0 +1,513 @@
+# Architectural Decision Points (ADPs): grouping of the decision log into ~5 ADPs per component.
+#
+# Each ADP is one architectural concern = one detailed design document.
+# `members` lists the decision-log IDs (docs/decisions/checkpoint.md §3) that the ADP covers;
+# every logged decision belongs to exactly one ADP (checked by scripts/adp_registry.py).
+# `related` lists ADPs in other components that the document must reference.
+# Orchestration's ADP-01 – ADP-05 are unchanged (each is its own member).
+
+ADP:
+  - id: ADP-01
+    title: Planning paradigm
+    question: How does the agent plan and act — fixed workflows, open-ended reasoning, or both?
+    decision: Hybrid dual-process statechart — deterministic LangGraph FSM for SOPs + scoped ReAct for diagnostics.
+    members: [ADP-01]
+    related: [MA-ADP-01, TA-ADP-01]
+  - id: ADP-02
+    title: Workflow durability
+    question: How do multi-day workflows survive crashes, waits and human approvals?
+    decision: Temporal outer saga for durability, timers and approvals + LangGraph inner cognitive loop.
+    members: [ADP-02]
+    related: [MS-ADP-04, TA-ADP-05, DL-ADP-04]
+  - id: ADP-03
+    title: Context engineering
+    question: How is the prompt's token budget split between system, profile, knowledge, dialogue and scratchpad?
+    decision: Tripartite slot allocator — 15 % system · 15 % profile · 35 % knowledge · 25 % dialogue · 10 % scratchpad.
+    members: [ADP-03]
+    related: [MS-ADP-01, KR-ADP-04, CR-ADP-02]
+  - id: ADP-04
+    title: Error recovery & replanning
+    question: How does the agent recover from failed steps without looping or guessing?
+    decision: Dual-process circuit breaker — max 2 Reflexion trials, a Jev step-success check, then human handoff.
+    members: [ADP-04]
+    related: [RP-ADP-02, HL-ADP-02]
+  - id: ADP-05
+    title: Decision model (Jev)
+    question: Which model makes the structured decisions inside the workflow?
+    decision: Jev (TypeSafe) at triage, FSM guards and tool selection; code owns control flow; numbers and dates stay in code.
+    members: [ADP-05]
+    related: [MA-ADP-02, TA-ADP-01, HL-ADP-01, CR-ADP-01, RP-ADP-02]
+
+UA:
+  - id: UA-ADP-01
+    title: Channels & API transport
+    question: Which channels ship first, and how do clients send turns and receive answers?
+    decision: Web-only v1; POST 202 with an idempotency key + a resumable SSE event stream.
+    members: [UA-D1, UA-D2]
+    related: [RP-ADP-01, DP-ADP-04]
+  - id: UA-ADP-02
+    title: Identity & downstream tokens
+    question: How sure are we who the user is, and what authority does the agent carry into other systems?
+    decision: Tiered identity (anonymous → OTP → SSO, step-up on demand) + RFC 8693 on-behalf-of tokens valid 24 h.
+    members: [UA-D3, UA-D4, UA-D9]
+    related: [TA-ADP-04, SG-ADP-04]
+  - id: UA-ADP-03
+    title: Sessions & conversation scope
+    question: What is a session, a conversation and a case, and when do they end?
+    decision: Session → conversation → case; sessions end at 30 min idle / 12 h; any authenticated request keeps them alive.
+    members: [UA-D5, UA-D6, UA-Q3]
+    related: [MS-ADP-01, RP-ADP-01]
+  - id: UA-ADP-04
+    title: Response contract & delivery
+    question: What does a reply look like on the wire, and how do late or held answers reach the user?
+    decision: Typed event envelope; replies buffered until checks pass with status events meanwhile; deferred answers go to the inbox.
+    members: [UA-D7, UA-D8, UA-Q2]
+    related: [EV-ADP-05, HL-ADP-04, SG-ADP-03]
+
+KR:
+  - id: KR-ADP-01
+    title: Knowledge sources & content labelling
+    question: What knowledge do we index, and who may see and cite it?
+    decision: Curated + operational + raw tickets; per-chunk audience label, internal by default; human / agent provenance.
+    members: [KR-D1, KR-D2, KR-D13, KR-D16]
+    related: [SG-ADP-04, CI-ADP-03]
+  - id: KR-ADP-02
+    title: Ingestion & freshness
+    question: How and how often does content enter the index, and how do deletions leave it?
+    decision: Nightly batch re-index + instant purge for deletions; deletion-aware ingestion with a post-batch check.
+    members: [KR-D3, KR-D15]
+    related: [DP-ADP-05, DP-ADP-04]
+  - id: KR-ADP-03
+    title: Indexing & tenant isolation
+    question: How is content chunked, indexed and kept apart between tenants and permissions?
+    decision: Structure-aware parent-child chunks; shared public index + per-tenant private index; copied ACLs + live check for restricted docs.
+    members: [KR-D4, KR-D5, KR-D6]
+    related: [DP-ADP-01, DP-ADP-02, SG-ADP-04]
+  - id: KR-ADP-04
+    title: Retrieval & ranking pipeline
+    question: How does a question become the passages the agent sees?
+    decision: Standalone rewrite → BM25 + dense (RRF) → screening → validated LLM reranker → always top-10 parent sections.
+    members: [KR-D7, KR-D8, KR-D9, KR-D10, KR-D12, KR-D14]
+    related: [ADP-03, SG-ADP-01, CR-ADP-02, HL-ADP-01]
+  - id: KR-ADP-05
+    title: Retrieval evaluation
+    question: How do we know retrieval is good, offline and in production?
+    decision: Offline golden set + online implicit signals + sampled LLM-judge scoring.
+    members: [KR-D11]
+    related: [EV-ADP-02, EV-ADP-05]
+
+MS:
+  - id: MS-ADP-01
+    title: Conversation & case model
+    question: How is dialogue grouped and kept within the token budget?
+    decision: Session → conversation → case (Jev links cases); last N turns verbatim + rolling summary + pinned items.
+    members: [MS-D1, MS-D2]
+    related: [UA-ADP-03, ADP-03]
+  - id: MS-ADP-02
+    title: Long-term fact model
+    question: What do we remember about a user across conversations, and how is it shaped?
+    decision: Per-user facts only, with validity dates; account facts are never stored — always read from the CRM.
+    members: [MS-D3, MS-D4, MS-D6]
+    related: [DP-ADP-02, TA-ADP-04]
+  - id: MS-ADP-03
+    title: Fact write path
+    question: When and how do new facts get extracted and merged safely?
+    decision: Extract at resolution from user turns + allow-listed tool fields; skip plans and third-party facts; Jev reconciles on masked text.
+    members: [MS-D5, MS-D12, MS-D15, MS-D16, MS-D17, MS-D19]
+    related: [SG-ADP-02, TA-ADP-02, ADP-05]
+  - id: MS-ADP-04
+    title: Agent state & durability
+    question: Where does agent state live, and how does it survive crashes, deploys and long waits?
+    decision: LangGraph checkpointer is the truth; checkpoints per node and around side effects; versioned with migrations; re-check after waits > 1 h.
+    members: [MS-D7, MS-D8, MS-D9, MS-D13, MS-D18]
+    related: [ADP-02, TA-ADP-05, DL-ADP-04, TQ-ADP-05]
+  - id: MS-ADP-05
+    title: Retention & erasure
+    question: How long is memory kept, and how is it corrected or erased?
+    decision: Fixed TTL per memory type; back-office erasure / correction in v1; an erasure inventory covering every store.
+    members: [MS-D10, MS-D11, MS-D14]
+    related: [DP-ADP-05, SG-ADP-05]
+
+TA:
+  - id: TA-ADP-01
+    title: Tool registry & selection
+    question: Which tools exist, how are they built and reviewed, and which can a turn use?
+    decision: Plain Python tools with a reviewed risk class; code filters by tier / role, Jev shortlists and picks.
+    members: [TA-D1, TA-D2, TA-D16]
+    related: [ADP-05, MA-ADP-04]
+  - id: TA-ADP-02
+    title: Argument safety
+    question: Where may sensitive tool arguments (IDs, amounts, recipients) come from?
+    decision: They must trace to the user's words or to allow-listed structured tool fields; never free LLM text.
+    members: [TA-D3, TA-D13]
+    related: [SG-ADP-02, MS-ADP-03]
+  - id: TA-ADP-03
+    title: Action validation & approval tiers
+    question: Which actions run automatically, and which need a human?
+    decision: Reads and low-risk writes automatic; financial ≥ tenant threshold (default $1,000), destructive or irreversible → approval; Jev gate can only tighten.
+    members: [TA-D5, TA-D6, TA-D7, TA-D14]
+    related: [HL-ADP-03, SG-ADP-04]
+  - id: TA-ADP-04
+    title: Execution, credentials & isolation
+    question: How does a tool call run safely against an external system?
+    decision: On-behalf-of tokens or a scoped service account + user check; worker pool per system; output screened; safe retries + breakers.
+    members: [TA-D4, TA-D9, TA-D10, TA-D11]
+    related: [UA-ADP-02, SG-ADP-01, RP-ADP-02]
+  - id: TA-ADP-05
+    title: Transactional integrity & audit
+    question: How do multi-system writes stay consistent, and what record do they leave?
+    decision: Temporal sagas with idempotent compensations; no-undo steps last and approved; append-only audit with crypto-shredding.
+    members: [TA-D8, TA-D17, TA-D18, TA-D12, TA-D15]
+    related: [ADP-02, DP-ADP-03, DP-ADP-02]
+
+MA:
+  - id: MA-ADP-01
+    title: Topology & specialist set
+    question: How are agents organised, and which specialists exist?
+    decision: A coordinator + Generalist, Billing, Technical, Account & Ops specialists as LangGraph subgraphs; static registry.
+    members: [MA-D1, MA-D2, MA-D10, MA-D11]
+    related: [ADP-01, ADP-02]
+  - id: MA-ADP-02
+    title: Delegation & limits
+    question: Who decides which specialist works, in what order, and within which limits?
+    decision: Jev picks the lead and extra specialists; parallel if independent; depth 1, ≤ 5 specialists, 2 steps each, 6 per turn.
+    members: [MA-D3, MA-D6, MA-D8]
+    related: [ADP-05, ADP-04, CR-ADP-02]
+  - id: MA-ADP-03
+    title: Inter-agent contracts & context
+    question: What do agents send each other, and how much context does a specialist get?
+    decision: Typed task / result contracts via the coordinator; a brief plus on-demand reads of the conversation.
+    members: [MA-D4, MA-D5]
+    related: [TQ-ADP-02]
+  - id: MA-ADP-04
+    title: Specialist permissions & writes
+    question: What may a specialist do on its own?
+    decision: Own identity and allow-list; low-risk writes directly only when running alone; higher-risk writes proposed; actions reported only after verification.
+    members: [MA-D9, MA-D14, MA-D18]
+    related: [TA-ADP-01, TA-ADP-03]
+  - id: MA-ADP-05
+    title: Merging & the single voice
+    question: How are specialists' findings combined into one reply?
+    decision: Jev scores conflicting claims, numbers go to a human; one merged reply in one voice from the coordinator, checked for redirects.
+    members: [MA-D7, MA-D16, MA-D12, MA-D13, MA-D15, MA-D17]
+    related: [HL-ADP-01, SG-ADP-03]
+
+SG:
+  - id: SG-ADP-01
+    title: Input screening & injection defence
+    question: How is untrusted text (messages, passages, tool output) kept from steering the agent?
+    decision: Self-hosted Llama Guard 3 + injection classifier with pass / review / block bands, plus spotlighting; hostility via persona only.
+    members: [SG-D1, SG-D2, SG-D3, SG-D7]
+    related: [KR-ADP-04, TA-ADP-04]
+  - id: SG-ADP-02
+    title: PII protection
+    question: How is personal data kept out of models while tools still work?
+    decision: Reversible tokenization with a vault and global deterministic tokens; real values restored only into needs_pii fields; degrade if the vault is down.
+    members: [SG-D4, SG-D5, SG-D16, SG-D18]
+    related: [DP-ADP-02, DL-ADP-05, MS-ADP-03]
+  - id: SG-ADP-03
+    title: Output safety
+    question: What is checked on every reply before it reaches the user?
+    decision: Leakage and URL / markdown checks + a rule-based promise check; no tone check.
+    members: [SG-D6, SG-D15]
+    related: [HL-ADP-01, MA-ADP-05]
+  - id: SG-ADP-04
+    title: Authorization & tool permissions
+    question: Who may see or do what, and what happens when the policy engine is down?
+    decision: Central Cedar policies (tickets by role, blackout windows); writes fail closed, reads use a short cache when it's down.
+    members: [SG-D8, SG-D9, SG-D10, SG-D17]
+    related: [TA-ADP-03, HL-ADP-03, KR-ADP-03]
+  - id: SG-ADP-05
+    title: Governance, retention & providers
+    question: What is recorded, disclosed and retained for compliance, and on what terms do providers see data?
+    decision: Every automated decision recorded with a "why" view; AI disclosure + human always available; 2-year transcript archive; standard provider terms.
+    members: [SG-D11, SG-D12, SG-D13, SG-D14]
+    related: [DP-ADP-03, HL-ADP-04]
+
+DP:
+  - id: DP-ADP-01
+    title: Store topology & residency
+    question: Which stores exist, and where does each tenant's data live?
+    decision: Postgres + Qdrant, deployed per region (US, EU); each tenant pinned to one region.
+    members: [DP-D1, DP-D10]
+    related: [KR-ADP-03, RP-ADP-04]
+  - id: DP-ADP-02
+    title: Tenant isolation & encryption
+    question: How are tenants kept apart, and how is personal data encrypted and shredded?
+    decision: Shared tables with forced row-level security; envelope encryption with per-user data keys; an isolated token vault.
+    members: [DP-D2, DP-D4, DP-D5]
+    related: [SG-ADP-02, CR-ADP-05, TQ-ADP-02]
+  - id: DP-ADP-03
+    title: Audit, archive & settings data
+    question: Where do audit records, transcripts and settings live?
+    decision: Append-only audit tables; transcript archive behind a restricted role; platform definitions in code, tenant settings in the database.
+    members: [DP-D3, DP-D8, DP-D12]
+    related: [TA-ADP-05, SG-ADP-05, DL-ADP-02]
+  - id: DP-ADP-04
+    title: Data movement & stream retention
+    question: How do changes move between components, and how long are event streams and raw sources kept?
+    decision: No event bus — direct writes; 7-day event-log replay; versioned raw snapshots per nightly batch.
+    members: [DP-D6, DP-D7, DP-D11]
+    related: [UA-ADP-01, KR-ADP-02]
+  - id: DP-ADP-05
+    title: Erasure, backups & restore
+    question: How is erasure guaranteed across stores, snapshots and backups?
+    decision: Erasure fan-out as a Temporal workflow with a completion check; snapshots cleaned; backups expire after 35 days; restore risk accepted.
+    members: [DP-D9, DP-D13, DP-D14, DP-D15]
+    related: [MS-ADP-05, OB-ADP-02, RP-ADP-04]
+
+EV:
+  - id: EV-ADP-01
+    title: Datasets & data governance
+    question: What data do we evaluate on, and under which privacy rules?
+    decision: Framework episodes + seeds + opted-in production conversations, tokenized, regional and erasable.
+    members: [EV-D1, EV-D10, EV-D15]
+    related: [TQ-ADP-03, CI-ADP-03]
+  - id: EV-ADP-02
+    title: Scoring & calibration
+    question: How are outputs scored, and how are decision thresholds calibrated?
+    decision: Assertions + a cross-family LLM judge calibrated on human labels; thresholds calibrated per route each release.
+    members: [EV-D2, EV-D9]
+    related: [ADP-05, HL-ADP-01]
+  - id: EV-ADP-03
+    title: Suites, environment & cadence
+    question: What runs, against what, and how often?
+    decision: Component suites + a risk-tier end-to-end suite; staging, else fakes or recordings; smoke per commit, full nightly.
+    members: [EV-D3, EV-D4, EV-D6, EV-D14]
+    related: [TQ-ADP-04, DL-ADP-01]
+  - id: EV-ADP-04
+    title: Release gate & approval evidence
+    question: What must be true before a version ships?
+    decision: Component thresholds, zero risk-tier violations, pass^k, cost / latency budgets, live CSAT / FCR / CES; evidence only for routes covered.
+    members: [EV-D5, EV-D13]
+    related: [CR-ADP-04, DL-ADP-03]
+  - id: EV-ADP-05
+    title: Live evaluation & experiments
+    question: How is quality watched and tested on real traffic?
+    decision: Implicit signals + sampled judge scoring; shadow (writes never executed) and canary on read-only routes; replies buffered until checked.
+    members: [EV-D7, EV-D8, EV-D12, EV-D11]
+    related: [UA-ADP-04, DL-ADP-03, CI-ADP-01]
+
+OB:
+  - id: OB-ADP-01
+    title: Instrumentation & trace pipeline
+    question: How are traces produced, scrubbed and sampled?
+    decision: OpenTelemetry + SDK spans; collector scrubs PII; tail sampling keeps errors, escalations, risk-tier and slow traces with full content.
+    members: [OB-D1, OB-D3, OB-D4, OB-D14]
+    related: [SG-ADP-02, TQ-ADP-02]
+  - id: OB-ADP-02
+    title: Telemetry storage, retention & erasure
+    question: Where is telemetry stored, for how long, and how is it erased?
+    decision: Jaeger + OpenSearch per region; JSON logs with trace IDs; 7-day retention; delete by user / conversation ID.
+    members: [OB-D2, OB-D5, OB-D6, OB-D12]
+    related: [DP-ADP-05, DP-ADP-01]
+  - id: OB-ADP-03
+    title: Service levels & alerting
+    question: What do we alert on, and against which targets?
+    decision: Internal SLOs (no tenant-facing targets) with burn-rate alerts + specific hand-off alerts; Temporal UI for runs.
+    members: [OB-D7, OB-D8, OB-D10]
+    related: [RP-ADP-03, HL-ADP-02]
+  - id: OB-ADP-04
+    title: Token & cost telemetry
+    question: How are tokens and cost observed per tenant, conversation and component?
+    decision: Per tenant / conversation / component, estimated from kept traces (exact numbers come from Cost's counter).
+    members: [OB-D9, OB-D13]
+    related: [CR-ADP-04, RP-ADP-01]
+  - id: OB-ADP-05
+    title: Failure classification
+    question: How are failed conversations categorised at scale?
+    decision: Rules on error codes and decision records, then a Jev Choice over the failure taxonomy.
+    members: [OB-D11]
+    related: [CI-ADP-02]
+
+RP:
+  - id: RP-ADP-01
+    title: Admission control
+    question: How much traffic do we accept, and what happens when there's too much?
+    decision: Limits per tenant, user, conversation and tokens/min (exact counter); over the limit → knowledge-base-only answer, then 429; one active turn per conversation.
+    members: [RP-D1, RP-D2, RP-D3, RP-D14]
+    related: [UA-ADP-01, CR-ADP-04]
+  - id: RP-ADP-02
+    title: Dependency failures & fallbacks
+    question: What happens when an LLM provider, Jev or a tool system fails?
+    decision: Self-hosted fallback LLM; fallback classifier for Jev; tool requests held up to 24 h; one retry layer with retry budgets.
+    members: [RP-D4, RP-D5, RP-D7, RP-D13]
+    related: [ADP-04, ADP-05, TA-ADP-04, CR-ADP-01]
+  - id: RP-ADP-03
+    title: Bursts, latency & capacity
+    question: How do we stay fast and absorb spikes?
+    decision: Request coalescing + incident mode; first status ≤ 1 s, p95 targets per route; autoscaling with a pre-warmed minimum.
+    members: [RP-D6, RP-D8, RP-D9]
+    related: [OB-ADP-03, UA-ADP-04]
+  - id: RP-ADP-04
+    title: Disaster recovery & regions
+    question: How do we survive zone, data and region failures?
+    decision: Multi-AZ inside each region, no cross-region failover; point-in-time recovery; monthly drills into a warm standby.
+    members: [RP-D10, RP-D11, RP-D15]
+    related: [DP-ADP-01, DP-ADP-05]
+  - id: RP-ADP-05
+    title: Resilience testing
+    question: How do we prove the fallbacks and capacity work before users depend on them?
+    decision: Load tests before every release + chaos tests on staging.
+    members: [RP-D12]
+    related: [TQ-ADP-05]
+
+CR:
+  - id: CR-ADP-01
+    title: Model tier routing
+    question: Which model answers each turn?
+    decision: A Jev difficulty score picks self-hosted / mid-tier / frontier; failed steps cascade one tier up; the self-hosted tier also serves easy turns.
+    members: [CR-D1, CR-D2, CR-D9]
+    related: [ADP-05, RP-ADP-02, DL-ADP-04]
+  - id: CR-ADP-02
+    title: Token & context economy
+    question: How are tokens per turn kept down?
+    decision: Turn and daily conversation budgets; provider prompt caching + passage compression; cheaper tiers for helpers where proven.
+    members: [CR-D5, CR-D6, CR-D8]
+    related: [ADP-03, KR-ADP-04, MA-ADP-02]
+  - id: CR-ADP-03
+    title: Answer cache
+    question: When can an answer be reused instead of generated?
+    decision: Per-tenant cache of public-KB-only answers for 7 days, keyed by question + version + KB index; Jev decides eligibility.
+    members: [CR-D3, CR-D14]
+    related: [KR-ADP-02, SG-ADP-02]
+  - id: CR-ADP-04
+    title: Budgets & cost governance
+    question: How is spend measured, reported and capped?
+    decision: Exact cost from the usage counter, reconciled monthly; tenant budgets with a soft cap; reports for tenant admins; ≤ 10 % cost rise per release.
+    members: [CR-D4, CR-D7, CR-D11, CR-D12]
+    related: [EV-ADP-04, RP-ADP-01, OB-ADP-04]
+  - id: CR-ADP-05
+    title: Key-management cost
+    question: How do per-user encryption keys stay affordable and erasable?
+    decision: Envelope encryption under per-tenant KMS keys; wrapped keys in a separate store with 1-day backups.
+    members: [CR-D10, CR-D13]
+    related: [DP-ADP-02, DP-ADP-05]
+
+HL:
+  - id: HL-ADP-01
+    title: Confidence gate
+    question: When is a draft reply sent, edited by a human, or handed off?
+    decision: Jev checks support and relevance; send ≥ 0.90, co-pilot 0.50–0.90, hand off below; money / SLA figures always reviewed.
+    members: [HL-D1, HL-D2, HL-D13]
+    related: [ADP-05, EV-ADP-02, MA-ADP-05]
+  - id: HL-ADP-02
+    title: Escalation & queues
+    question: How does work reach the right human in time?
+    decision: One typed escalation packet; skills-based queues with SLA timers; aging alerts; undecided approvals cancelled after 3 days.
+    members: [HL-D3, HL-D9, HL-D12]
+    related: [ADP-04, OB-ADP-03]
+  - id: HL-ADP-03
+    title: Approval
+    question: Who may approve an action, and what must they check?
+    decision: Rights by role and amount (senior ≥ tenant amount, default $5,000), approver ≠ handler; card with evidence, dry-run and field-by-field confirmation.
+    members: [HL-D4, HL-D5]
+    related: [TA-ADP-03, SG-ADP-04]
+  - id: HL-ADP-04
+    title: Handoff & waiting
+    question: How does a conversation move to a human, and what does the user see meanwhile?
+    decision: Immediate handoff on request; cold handoff once a human picks up; wait estimate and cancel option; human replies checked as warnings.
+    members: [HL-D6, HL-D7, HL-D8, HL-D14]
+    related: [UA-ADP-04, SG-ADP-05]
+  - id: HL-ADP-05
+    title: Feedback & console
+    question: What do specialists record, and where do they work?
+    decision: Approve / reject with reason codes; self-hosted Retool in each region.
+    members: [HL-D10, HL-D11]
+    related: [CI-ADP-01, DP-ADP-01]
+
+TQ:
+  - id: TQ-ADP-01
+    title: Testing model-driven logic
+    question: How do we test code whose inputs come from models?
+    decision: Models mocked; scripted and property-based tests of the safety invariants; a fixed injection set.
+    members: [TQ-D1, TQ-D2, TQ-D3]
+    related: [EV-ADP-03, SG-ADP-01]
+  - id: TQ-ADP-02
+    title: Contracts & policy checks
+    question: How do we stop components, policies and data rules from silently breaking?
+    decision: Contract tests for shared formats; Cedar, RLS and tool-declaration checks in CI; end-to-end trace tests.
+    members: [TQ-D4, TQ-D5, TQ-D11]
+    related: [SG-ADP-04, DP-ADP-02, OB-ADP-01]
+  - id: TQ-ADP-03
+    title: End-to-end tests & test data
+    question: Which journeys are tested end to end, and on what data?
+    decision: One test per framework scenario on staging; synthetic personas + opted-in tokenized samples.
+    members: [TQ-D6, TQ-D12]
+    related: [EV-ADP-01, DL-ADP-01]
+  - id: TQ-ADP-04
+    title: Merge gate & flaky tests
+    question: What must pass before a merge, and how are flaky tests handled?
+    decision: Unit + integration + contracts + policy + EV smoke; retries allowed except for safety tests.
+    members: [TQ-D8, TQ-D9, TQ-D13]
+    related: [EV-ADP-03, DL-ADP-02]
+  - id: TQ-ADP-05
+    title: Migrations & non-functional tests
+    question: How are schema changes, checkpoints and performance validated?
+    decision: SQL migrations by review; old checkpoints must load through migrations; load + chaos before each release.
+    members: [TQ-D7, TQ-D14, TQ-D10]
+    related: [MS-ADP-04, RP-ADP-05]
+
+DL:
+  - id: DL-ADP-01
+    title: Environments & infrastructure
+    question: Which environments exist, and what do they run on?
+    decision: Dev + one US staging + production per region on Kubernetes with IaC; only US samples in staging.
+    members: [DL-D1, DL-D9, DL-D12]
+    related: [DP-ADP-01, TQ-ADP-03]
+  - id: DL-ADP-02
+    title: Release tracks & cadence
+    question: How do code and behaviour changes ship?
+    decision: Code deploys continuously; prompts, Jev questions, thresholds and model config are held for a scheduled gated release.
+    members: [DL-D2, DL-D10]
+    related: [EV-ADP-04, TQ-ADP-04, CI-ADP-04]
+  - id: DL-ADP-03
+    title: Rollout & rollback
+    question: How does a release reach production, and how is it undone?
+    decision: Code all at once per region; behaviour and model releases shadow → canary → all; manual rollback.
+    members: [DL-D4, DL-D5]
+    related: [EV-ADP-05, OB-ADP-03]
+  - id: DL-ADP-04
+    title: Versioning of models, indexes & workflows
+    question: How do model, index and workflow versions change safely?
+    decision: Latest aliases for LLM tiers, embedding model and Jev pinned; in-place re-index; Continue-As-New for in-flight workflows.
+    members: [DL-D3, DL-D6, DL-D11]
+    related: [ADP-02, MS-ADP-04, KR-ADP-03]
+  - id: DL-ADP-05
+    title: Secrets & key custody
+    question: How are secrets and the shared token key stored and rotated?
+    decision: Secrets manager per region with scheduled rotation; the shared token key stored per region and not rotated.
+    members: [DL-D7, DL-D8]
+    related: [SG-ADP-02, DP-ADP-02]
+
+CI:
+  - id: CI-ADP-01
+    title: Feedback signals
+    question: What signals tell us something went wrong or right?
+    decision: Thumbs, reason codes, implicit signals and a post-resolution survey; free text classified and ranked by Jev.
+    members: [CI-D1, CI-D11]
+    related: [HL-ADP-05, EV-ADP-05]
+  - id: CI-ADP-02
+    title: Failure analysis
+    question: How are failures categorised, prioritised and reviewed?
+    decision: Hierarchical taxonomy in code; weekly reviews by volume × severity; postmortems for safety or financial incidents.
+    members: [CI-D2, CI-D3]
+    related: [OB-ADP-05]
+  - id: CI-ADP-03
+    title: Improvement levers
+    question: What may we change to fix a failure?
+    decision: Prompts, Jev questions, thresholds, tools, KB articles (agent drafts, human publishes), curated few-shot, per-region fine-tuning.
+    members: [CI-D4, CI-D5, CI-D6]
+    related: [KR-ADP-01, EV-ADP-01, CR-ADP-01]
+  - id: CI-ADP-04
+    title: Validation & approval of changes
+    question: How do we prove a fix works and approve it?
+    decision: Every failure becomes a test first; gate + before / after + read-only A/B; normal code review.
+    members: [CI-D7, CI-D8, CI-D10]
+    related: [EV-ADP-04, DL-ADP-02, TQ-ADP-04]
+  - id: CI-ADP-05
+    title: Long-term evolution & retraining
+    question: How does the system stay current over months?
+    decision: Monthly user-distribution check; quarterly owned-risk review; quarterly retraining without erased users' data.
+    members: [CI-D9, CI-D12]
+    related: [EV-ADP-01, MS-ADP-05]
