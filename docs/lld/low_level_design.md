@@ -1,9 +1,9 @@
 # Enterprise AI Support Agent: Low-Level System Design (LLD)
 
-> **Companion High-Level Architecture:** [`architecture.md`](./architecture.md)  
-> **Visual Whiteboard Canvas:** [`architecture.tldr`](./architecture.tldr)  
-> **Capabilities Taxonomy:** [`thoughts.md`](./thoughts.md)  
-> **Evaluation & Failure Modes:** [`user_evaluation_framework.md`](./user_evaluation_framework.md) · [`failure_modes_matrix.md`](./failure_modes_matrix.md)
+> **Companion High-Level Architecture:** [`architecture.md`](../architecture/architecture.md)  
+> **Visual Whiteboard Canvas:** [`architecture.tldr`](../../diagrams/architecture.tldr)  
+> **Capabilities Taxonomy:** [`thoughts.md`](../decisions/thoughts.md)  
+> **Evaluation & Failure Modes:** [`user_evaluation_framework.md`](../analysis/user_evaluation_framework.md) · [`failure_modes_matrix.md`](../analysis/failure_modes_matrix.md)
 
 ---
 
@@ -90,7 +90,7 @@ The central runtime engine responsible for parsing incoming queries, determining
 
 ### Component [ 6 ]: MEMORY & STATE ENGINE
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §7 (MS-D1 – MS-D19) · diagram page `LLD - [3] Memory & State`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §7 (MS-D1 – MS-D19) · diagram page `LLD - [3] Memory & State`.
 
 #### A. Architectural Responsibility
 Keeps what the agent needs across steps (working memory), across turns (conversation memory), and across conversations (per-user long-term facts), plus durable agent state for crash recovery and resume. Account facts (SLA tier, plan, region, invoices) are **not** memory: they are always read from the CRM tool (MS-D6).
@@ -136,7 +136,7 @@ Keeps what the agent needs across steps (working memory), across turns (conversa
 
 ### Component [ 7 ]: KNOWLEDGE & RAG RETRIEVAL ENGINE
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §6 (KR-D1 – KR-D16) · diagram page `LLD - [2] Knowledge & Retrieval`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §6 (KR-D1 – KR-D16) · diagram page `LLD - [2] Knowledge & Retrieval`.
 
 #### A. Architectural Responsibility
 Provides grounded enterprise documentation, product runbooks, known bugs, postmortems and resolved tickets, and returns the top-10 relevant parent sections with citation metadata to Orchestration. Packing passages into the prompt (and any compression) belongs to Orchestration (ADP-03).
@@ -187,7 +187,7 @@ Provides grounded enterprise documentation, product runbooks, known bugs, postmo
 
 ### Component [ Cap 12 ]: COST & RESOURCE ROUTER
 
-> **Decided design (Cost & Resource Management):** [`checkpoint.md`](./checkpoint.md) §15 (CR-D1 – CR-D14) · diagram page `LLD - [11] Cost & Resource Management`.
+> **Decided design (Cost & Resource Management):** [`checkpoint.md`](../decisions/checkpoint.md) §15 (CR-D1 – CR-D14) · diagram page `LLD - [11] Cost & Resource Management`.
 
 #### A. Architectural Responsibility
 Picks the model tier for each turn, keeps token use within budgets, tracks exact cost per tenant, and caches answers that are safe to reuse.
@@ -227,7 +227,7 @@ Manages physical connections, inference sessions, structured output decoding, an
 
 ### Component [ 9 ]: TOOLS & ENTERPRISE APIS
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §8 (TA-D1 – TA-D18) · diagram page `LLD - [4] Tools & Actions`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §8 (TA-D1 – TA-D18) · diagram page `LLD - [4] Tools & Actions`.
 
 #### A. Architectural Responsibility
 Gives the agent authenticated, validated, auditable ways to read and change enterprise systems (CRM, ERP/billing, ticketing, cloud monitoring). Choosing the tool is Orchestration's (ADP-05); approval queues and UI are HITL's; policy content and the screening engine are Safety's.
@@ -272,7 +272,7 @@ Gives the agent authenticated, validated, auditable ways to read and change ente
 
 ### Component [ 10 ]: MULTI-AGENT SPECIALIST SWARM
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §9 (MA-D1 – MA-D17) · diagram page `LLD - [5] Multi-Agent & Communication`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §9 (MA-D1 – MA-D17) · diagram page `LLD - [5] Multi-Agent & Communication`.
 
 #### A. Architectural Responsibility
 A coordinator delegates to specialist sub-agents with their own instructions, tools and identity, merges their typed results, and writes the only reply to the user. Specialists never talk to each other or to the user (MA-D1, D12).
@@ -300,7 +300,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ---
 
-> **Decided design for [ 1 ] and [ 2 ]:** [`checkpoint.md`](./checkpoint.md) §5 (UA-D1 – UA-D9) · diagram page `LLD - [1] User & Application`.
+> **Decided design for [ 1 ] and [ 2 ]:** [`checkpoint.md`](../decisions/checkpoint.md) §5 (UA-D1 – UA-D9) · diagram page `LLD - [1] User & Application`.
 
 ### Component [ 1 ]: USER CHANNELS & INGRESS
 * **Subcomponents:**
@@ -319,7 +319,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Component [ 3 ]: RELIABILITY & RESILIENCE
 
-> **Decided design (Reliability / Performance / Scale):** [`checkpoint.md`](./checkpoint.md) §14 (RP-D1 – RP-D15) · diagram page `LLD - [10] Reliability / Performance / Scale`.
+> **Decided design (Reliability / Performance / Scale):** [`checkpoint.md`](../decisions/checkpoint.md) §14 (RP-D1 – RP-D15) · diagram page `LLD - [10] Reliability / Performance / Scale`.
 
 * **Rate limiting:** per tenant, user and conversation at the gateway, plus tokens per minute per tenant from an exact usage counter (RP-D1, D14). Over the limit → a knowledge-base-only answer (generated, or cited snippets with no LLM); a hard ceiling returns `429` + `Retry-After` (RP-D2).
 * **Duplicates:** one active turn per conversation (including turns waiting on approval); new messages are rejected with "still working on your last message" (RP-D3).
@@ -330,7 +330,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 * **Scale + DR:** autoscaling with a pre-warmed minimum (RP-D9); multi-AZ inside each region, no cross-region failover (RP-D10); point-in-time recovery + monthly drills into a same-region warm standby (RP-D11, D15); load + chaos tests every release (RP-D12).
 * **Tooling:** **Envoy / Kong** rate limiting · Temporal retry policies · a per-region counter store (e.g. Redis) · vLLM-class serving for the fallback model.
 
-> **Decided design for [ 4 ], [ 12 ] and authorization / governance:** [`checkpoint.md`](./checkpoint.md) §10 (SG-D1 – SG-D18) · diagram page `LLD - [6] Safety, Security & Governance`.
+> **Decided design for [ 4 ], [ 12 ] and authorization / governance:** [`checkpoint.md`](../decisions/checkpoint.md) §10 (SG-D1 – SG-D18) · diagram page `LLD - [6] Safety, Security & Governance`.
 
 ### Component [ 4 ]: INPUT SAFETY GUARDRAILS
 * **Subcomponents:**
@@ -355,7 +355,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Component [ 11 ]: CONFIDENCE GATE & EVALUATION BOUNDARY
 
-> **Decided design (Human-in-the-Loop, Confidence Boundaries):** [`checkpoint.md`](./checkpoint.md) §16 (HL-D1 – HL-D14) · diagram page `LLD - [12] Human-in-the-Loop`.
+> **Decided design (Human-in-the-Loop, Confidence Boundaries):** [`checkpoint.md`](../decisions/checkpoint.md) §16 (HL-D1 – HL-D14) · diagram page `LLD - [12] Human-in-the-Loop`.
 
 * **Gate:** a Jev request on every draft: `Noul` "is every claim supported by the cited passages or tool results?" + `Score` relevance; agent-written evidence counts less (HL-D1).
 * **Bands (starting values, recalibrated per route by EV-D9):** send ≥ 0.90 · co-pilot 0.50–0.90 (a human edits the draft; only on routes with a staffed queue) · hand off < 0.50 (HL-D2, HL-Q1).
@@ -365,7 +365,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Component [ HITL ]: HUMAN SUPPORT SPECIALIST CONSOLE
 
-> **Decided design (Human-in-the-Loop):** [`checkpoint.md`](./checkpoint.md) §16.
+> **Decided design (Human-in-the-Loop):** [`checkpoint.md`](../decisions/checkpoint.md) §16.
 
 * **Escalation:** one typed packet for every source (reason code, case, summary, evidence, proposed action, diagnostic, deadline) (HL-D12) → skills-based queues (billing, technical, account; tier) with priority from Jev triage acuity and tenant tier; SLA timers: handoffs 15 min, approvals 1 h, reviews 1 business day, breaches move to a senior queue (HL-D3). Aging alerts; undecided approvals cancelled after 3 days and the user told (HL-D9).
 * **Approval:** rights by role and amount (senior at/above a tenant setting, default $5,000); the approver may not be the handler; enforced in Cedar (HL-D4). The card shows evidence + dry-run preview, and the approver confirms amount, account and target one by one (HL-D5).
@@ -403,7 +403,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Foundation: DATA & PERSISTENCE (Capability 8)
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §11 (DP-D1 – DP-D15) · diagram page `LLD - [7] Data & Persistence`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §11 (DP-D1 – DP-D15) · diagram page `LLD - [7] Data & Persistence`.
 
 * **Regions:** regional deployments, **US + EU** at launch; each tenant pinned to one region; every store below runs per region (DP-D10).
 * **PostgreSQL (per region), pool model with forced row-level security** (DP-D2): turns + idempotency, sessions / conversations / cases, LangGraph checkpoints, conversation memory, long-term facts (pgvector), tool audit + decision records (append-only, DP-D3), transcript legal archive (restricted role, 2 years, DP-D8), outbound event log (7-day replay window, DP-D7), tenant settings (DP-D12).
@@ -417,7 +417,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Foundation: OBSERVABILITY & TRACING (Capability 10)
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §13 (OB-D1 – OB-D14) · diagram page `LLD - [9] Observability & Monitoring`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §13 (OB-D1 – OB-D14) · diagram page `LLD - [9] Observability & Monitoring`.
 
 * **Instrumentation:** OpenTelemetry in every service; an LLM-observability SDK (Langfuse / LangSmith) used only to create agent-step spans, exported as OpenTelemetry (OB-D1, OB-Q1). Every Jev request, answer and confidence is on the trace (ADP-05).
 * **Pipeline:** the OpenTelemetry collector runs the PII recognizers on every span and log line (OB-D14), then tail-samples: all errors, escalations, risk-tier and slow traces kept, the rest sampled (OB-D4). Kept traces carry full tokenized content; others carry metadata only (OB-D3).
@@ -430,9 +430,9 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Foundation: EVALUATION & LLMOPS (Capabilities 9, 14, 15, 16)
 
-> **Decided design (Evaluation & Experimentation):** [`checkpoint.md`](./checkpoint.md) §12 (EV-D1 – EV-D15) · diagram page `LLD - [8] Evaluation & Experimentation`. Testing, Deployment and Continuous Improvement have their own sections below.
+> **Decided design (Evaluation & Experimentation):** [`checkpoint.md`](../decisions/checkpoint.md) §12 (EV-D1 – EV-D15) · diagram page `LLD - [8] Evaluation & Experimentation`. Testing, Deployment and Continuous Improvement have their own sections below.
 
-* **Datasets:** synthetic Interaction Episodes from [`user_evaluation_framework.md`](./user_evaluation_framework.md) + hand-written seeds + curated production conversations, PII-tokenized, regional, erasable, only from tenants who opt in (EV-D1, D10, D15).
+* **Datasets:** synthetic Interaction Episodes from [`user_evaluation_framework.md`](../analysis/user_evaluation_framework.md) + hand-written seeds + curated production conversations, PII-tokenized, regional, erasable, only from tenants who opt in (EV-D1, D10, D15).
 * **Suites:** per-component suites (triage, retrieval, memory, tools, delegation, screening, reply checks) + an end-to-end suite for the **risk tier only** (EV-D3, EV-Q1).
 * **Scoring:** deterministic assertions + an **LLM judge from a different model family**, calibrated against human labels (EV-D2, EV-Q3). Jev is not a scorer; Jev's own decision points are measured and calibrated here (EV-D9).
 * **Environment:** staging copies of external systems; where none exists: stateful fakes for write / multi-step integrations, recorded responses for read-only ones, skip low-priority ones (EV-D4, EV-Q2). Staging uses test accounts, an outbound allow-list and no notifications (EV-D14).
@@ -446,7 +446,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Foundation: TESTING & QUALITY (Capability 14)
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §17 (TQ-D1 – TQ-D14) · diagram page `LLD - [13] Testing & Quality`. Quality *scoring* is Evaluation's (§12); this is pass / fail correctness.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §17 (TQ-D1 – TQ-D14) · diagram page `LLD - [13] Testing & Quality`. Quality *scoring* is Evaluation's (§12); this is pass / fail correctness.
 
 * **Unit:** model and Jev calls always mocked (TQ-D1); Cedar policy unit tests (TQ-D4).
 * **Agent behaviour:** deterministic tests of FSM transitions, guards, step caps, approval tiers, one active turn, budgets and fallbacks with scripted (incl. malformed / hostile) model outputs, plus property-based tests of the safety invariants (TQ-D2).
@@ -459,7 +459,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Foundation: DEPLOYMENT & LLMOPS (Capability 15)
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §18 (DL-D1 – DL-D12) · diagram page `LLD - [14] Deployment & LLMOps`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §18 (DL-D1 – DL-D12) · diagram page `LLD - [14] Deployment & LLMOps`.
 
 * **Environments:** dev + one staging (US) + production per region (US, EU); only US tenants' samples in staging (DL-D1, D12).
 * **Two release tracks:** code deploys on merge, all at once per region; merges touching prompts, Jev questions, thresholds, policies or model config are held by a CI path rule for a scheduled release that passes the full EV-D5 gate and rolls out shadow → canary on read-only routes → all (DL-D2, D4, D10).
@@ -471,7 +471,7 @@ A coordinator delegates to specialist sub-agents with their own instructions, to
 
 ### Foundation: CONTINUOUS IMPROVEMENT (Capability 16)
 
-> **Decided design:** [`checkpoint.md`](./checkpoint.md) §19 (CI-D1 – CI-D12) · diagram page `LLD - [15] Continuous Improvement`.
+> **Decided design:** [`checkpoint.md`](../decisions/checkpoint.md) §19 (CI-D1 – CI-D12) · diagram page `LLD - [15] Continuous Improvement`.
 
 * **Signals:** thumbs, specialist reason codes, implicit signals (re-asks, escalations, abandonment, reopened cases), a one-question survey after resolution (CI-D1); free text classified and ranked by Jev (`Choice` category, `Score` severity) (CI-D11).
 * **Analysis:** a hierarchical failure taxonomy mapped to components, versioned in code, reviewed monthly for new categories (CI-D2); weekly reviews by volume × severity and blameless postmortems for safety or financial incidents (CI-D3).

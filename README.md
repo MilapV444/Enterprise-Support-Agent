@@ -13,15 +13,15 @@ An enterprise-grade, high-reliability architecture and low-level engineering spe
 
 | Document | Description |
 | :--- | :--- |
-| 📘 [**Master Architectural Report**](<./Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md>) | Comprehensive 16-pillar architectural blueprint and literature review |
-| 🏛️ [**System Architecture (HLD)**](./architecture.md) | Abstract 7-stage pipeline, end-to-end data flow, and foundational platform |
-| ⚙️ [**Low-Level Design (LLD)**](./low_level_design.md) | Component contracts, Pydantic schemas, state reducers, and interfaces |
-| 🧠 [**Component 5: Orchestration Deep Dive**](./component_5_orchestration_deep_dive.md) | Cognitive control plane, hybrid statecharts, context budgets, and resilience |
-| 🛡️ [**Architectural Decisions (ADP Checkpoint)**](./checkpoint.md) | Confirmed ADRs (ADP-01 to ADP-04) and pre-execution Genesis blueprint |
-| ⚠️ [**Failure Modes & Unknowns Matrix**](./failure_modes_matrix.md) | 2×2 Epistemic Matrix (Known/Unknown) mapping failure traps and recovery protocols |
-| 🔄 [**Request-Response Lifecycle Walkthrough**](./request_response_lifecycle_example.md) | Detailed trace of a real-world enterprise request through all 14 components |
-| 📊 [**Behavioral Evaluation Framework**](./user_evaluation_framework.md) | User-centric behavioral archetypes, evaluation metrics, and safety benchmarks |
-| 🎨 [**Interactive Canvas (`architecture.tldr`)**](./architecture.tldr) | Multi-page visual system schematic and LLD statechart canvas |
+| 📘 [**Master Architectural Report**](<./docs/architecture/Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md>) | Comprehensive 16-pillar architectural blueprint and literature review |
+| 🏛️ [**System Architecture (HLD)**](./docs/architecture/architecture.md) | Abstract 7-stage pipeline, end-to-end data flow, and foundational platform |
+| ⚙️ [**Low-Level Design (LLD)**](./docs/lld/low_level_design.md) | Component contracts, Pydantic schemas, state reducers, and interfaces |
+| 🧠 [**Component 5: Orchestration Deep Dive**](./docs/architecture/component_5_orchestration_deep_dive.md) | Cognitive control plane, hybrid statecharts, context budgets, and resilience |
+| 🛡️ [**Architectural Decisions (ADP Checkpoint)**](./docs/decisions/checkpoint.md) | Confirmed ADRs (ADP-01 to ADP-04) and pre-execution Genesis blueprint |
+| ⚠️ [**Failure Modes & Unknowns Matrix**](./docs/analysis/failure_modes_matrix.md) | 2×2 Epistemic Matrix (Known/Unknown) mapping failure traps and recovery protocols |
+| 🔄 [**Request-Response Lifecycle Walkthrough**](./docs/lld/request_response_lifecycle_example.md) | Detailed trace of a real-world enterprise request through all 14 components |
+| 📊 [**Behavioral Evaluation Framework**](./docs/analysis/user_evaluation_framework.md) | User-centric behavioral archetypes, evaluation metrics, and safety benchmarks |
+| 🎨 [**Interactive Canvas (`architecture.tldr`)**](./diagrams/architecture.tldr) | Multi-page visual system schematic and LLD statechart canvas |
 
 ---
 
@@ -100,18 +100,55 @@ flowchart LR
 
 ## 🎨 Interactive Whiteboard Canvas
 
-The repository includes an interactive [tldraw](https://www.tldraw.com) canvas [`architecture.tldr`](./architecture.tldr):
+The repository includes an interactive [tldraw](https://www.tldraw.com) canvas [`architecture.tldr`](./diagrams/architecture.tldr):
 * **Page 1: System Architecture & Failure Modes:** High-level end-to-end data flow and 2×2 Knowns/Unknowns failure mode cards.
 * **Page 2: LLD - Agent Orchestration Core:** Low-level LangGraph statechart nodes, transitions, slot allocation diagrams, and circuit breaker tripwires.
 
 ### How to View the Canvas
-1. **In VS Code:** Install the [tldraw extension](https://marketplace.visualstudio.com/items?itemName=tldraw-org.tldraw-vscode) and open [`architecture.tldr`](./architecture.tldr) directly.
-2. **In Browser:** Open [tldraw.com](https://www.tldraw.com), click `Menu (☰)` → `File` → `Open` and select `architecture.tldr`.
+1. **In VS Code:** Install the [tldraw extension](https://marketplace.visualstudio.com/items?itemName=tldraw-org.tldraw-vscode) and open [`architecture.tldr`](./diagrams/architecture.tldr) directly.
+2. **In Browser:** Open [tldraw.com](https://www.tldraw.com), click `Menu (☰)` → `File` → `Open` and select `diagrams/architecture.tldr`.
 3. **Regenerate / Customize:** Run the canvas generation scripts:
    ```bash
-   python generate_architecture_tldr.py
-   python generate_lld_page.py
+   python scripts/generate_architecture_tldr.py
+   python scripts/generate_lld_page.py
    ```
+
+---
+
+## 🗂️ Repository Structure
+
+```text
+Enterprise Support Agent/
+├── scripts/                                       # All Python diagram & canvas generator scripts
+│   ├── lld_layout.py                              # Shared layout engine & bounding box math
+│   ├── generate_architecture_tldr.py             # System architecture canvas generator (Page 1)
+│   ├── generate_lld_page.py                       # Component 5 Orchestration canvas generator (Page 2)
+│   └── generate_lld_*.py                          # Component 1-15 canvas generator scripts
+│
+├── docs/                                          # Design, architectural specifications, and ADRs
+│   ├── architecture/                              # High-level architecture & master reports
+│   │   ├── architecture.md                        # System Architecture (HLD)
+│   │   ├── component_5_orchestration_deep_dive.md # Orchestration cognitive control plane deep dive
+│   │   └── Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md
+│   │
+│   ├── lld/                                       # Low-level design & execution traces
+│   │   ├── low_level_design.md                    # Component contracts, schemas, and reducers
+│   │   └── request_response_lifecycle_example.md  # End-to-end request walkthrough across all components
+│   │
+│   ├── analysis/                                  # Safety, failure analysis, and evaluation benchmarks
+│   │   ├── failure_modes_matrix.md                # 2x2 Epistemic Known/Unknown failure traps matrix
+│   │   └── user_evaluation_framework.md           # Behavioral archetypes & evaluation benchmarks
+│   │
+│   └── decisions/                                 # Architectural Decision Records (ADR) & logs
+│       ├── checkpoint.md                          # ADRs (ADP-01 to ADP-05) & 15 closed component loops
+│       └── thoughts.md                            # Component taxonomy & capability mapping scratchpad
+│
+├── diagrams/                                      # Interactive canvas & visual assets
+│   └── architecture.tldr                          # Multi-page interactive tldraw canvas
+│
+├── .gitignore                                     # Repository Git configuration
+└── README.md                                      # Repository root index and documentation portal
+```
 
 ---
 

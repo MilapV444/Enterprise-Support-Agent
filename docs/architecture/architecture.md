@@ -1,10 +1,10 @@
 # Enterprise AI Support Agent: Abstract System Architecture & Data Flow
 
 > **Version:** 1.0 (Abstract / High-Level Design)  
-> **Source Capabilities:** [`thoughts.md`](./thoughts.md)  
-> **Visual Canvas Diagram:** [`architecture.tldr`](./architecture.tldr)  
-> **End-to-End Walkthrough Example:** [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md)  
-> **Low-Level Design (LLD) Specification:** [`low_level_design.md`](./low_level_design.md)
+> **Source Capabilities:** [`thoughts.md`](../decisions/thoughts.md)  
+> **Visual Canvas Diagram:** [`architecture.tldr`](../../diagrams/architecture.tldr)  
+> **End-to-End Walkthrough Example:** [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md)  
+> **Low-Level Design (LLD) Specification:** [`low_level_design.md`](../lld/low_level_design.md)
 
 ---
 
@@ -248,13 +248,13 @@ Running continuously in the background across all stages:
 
 ## 7. How to View and Edit the Diagram
 
-The interactive diagram in [`architecture.tldr`](./architecture.tldr) contains two comprehensive sections on the same canvas:
+The interactive diagram in [`architecture.tldr`](../../diagrams/architecture.tldr) contains two comprehensive sections on the same canvas:
 1. **Section 1 (Tiers 1–4):** Complete System Architecture & Request-Response Lifecycle Flow.
 2. **Section 2 (Below Tier 4):** Component & Trajectory Failure Modes (2x2 Knowns & Unknowns Matrix).
 
-* **Inside VS Code:** Open [`architecture.tldr`](./architecture.tldr) directly if you have the [tldraw VS Code Extension](https://marketplace.visualstudio.com/items?itemName=tldraw-org.tldraw-vscode) installed.
-* **In the Browser:** Go to [tldraw.com](https://www.tldraw.com), click the menu (`☰`), select **File** -> **Open**, and choose `architecture.tldr` from this project directory.
-* **To Re-generate or Modify:** You can adjust the layout or node properties in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py) and re-run:
+* **Inside VS Code:** Open [`architecture.tldr`](../../diagrams/architecture.tldr) directly if you have the [tldraw VS Code Extension](https://marketplace.visualstudio.com/items?itemName=tldraw-org.tldraw-vscode) installed.
+* **In the Browser:** Go to [tldraw.com](https://www.tldraw.com), click the menu (`☰`), select **File** -> **Open**, and choose `diagrams/architecture.tldr` from this project directory.
+* **To Re-generate or Modify:** You can adjust the layout or node properties in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py) and re-run:
   ```bash
-  python generate_architecture_tldr.py
+  python scripts/generate_architecture_tldr.py
   ```

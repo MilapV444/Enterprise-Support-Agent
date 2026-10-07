@@ -380,7 +380,9 @@ def build_abstract_lld_records():
     return PAGE_REC, CAMERA_REC, R
 
 def main():
-    target = "architecture.tldr"
+    target = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "diagrams", "architecture.tldr")
+    if not os.path.exists(target) and os.path.exists("architecture.tldr"):
+        target = "architecture.tldr"
     if not os.path.exists(target):
         print(f"Error: {target} not found!")
         return

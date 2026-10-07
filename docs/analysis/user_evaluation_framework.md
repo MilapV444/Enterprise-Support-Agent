@@ -1,9 +1,9 @@
 # User-Centric Behavioral Evaluation Framework
 
 > **System:** Enterprise AI Support Agent  
-> **Architecture Reference:** [`architecture.md`](./architecture.md)  
-> **Lifecycle Reference:** [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md)  
-> **Capabilities Source:** [`thoughts.md`](./thoughts.md) (Capabilities 9, 10, 14, 16)  
+> **Architecture Reference:** [`architecture.md`](../architecture/architecture.md)  
+> **Lifecycle Reference:** [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md)  
+> **Capabilities Source:** [`thoughts.md`](../decisions/thoughts.md) (Capabilities 9, 10, 14, 16)  
 > **Framework Status:** Conceptual Specification (Hypothesis-Driven / Calibratable)  
 
 ---

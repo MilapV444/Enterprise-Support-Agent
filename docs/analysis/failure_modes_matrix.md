@@ -1,8 +1,8 @@
 # Enterprise AI Support Agent: Failure Modes & Unknowns Framework (2x2 Matrix)
 
-> **Whiteboard Canvas:** [`architecture.tldr`](./architecture.tldr) (Section 2, below Tier 4)  
-> **Generator Script:** [`generate_architecture_tldr.py`](./generate_architecture_tldr.py)  
-> **System Architecture:** [`architecture.md`](./architecture.md)  
+> **Whiteboard Canvas:** [`architecture.tldr`](../../diagrams/architecture.tldr) (Section 2, below Tier 4)  
+> **Generator Script:** [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py)  
+> **System Architecture:** [`architecture.md`](../architecture/architecture.md)  
 > **Evaluation Framework:** [`user_evaluation_framework.md`](./user_evaluation_framework.md)  
 
 ---
@@ -152,7 +152,7 @@ Based on the **Johari / Rumsfeld 2x2 Epistemic Matrix**, this framework classifi
 
 ## 3. Whiteboard Implementation
 
-This matrix has been compiled directly onto the project's interactive whiteboard in [`architecture.tldr`](./architecture.tldr).
+This matrix has been compiled directly onto the project's interactive whiteboard in [`architecture.tldr`](../../diagrams/architecture.tldr).
 
 * **Canvas Coordinates:** Y = 1320 to Y = 2800 (positioned directly below Tier 4).
 * **Section Title:** `ENTERPRISE AI SUPPORT AGENT — COMPONENT & TRAJECTORY FAILURE MODES (2x2 UNKNOWNS)`

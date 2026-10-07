@@ -1,9 +1,9 @@
 # Enterprise AI Support Agent — End-to-End Request-Response Lifecycle Walkthrough
 
-> **Companion Document:** [`architecture.md`](./architecture.md)  
-> **Visual Diagram Canvas:** [`architecture.tldr`](./architecture.tldr)  
-> **Source Capabilities:** [`thoughts.md`](./thoughts.md)  
-> **Decisions reflected:** [`checkpoint.md`](./checkpoint.md) through component 15/15 (UA, KR, MS, TA, MA, SG, DP, EV, OB, RP, CR, HL, TQ, DL, CI, ADP). Components not yet designed (Confidence Gate, HITL, Delivery) are shown as originally sketched.  
+> **Companion Document:** [`architecture.md`](../architecture/architecture.md)  
+> **Visual Diagram Canvas:** [`architecture.tldr`](../../diagrams/architecture.tldr)  
+> **Source Capabilities:** [`thoughts.md`](../decisions/thoughts.md)  
+> **Decisions reflected:** [`checkpoint.md`](../decisions/checkpoint.md) through component 15/15 (UA, KR, MS, TA, MA, SG, DP, EV, OB, RP, CR, HL, TQ, DL, CI, ADP). Components not yet designed (Confidence Gate, HITL, Delivery) are shown as originally sketched.  
 
 ---
 

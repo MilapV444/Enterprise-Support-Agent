@@ -12,6 +12,7 @@ Clean Typography & Collision-Free Topology:
 """
 
 import json
+import os
 
 SCHEMA = {
     "schemaVersion": 2,
@@ -573,7 +574,7 @@ def build():
 
 
 if __name__ == "__main__":
-    out = "architecture.tldr"
+    out = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "diagrams", "architecture.tldr")
     diagram = build()
     with open(out, "w", encoding="utf-8") as f:
         json.dump(diagram, f, indent=2)

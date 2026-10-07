@@ -1,7 +1,7 @@
 # Component [ 5 ]: Agent Runtime & Orchestration Core — Low-Level Engineering Specification & Deep Dive
 
-> **Companion Visual Diagram:** [`architecture.tldr`](./architecture.tldr) (Page 2: `LLD - Agent Orchestration & Planning Core`)  
-> **Architectural Decisions Checkpoint:** [`checkpoint.md`](./checkpoint.md)  
+> **Companion Visual Diagram:** [`architecture.tldr`](../../diagrams/architecture.tldr) (Page 2: `LLD - Agent Orchestration & Planning Core`)  
+> **Architectural Decisions Checkpoint:** [`checkpoint.md`](../decisions/checkpoint.md)  
 > **Master Literature Review:** [`Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md`](<./Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md>)
 
 ---

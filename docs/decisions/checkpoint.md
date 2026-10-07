@@ -3,8 +3,8 @@
 > **Status:** ✅ ACTIVE & CHECKPOINTED — Orchestration (ADP-01 – ADP-05) + all 15 component loops CLOSED (2026-10-06)  
 > **Component Under Review:** none (design loops complete; open items are the owned risks reviewed quarterly, CI-D9)  
 > **Genesis Readiness:** READY FOR SCAFFOLDING (Initial Specifications Checkpointed)  
-> **Reference Master Report:** [`Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md`](<./Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md>)  
-> **Visual Whiteboard Canvas:** [`architecture.tldr`](./architecture.tldr) (Page 2: `LLD - Agent Orchestration & Planning Core`)  
+> **Reference Master Report:** [`Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md`](<../architecture/Enterprise AI Customer Support Agent Architecture - Formatted Master Report.md>)  
+> **Visual Whiteboard Canvas:** [`architecture.tldr`](../../diagrams/architecture.tldr) (Page 2: `LLD - Agent Orchestration & Planning Core`)  
 > **Component Loop (thoughts.md order, excl. Orchestration):** [1/15] User & Application — ✅ CLOSED (page `LLD - [1] User & Application`; page-1 nodes trimmed to pointers)  
 > &nbsp;&nbsp;&nbsp;&nbsp;[2/15] Knowledge & Retrieval — ✅ CLOSED (page `LLD - [2] Knowledge & Retrieval`; page-1 node trimmed to pointer)  
 > &nbsp;&nbsp;&nbsp;&nbsp;[3/15] Memory & State — ✅ CLOSED (page `LLD - [3] Memory & State`; page-1 node trimmed to pointer)  
@@ -526,7 +526,7 @@ No fork was marked for experiment. Per the loop, UA-D1/D2/D3/D6/D7 stand as the 
 
 ### 5.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
 
-Quadrant definitions follow [`failure_modes_matrix.md`](./failure_modes_matrix.md). Entries already in the whole-system matrix are **pointed to, not restated**: 15 MB paste vs. body limit, JWT clock-skew, Okta introspection latency, vague prompt, cheerful tone during an outage.
+Quadrant definitions follow [`failure_modes_matrix.md`](../analysis/failure_modes_matrix.md). Entries already in the whole-system matrix are **pointed to, not restated**: 15 MB paste vs. body limit, JWT clock-skew, Okta introspection latency, vague prompt, cheerful tone during an outage.
 
 **Q1 — KNOWN KNOWNS (explicit contract breaches)**
 | ID | Sub-comp | Failure |
@@ -614,8 +614,8 @@ Legend: **FIXES** = the decision removes the failure · **MITIGATES** = reduces 
 
 ### 5.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [1] User & Application` (generator: [`generate_lld_user_app.py`](./generate_lld_user_app.py)). Contents: boundary, Flows A/B/C, 5 sub-component cards (mechanic + status), failure grid with step-9 effects, decision-log summary.
-* **Shallower duplicate on page 1: trimmed to pointers (user choice (a), 2026-09-24).** Page-1 nodes `[1] User Channels`, `[2] API Gateway & Identity` and `[13] Response Delivery Engine` now carry a one-line v1 summary + "→ page: LLD - [1] User & Application". The same text is in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py) so a re-run keeps it.
+* **Page:** `architecture.tldr` → `LLD - [1] User & Application` (generator: [`generate_lld_user_app.py`](../../scripts/generate_lld_user_app.py)). Contents: boundary, Flows A/B/C, 5 sub-component cards (mechanic + status), failure grid with step-9 effects, decision-log summary.
+* **Shallower duplicate on page 1: trimmed to pointers (user choice (a), 2026-09-24).** Page-1 nodes `[1] User Channels`, `[2] API Gateway & Identity` and `[13] Response Delivery Engine` now carry a one-line v1 summary + "→ page: LLD - [1] User & Application". The same text is in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py) so a re-run keeps it.
   * *Why:* two page-1 lines contradicted decisions: "Web · Mobile · Chat SDK · Slack · Teams · Email" vs UA-D1 web-only, and "SSE / WebSocket" vs UA-D2 SSE-only. The others were less detailed (no tiers, no inbox path).
   * *Left untouched:* `[14] User Client` node, the "Stream to User" / "Lifecycle Completed" arrows, the "State Sync" arrow to Data (Comp 8), and the page-1 failure box `[1-4] Ingress & Edge` (still accurate).
 * **Noted, not changed (outside this component's page):** the Orchestration page (`generate_lld_page.py`, box "5. Persistence & Response Delivery") still says "SSE / WebSocket token streaming". It conflicts with UA-D2 and presumes UA-D8.
@@ -626,7 +626,7 @@ Legend: **FIXES** = the decision removes the failure · **MITIGATES** = reduces 
 
 > **Loop status:** 🟡 IN PROGRESS · Steps 1–10 complete (DoD met) · ✅ CLOSED (2026-09-24) · Steps 1–11 complete · Page-1 `[7]` trimmed to pointer  
 > **Decision ID prefix:** `KR-` (forks `KR-F#`, decisions `KR-D#`)  
-> **Architecture mapping:** thoughts.md Component 3 ≈ architecture node `[7] Knowledge & RAG Retrieval` · existing sketch in [`low_level_design.md`](./low_level_design.md) Component [7]
+> **Architecture mapping:** thoughts.md Component 3 ≈ architecture node `[7] Knowledge & RAG Retrieval` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Component [7]
 
 ### 6.1 GROUND — Raw Material (not decisions)
 
@@ -747,7 +747,7 @@ Options in F1 and F11 are cumulative, so the user's "all three" = option (c).
 * **KR-Q3 → (ii)** Content refreshes nightly, but **deletions, GDPR erasures and ACL revocations are purged immediately** (out-of-band event path). Tombstones also go to Comp 12 (semantic cache).
 * **KR-Q4 → (i)** The `audience` label is **per chunk**. Parent-section expansion drops internal sibling chunks before returning.
 * **KR-Q5 → (iii) k = 10** parent sections. **Logged consequence:** at 300–800 words per parent, 10 sections ≈ 4k–11k tokens, which can exceed the 35% RAG slot on smaller context windows. Trimming then falls to Orchestration's assembler (ADP-03), outside this component, and 10 passages sit squarely in the "Lost in the Middle" range (Liu et al., 2023).
-* **KR-Q6 → (i)** ADP-03's RAG-slot label corrected in this file (§2 ADP-03) and in [`component_5_orchestration_deep_dive.md`](./component_5_orchestration_deep_dive.md). The master report is literature and is left unchanged.
+* **KR-Q6 → (i)** ADP-03's RAG-slot label corrected in this file (§2 ADP-03) and in [`component_5_orchestration_deep_dive.md`](../architecture/component_5_orchestration_deep_dive.md). The master report is literature and is left unchanged.
 
 Resulting status changes: KR-D1, D2, D3, D10 move from *conditional* to **✅ CONFIRMED** (their conditions are now stated rules).
 
@@ -762,7 +762,7 @@ No fork was marked for experiment. All eleven stand as the finalized approach, i
 
 ### 6.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
 
-Quadrant definitions follow [`failure_modes_matrix.md`](./failure_modes_matrix.md). Pointed to, not restated: "high cosine similarity but wrong doc" (Q2), "chunk boundary breaks table" (Q1), indirect injection via ingested logs (Q4), cross-tenant *semantic cache* poisoning (Q4, owned by Comp 12).
+Quadrant definitions follow [`failure_modes_matrix.md`](../analysis/failure_modes_matrix.md). Pointed to, not restated: "high cosine similarity but wrong doc" (Q2), "chunk boundary breaks table" (Q1), indirect injection via ingested logs (Q4), cross-tenant *semantic cache* poisoning (Q4, owned by Comp 12).
 
 **Q1 — KNOWN KNOWNS (contract breaches)**
 | ID | Sub-comp | Failure |
@@ -860,11 +860,11 @@ Legend as §5.9: **FIXES** · **MITIGATES** · **WORSENS** · **OWNED RISK**.
 
 ### 6.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [2] Knowledge & Retrieval` (generator: [`generate_lld_knowledge.py`](./generate_lld_knowledge.py)). Contents: boundary, Flow A (offline ingest + instant purge path), Flow B (online query, 2 rows ①–⑥), Flow C (quality loop), 6 sub-component cards (mechanic + status), failure grid with step-9 effects after §6.9a, decision-log summary + hand-offs to Comp 7/8/9/12.
-* **Refactor:** layout helpers moved into [`lld_layout.py`](./lld_layout.py) (shared by both component pages). The component 1 page was regenerated and verified **identical** (51/51 records).
+* **Page:** `architecture.tldr` → `LLD - [2] Knowledge & Retrieval` (generator: [`generate_lld_knowledge.py`](../../scripts/generate_lld_knowledge.py)). Contents: boundary, Flow A (offline ingest + instant purge path), Flow B (online query, 2 rows ①–⑥), Flow C (quality loop), 6 sub-component cards (mechanic + status), failure grid with step-9 effects after §6.9a, decision-log summary + hand-offs to Comp 7/8/9/12.
+* **Refactor:** layout helpers moved into [`lld_layout.py`](../../scripts/lld_layout.py) (shared by both component pages). The component 1 page was regenerated and verified **identical** (51/51 records).
 * **Shallower duplicates:**
-  * Page 1 node `[7] Knowledge & RAG Retrieval` ("Hybrid Vector + BM25 Search / Document Reranking & Chunking") was consistent with the decisions, just shallower. **Trimmed to a pointer (user choice (a), 2026-09-24):** "BM25 + dense · LLM rerank · top-10 → see LLD - [2] Knowledge & Retrieval". The same text is in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-  * *Not on the canvas, noted only:* [`low_level_design.md`](./low_level_design.md) Component [7] now **contradicts** KR-D3 (it says CDC near-real-time; decided: nightly batch), KR-D8 (it says multi-query expansion ×3; decided: no multi-query) and KR-D9 (it says Cohere / BGE cross-encoder; decided: LLM reranker). It also lists a context compressor, which is Orchestration's (boundary §6.4).
+  * Page 1 node `[7] Knowledge & RAG Retrieval` ("Hybrid Vector + BM25 Search / Document Reranking & Chunking") was consistent with the decisions, just shallower. **Trimmed to a pointer (user choice (a), 2026-09-24):** "BM25 + dense · LLM rerank · top-10 → see LLD - [2] Knowledge & Retrieval". The same text is in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+  * *Not on the canvas, noted only:* [`low_level_design.md`](../lld/low_level_design.md) Component [7] now **contradicts** KR-D3 (it says CDC near-real-time; decided: nightly batch), KR-D8 (it says multi-query expansion ×3; decided: no multi-query) and KR-D9 (it says Cohere / BGE cross-encoder; decided: LLM reranker). It also lists a context compressor, which is Orchestration's (boundary §6.4).
 
 *(2026-09-24: a stale duplicate "§5.11 MATERIALIZE" block that had appeared here, showing the page-1 pointer choice as still pending, was deleted at the user's request. The authoritative §5.11 is in §5.)*
 
@@ -874,7 +874,7 @@ Legend as §5.9: **FIXES** · **MITIGATES** · **WORSENS** · **OWNED RISK**.
 
 > **Loop status:** ✅ CLOSED (2026-09-26) · Steps 1–11 complete · Page-1 `[6]` trimmed to pointer  
 > **Decision ID prefix:** `MS-` (forks `MS-F#`, decisions `MS-D#`)  
-> **Architecture mapping:** thoughts.md Component 4 ≈ architecture node `[6] Memory & State Engine` · existing sketch in [`low_level_design.md`](./low_level_design.md) Component [6]
+> **Architecture mapping:** thoughts.md Component 4 ≈ architecture node `[6] Memory & State Engine` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Component [6]
 
 ### 7.1 GROUND — Raw Material (not decisions)
 
@@ -1018,7 +1018,7 @@ No fork was marked for experiment. All twelve stand as the finalized approach, p
 
 ### 7.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
 
-Quadrant definitions follow [`failure_modes_matrix.md`](./failure_modes_matrix.md). Pointed to, not restated: "[6] key collision in Redis across concurrent sessions" (Q1, see KK3), "context compaction drops a constraint" (Q2, now addressed by MS-D2), "creepy over-personalization" (Q3, see UK1).
+Quadrant definitions follow [`failure_modes_matrix.md`](../analysis/failure_modes_matrix.md). Pointed to, not restated: "[6] key collision in Redis across concurrent sessions" (Q1, see KK3), "context compaction drops a constraint" (Q2, now addressed by MS-D2), "creepy over-personalization" (Q3, see UK1).
 
 **Q1 — KNOWN KNOWNS (contract breaches)**
 | ID | Sub-comp | Failure |
@@ -1134,10 +1134,10 @@ Standing rule (user, 2026-09-26): every component loop lists where Jev fits, map
 
 ### 7.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [3] Memory & State` (generator: [`generate_lld_memory.py`](./generate_lld_memory.py)). Contents: boundary, Flow A (one turn, 2 rows), Flow B (consolidation), Flow C (long wait + resume) with Flow D (lifecycle), 5 sub-component cards, Jev placements, failure grid with step-9 effects after §7.9a, decision-log summary + hand-offs.
+* **Page:** `architecture.tldr` → `LLD - [3] Memory & State` (generator: [`generate_lld_memory.py`](../../scripts/generate_lld_memory.py)). Contents: boundary, Flow A (one turn, 2 rows), Flow B (consolidation), Flow C (long wait + resume) with Flow D (lifecycle), 5 sub-component cards, Jev placements, failure grid with step-9 effects after §7.9a, decision-log summary + hand-offs.
 * **Shallower duplicates:**
-  * Page 1 node `[6] Memory & State Engine` ("Working Memory · Session State / Long-Term User Profile Store") was consistent, just shallower. **Trimmed to a pointer** (same treatment as `[7]` in §6.11): "Case-scoped dialogue · per-user facts · checkpoints → see LLD - [3] Memory & State". The same text is in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-  * *Not on the canvas, noted only:* [`low_level_design.md`](./low_level_design.md) Component [6] lists Redis Stack for session memory; decided state lives in the LangGraph Postgres checkpointer (MS-D8). Its "garbage collection" is superseded by fixed TTLs (MS-D10) and the erasure inventory (MS-D14).
+  * Page 1 node `[6] Memory & State Engine` ("Working Memory · Session State / Long-Term User Profile Store") was consistent, just shallower. **Trimmed to a pointer** (same treatment as `[7]` in §6.11): "Case-scoped dialogue · per-user facts · checkpoints → see LLD - [3] Memory & State". The same text is in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+  * *Not on the canvas, noted only:* [`low_level_design.md`](../lld/low_level_design.md) Component [6] lists Redis Stack for session memory; decided state lives in the LangGraph Postgres checkpointer (MS-D8). Its "garbage collection" is superseded by fixed TTLs (MS-D10) and the erasure inventory (MS-D14).
 
 **Hand-offs from this loop:** Comp 5: idempotency keys on side-effecting tools (MS-D9) and the fact allow-list review (MS-D16) · Comp 7: provider-side log retention for LLM / Jev calls (MS-D14), tone rule "don't raise old issues unprompted" (UK1) · Comp 8: Postgres sizing (KU3), blob store (MS-D7), encryption of facts (MS-D19) · Comp 9: memory accuracy and case-link tests (KU2, KU4) · Comp 10: trace purge (MS-D14).
 
@@ -1147,7 +1147,7 @@ Standing rule (user, 2026-09-26): every component loop lists where Jev fits, map
 
 > **Loop status:** ✅ CLOSED (2026-09-29) · Steps 1–11 complete · Page-1 `[9]` trimmed to pointer  
 > **Decision ID prefix:** `TA-` (forks `TA-F#`, decisions `TA-D#`)  
-> **Architecture mapping:** thoughts.md Component 5 ≈ architecture node `[9] Tools & Enterprise APIs` · existing sketch in [`low_level_design.md`](./low_level_design.md) Component [9]
+> **Architecture mapping:** thoughts.md Component 5 ≈ architecture node `[9] Tools & Enterprise APIs` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Component [9]
 
 ### 8.1 GROUND — Raw Material (not decisions)
 
@@ -1295,7 +1295,7 @@ No fork was marked for experiment. All twelve stand as the finalized approach, p
 
 ### 8.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
 
-Quadrant definitions follow [`failure_modes_matrix.md`](./failure_modes_matrix.md). Pointed to, not restated: the `[9]` items listed in §8.1 (CRM 500/504, expired SAP token, 500 log events, 14 s latency, defaulting to production, salary tables, injected error message, claimed-but-never-dispatched refund); each is mapped below.
+Quadrant definitions follow [`failure_modes_matrix.md`](../analysis/failure_modes_matrix.md). Pointed to, not restated: the `[9]` items listed in §8.1 (CRM 500/504, expired SAP token, 500 log events, 14 s latency, defaulting to production, salary tables, injected error message, claimed-but-never-dispatched refund); each is mapped below.
 
 **Q1 — KNOWN KNOWNS (contract breaches)**
 | ID | Sub-comp | Failure |
@@ -1408,11 +1408,11 @@ User: "F13 b, F14 a, F15 b, F16 c, F17 c, F18 c".
 
 ### 8.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [4] Tools & Actions` (generator: [`generate_lld_tools.py`](./generate_lld_tools.py)). Contents: boundary, Flow A (read, 2 rows), Flow B (write with approval), Flow C (failure + saga rollback) with Flow D (onboarding), 6 sub-component cards, Jev placements, failure grid with step-9 effects after §8.9a, decision-log summary + hand-offs.
+* **Page:** `architecture.tldr` → `LLD - [4] Tools & Actions` (generator: [`generate_lld_tools.py`](../../scripts/generate_lld_tools.py)). Contents: boundary, Flow A (read, 2 rows), Flow B (write with approval), Flow C (failure + saga rollback) with Flow D (onboarding), 6 sub-component cards, Jev placements, failure grid with step-9 effects after §8.9a, decision-log summary + hand-offs.
 * **Shallower duplicates:**
-  * Page 1 node `[9] Tools & Enterprise APIs` was consistent, just shallower. **Trimmed to a pointer** (same treatment as `[6]`, `[7]`): "Jev-picked Python tools · tiered approval · sagas → see LLD - [4] Tools & Actions". Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-  * [`component_5_orchestration_deep_dive.md`](./component_5_orchestration_deep_dive.md) Stage 4 said "MCP tool caller" and "> $1,000 mandates human review". **Updated** to TA-D2 (Python tools as Temporal activities) and TA-Q1 (per-tenant threshold, default $1,000), since that file records decided architecture.
-  * *Not on the canvas, noted only:* [`low_level_design.md`](./low_level_design.md) Component [9] lists MCP / LangChain Toolkits (decided: plain Python, TA-D2) and a sandboxed runner (decided: worker pool per system, no microVMs in v1, TA-D11).
+  * Page 1 node `[9] Tools & Enterprise APIs` was consistent, just shallower. **Trimmed to a pointer** (same treatment as `[6]`, `[7]`): "Jev-picked Python tools · tiered approval · sagas → see LLD - [4] Tools & Actions". Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+  * [`component_5_orchestration_deep_dive.md`](../architecture/component_5_orchestration_deep_dive.md) Stage 4 said "MCP tool caller" and "> $1,000 mandates human review". **Updated** to TA-D2 (Python tools as Temporal activities) and TA-Q1 (per-tenant threshold, default $1,000), since that file records decided architecture.
+  * *Not on the canvas, noted only:* [`low_level_design.md`](../lld/low_level_design.md) Component [9] lists MCP / LangChain Toolkits (decided: plain Python, TA-D2) and a sandboxed runner (decided: worker pool per system, no microVMs in v1, TA-D11).
 
 **Hand-offs from this loop:** Comp 2 / 4: value-source tracking for argument provenance (TA-D3) · Comp 7: agent-side authorization policy content (TA-D4, KK6), output screening engine (TA-D9), change-freeze / business-hours rules (UK4) · Comp 8: audit store + per-user encryption keys (TA-D12, D15; add keys to MS-D14's erasure inventory) · Comp 9: shortlist recall and per-tool authorization tests (KU1, KK6) · Comp 10: token-expiry alerts (KK3), breaker state, sub-threshold-write alerts (UU4) · Comp 11: screening latency, per-system rate limits · Comp 12: reply must quote the verified result, not the plan (KK2) · Comp 13: approval queue, "ask" routing, low-confidence shortlist hand-off (TA-Q3, Q4).
 
@@ -1422,7 +1422,7 @@ User: "F13 b, F14 a, F15 b, F16 c, F17 c, F18 c".
 
 > **Loop status:** ✅ CLOSED (2026-09-29) · Steps 1–11 complete · reopened once the same day: MA-D9 revised (specialists get low-risk writes), MA-D18 added  
 > **Decision ID prefix:** `MA-` (forks `MA-F#`, decisions `MA-D#`)  
-> **Architecture mapping:** thoughts.md Component 6 ≈ architecture node `[10] Multi-Agent Specialist Swarm` · existing sketch in [`low_level_design.md`](./low_level_design.md) Component [10]
+> **Architecture mapping:** thoughts.md Component 6 ≈ architecture node `[10] Multi-Agent Specialist Swarm` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Component [10]
 
 ### 9.1 GROUND — Raw Material (not decisions)
 
@@ -1562,7 +1562,7 @@ No fork was marked for experiment. All decisions stand, pending the MA-Q follow-
 
 ### 9.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
 
-Quadrant definitions follow [`failure_modes_matrix.md`](./failure_modes_matrix.md). The three `[10]` items (missing `currency_code`, conflicting diagnoses, bureaucratic ping-pong) are mapped below.
+Quadrant definitions follow [`failure_modes_matrix.md`](../analysis/failure_modes_matrix.md). The three `[10]` items (missing `currency_code`, conflicting diagnoses, bureaucratic ping-pong) are mapped below.
 
 **Q1 — KNOWN KNOWNS (contract breaches)**
 | ID | Sub-comp | Failure |
@@ -1685,14 +1685,14 @@ User: "F18 b" (2026-09-29).
 
 ### 9.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [5] Multi-Agent & Communication` (generator: [`generate_lld_multiagent.py`](./generate_lld_multiagent.py)). Contents: boundary, Flow A (cross-domain case, 2 rows), Flow B (parallel audit), Flow C (blocked specialist) with Flow D (adding a specialist), 5 sub-component cards, Jev placements, failure grid with step-9 effects after §9.9a, decision-log summary + hand-offs.
+* **Page:** `architecture.tldr` → `LLD - [5] Multi-Agent & Communication` (generator: [`generate_lld_multiagent.py`](../../scripts/generate_lld_multiagent.py)). Contents: boundary, Flow A (cross-domain case, 2 rows), Flow B (parallel audit), Flow C (blocked specialist) with Flow D (adding a specialist), 5 sub-component cards, Jev placements, failure grid with step-9 effects after §9.9a, decision-log summary + hand-offs.
 * **Shallower duplicates:**
-  * Page 1 node `[10] Multi-Agent Sub-Agents` was consistent, just shallower. **Trimmed to a pointer:** "Coordinator + Jev-routed specialists · one voice → see LLD - [5] Multi-Agent & Communication". Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-  * *Not on the canvas, noted only:* [`low_level_design.md`](./low_level_design.md) Component [10] lists LangGraph Multi-Agent / CrewAI / AutoGen and A2A messaging (decided: LangGraph subgraphs, typed contracts via the coordinator, static registry). [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) shows the Billing sub-agent checking an "autonomous refund ceiling" itself; decided: specialists are read-only and propose, and the threshold check is in Tools (TA-D5).
+  * Page 1 node `[10] Multi-Agent Sub-Agents` was consistent, just shallower. **Trimmed to a pointer:** "Coordinator + Jev-routed specialists · one voice → see LLD - [5] Multi-Agent & Communication". Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+  * *Not on the canvas, noted only:* [`low_level_design.md`](../lld/low_level_design.md) Component [10] lists LangGraph Multi-Agent / CrewAI / AutoGen and A2A messaging (decided: LangGraph subgraphs, typed contracts via the coordinator, static registry). [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) shows the Billing sub-agent checking an "autonomous refund ceiling" itself; decided: specialists are read-only and propose, and the threshold check is in Tools (TA-D5).
 
 **Hand-offs from this loop:** Comp 2: coordinator node + specialist subgraphs in the same graph (MA-D11); step caps per MA-D8 alongside ADP-04 · Comp 5: specialists' allow-lists (reads + low-risk writes by reviewed risk class); higher-risk writes only via the coordinator (MA-D9 revised) · Comp 9: conflict and delegation golden sets (KU2, KK5) · Comp 12: token budget and model tier per specialist (KU1) · Comp 13: HITL for low-confidence delegation, blocked results, numeric disagreements (MA-D3, D16).
 
-*(2026-09-29: at the user's request, [`low_level_design.md`](./low_level_design.md) components [1], [2], [5], [6], [7], [9], [10] and [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) were updated to the confirmed decisions (UA, KR, MS, TA, MA, ADP). The contradictions "noted only" in §6.11, §7.11, §8.11 and §9.11 are resolved. Components not yet designed keep their original sketch.)*
+*(2026-09-29: at the user's request, [`low_level_design.md`](../lld/low_level_design.md) components [1], [2], [5], [6], [7], [9], [10] and [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) were updated to the confirmed decisions (UA, KR, MS, TA, MA, ADP). The contradictions "noted only" in §6.11, §7.11, §8.11 and §9.11 are resolved. Components not yet designed keep their original sketch.)*
 
 ---
 
@@ -1700,7 +1700,7 @@ User: "F18 b" (2026-09-29).
 
 > **Loop status:** ✅ CLOSED (2026-09-30) · Steps 1–11 complete · Page-1 `[4]`, `[12]` trimmed to pointers  
 > **Decision ID prefix:** `SG-` (forks `SG-F#`, decisions `SG-D#`)  
-> **Architecture mapping:** thoughts.md Component 7 ≈ architecture nodes `[4] Input Safety Guardrails` + `[12] Output Safety Guardrails` (+ authorization and governance, which have no node yet) · existing sketch in [`low_level_design.md`](./low_level_design.md) Components [4], [12]
+> **Architecture mapping:** thoughts.md Component 7 ≈ architecture nodes `[4] Input Safety Guardrails` + `[12] Output Safety Guardrails` (+ authorization and governance, which have no node yet) · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Components [4], [12]
 
 ### 10.1 GROUND — Raw Material (not decisions)
 
@@ -1861,7 +1861,7 @@ No fork was marked for experiment. All decisions stand, pending the SG-Q follow-
 
 ### 10.8 FAILURE MODES — Step 8 (Known/Unknown grid, scoped to this component's sub-components)
 
-Quadrant definitions follow [`failure_modes_matrix.md`](./failure_modes_matrix.md). The `[4]` and `[12]` items are mapped below; "SLA percentage hallucination" is grounding (Comp 13 / Comp 9), not this component.
+Quadrant definitions follow [`failure_modes_matrix.md`](../analysis/failure_modes_matrix.md). The `[4]` and `[12]` items are mapped below; "SLA percentage hallucination" is grounding (Comp 13 / Comp 9), not this component.
 
 **Q1 — KNOWN KNOWNS (contract breaches)**
 | ID | Sub-comp | Failure |
@@ -1968,9 +1968,9 @@ User: "F15 b, F16 b, F17 b, F18 b".
 
 ### 10.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [6] Safety, Security & Governance` (generator: [`generate_lld_safety.py`](./generate_lld_safety.py)). Contents: boundary, Flow A (inbound message, 2 rows), Flow B (untrusted content), Flow C (outbound reply), Flow D (authorization) with Flow E (governance), 6 sub-component cards, Jev note, failure grid with step-9 effects after §10.9a, decision-log summary + hand-offs.
-* **Shallower duplicates:** Page 1 nodes `[4] Input Safety Guardrails` and `[12] Output Safety Guardrails` **trimmed to pointers** (same treatment as earlier loops). Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-* **Docs kept in sync (standing request):** [`low_level_design.md`](./low_level_design.md) components [4] and [12] and [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) `[4]` / `[12]` updated to SG-D1 – D18.
+* **Page:** `architecture.tldr` → `LLD - [6] Safety, Security & Governance` (generator: [`generate_lld_safety.py`](../../scripts/generate_lld_safety.py)). Contents: boundary, Flow A (inbound message, 2 rows), Flow B (untrusted content), Flow C (outbound reply), Flow D (authorization) with Flow E (governance), 6 sub-component cards, Jev note, failure grid with step-9 effects after §10.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** Page 1 nodes `[4] Input Safety Guardrails` and `[12] Output Safety Guardrails` **trimmed to pointers** (same treatment as earlier loops). Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+* **Docs kept in sync (standing request):** [`low_level_design.md`](../lld/low_level_design.md) components [4] and [12] and [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) `[4]` / `[12]` updated to SG-D1 – D18.
 
 **Hand-offs from this loop:** Comp 1: AI-disclosure banner, "talk to a human", user "why" view (SG-D13, D14), blackout-window admin UI with time zones (KU4) · Comp 3: `author` on ticket chunks + author / role filter (SG-D9); tokenize tickets with the global deterministic tokens (SG-D5) · Comp 5: `needs_pii` schema flag (SG-D16), blackout rule in the approval tiers (SG-D10), `significant_effect` list (SG-D14) · Comp 8: vault storage + erasure of vault entries (add to MS-D14's inventory), 2-year transcript archive (SG-D12), decision-record storage (SG-D13) · Comp 9: classifier and PII-recognizer evaluation sets (KU1, KK1) · Comp 11: screening latency, vault and policy-engine availability (KU2, KK4, UU5) · Comp 13: human review for significant decisions, "review" band escalations (SG-D3, D14) · Comp 14: Cedar policy tests (KK5).
 
@@ -1980,7 +1980,7 @@ User: "F15 b, F16 b, F17 b, F18 b".
 
 > **Loop status:** ✅ CLOSED (2026-10-01) · Steps 1–11 complete · Page-1 `Data & Persistence` node trimmed to pointer  
 > **Decision ID prefix:** `DP-` (forks `DP-F#`, decisions `DP-D#`)  
-> **Architecture mapping:** thoughts.md Component 8 ≈ page-1 foundation node `Data & Persistence (Cap 8)` · existing sketch in [`low_level_design.md`](./low_level_design.md) "Foundation: DATA & PERSISTENCE"
+> **Architecture mapping:** thoughts.md Component 8 ≈ page-1 foundation node `Data & Persistence (Cap 8)` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) "Foundation: DATA & PERSISTENCE"
 
 ### 11.1 GROUND — Raw Material (not decisions)
 
@@ -2220,9 +2220,9 @@ No Jev use: storage and erasure are deterministic. (Possible later: bulk-labelli
 
 ### 11.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [7] Data & Persistence` (generator: [`generate_lld_data.py`](./generate_lld_data.py)). Contents: boundary, store map per region, Flow A (writes in a turn), Flow B (erasure) with Flows C / D (offboarding, restore), 6 sub-component cards, failure grid with step-9 effects after §11.9a, decision-log summary + hand-offs.
-* **Shallower duplicates:** page-1 foundation node `Data & Persistence (Cap 8)` ("PostgreSQL · Qdrant Vector / S3 Objects · Audit Event DB") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) "Foundation: DATA & PERSISTENCE", the [7] search-engine line and the matrix; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 row.
+* **Page:** `architecture.tldr` → `LLD - [7] Data & Persistence` (generator: [`generate_lld_data.py`](../../scripts/generate_lld_data.py)). Contents: boundary, store map per region, Flow A (writes in a turn), Flow B (erasure) with Flows C / D (offboarding, restore), 6 sub-component cards, failure grid with step-9 effects after §11.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** page-1 foundation node `Data & Persistence (Cap 8)` ("PostgreSQL · Qdrant Vector / S3 Objects · Audit Event DB") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) "Foundation: DATA & PERSISTENCE", the [7] search-engine line and the matrix; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) Tier 4 row.
 
 **Hand-offs from this loop:** Comp 11: restore drills (KK3), write-load testing (KU2), regional failover, shared token-key custody / rotation (DP-Q2) · Comp 12: KMS per-user key cost (KU1), snapshot storage growth (KU3) · Comp 14: CI check that every tenant table has forced RLS (KK1), migration contract tests (KK2) · Comp 1 / legal: contract wording on 35-day backup retention (UK2) and deletion timelines.
 
@@ -2232,7 +2232,7 @@ No Jev use: storage and erasure are deterministic. (Possible later: bulk-labelli
 
 > **Loop status:** ✅ CLOSED (2026-10-02) · Steps 1–11 complete · Page-1 `Evaluation & Benchmarks` node trimmed to pointer  
 > **Decision ID prefix:** `EV-` (forks `EV-F#`, decisions `EV-D#`)  
-> **Architecture mapping:** thoughts.md Component 9 ≈ page-1 foundation node `Evaluation & Benchmarks` · existing material: [`user_evaluation_framework.md`](./user_evaluation_framework.md) (behavioural evaluation plan) and [`low_level_design.md`](./low_level_design.md) "Foundation: EVALUATION & LLMOPS"
+> **Architecture mapping:** thoughts.md Component 9 ≈ page-1 foundation node `Evaluation & Benchmarks` · existing material: [`user_evaluation_framework.md`](../analysis/user_evaluation_framework.md) (behavioural evaluation plan) and [`low_level_design.md`](../lld/low_level_design.md) "Foundation: EVALUATION & LLMOPS"
 
 ### 12.1 GROUND — Raw Material (not decisions)
 
@@ -2256,7 +2256,7 @@ No Jev use: storage and erasure are deterministic. (Possible later: bulk-labelli
 | UA (with Comp 10) | Step-up abandonment |
 | **UA-D8 (OPEN)** | Streaming vs. the output check: **to be revisited in this loop** (EV-F11) |
 
-**Pre-existing plan:** [`user_evaluation_framework.md`](./user_evaluation_framework.md): assumed / observed / target user distributions; the **Interaction Episode** (input → trajectory → output) as the unit; a digital-twin environment; **stratified + importance sampling** (30 % routine / 40 % edge / 30 % risk, re-weighted back to the population); bias countermeasures; 8 concrete scenarios; roadmap (50 episodes → harness → calibrate with real data).
+**Pre-existing plan:** [`user_evaluation_framework.md`](../analysis/user_evaluation_framework.md): assumed / observed / target user distributions; the **Interaction Episode** (input → trajectory → output) as the unit; a digital-twin environment; **stratified + importance sampling** (30 % routine / 40 % edge / 30 % risk, re-weighted back to the population); bias countermeasures; 8 concrete scenarios; roadmap (50 episodes → harness → calibrate with real data).
 
 **From the master report:**
 * Uncertainty: token entropy · **semantic entropy** (Kuhn et al., 2024; 2–4 s, multi-sample) · **conformal prediction** (Angelopoulos & Bates, 2021; coverage ≥ 1 − α, set size as routing signal) · Galileo Luna grounding (30–60 ms) · temperature scaling (Guo et al., 2017).
@@ -2346,7 +2346,7 @@ User: "F1 c, F2 b, F3 a, F4 c, F5 c, F6 b, F7 c, F8 b, F9 b, F10 b, F11 c".
 
 | ID | Sub-component | Decision | Status | Reasoning / consequences captured |
 | :--- | :--- | :--- | :--- | :--- |
-| **EV-D1** | Evaluation Datasets | **Behavioural framework (synthetic Interaction Episodes from persona / intent distributions + hand-written seeds) + curated production conversations after launch.** | ✅ CONFIRMED | Adopts [`user_evaluation_framework.md`](./user_evaluation_framework.md) as the dataset plan. Production data follows EV-D10. **How episodes are used given EV-D3 is open (EV-Q1).** |
+| **EV-D1** | Evaluation Datasets | **Behavioural framework (synthetic Interaction Episodes from persona / intent distributions + hand-written seeds) + curated production conversations after launch.** | ✅ CONFIRMED | Adopts [`user_evaluation_framework.md`](../analysis/user_evaluation_framework.md) as the dataset plan. Production data follows EV-D10. **How episodes are used given EV-D3 is open (EV-Q1).** |
 | **EV-D2** | Evaluation Framework | **Deterministic assertions + an LLM judge with fixed rubrics** for open-ended qualities; the judge is calibrated against a human-labelled sample. Not Jev. | ✅ CONFIRMED | Matches KR-D11's judge. Judge cost per run → KU1. **Judge model choice open (EV-Q3).** |
 | **EV-D3** | Agent Evaluation | **Per-component suites only** (triage, retrieval, memory, tools, delegation, screening, reply checks). | ✅ CONFIRMED | Failures are easy to localize. **Conflicts with EV-D5's episode metrics and leaves integration failures untested (EV-Q1, UU1).** |
 | **EV-D4** | Evaluation Framework | **Staging copies of the real external systems** for agent runs. | ✅ CONFIRMED | Most realistic. Flaky and slow (KK1, KK2); staging writes may have real side effects (UK1). **Systems without a staging copy: open (EV-Q2).** |
@@ -2488,9 +2488,9 @@ User: "F12 a, F13 b, F14 b, F15 b".
 
 ### 12.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [8] Evaluation & Experimentation` (generator: [`generate_lld_eval.py`](./generate_lld_eval.py)). Contents: boundary, test environment tiers, Flow A (a change ships), Flow B (risk scenario) with Flow C (live quality) and Flow D (rollout), 7 sub-component cards, Jev note, failure grid with step-9 effects after §12.9a, decision-log summary + hand-offs.
-* **Shallower duplicates:** page-1 foundation node `Evaluation & Benchmarks` ("Ragas / Trulens · Golden Eval / LLM-as-a-Judge · Regression") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) "Foundation: EVALUATION & LLMOPS" and the matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 evaluation row and the streaming step (EV-D11). [`user_evaluation_framework.md`](./user_evaluation_framework.md) is adopted as the dataset plan (EV-D1) and left unchanged; its full-episode suite is narrowed to the risk tier by EV-Q1.
+* **Page:** `architecture.tldr` → `LLD - [8] Evaluation & Experimentation` (generator: [`generate_lld_eval.py`](../../scripts/generate_lld_eval.py)). Contents: boundary, test environment tiers, Flow A (a change ships), Flow B (risk scenario) with Flow C (live quality) and Flow D (rollout), 7 sub-component cards, Jev note, failure grid with step-9 effects after §12.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** page-1 foundation node `Evaluation & Benchmarks` ("Ragas / Trulens · Golden Eval / LLM-as-a-Judge · Regression") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) "Foundation: EVALUATION & LLMOPS" and the matrix row; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) Tier 4 evaluation row and the streaming step (EV-D11). [`user_evaluation_framework.md`](../analysis/user_evaluation_framework.md) is adopted as the dataset plan (EV-D1) and left unchanged; its full-episode suite is narrowed to the risk tier by EV-Q1.
 
 **Hand-offs from this loop:** Comp 1: `status` events while the reply is buffered (EV-D11); CSAT / CES collection (EV-D5); opt-in setting UI (EV-D15) · Comp 5: integration criticality per tool for EV-Q2 · Comp 10: live signals + traces feeding EV-D8 · Comp 11: staging reliability (KK1), latency budget for buffered replies (KU4), shadow read load · Comp 12: judge cost (KU1) · Comp 13: the runtime confidence gate (scope note §12.1) · Comp 14: CI wiring of smoke / nightly / release suites, staging resets (KK2), contract tests of fakes (KU5), flaky-test quarantine · Comp 16: exclude few-shot examples from test sets (KK4).
 
@@ -2500,7 +2500,7 @@ User: "F12 a, F13 b, F14 b, F15 b".
 
 > **Loop status:** ✅ CLOSED (2026-10-03) · Steps 1–11 complete · Page-1 `Observability & Tracing` node trimmed to pointer  
 > **Decision ID prefix:** `OB-` (forks `OB-F#`, decisions `OB-D#`)  
-> **Architecture mapping:** thoughts.md Component 10 ≈ page-1 foundation node `Observability & Tracing` · existing sketch in [`low_level_design.md`](./low_level_design.md) "Foundation: OBSERVABILITY & TRACING"
+> **Architecture mapping:** thoughts.md Component 10 ≈ page-1 foundation node `Observability & Tracing` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) "Foundation: OBSERVABILITY & TRACING"
 
 ### 13.1 GROUND — Raw Material (not decisions)
 
@@ -2717,9 +2717,9 @@ User: "F13 a, F14 b".
 
 ### 13.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [9] Observability & Monitoring` (generator: [`generate_lld_observability.py`](./generate_lld_observability.py)). Contents: boundary, telemetry pipeline per region, Flow A (Sarah's turn) with Flows B–E, 6 sub-component cards, alert list, failure grid with step-9 effects after §13.9a, decision-log summary + hand-offs.
-* **Shallower duplicates:** page-1 foundation node `Observability & Tracing` ("OpenTelemetry · LangSmith / Prometheus · Cost Dashboards") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) "Foundation: OBSERVABILITY & TRACING" and the matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 observability row.
+* **Page:** `architecture.tldr` → `LLD - [9] Observability & Monitoring` (generator: [`generate_lld_observability.py`](../../scripts/generate_lld_observability.py)). Contents: boundary, telemetry pipeline per region, Flow A (Sarah's turn) with Flows B–E, 6 sub-component cards, alert list, failure grid with step-9 effects after §13.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** page-1 foundation node `Observability & Tracing` ("OpenTelemetry · LangSmith / Prometheus · Cost Dashboards") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) "Foundation: OBSERVABILITY & TRACING" and the matrix row; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) Tier 4 observability row.
 
 **Hand-offs from this loop:** Comp 9: copy trace samples into eval stores within 7 days (UU2); measure Jev failure-category accuracy (KU3) · Comp 11: collector sizing (KU2), runbooks per alert, on-call · Comp 12: costs are estimates from kept traces (OB-D13) · Comp 13: approval-queue waiting times so stuck workflows are noticed (UU3) · Comp 14: trace-context propagation tests across Temporal, Jev, SSE (KK2) · Comp 16: owner of the failure taxonomy (OB-D11).
 
@@ -2729,7 +2729,7 @@ User: "F13 a, F14 b".
 
 > **Loop status:** ✅ CLOSED (2026-10-03) · Steps 1–11 complete · Page-1 `[3]` trimmed to pointer  
 > **Decision ID prefix:** `RP-` (forks `RP-F#`, decisions `RP-D#`)  
-> **Architecture mapping:** thoughts.md Component 11 ≈ architecture node `[3] Reliability & Resilience` · existing sketch in [`low_level_design.md`](./low_level_design.md) Component [3]
+> **Architecture mapping:** thoughts.md Component 11 ≈ architecture node `[3] Reliability & Resilience` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Component [3]
 
 ### 14.1 GROUND — Raw Material (not decisions)
 
@@ -2951,9 +2951,9 @@ User: "F13 c, F14 b, F15 c".
 
 ### 14.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [10] Reliability / Performance / Scale` (generator: [`generate_lld_reliability.py`](./generate_lld_reliability.py)). Contents: boundary, gateway path, degraded modes per failure, latency budgets, 6 sub-component cards, failure grid with step-9 effects after §14.9a, decision-log summary + hand-offs.
-* **Shallower duplicates:** page-1 node `[3] Reliability & Resilience` ("Rate Limiting · Token Bucket / Circuit Breakers & Fallback") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) Component [3] and the matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) `[3]` step.
+* **Page:** `architecture.tldr` → `LLD - [10] Reliability / Performance / Scale` (generator: [`generate_lld_reliability.py`](../../scripts/generate_lld_reliability.py)). Contents: boundary, gateway path, degraded modes per failure, latency budgets, 6 sub-component cards, failure grid with step-9 effects after §14.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** page-1 node `[3] Reliability & Resilience` ("Rate Limiting · Token Bucket / Circuit Breakers & Fallback") **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) Component [3] and the matrix row; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) `[3]` step.
 
 **Hand-offs from this loop:** Comp 1: "still working" message, keep rejected text, explain that a conversation waiting on approval is locked (RP-D3, RP-Q2); incident status banner (RP-D6) · Comp 8: per-region counter store (RP-D14); standby in the erasure fan-out (RP-D15) · Comp 9: baselines for the fallback model and fallback classifier (RP-D4, D5) · Comp 10: SLOs from RP-D8 values; incident declaration from alerts · Comp 12: GPU, standby and pre-warm costs (KU1) · Comp 13: requests held 24 h then handed to a human (RP-D7) · Comp 14: chaos and load tests in CI (RP-D12) · Legal / contracts: no cross-region failover, no tenant-facing uptime target (UK2).
 
@@ -2963,7 +2963,7 @@ User: "F13 c, F14 b, F15 c".
 
 > **Loop status:** ✅ CLOSED (2026-10-03) · Steps 1–11 complete · Page-1 `[Cap 12]` trimmed to pointer  
 > **Decision ID prefix:** `CR-` (forks `CR-F#`, decisions `CR-D#`)  
-> **Architecture mapping:** thoughts.md Component 12 ≈ architecture node `[Cap 12] Cost & Resource Router` · existing sketch in [`low_level_design.md`](./low_level_design.md) Component [Cap 12]
+> **Architecture mapping:** thoughts.md Component 12 ≈ architecture node `[Cap 12] Cost & Resource Router` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Component [Cap 12]
 
 ### 15.1 GROUND — Raw Material (not decisions)
 
@@ -3179,10 +3179,10 @@ User: "F13 c, F14 c".
 
 ### 15.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [11] Cost & Resource Management` (generator: [`generate_lld_cost.py`](./generate_lld_cost.py)). Contents: boundary, Flow A (one turn: tier, cascade, budgets), answer cache, budgets and reporting, 5 sub-component cards, Jev placements, failure grid with step-9 effects after §15.9a, decision-log summary + hand-offs.
-* **Shallower duplicates:** page-1 node `[Cap 12] Cost & Resource Router` **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
+* **Page:** `architecture.tldr` → `LLD - [11] Cost & Resource Management` (generator: [`generate_lld_cost.py`](../../scripts/generate_lld_cost.py)). Contents: boundary, Flow A (one turn: tier, cascade, budgets), answer cache, budgets and reporting, 5 sub-component cards, Jev placements, failure grid with step-9 effects after §15.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** page-1 node `[Cap 12] Cost & Resource Router` **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
 * **Earlier page updated:** `LLD - [7] Data & Persistence` regenerated for the revised DP-D4 (envelope encryption, separate key store).
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) Component [Cap 12], the Data encryption line and the matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) `[Cap 12]` step, hop 7 and the Tier 4 data row.
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) Component [Cap 12], the Data encryption line and the matrix row; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) `[Cap 12]` step, hop 7 and the Tier 4 data row.
 
 **Hand-offs from this loop:** Comp 1: budget alerts to tenant admins, soft-cap banner for users (UK2), usage reports UI (CR-D7) · Comp 8: per-region key store with 1-day backups (CR-D13), answer-cache store · Comp 9: EV baselines per tier and for compressed passages (KU3, UU2); calibrate the difficulty score (KU1) · Comp 10: cache hit rate, tier mix, cascade rate · Comp 11: key store in restore drills (CR-D13).
 
@@ -3192,7 +3192,7 @@ User: "F13 c, F14 c".
 
 > **Loop status:** ✅ CLOSED (2026-10-05) · Steps 1–11 complete · Page-1 `[11]`, `[HITL]` trimmed to pointers  
 > **Decision ID prefix:** `HL-` (forks `HL-F#`, decisions `HL-D#`)  
-> **Architecture mapping:** thoughts.md Component 13 ≈ architecture nodes `[11] Confidence Gate & Evaluation Boundary` + `[HITL] Human Support Specialist Console` · existing sketch in [`low_level_design.md`](./low_level_design.md) Components [11] and [HITL]
+> **Architecture mapping:** thoughts.md Component 13 ≈ architecture nodes `[11] Confidence Gate & Evaluation Boundary` + `[HITL] Human Support Specialist Console` · existing sketch in [`low_level_design.md`](../lld/low_level_design.md) Components [11] and [HITL]
 
 ### 16.1 GROUND — Raw Material (not decisions)
 
@@ -3424,9 +3424,9 @@ User: "F13 c, F14 b".
 
 ### 16.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [12] Human-in-the-Loop` (generator: [`generate_lld_hitl.py`](./generate_lld_hitl.py)). Contents: boundary, the gate and its bands, escalation sources → packet → queues, Flow B (approval of the $12,400 credit), handoff and waiting, 5 sub-component cards, Jev placements, failure grid with step-9 effects after §16.9a, decision-log summary + hand-offs.
-* **Shallower duplicates:** page-1 nodes `[11] Confidence Gate & Eval` and `[HITL] Human Support Specialist` **trimmed to pointers**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) components [11] and [HITL] and the matrix rows; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) `[11]` and `[HITL]` steps.
+* **Page:** `architecture.tldr` → `LLD - [12] Human-in-the-Loop` (generator: [`generate_lld_hitl.py`](../../scripts/generate_lld_hitl.py)). Contents: boundary, the gate and its bands, escalation sources → packet → queues, Flow B (approval of the $12,400 credit), handoff and waiting, 5 sub-component cards, Jev placements, failure grid with step-9 effects after §16.9a, decision-log summary + hand-offs.
+* **Shallower duplicates:** page-1 nodes `[11] Confidence Gate & Eval` and `[HITL] Human Support Specialist` **trimmed to pointers**. Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) components [11] and [HITL] and the matrix rows; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) `[11]` and `[HITL]` steps.
 
 **Hand-offs from this loop:** Comp 1: wait estimate + cancel button, "talk to a human" flow, reply-in-review status · Comp 5: approval signals and cancellations as Temporal signals (UU2 rule) · Comp 7: Cedar policies for approval rights (HL-D4), output checks on human replies (HL-D14) · Comp 8: tenant settings for senior amount; escalation packets stored with the case · Comp 9: gate calibration per route (HL-Q1), reason codes as labels · Comp 10: queue sizes, SLA breaches, aging alerts, override counts · Operations: staffing for the extra money / SLA reviews (KU2).
 
@@ -3631,9 +3631,9 @@ None decided. Jev question sets are contract-tested (TQ-D5); their accuracy is E
 
 ### 17.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [13] Testing & Quality` (generator: [`generate_lld_testing.py`](./generate_lld_testing.py)). Contents: boundary with Evaluation, the invariants under test, the pipeline (pull request → merge gate → nightly → release), 6 sub-component cards, failure grid with step-9 effects after §17.9a, decision-log summary + hand-offs.
+* **Page:** `architecture.tldr` → `LLD - [13] Testing & Quality` (generator: [`generate_lld_testing.py`](../../scripts/generate_lld_testing.py)). Contents: boundary with Evaluation, the invariants under test, the pipeline (pull request → merge gate → nightly → release), 6 sub-component cards, failure grid with step-9 effects after §17.9a, decision-log summary + hand-offs.
 * **Shared page-1 node:** `Testing & LLMOps (Caps 14, 15)` is shared with Deployment (Comp 15); its test line now points to this page, its deployment line stays until Comp 15 closes.
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) new "Foundation: TESTING & QUALITY" section and matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 testing row.
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) new "Foundation: TESTING & QUALITY" section and matrix row; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) Tier 4 testing row.
 
 **Hand-offs from this loop:** Comp 8: staging fixtures from production samples in the erasure inventory (UU3) · Comp 12: model cost of the merge gate's smoke subset (KU1) · Comp 15: merge / release verdicts, merge time (KU1), sample checkpoint library kept per release (TQ-D14).
 
@@ -3846,9 +3846,9 @@ None. Jev's model version follows DL-Q1; its API key is a rotated secret (DL-D7)
 
 ### 18.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [14] Deployment & LLMOps` (generator: [`generate_lld_deployment.py`](./generate_lld_deployment.py)). Contents: environments, the two release tracks (code vs. behaviour / models), versioning, secrets, in-flight workflows, failure grid with step-9 effects after §18.9a, decision-log summary.
+* **Page:** `architecture.tldr` → `LLD - [14] Deployment & LLMOps` (generator: [`generate_lld_deployment.py`](../../scripts/generate_lld_deployment.py)). Contents: environments, the two release tracks (code vs. behaviour / models), versioning, secrets, in-flight workflows, failure grid with step-9 effects after §18.9a, decision-log summary.
 * **Shared page-1 node:** `Testing & LLMOps (Caps 14, 15)` now points to both [13] and [14].
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) new "Foundation: DEPLOYMENT & LLMOPS" section and matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 testing / LLMOps row.
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) new "Foundation: DEPLOYMENT & LLMOPS" section and matrix row; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) Tier 4 testing / LLMOps row.
 
 **Hand-offs from this loop:** Comp 1: change notices to tenants when behaviour releases ship (UK1) · Comp 9: shadow / canary evidence for scheduled releases (DL-Q2), recalibration when Jev's pinned version is upgraded · Comp 10: deploy and rollback events on dashboards · Comp 11: on-call runbook for manual rollback (DL-D5) · Comp 13: test that every workflow continues-as-new safely and drains signals first (UU3).
 
@@ -4057,9 +4057,9 @@ User: "F12 a".
 
 ### 19.11 MATERIALIZE — Step 11
 
-* **Page:** `architecture.tldr` → `LLD - [15] Continuous Improvement` (generator: [`generate_lld_improvement.py`](./generate_lld_improvement.py)). Contents: the improvement loop (signals → analysis → fix → test → validate → ship), levers, fine-tuning track, evolution reviews, failure grid with step-9 effects after §19.9a, decision-log summary.
-* **Shallower duplicates:** page-1 foundation node `Continuous Improve (Cap 16)` **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](./generate_architecture_tldr.py).
-* **Docs kept in sync:** [`low_level_design.md`](./low_level_design.md) new "Foundation: CONTINUOUS IMPROVEMENT" section and matrix row; [`request_response_lifecycle_example.md`](./request_response_lifecycle_example.md) Tier 4 improvement row.
+* **Page:** `architecture.tldr` → `LLD - [15] Continuous Improvement` (generator: [`generate_lld_improvement.py`](../../scripts/generate_lld_improvement.py)). Contents: the improvement loop (signals → analysis → fix → test → validate → ship), levers, fine-tuning track, evolution reviews, failure grid with step-9 effects after §19.9a, decision-log summary.
+* **Shallower duplicates:** page-1 foundation node `Continuous Improve (Cap 16)` **trimmed to a pointer**. Same text in [`generate_architecture_tldr.py`](../../scripts/generate_architecture_tldr.py).
+* **Docs kept in sync:** [`low_level_design.md`](../lld/low_level_design.md) new "Foundation: CONTINUOUS IMPROVEMENT" section and matrix row; [`request_response_lifecycle_example.md`](../lld/request_response_lifecycle_example.md) Tier 4 improvement row.
 
 **Hand-offs from this loop:** Comp 1: post-resolution survey in the chat UI; updated terms for training consent (CI-Q1) · Comp 8: training datasets per region in the erasure inventory (CI-D12) · Comp 9: baselines for fine-tuned models; before / after comparisons per cluster · Comp 10: implicit signals (reopened cases, abandonment) · Comp 12: fine-tuning GPU cost (KU3) · Comp 15: fine-tuned weights ship on the model track (DL-D10).
 
@@ -4067,6 +4067,6 @@ User: "F12 a".
 
 ## 20. Design Loop Completion (2026-10-06)
 
-All 15 component loops in thoughts.md order are **closed**, on top of the Orchestration decisions (ADP-01 – ADP-05). Every component has: grounding, decomposition, traced flows, an explicit boundary, resolved forks, a Known / Unknown failure grid with step-9 effects, a definition-of-done check and an LLD page in [`architecture.tldr`](./architecture.tldr).
+All 15 component loops in thoughts.md order are **closed**, on top of the Orchestration decisions (ADP-01 – ADP-05). Every component has: grounding, decomposition, traced flows, an explicit boundary, resolved forks, a Known / Unknown failure grid with step-9 effects, a definition-of-done check and an LLD page in [`architecture.tldr`](../../diagrams/architecture.tldr).
 
 **Living items (reviewed quarterly per CI-D9):** the owned and accepted risks listed in each loop's §x.9 summary, and the hand-offs whose execution belongs to operations (staffing, contracts, runbooks).

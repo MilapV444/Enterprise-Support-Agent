@@ -71,8 +71,18 @@ class PageBuilder:
         return page, camera, self.shapes
 
 
-def write_page(page, camera, shapes, target="architecture.tldr"):
+DEFAULT_TARGET = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "diagrams", "architecture.tldr")
+
+
+def write_page(page, camera, shapes, target=None):
     """Replace one page (and its shapes/camera) in the .tldr file, leaving every other page untouched."""
+    if target is None:
+        target = DEFAULT_TARGET
+    elif not os.path.isabs(target) and not os.path.exists(target):
+        candidate = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "diagrams", target)
+        if os.path.exists(candidate):
+            target = candidate
+
     if not os.path.exists(target):
         print(f"Error: {target} not found!")
         return
@@ -85,3 +95,4 @@ def write_page(page, camera, shapes, target="architecture.tldr"):
     with open(target, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
     print(f"Generated page '{page['name']}' with {len(shapes)} shapes in {target}.")
+
