@@ -42,9 +42,27 @@ def main():
         "| Component | ADPs | Decisions | Reasoning |",
         "| :--- | :--- | ---: | :--- |",
     ]
+    ADP_DIR = os.path.join(ROOT, "docs", "decisions", "adp")
+
+    def get_doc_link(adp_id):
+        if os.path.exists(ADP_DIR):
+            for root, dirs, files in os.walk(ADP_DIR):
+                for fname in sorted(files):
+                    if fname.lower().startswith(adp_id.lower() + "-") and fname.endswith(".md"):
+                        rel_path = os.path.relpath(os.path.join(root, fname), os.path.join(ROOT, "docs", "decisions"))
+                        return f"./{rel_path.replace(os.sep, '/')}"
+        return None
+
     for prefix, (name, section, _) in COMPONENTS.items():
         items = groups[prefix]
-        ids = "<br>".join(f"{g['id']} · {g['title']}" for g in items)
+        rendered_ids = []
+        for g in items:
+            link = get_doc_link(g["id"])
+            if link:
+                rendered_ids.append(f"[{g['id']} · {g['title']}]({link})")
+            else:
+                rendered_ids.append(f"{g['id']} · {g['title']}")
+        ids = "<br>".join(rendered_ids)
         out.append(f"| **{name}** | {ids} | {sum(len(g['members']) for g in items)} | checkpoint.md {section} |")
     out += [f"| **Total** | **{n_adps}** | **{n_dec}** | |", ""]
 
@@ -52,8 +70,10 @@ def main():
         out += [f"## {name}", "", f"Reasoning: `checkpoint.md` {section} · Diagram: `{page}`", ""]
         for g in groups[prefix]:
             related = ", ".join(f"{r} ({titles[r]})" for r in g.get("related", [])) or "—"
+            link = get_doc_link(g["id"])
+            header = f"### [{g['id']} · {g['title']}]({link})" if link else f"### {g['id']} · {g['title']}"
             out += [
-                f"### {g['id']} · {g['title']}",
+                header,
                 "",
                 f"- **Question:** {g['question']}",
                 f"- **Chosen design:** {g['decision']}",
