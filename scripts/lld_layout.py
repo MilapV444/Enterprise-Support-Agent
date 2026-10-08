@@ -27,6 +27,7 @@ class PageBuilder:
         self.idx = _Idx(500)
         self.shapes = []
         self._bounds = {}
+        self._frames = []
 
     def add(self, nid, text, x, y, w, h, color, fill="semi", ext=False, **kw):
         """Add a box. ext=True draws a grey dashed 'not owned' box instead."""
@@ -39,7 +40,12 @@ class PageBuilder:
 
     def frame_behind(self, nid, label, x, y, w, h, color):
         """Add a section frame that renders beneath shapes added before it."""
+        self._frames.append((x, y, w, h))
         self.shapes.insert(0, frame(f"shape:{self.prefix}_f_{nid}", label, x, y, w, h, color, self.idx, page_id=self.pid))
+
+    def bottom(self):
+        """Lowest y reached by any box or frame on the page so far."""
+        return max(y + h for x, y, w, h in list(self._bounds.values()) + self._frames)
 
     def _anchor(self, nid, side):
         x, y, w, h = self._bounds[nid]
@@ -69,6 +75,30 @@ class PageBuilder:
         page = {"typeName": "page", "id": self.pid, "name": name, "index": page_index, "meta": {}}
         camera = {"typeName": "camera", "id": f"camera:{self.pid}", "x": 0, "y": 0, "z": zoom, "meta": {}}
         return page, camera, self.shapes
+
+
+def add_adp_section(pb, prefix, x0, width, gap=20):
+    """Append the component's Architectural Decision Points (ADPs) as one row of cards below everything else.
+
+    ADPs come from docs/decisions/adp_groups.yaml (each groups decisions from the checkpoint.md log),
+    so the page stays in sync with the grouping and the log.
+    """
+    from adp_registry import load_groups
+
+    # Same structure as the Orchestration page's ADP row (generate_lld_page.py): one green frame,
+    # one row of green "⚡ ID: Title / ✔ decision" cards, 15 px side padding, 20 px gaps.
+    groups = load_groups()[prefix]
+    n = len(groups)
+    top = pb.bottom() + 60
+    card_w = (width - 30 - (n - 1) * gap) / n
+    texts = [f"⚡ {g['id']}: {g['title']}\n✔ {g['decision']}\nCovers: {' · '.join(g['members'])}"
+             for g in groups]
+    card_h = max(est_h(t, card_w) for t in texts)
+    card_y = top + 32
+    for i, (g, t) in enumerate(zip(groups, texts)):
+        pb.add(f"adp_{g['id']}", t, x0 + 15 + i * (card_w + gap), card_y, card_w, card_h, "green")
+    pb.frame_behind("adps", f"ARCHITECTURAL DECISION POINTS (ADPs) · {n} ADPs (CONFIRMED FOR GENESIS INITIALIZATION)",
+                    x0, top, width, card_h + 50, "green")
 
 
 DEFAULT_TARGET = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "diagrams", "architecture.tldr")

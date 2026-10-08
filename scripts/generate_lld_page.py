@@ -355,15 +355,15 @@ def build_abstract_lld_records():
                  Q_COL2_X, Q_Y + 190, Q_HALF_W, Q_BOX_H, "light-red", "semi", idx, size="s", page_id=pid))
 
     # ═════════════════════════════════════════════════════════════════
-    # 4. ARCHITECTURAL DECISION CHECKPOINTS (y: 1105 to 1235)
+    # 4. ARCHITECTURAL DECISION CHECKPOINTS (y: 1105 to 1280)
     # ═════════════════════════════════════════════════════════════════
     DEC_Y = 1105
     R.append(frame("shape:f_lld_dec",
-                   "ARCHITECTURAL DECISION CHECKPOINTS (CONFIRMED FOR GENESIS INITIALIZATION)",
-                   START_X, DEC_Y, TOTAL_W, 125, "green", idx, page_id=pid))
+                   "ARCHITECTURAL DECISION POINTS (ADPs) · 5 ADPs (CONFIRMED FOR GENESIS INITIALIZATION)",
+                   START_X, DEC_Y, TOTAL_W, 175, "green", idx, page_id=pid))
 
-    D_CARD_W = (TOTAL_W - 30 - 3 * 20) / 4  # ~627px
-    D_CARD_H = 80
+    D_CARD_W = (TOTAL_W - 30 - 4 * 20) / 5  # ~498px
+    D_CARD_H = 130
     D_CARD_Y = DEC_Y + 32
 
     dec_cards = [
@@ -371,6 +371,7 @@ def build_abstract_lld_records():
         ("⚡ ADP-02: Workflow Durability", "Option C: Two-Tier Hybrid Substrate\n(Temporal.io Outer Saga + LangGraph Inner Loop)"),
         ("⚡ ADP-03: Context Compaction", "Option C: Tripartite Structured Slot Allocator\n(15% System | 15% Profile | 35% RAG | 25% Chat | 10% Scratch)"),
         ("⚡ ADP-04: Error Recovery", "Option C: Dual-Process Circuit Breaker\n(Max 2 Reflexion trials → Immediate HITL Escalation)"),
+        ("⚡ ADP-05: Decision Model", "Jev (TypeSafe) at decision points\n(Triage · FSM guards · tool selection; LangGraph runs)"),
     ]
 
     for i, (title, body) in enumerate(dec_cards):
