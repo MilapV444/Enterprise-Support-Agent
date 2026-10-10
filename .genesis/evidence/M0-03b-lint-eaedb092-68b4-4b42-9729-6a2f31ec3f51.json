@@ -1,0 +1,30 @@
+{
+  "task": "M0-03b",
+  "gate": "lint",
+  "kind": "command",
+  "attempt": "eaedb092-68b4-4b42-9729-6a2f31ec3f51",
+  "command": "python -m ruff check src tests",
+  "started_at": "2026-10-10T17:40:53.494Z",
+  "observed_at": "2026-10-10T17:40:59.411Z",
+  "exit_code": 1,
+  "signal": null,
+  "stdout": "E501 Line too long (111 > 110)\n  --> tests\\test_dependencies.py:23:111\n   |\n21 |     \"pytest\": \"pytest\", \"ruff\": \"ruff\",\n22 | }\n23 | # Locust gevent-patches the whole process on import (breaks ssl for everything after it): import it on its own.\n   |                                                                                                               ^\n24 | ISOLATED = {\"locust\"}\n   |\n\nFound 1 error.\n",
+  "stderr": "",
+  "failure": "command-failed",
+  "receipt": null,
+  "revision": {
+    "commit": "94b544c760bdda571e15c2ff1865450d7bf24ed9",
+    "dirty": true
+  },
+  "source_hash": "0c49e23437b407b4ab5ea2cd2c5c595833f3c1d6749dba997dde233510f8b9a4",
+  "before_hash": "0c49e23437b407b4ab5ea2cd2c5c595833f3c1d6749dba997dde233510f8b9a4",
+  "config_hash": "6cc5115d189d93426867d19d87927b3d046f30a0f7a108ef2b020c66fc8705ac",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "ffca297f8bfe07b3fdbea68605129da26598c9619b54cc9d81866bf021035416"
+}

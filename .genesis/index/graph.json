@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "14071fa425ca938c96f7d21f2bb74c95796dd45c",
-  "sourceHash": "2f5f504d035cf61333d5d1272d77f2fc26515d87634ea971c427f940ef9f2223",
+  "revision": "94b544c760bdda571e15c2ff1865450d7bf24ed9",
+  "sourceHash": "ea7b903b799d4cab04b4003a23b634a7a08f701247e7c91343ecb5e27c6cb554",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -240,6 +240,16 @@
       "contentHash": "e680f95474218dfcb1d27c892d4ed77ad5561c44e7d25bd5b6b957252b805ce7"
     },
     {
+      "id": "file:src/core/secrets.py",
+      "type": "file",
+      "label": "src/core/secrets.py",
+      "path": "src/core/secrets.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "7e75ec94d20ab2683ba5d6fb6fa42f58222f01cb5801f901976e4f4c5d95febb"
+    },
+    {
       "id": "file:src/data/__init__.py",
       "type": "file",
       "label": "src/data/__init__.py",
@@ -248,6 +258,26 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "1f971a60aa87f887e39ab49cc1f1e68db12f83e4990f2677e6f3f21ec81f735b"
+    },
+    {
+      "id": "file:src/data/keys/__init__.py",
+      "type": "file",
+      "label": "src/data/keys/__init__.py",
+      "path": "src/data/keys/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ad1b147afc3449e6903df7f7639156a08f0efae9e4baf935225ae891d914e6a9"
+    },
+    {
+      "id": "file:src/data/keys/envelope.py",
+      "type": "file",
+      "label": "src/data/keys/envelope.py",
+      "path": "src/data/keys/envelope.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1c8f03fde7b62bf51dfc162f0d0beeb74df2a3eef8add2c127cf978d0b97f7a5"
     },
     {
       "id": "file:src/data/migrate.py",
@@ -278,6 +308,26 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "d01ad7133de9aa0cc7d56933c07ec3b2242c0da33436ae6572dcdfb9f51e3656"
+    },
+    {
+      "id": "file:tests/keys/test_envelope.py",
+      "type": "file",
+      "label": "tests/keys/test_envelope.py",
+      "path": "tests/keys/test_envelope.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ba66737fb05b94200427f6287a22b6a2fe5604317a02b7db8b23b9d05bbaa823"
+    },
+    {
+      "id": "file:tests/test_dependencies.py",
+      "type": "file",
+      "label": "tests/test_dependencies.py",
+      "path": "tests/test_dependencies.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "87fc21b1f60115e999f412229974f4f95320a8bcf7a4d3b6704a369eb87ff695"
     },
     {
       "id": "file:tests/test_skeleton.py",

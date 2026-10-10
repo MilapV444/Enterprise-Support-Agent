@@ -410,7 +410,7 @@
 
 ### M0-03b — M0 Foundation: declare the libraries the plan names in pyproject.toml (Postgres driver, cryptography, LangGraph + Postgres checkpointer, Temporal SDK, Qdrant client, FastAPI, cedarpy, OpenTelemetry, httpx, Anthropic SDK, boto3 for R2, pydantic; Streamlit and Locust as extras) and keep CI green
 
-- state/risk: active / low
+- state/risk: done / low
 - requirements: NFR-26, NFR-36
 - scope: pyproject.toml, .github/workflows/, tests/test_dependencies.py
 - gates: tests: python -m pytest tests/test_dependencies.py -q, lint: python -m ruff check src tests
@@ -418,15 +418,15 @@
 
 ### M0-04.2 — M0 Foundation: OpenBao client, envelope encryption with per-user data keys in a separate key store, and secret loading
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-44, NFR-30
 - scope: src/data/keys/, src/core/secrets.py, tests/keys/
-- gates: tests: python -m pytest tests/keys/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/keys/ -q, independent-review: pass
+- next: Human independent review of src/core/secrets.py, src/data/keys/, tests/keys/
 
 ### M0-05.2 — M0 Foundation: object storage interface (R2 / local), 7-day event log with replay, versioned raw snapshots
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: NFR-4
 - scope: src/data/storage/, src/data/events.py, tests/storage/
 - gates: tests: python -m pytest tests/storage/ -q, independent-review: pending

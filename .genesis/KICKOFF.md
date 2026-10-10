@@ -4,11 +4,11 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: M0-03b — M0 Foundation: declare the libraries the plan names in pyproject.toml (Postgres driver, cryptography, LangGraph + Postgres checkpointer, Temporal SDK, Qdrant client, FastAPI, cedarpy, OpenTelemetry, httpx, Anthropic SDK, boto3 for R2, pydantic; Streamlit and Locust as extras) and keep CI green
+- active task: M0-05.2 — M0 Foundation: object storage interface (R2 / local), 7-day event log with replay, versioned raw snapshots
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
-- gates: tests:pending, lint:pending
+- gates: tests:pending, independent-review:pending
 - recent failures: none
 
 ## Resume
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: a5db4c4a7e291b00a53d93b5bcfeabab1c8cab0cea9d5f4b380806f15ee5540d. Use --since only after receiving that full packet; kickoff is not the packet.
-- DECISION-16784ab7: Delivery: ordered milestones
-- DECISION-8bba852d: LLM provider: Anthropic Claude for mid and frontier tiers
+Context fingerprint: 311af8bd6c424cc13d0afdebb73f4234e2bcb17d292189707e2d80fda4df5042. Use --since only after receiving that full packet; kickoff is not the packet.
 - KNOWLEDGE-7d33c13a: Run gates with the project venv on PATH
+- DECISION-6b7412f4: v1 runtime: learning deployment profile, USD 10/month cap
+- DECISION-47cbf130: Success for first production release: launch baseline
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

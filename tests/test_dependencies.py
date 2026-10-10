@@ -2,6 +2,8 @@
 
 import importlib
 import re
+import subprocess
+import sys
 import tomllib
 from pathlib import Path
 
@@ -18,6 +20,8 @@ MODULES = {
     "boto3": "boto3", "pydantic": "pydantic", "streamlit": "streamlit", "locust": "locust",
     "pytest": "pytest", "ruff": "ruff",
 }
+# Locust gevent-patches the whole process on import, which breaks ssl for everything after it.
+ISOLATED = {"locust"}
 
 
 def declared():
@@ -32,4 +36,7 @@ def test_every_declared_library_has_a_known_module():
 
 @pytest.mark.parametrize("distribution", sorted(MODULES))
 def test_library_imports(distribution):
-    importlib.import_module(MODULES[distribution])
+    if distribution in ISOLATED:
+        subprocess.run([sys.executable, "-c", f"import {MODULES[distribution]}"], check=True)
+    else:
+        importlib.import_module(MODULES[distribution])

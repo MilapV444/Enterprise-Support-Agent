@@ -24,10 +24,15 @@ digraph genesis {
   "file:scripts/organize_adps.py" [label="scripts/organize_adps.py",class="file"];
   "file:src/core/__init__.py" [label="src/core/__init__.py",class="file"];
   "file:src/core/release_paths.py" [label="src/core/release_paths.py",class="file"];
+  "file:src/core/secrets.py" [label="src/core/secrets.py",class="file"];
   "file:src/data/__init__.py" [label="src/data/__init__.py",class="file"];
+  "file:src/data/keys/__init__.py" [label="src/data/keys/__init__.py",class="file"];
+  "file:src/data/keys/envelope.py" [label="src/data/keys/envelope.py",class="file"];
   "file:src/data/migrate.py" [label="src/data/migrate.py",class="file"];
   "file:tests/data/test_schema.py" [label="tests/data/test_schema.py",class="file"];
   "file:tests/deploy/test_compose.py" [label="tests/deploy/test_compose.py",class="file"];
+  "file:tests/keys/test_envelope.py" [label="tests/keys/test_envelope.py",class="file"];
+  "file:tests/test_dependencies.py" [label="tests/test_dependencies.py",class="file"];
   "file:tests/test_skeleton.py" [label="tests/test_skeleton.py",class="file"];
 
 }
