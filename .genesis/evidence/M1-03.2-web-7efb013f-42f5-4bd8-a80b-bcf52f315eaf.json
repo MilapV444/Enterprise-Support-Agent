@@ -1,0 +1,30 @@
+{
+  "task": "M1-03.2",
+  "gate": "web",
+  "kind": "command",
+  "attempt": "7efb013f-42f5-4bd8-a80b-bcf52f315eaf",
+  "command": "npm --prefix web test",
+  "started_at": "2026-10-12T17:56:12.533Z",
+  "observed_at": "2026-10-12T17:56:17.271Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "\n> test\n> node --test\n\n✔ a retried message keeps its Idempotency-Key (51.5314ms)\n✔ client errors are not retried (2.7592ms)\n✔ a dropped stream reconnects with Last-Event-ID and sends the Bearer [REDACTED] (2.6866ms)\n✔ a refused stream stops instead of retrying forever (0.6227ms)\n✔ parses events, skips comments and keeps the last id (3.8665ms)\n✔ events split across chunks arrive once complete (0.4702ms)\n✔ multi-line data is joined and unnamed events default to message (0.3064ms)\n✔ status shows while the reply is held, then the checked reply replaces it (2.9015ms)\n✔ citations attach to the reply that follows them (0.2564ms)\n✔ an expired stream clears the view before the history is replayed (1.2362ms)\n✔ errors and hand-offs end the status line (0.4582ms)\n✔ unknown event types change nothing (0.2556ms)\n✔ render sets text only, never HTML (1.081ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 210.388\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "58aff5b6b6f968ca50d9274baf98a195db02b704",
+    "dirty": true
+  },
+  "source_hash": "fc74bea6662b45f29d6560fde8b54031589c199f0ecbe84e3c4807855f8d8f2b",
+  "before_hash": "fc74bea6662b45f29d6560fde8b54031589c199f0ecbe84e3c4807855f8d8f2b",
+  "config_hash": "c8c0dbc5274267aa63455d7054e15a728fcec4b186c70a877802815ddf33dd47",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "d5d536c38706bc7fec396fd1fb7e291a030bce3a96a6b4d6274fe8b66e581921"
+}

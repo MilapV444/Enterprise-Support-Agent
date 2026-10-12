@@ -1,0 +1,30 @@
+{
+  "task": "M1-02.2",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "910f0501-1a4b-43a8-94e8-740f167e5e82",
+  "command": "python -m pytest tests/identity/ -q",
+  "started_at": "2026-10-12T17:48:22.269Z",
+  "observed_at": "2026-10-12T17:48:35.627Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "...............................                                          [100%]\r\n31 passed in 9.27s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "58aff5b6b6f968ca50d9274baf98a195db02b704",
+    "dirty": true
+  },
+  "source_hash": "ccea90282a56e9a7ea7fba53cd6a20cc7de8a7c07317421c229033031c643bf7",
+  "before_hash": "ccea90282a56e9a7ea7fba53cd6a20cc7de8a7c07317421c229033031c643bf7",
+  "config_hash": "c585f88cf0d938be0ab6be35554fa2cc12db3aae1a3110c34c4d7a76cef889ba",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "0e94d834450fa53808ca2c6433ce7f550e5583e7856e7570c50d34470481dc8b"
+}

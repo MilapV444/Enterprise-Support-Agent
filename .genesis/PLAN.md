@@ -426,31 +426,31 @@
 
 ### M0-05.2 — M0 Foundation: object storage interface (R2 / local), 7-day event log with replay, versioned raw snapshots
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: NFR-4
 - scope: src/data/storage/, src/data/events.py, tests/storage/
-- gates: tests: python -m pytest tests/storage/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/storage/ -q, independent-review: pass
+- next: Human independent review of src/data/events.py, src/data/storage/, tests/storage/
 
 ### M1-01.2 — M1 Core: FastAPI POST 202 with idempotency key, resumable SSE stream and typed event envelope
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: FR-6, FR-9
 - scope: src/channels/api/, tests/channels/
-- gates: tests: python -m pytest tests/channels/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/channels/ -q, independent-review: pass
+- next: Human independent review of src/channels/api/ and tests/channels/
 
 ### M1-02.2 — M1 Core: tiered identity (anonymous, OTP, mock OIDC SSO with step-up), on-behalf-of tokens, and the session → conversation → case model
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-7, FR-8
 - scope: src/channels/identity/, src/channels/sessions.py, tests/identity/
-- gates: tests: python -m pytest tests/identity/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/identity/ -q, independent-review: pass
+- next: Human independent review of src/channels/identity/, src/channels/sessions.py, tests/identity/
 
 ### M1-03.2 — M1 Core: web chat frontend consuming the SSE stream and typed events (Vercel-deployable)
 
-- state/risk: queued / low
+- state/risk: done / low
 - requirements: FR-6, FR-9
 - scope: web/, tests/web/
 - gates: tests: python -m pytest tests/web/ -q, web: npm --prefix web test
@@ -458,7 +458,7 @@
 
 ### M1-04.2 — M1 Core: LangGraph statechart with scoped ReAct, thread state schema and Postgres checkpointer
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-1, FR-18
 - scope: src/core/orchestrator/statechart.py, src/core/orchestrator/planner.py, src/schemas/, tests/orchestrator/
 - gates: tests: python -m pytest tests/orchestrator/ -q, independent-review: pending
