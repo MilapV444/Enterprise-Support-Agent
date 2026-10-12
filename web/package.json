@@ -1,0 +1,11 @@
+{
+  "name": "support-agent-web",
+  "private": true,
+  "type": "module",
+  "description": "Web chat for the support agent: static files, no build step, no dependencies.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test",
+    "dev": "node dev-server.js"
+  }
+}

@@ -1,0 +1,32 @@
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --text: #1c2430;
+  --muted: #5d6b7e;
+  --user: #1f5fd1;
+  --border: #dde2ea;
+  --error: #b42318;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #11151b; --panel: #1a2029; --text: #e6eaf0; --muted: #98a4b5; --user: #4c8dff;
+          --border: #2b3340; --error: #ff6b5f; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, sans-serif; }
+main { max-width: 720px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding: 16px; }
+header h1 { margin: 0; font-size: 1.25rem; }
+.disclosure { margin: 4px 0 12px; color: var(--muted); font-size: 0.875rem; }
+#log { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 8px 0; }
+.message { max-width: 85%; padding: 8px 12px; border-radius: 12px; background: var(--panel);
+           border: 1px solid var(--border); white-space: pre-wrap; overflow-wrap: anywhere; }
+.message.user { align-self: flex-end; background: var(--user); color: #fff; border-color: transparent; }
+.message.system, .message.card { align-self: center; color: var(--muted); }
+.message.draft { opacity: 0.7; }
+.citation { margin-top: 6px; font-size: 0.8rem; color: var(--muted); }
+.status { color: var(--muted); font-style: italic; }
+.error { color: var(--error); }
+#composer { display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+#composer textarea { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border);
+                     background: var(--panel); color: var(--text); font: inherit; resize: vertical; }
+#composer button { padding: 0 16px; border: 0; border-radius: 8px; background: var(--user); color: #fff;
+                   font: inherit; cursor: pointer; }

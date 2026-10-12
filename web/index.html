@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Support Chat</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/src/app.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Support</h1>
+      <p class="disclosure">You are chatting with an AI assistant. A person can take over at any time.</p>
+    </header>
+    <section id="log" aria-live="polite"></section>
+    <form id="composer">
+      <textarea name="message" rows="2" maxlength="16384" placeholder="Describe your issue" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </main>
+</body>
+</html>

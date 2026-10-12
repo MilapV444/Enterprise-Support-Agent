@@ -1,0 +1,30 @@
+{
+  "task": "M0-04.2",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "194d364b-b781-4cec-9888-8947fd024ebb",
+  "command": "python -m pytest tests/keys/ -q",
+  "started_at": "2026-10-10T17:54:14.611Z",
+  "observed_at": "2026-10-10T17:54:39.641Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".........                                                                [100%]\r\n9 passed in 10.74s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "94b544c760bdda571e15c2ff1865450d7bf24ed9",
+    "dirty": true
+  },
+  "source_hash": "1ae6050a56f74320e511f17443a6c0341106f5556db9a7d88664388e973d9eee",
+  "before_hash": "1ae6050a56f74320e511f17443a6c0341106f5556db9a7d88664388e973d9eee",
+  "config_hash": "6dd77d6219eb6015b744b222196e09c2c1bc35be2a8b7a8ad04cc0974ae29584",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "c69b519fb30608a210aab010cf05313e83fe7fca81d9a64b311baa700e48d03d"
+}

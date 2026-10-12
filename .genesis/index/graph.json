@@ -1,0 +1,1712 @@
+{
+  "schemaVersion": 2,
+  "project": "Enterprise-Support-Agent",
+  "revision": "58aff5b6b6f968ca50d9274baf98a195db02b704",
+  "sourceHash": "d2545820c032595501e1382794e711c3a7a58ccbc36300b46aeff0cc4d1fc703",
+  "provenance": {
+    "tool": "genesis-graphizer",
+    "method": "static-analysis",
+    "confidenceScale": "0..1"
+  },
+  "nodes": [
+    {
+      "id": "file:scripts/adp_registry.py",
+      "type": "file",
+      "label": "scripts/adp_registry.py",
+      "path": "scripts/adp_registry.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "b06e1c64fa1cd779e472ef5784b3a195e9d8d3f36a698a1d304c6eea28e67032"
+    },
+    {
+      "id": "file:scripts/generate_adp_index.py",
+      "type": "file",
+      "label": "scripts/generate_adp_index.py",
+      "path": "scripts/generate_adp_index.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "37d0d92b2ba18e38397c50db876c69e0129e14fdc62ae92665f9b50a4311c2bd"
+    },
+    {
+      "id": "file:scripts/generate_architecture_tldr.py",
+      "type": "file",
+      "label": "scripts/generate_architecture_tldr.py",
+      "path": "scripts/generate_architecture_tldr.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "bfcdcb0da78c8d8e0223b2a6430d93d635d239a08786ef834f35d7f461df10e2"
+    },
+    {
+      "id": "file:scripts/generate_lld_cost.py",
+      "type": "file",
+      "label": "scripts/generate_lld_cost.py",
+      "path": "scripts/generate_lld_cost.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "022688447a9aaf336727876e4e0aa990423e2bfbee437a1c74752f998053c40c"
+    },
+    {
+      "id": "file:scripts/generate_lld_data.py",
+      "type": "file",
+      "label": "scripts/generate_lld_data.py",
+      "path": "scripts/generate_lld_data.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e422d622021dfd4c67a5fab967b21a34e7b047411b8301398a969971f031408e"
+    },
+    {
+      "id": "file:scripts/generate_lld_deployment.py",
+      "type": "file",
+      "label": "scripts/generate_lld_deployment.py",
+      "path": "scripts/generate_lld_deployment.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "7e767b771fd424e4f83ac8b51b115ad2c9e13721625f7c089805c1a702b0b86c"
+    },
+    {
+      "id": "file:scripts/generate_lld_eval.py",
+      "type": "file",
+      "label": "scripts/generate_lld_eval.py",
+      "path": "scripts/generate_lld_eval.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "850d516d9f7dd711d7d2772fac961738c02ffa3490177d62f93a1abc7014e087"
+    },
+    {
+      "id": "file:scripts/generate_lld_hitl.py",
+      "type": "file",
+      "label": "scripts/generate_lld_hitl.py",
+      "path": "scripts/generate_lld_hitl.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "b9aeae146da06feccbbee3e36ca7d88d26670dbea93a2cc369cb203df53d26c7"
+    },
+    {
+      "id": "file:scripts/generate_lld_improvement.py",
+      "type": "file",
+      "label": "scripts/generate_lld_improvement.py",
+      "path": "scripts/generate_lld_improvement.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "03edaa1e367ddb89a72a03d2e9b3be8db50ae6f4f1777eaabac5d4ee7349b42d"
+    },
+    {
+      "id": "file:scripts/generate_lld_knowledge.py",
+      "type": "file",
+      "label": "scripts/generate_lld_knowledge.py",
+      "path": "scripts/generate_lld_knowledge.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "6836752c275dd6dd46ef4641d0fcdf32e86617f08c9fd03efc8374c355420c7f"
+    },
+    {
+      "id": "file:scripts/generate_lld_memory.py",
+      "type": "file",
+      "label": "scripts/generate_lld_memory.py",
+      "path": "scripts/generate_lld_memory.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c5f87e9705257c771838af3e1e0d1dbad5662e43f633c84a400c489b303da7e9"
+    },
+    {
+      "id": "file:scripts/generate_lld_multiagent.py",
+      "type": "file",
+      "label": "scripts/generate_lld_multiagent.py",
+      "path": "scripts/generate_lld_multiagent.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "9059baeae812b505ef6da8df8cac6a607c53155d00718998b9cf7e12fefd10bb"
+    },
+    {
+      "id": "file:scripts/generate_lld_observability.py",
+      "type": "file",
+      "label": "scripts/generate_lld_observability.py",
+      "path": "scripts/generate_lld_observability.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "79f02f2dca7f69fad83fab5f168f515678e8979e1307bb898a07c1755ed256af"
+    },
+    {
+      "id": "file:scripts/generate_lld_page.py",
+      "type": "file",
+      "label": "scripts/generate_lld_page.py",
+      "path": "scripts/generate_lld_page.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "acb4f9da046a317e097bb6047a27a7c1403fe5d187119ed2b58abc9c4a7a7e9e"
+    },
+    {
+      "id": "file:scripts/generate_lld_reliability.py",
+      "type": "file",
+      "label": "scripts/generate_lld_reliability.py",
+      "path": "scripts/generate_lld_reliability.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "181eca128c9c9bdd8f1468b7bf6091bc23371179b3ec88bbd6a8a693121002b3"
+    },
+    {
+      "id": "file:scripts/generate_lld_safety.py",
+      "type": "file",
+      "label": "scripts/generate_lld_safety.py",
+      "path": "scripts/generate_lld_safety.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e3fafc4003ca53b2cb8bc826b9cd1a6649365c034cf8fa3333947d83be3f0b99"
+    },
+    {
+      "id": "file:scripts/generate_lld_testing.py",
+      "type": "file",
+      "label": "scripts/generate_lld_testing.py",
+      "path": "scripts/generate_lld_testing.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "fa73d52253283bbf8c79cf049c75fbd1a1a4d6012f3946c87ac3c88073c5c86b"
+    },
+    {
+      "id": "file:scripts/generate_lld_tools.py",
+      "type": "file",
+      "label": "scripts/generate_lld_tools.py",
+      "path": "scripts/generate_lld_tools.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e64baed9eedb092c1a8b9fd1c706a20cb660ba834ab1079eadf83d960826278a"
+    },
+    {
+      "id": "file:scripts/generate_lld_user_app.py",
+      "type": "file",
+      "label": "scripts/generate_lld_user_app.py",
+      "path": "scripts/generate_lld_user_app.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "f6764f8fe3a26ca25ed09065e608e139c44731596f15dfeb0af4e9ae98269670"
+    },
+    {
+      "id": "file:scripts/lld_layout.py",
+      "type": "file",
+      "label": "scripts/lld_layout.py",
+      "path": "scripts/lld_layout.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8d6380e4398919239c80a558febc9ae2dd39b8cc71e0f4c451731b98cf2176b8"
+    },
+    {
+      "id": "file:scripts/organize_adps.py",
+      "type": "file",
+      "label": "scripts/organize_adps.py",
+      "path": "scripts/organize_adps.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "13083ab599fcb7493a97d804c2177166848b0cc80cfc867f69288abfaa27d559"
+    },
+    {
+      "id": "file:src/channels/api/__init__.py",
+      "type": "file",
+      "label": "src/channels/api/__init__.py",
+      "path": "src/channels/api/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "933a4468c3a145a2d89c13f7f0c220bc658dc9b679d3560560be04e95e61a44d"
+    },
+    {
+      "id": "file:src/channels/api/__main__.py",
+      "type": "file",
+      "label": "src/channels/api/__main__.py",
+      "path": "src/channels/api/__main__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "660611dc5dfd8473dad12ab7ea772cdcec5663daa0d3bc094671cf54ed29f1f7"
+    },
+    {
+      "id": "file:src/channels/api/app.py",
+      "type": "file",
+      "label": "src/channels/api/app.py",
+      "path": "src/channels/api/app.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "0037a0483297876e23d99b981a4805fe56d5881c0f0c657d55a2d57c69729cbb"
+    },
+    {
+      "id": "file:src/channels/api/envelope.py",
+      "type": "file",
+      "label": "src/channels/api/envelope.py",
+      "path": "src/channels/api/envelope.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "500eb71510a2c14743534ef0e37fdc3eff1aab55dd02049df086595d771097ad"
+    },
+    {
+      "id": "file:src/channels/api/turns.py",
+      "type": "file",
+      "label": "src/channels/api/turns.py",
+      "path": "src/channels/api/turns.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "705831520c9c8be7ecb6517e7b9a4bb3cb9ecdac8e15e5ce9afb2941d1863d9e"
+    },
+    {
+      "id": "file:src/channels/identity/__init__.py",
+      "type": "file",
+      "label": "src/channels/identity/__init__.py",
+      "path": "src/channels/identity/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "9256607f879a421f5812835e5024b592f17815a3a0a5e631678770f117892db9"
+    },
+    {
+      "id": "file:src/channels/identity/__main__.py",
+      "type": "file",
+      "label": "src/channels/identity/__main__.py",
+      "path": "src/channels/identity/__main__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "55b6d75198769666d18da05c0c7d29180b511c7d6ae39f94ba304cb5df620862"
+    },
+    {
+      "id": "file:src/channels/identity/oidc.py",
+      "type": "file",
+      "label": "src/channels/identity/oidc.py",
+      "path": "src/channels/identity/oidc.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "53c2a8a7033dab5761741bd8c4597e9b9004fb6d261d7c347df509adbcff8a90"
+    },
+    {
+      "id": "file:src/channels/identity/otp.py",
+      "type": "file",
+      "label": "src/channels/identity/otp.py",
+      "path": "src/channels/identity/otp.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2cf1f4e587dc502c995f4f41e157390226215abc5b66930f7375b3e415ce8c63"
+    },
+    {
+      "id": "file:src/channels/identity/server.py",
+      "type": "file",
+      "label": "src/channels/identity/server.py",
+      "path": "src/channels/identity/server.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "6292e4f364d17995940f0b2e3820d1b2a7454f63e2935d8fba363095366a8825"
+    },
+    {
+      "id": "file:src/channels/identity/service.py",
+      "type": "file",
+      "label": "src/channels/identity/service.py",
+      "path": "src/channels/identity/service.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "f4bad8bcba22678359a620b121c902d9d80c948287df0d19e332190ed94f82f6"
+    },
+    {
+      "id": "file:src/channels/identity/tiers.py",
+      "type": "file",
+      "label": "src/channels/identity/tiers.py",
+      "path": "src/channels/identity/tiers.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "128d6db5f73fbeebad27909fce97387038cede4a20f69fed11ef20b171d6ca60"
+    },
+    {
+      "id": "file:src/channels/identity/tokens.py",
+      "type": "file",
+      "label": "src/channels/identity/tokens.py",
+      "path": "src/channels/identity/tokens.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "32f63f5770d167cf9354bb7e6f7685a6c28be8e045bf1132e75710579f5338bc"
+    },
+    {
+      "id": "file:src/channels/sessions.py",
+      "type": "file",
+      "label": "src/channels/sessions.py",
+      "path": "src/channels/sessions.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "6c926476c85383945aaf05ed5ae524d1c69e704d9e911c17bf9e27a549419a31"
+    },
+    {
+      "id": "file:src/core/__init__.py",
+      "type": "file",
+      "label": "src/core/__init__.py",
+      "path": "src/core/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "49f1ec8d3e440c56a225d49fffb04f4078e35c34e574fec4e2bb5bc49e00ca32"
+    },
+    {
+      "id": "file:src/core/release_paths.py",
+      "type": "file",
+      "label": "src/core/release_paths.py",
+      "path": "src/core/release_paths.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e680f95474218dfcb1d27c892d4ed77ad5561c44e7d25bd5b6b957252b805ce7"
+    },
+    {
+      "id": "file:src/core/secrets.py",
+      "type": "file",
+      "label": "src/core/secrets.py",
+      "path": "src/core/secrets.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "7e75ec94d20ab2683ba5d6fb6fa42f58222f01cb5801f901976e4f4c5d95febb"
+    },
+    {
+      "id": "file:src/data/__init__.py",
+      "type": "file",
+      "label": "src/data/__init__.py",
+      "path": "src/data/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1f971a60aa87f887e39ab49cc1f1e68db12f83e4990f2677e6f3f21ec81f735b"
+    },
+    {
+      "id": "file:src/data/events.py",
+      "type": "file",
+      "label": "src/data/events.py",
+      "path": "src/data/events.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "30ea2c313959009d173e0eb6015cde14fbcd04c79befd1e537ba4b1ae20f593b"
+    },
+    {
+      "id": "file:src/data/keys/__init__.py",
+      "type": "file",
+      "label": "src/data/keys/__init__.py",
+      "path": "src/data/keys/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ad1b147afc3449e6903df7f7639156a08f0efae9e4baf935225ae891d914e6a9"
+    },
+    {
+      "id": "file:src/data/keys/envelope.py",
+      "type": "file",
+      "label": "src/data/keys/envelope.py",
+      "path": "src/data/keys/envelope.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1c8f03fde7b62bf51dfc162f0d0beeb74df2a3eef8add2c127cf978d0b97f7a5"
+    },
+    {
+      "id": "file:src/data/migrate.py",
+      "type": "file",
+      "label": "src/data/migrate.py",
+      "path": "src/data/migrate.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "895698fd74f4e5d59f11352d9ca36b855f6f72ae2847b16e8a30cbf9bca51e27"
+    },
+    {
+      "id": "file:src/data/storage/__init__.py",
+      "type": "file",
+      "label": "src/data/storage/__init__.py",
+      "path": "src/data/storage/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c93dcf2bbacc5d4cf618eb693f444efc93ee8719344db6b7c23c6fbb627e5638"
+    },
+    {
+      "id": "file:src/data/storage/objects.py",
+      "type": "file",
+      "label": "src/data/storage/objects.py",
+      "path": "src/data/storage/objects.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "75d45c79d0e263eb7638e1cc8f307066776b07d76e42f9140a64b8252587d02c"
+    },
+    {
+      "id": "file:src/data/storage/snapshots.py",
+      "type": "file",
+      "label": "src/data/storage/snapshots.py",
+      "path": "src/data/storage/snapshots.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "a44bfff2633063be47a90cca034518547c48ad7b7edf9938acd8e28651f85b5d"
+    },
+    {
+      "id": "file:tests/channels/test_api.py",
+      "type": "file",
+      "label": "tests/channels/test_api.py",
+      "path": "tests/channels/test_api.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "f3956af3d4ad1116eeab6c2ec2d90aedf958519282815c0764a4e192b25f5b13"
+    },
+    {
+      "id": "file:tests/data/test_schema.py",
+      "type": "file",
+      "label": "tests/data/test_schema.py",
+      "path": "tests/data/test_schema.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "64742858303f1534e3515103f0f362c1eac87979bad859effd4ee729f42d7f69"
+    },
+    {
+      "id": "file:tests/deploy/test_compose.py",
+      "type": "file",
+      "label": "tests/deploy/test_compose.py",
+      "path": "tests/deploy/test_compose.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "d01ad7133de9aa0cc7d56933c07ec3b2242c0da33436ae6572dcdfb9f51e3656"
+    },
+    {
+      "id": "file:tests/identity/conftest.py",
+      "type": "file",
+      "label": "tests/identity/conftest.py",
+      "path": "tests/identity/conftest.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "eb1deb60c19696596e7472d1838aba08a32d095c930009634a609e7f5ee12ba1"
+    },
+    {
+      "id": "file:tests/identity/test_identity.py",
+      "type": "file",
+      "label": "tests/identity/test_identity.py",
+      "path": "tests/identity/test_identity.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1d6291baad3929f87158a3e75306db2b90e0cca151a8c63bbc29d7ab6f03de35"
+    },
+    {
+      "id": "file:tests/identity/test_sessions.py",
+      "type": "file",
+      "label": "tests/identity/test_sessions.py",
+      "path": "tests/identity/test_sessions.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "23af7ab147bffbc6f156a8ba6d12e0f75e93485da34dc2ede24927925e26a222"
+    },
+    {
+      "id": "file:tests/identity/test_tokens.py",
+      "type": "file",
+      "label": "tests/identity/test_tokens.py",
+      "path": "tests/identity/test_tokens.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "99e17e8db00e792267513e133d1462d068a82909a53b4eaaae41e4b50383efaa"
+    },
+    {
+      "id": "file:tests/keys/test_envelope.py",
+      "type": "file",
+      "label": "tests/keys/test_envelope.py",
+      "path": "tests/keys/test_envelope.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ba66737fb05b94200427f6287a22b6a2fe5604317a02b7db8b23b9d05bbaa823"
+    },
+    {
+      "id": "file:tests/storage/test_events.py",
+      "type": "file",
+      "label": "tests/storage/test_events.py",
+      "path": "tests/storage/test_events.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1a6b5cf882eb0c344527805d4048157ba05b11b2dccb6b6708bc9e9bb5ec169d"
+    },
+    {
+      "id": "file:tests/storage/test_objects.py",
+      "type": "file",
+      "label": "tests/storage/test_objects.py",
+      "path": "tests/storage/test_objects.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "48c95bb12b7e0954ba4d3a0ece10712131de483b372865e29fbe01ecfb35b7e7"
+    },
+    {
+      "id": "file:tests/test_dependencies.py",
+      "type": "file",
+      "label": "tests/test_dependencies.py",
+      "path": "tests/test_dependencies.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "87fc21b1f60115e999f412229974f4f95320a8bcf7a4d3b6704a369eb87ff695"
+    },
+    {
+      "id": "file:tests/test_skeleton.py",
+      "type": "file",
+      "label": "tests/test_skeleton.py",
+      "path": "tests/test_skeleton.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "27b35deb3df7696393f99c665810b1c1443f3ca015931ddc5a2c4c4e959ebcba"
+    },
+    {
+      "id": "file:tests/web/test_web.py",
+      "type": "file",
+      "label": "tests/web/test_web.py",
+      "path": "tests/web/test_web.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "56fea5ab6dedef5035d131099e216eadbe4242b563651d6cfc47a8004cd53091"
+    },
+    {
+      "id": "file:web/dev-server.js",
+      "type": "file",
+      "label": "web/dev-server.js",
+      "path": "web/dev-server.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8d11fb1f94d5617e4aaeee6eea102d87c0d65df1da7d8b217084d77ecfb8f40b"
+    },
+    {
+      "id": "file:web/smoke.mjs",
+      "type": "file",
+      "label": "web/smoke.mjs",
+      "path": "web/smoke.mjs",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "76fef8f2b686fb2598cbfffa14a91e1137e2cfdb76403e51af76aa1f4c1c7efc"
+    },
+    {
+      "id": "file:web/src/app.js",
+      "type": "file",
+      "label": "web/src/app.js",
+      "path": "web/src/app.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "bc1f07eee2d99ba8488c152c4d5c0fe2ee8ed79a49c75b2c8aba0eb27f1dba53"
+    },
+    {
+      "id": "file:web/src/client.js",
+      "type": "file",
+      "label": "web/src/client.js",
+      "path": "web/src/client.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "dd0bf938324dc8bc4e932c10d0b53f69200ca87f69000e1518e290f84f495f90"
+    },
+    {
+      "id": "file:web/src/sse.js",
+      "type": "file",
+      "label": "web/src/sse.js",
+      "path": "web/src/sse.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "f2ff073324ecf75118ca16817b7a7eff1b5bfa7129c019ca31a36c7324ef1293"
+    },
+    {
+      "id": "file:web/src/view.js",
+      "type": "file",
+      "label": "web/src/view.js",
+      "path": "web/src/view.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "479094996198354c6f4d27bd3c9ed1356145aaccce54aed3496f253f9099fe33"
+    },
+    {
+      "id": "file:web/test/client.test.js",
+      "type": "file",
+      "label": "web/test/client.test.js",
+      "path": "web/test/client.test.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2db3baa8b5a17d5d6d3a21c8f982e2766a73a4d3fe20cbb5dfc22061d11a3347"
+    },
+    {
+      "id": "file:web/test/sse.test.js",
+      "type": "file",
+      "label": "web/test/sse.test.js",
+      "path": "web/test/sse.test.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e8ef4aa9c60525b4031daab967f847b30bbf358d85663714dae17aa47ca24931"
+    },
+    {
+      "id": "file:web/test/view.test.js",
+      "type": "file",
+      "label": "web/test/view.test.js",
+      "path": "web/test/view.test.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "76838bf086f0b6e119aca89cf4ecef32218dd92161d3562ee59a644d28c77fcf"
+    },
+    {
+      "id": "runtime:javascript:assert",
+      "type": "runtime",
+      "label": "assert",
+      "language": "javascript",
+      "confidence": 0.85,
+      "extractor": "standard-library",
+      "contentHash": "0d6f8ae8d65e0d19074ed44cdad5dba87962922ff54d8addaf83434512e5f030"
+    },
+    {
+      "id": "runtime:javascript:fs",
+      "type": "runtime",
+      "label": "fs",
+      "language": "javascript",
+      "confidence": 0.85,
+      "extractor": "standard-library",
+      "contentHash": "ce2a049758b0dbddfa6a0d8494e0984d628f657a4f878a68363051b6a88a7a66"
+    },
+    {
+      "id": "runtime:javascript:http",
+      "type": "runtime",
+      "label": "http",
+      "language": "javascript",
+      "confidence": 0.85,
+      "extractor": "standard-library",
+      "contentHash": "896f736b1b424ca9fd07adc223ea7630adb73731470507b196a2f96b970f0689"
+    },
+    {
+      "id": "runtime:javascript:path",
+      "type": "runtime",
+      "label": "path",
+      "language": "javascript",
+      "confidence": 0.85,
+      "extractor": "standard-library",
+      "contentHash": "8e9e99a892940fe6824c66f1743a5359c95f727c8518cd02475056bed12dbba5"
+    },
+    {
+      "id": "runtime:javascript:test",
+      "type": "runtime",
+      "label": "test",
+      "language": "javascript",
+      "confidence": 0.85,
+      "extractor": "standard-library",
+      "contentHash": "d8f4a420508fa7a66c7bd6c179ef1524cac0cb9eef947356016e7daafe68ceeb"
+    },
+    {
+      "id": "runtime:javascript:url",
+      "type": "runtime",
+      "label": "url",
+      "language": "javascript",
+      "confidence": 0.85,
+      "extractor": "standard-library",
+      "contentHash": "9bdfc951f6a3e0da297fef7f4afa15303ef30783c01058103248b470fd2d7207"
+    },
+    {
+      "id": "symbol:web/dev-server.js#variable:api",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "api",
+      "label": "api",
+      "path": "web/dev-server.js",
+      "line": 9,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "6438da595e77a66a4a8c112029423889d4d7b2f40dd5793a70a1353ff734707c"
+    },
+    {
+      "id": "symbol:web/dev-server.js#variable:port",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "port",
+      "label": "port",
+      "path": "web/dev-server.js",
+      "line": 10,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "595bd431b34449ed11d588a40ddd77cae3c9e61729a5cea7b53169332ce21445"
+    },
+    {
+      "id": "symbol:web/dev-server.js#variable:root",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "root",
+      "label": "root",
+      "path": "web/dev-server.js",
+      "line": 8,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "e27ebde981df5cbec43eb914d5fa69d66b242767758fab1903210817921b92a3"
+    },
+    {
+      "id": "symbol:web/dev-server.js#variable:types",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "types",
+      "label": "types",
+      "path": "web/dev-server.js",
+      "line": 11,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d3ac6eebd671626be64fcf696db7b240721c1e0591b7c1822aa3a0928aa18ed6"
+    },
+    {
+      "id": "symbol:web/smoke.mjs#function:show",
+      "type": "symbol",
+      "kind": "function",
+      "name": "show",
+      "label": "show",
+      "path": "web/smoke.mjs",
+      "line": 13,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "fe9365a2cd19e006ed01071f70317187ba1f225e269088484e0420949c6f7ff8"
+    },
+    {
+      "id": "symbol:web/smoke.mjs#variable:client",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "client",
+      "label": "client",
+      "path": "web/smoke.mjs",
+      "line": 9,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d0271141fc312a29998f6c53b063a6ceea722bb322bfb39b4b40c4db0d02258e"
+    },
+    {
+      "id": "symbol:web/smoke.mjs#variable:controller",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "controller",
+      "label": "controller",
+      "path": "web/smoke.mjs",
+      "line": 10,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "f0b2df3ab861219a76a7d870f745d81b730630c41ef64014ba291fd38f8fe6de"
+    },
+    {
+      "id": "symbol:web/smoke.mjs#variable:conversationId",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "conversationId",
+      "label": "conversationId",
+      "path": "web/smoke.mjs",
+      "line": 19,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "e1eb8e8c394b12aa6392da535f75c95f7daa007158be464694299d42401e2749"
+    },
+    {
+      "id": "symbol:web/smoke.mjs#variable:listening",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "listening",
+      "label": "listening",
+      "path": "web/smoke.mjs",
+      "line": 20,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "65e550d85535ac94f34018e4b0900371bb0688ceb6f1171f25f66aee3e6fb852"
+    },
+    {
+      "id": "symbol:web/smoke.mjs#variable:state",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "state",
+      "label": "state",
+      "path": "web/smoke.mjs",
+      "line": 12,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "4f33e086af43afab1a12eb3f4b9d675e1523cbce9637b93ad6deae07e53e19fd"
+    },
+    {
+      "id": "symbol:web/smoke.mjs#variable:timeout",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "timeout",
+      "label": "timeout",
+      "path": "web/smoke.mjs",
+      "line": 11,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "1b0d07b5734d905efd2dc120e1e0cdf5c1e862eef4b4e47fa4e31c2f091a2a77"
+    },
+    {
+      "id": "symbol:web/src/app.js#function:update",
+      "type": "symbol",
+      "kind": "function",
+      "name": "update",
+      "label": "update",
+      "path": "web/src/app.js",
+      "line": 16,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "1c48c6689df7b3ac5d6fc09383ab1e263e9aa2628e89b014303e5e7ddd950b09"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:client",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "client",
+      "label": "client",
+      "path": "web/src/app.js",
+      "line": 11,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d0271141fc312a29998f6c53b063a6ceea722bb322bfb39b4b40c4db0d02258e"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:conversationId",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "conversationId",
+      "label": "conversationId",
+      "path": "web/src/app.js",
+      "line": 8,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "e1eb8e8c394b12aa6392da535f75c95f7daa007158be464694299d42401e2749"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:form",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "form",
+      "label": "form",
+      "path": "web/src/app.js",
+      "line": 13,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "60f323f7033376f7ab5f55b6fa89e7649a375059e107d7de65c91c9a07a537dc"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:input",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "input",
+      "label": "input",
+      "path": "web/src/app.js",
+      "line": 14,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "890c61ffeca5418926265bde395e91f4cde6a6286171d9b5c35a1ce1ba597afd"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:log",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "log",
+      "label": "log",
+      "path": "web/src/app.js",
+      "line": 12,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d7008cef99cb43a43ea965a3eb84e2e3f95bf812ec19772a83fc41f0c018f31d"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:params",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "params",
+      "label": "params",
+      "path": "web/src/app.js",
+      "line": 5,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "eab7f9ecbf7afe2d66e002b41e4d56d0efb1aff579eb0f49281d7ca1ec6ef074"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:state",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "state",
+      "label": "state",
+      "path": "web/src/app.js",
+      "line": 15,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "4f33e086af43afab1a12eb3f4b9d675e1523cbce9637b93ad6deae07e53e19fd"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:storageKey",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "storageKey",
+      "label": "storageKey",
+      "path": "web/src/app.js",
+      "line": 7,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "15d6aac4fe302c41c1f9f045c1b2fca9703dababeda3c0c24e8701fed5f8b37d"
+    },
+    {
+      "id": "symbol:web/src/app.js#variable:tenantId",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "tenantId",
+      "label": "tenantId",
+      "path": "web/src/app.js",
+      "line": 6,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "25f7d22d0b8c19bbe9b8f7e6f595b2201d12ac334a7877fb9cae3581c4a772c0"
+    },
+    {
+      "id": "symbol:web/src/client.js#class:ChatClient",
+      "type": "symbol",
+      "kind": "class",
+      "name": "ChatClient",
+      "label": "ChatClient",
+      "path": "web/src/client.js",
+      "line": 12,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "a60bdcbe900db6b227a86ff2e6d8d722a984d6a3e4d82d58c044bf018fa06a57"
+    },
+    {
+      "id": "symbol:web/src/client.js#class:HttpError",
+      "type": "symbol",
+      "kind": "class",
+      "name": "HttpError",
+      "label": "HttpError",
+      "path": "web/src/client.js",
+      "line": 5,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "9fbf64326b2e2098ff46e6cd4f65b847775bcf995cfa067b1636192ceefad7a3"
+    },
+    {
+      "id": "symbol:web/src/sse.js#function:createParser",
+      "type": "symbol",
+      "kind": "function",
+      "name": "createParser",
+      "label": "createParser",
+      "path": "web/src/sse.js",
+      "line": 3,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "9060d28c5a6722aaae230232022b9370782f3a0d776b5efe3ddbcdaad0650370"
+    },
+    {
+      "id": "symbol:web/src/view.js#function:addUserMessage",
+      "type": "symbol",
+      "kind": "function",
+      "name": "addUserMessage",
+      "label": "addUserMessage",
+      "path": "web/src/view.js",
+      "line": 7,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "080e949077e9a7bd51e728841cf8626aa4f60403a99d3b3e18481a7282f632b1"
+    },
+    {
+      "id": "symbol:web/src/view.js#function:initialState",
+      "type": "symbol",
+      "kind": "function",
+      "name": "initialState",
+      "label": "initialState",
+      "path": "web/src/view.js",
+      "line": 5,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "8d8530c05bd38d6a83dbd977aeda240f0fb8dea96ca5617bd419b5123560d329"
+    },
+    {
+      "id": "symbol:web/src/view.js#function:reduce",
+      "type": "symbol",
+      "kind": "function",
+      "name": "reduce",
+      "label": "reduce",
+      "path": "web/src/view.js",
+      "line": 11,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "22952cce293d8a93d5c91f2ad338005ed5e9fcea8b8d56feda28102c701ed093"
+    },
+    {
+      "id": "symbol:web/src/view.js#function:render",
+      "type": "symbol",
+      "kind": "function",
+      "name": "render",
+      "label": "render",
+      "path": "web/src/view.js",
+      "line": 49,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "174a1f232b8296668ef9fbb8e608a36828a57c9c4b976870773f1410a1809667"
+    },
+    {
+      "id": "symbol:web/test/client.test.js#function:json",
+      "type": "symbol",
+      "kind": "function",
+      "name": "json",
+      "label": "json",
+      "path": "web/test/client.test.js",
+      "line": 6,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "0fcaca43fbbfbac08b532b7064eca129622c05de70a186765cc4f3158d6d93e6"
+    },
+    {
+      "id": "symbol:web/test/client.test.js#function:stream",
+      "type": "symbol",
+      "kind": "function",
+      "name": "stream",
+      "label": "stream",
+      "path": "web/test/client.test.js",
+      "line": 7,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "ceeded1338024c7d15beebb4f21b1b0cde0e625cb01613d99c14ff3f84ebf783"
+    },
+    {
+      "id": "symbol:web/test/view.test.js#variable:run",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "run",
+      "label": "run",
+      "path": "web/test/view.test.js",
+      "line": 6,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "4cbef7da9d203f858906801b075df792e2a48a4e7a05ce4448d7f39d7cdc3073"
+    }
+  ],
+  "edges": [
+    {
+      "type": "calls",
+      "source": "symbol:web/smoke.mjs#variable:client",
+      "target": "symbol:web/src/client.js#class:ChatClient",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/smoke.mjs#variable:listening",
+      "target": "symbol:web/smoke.mjs#function:show",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/smoke.mjs#variable:state",
+      "target": "symbol:web/src/view.js#function:initialState",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/src/app.js#function:update",
+      "target": "symbol:web/src/view.js#function:render",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/src/app.js#variable:client",
+      "target": "symbol:web/src/client.js#class:ChatClient",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/src/app.js#variable:state",
+      "target": "symbol:web/src/view.js#function:initialState",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/src/client.js#class:ChatClient",
+      "target": "symbol:web/src/client.js#class:HttpError",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/src/client.js#class:ChatClient",
+      "target": "symbol:web/src/sse.js#function:createParser",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/client.test.js#function:stream",
+      "target": "symbol:web/src/client.js#class:ChatClient",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/client.test.js#function:stream",
+      "target": "symbol:web/test/client.test.js#function:json",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/view.test.js#variable:run",
+      "target": "symbol:web/src/view.js#function:addUserMessage",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/view.test.js#variable:run",
+      "target": "symbol:web/src/view.js#function:initialState",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/view.test.js#variable:run",
+      "target": "symbol:web/src/view.js#function:reduce",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/view.test.js#variable:run",
+      "target": "symbol:web/src/view.js#function:render",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/dev-server.js",
+      "target": "symbol:web/dev-server.js#variable:api",
+      "line": 9,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/dev-server.js",
+      "target": "symbol:web/dev-server.js#variable:port",
+      "line": 10,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/dev-server.js",
+      "target": "symbol:web/dev-server.js#variable:root",
+      "line": 8,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/dev-server.js",
+      "target": "symbol:web/dev-server.js#variable:types",
+      "line": 11,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/smoke.mjs",
+      "target": "symbol:web/smoke.mjs#function:show",
+      "line": 13,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/smoke.mjs",
+      "target": "symbol:web/smoke.mjs#variable:client",
+      "line": 9,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/smoke.mjs",
+      "target": "symbol:web/smoke.mjs#variable:controller",
+      "line": 10,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/smoke.mjs",
+      "target": "symbol:web/smoke.mjs#variable:conversationId",
+      "line": 19,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/smoke.mjs",
+      "target": "symbol:web/smoke.mjs#variable:listening",
+      "line": 20,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/smoke.mjs",
+      "target": "symbol:web/smoke.mjs#variable:state",
+      "line": 12,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/smoke.mjs",
+      "target": "symbol:web/smoke.mjs#variable:timeout",
+      "line": 11,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#function:update",
+      "line": 16,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:client",
+      "line": 11,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:conversationId",
+      "line": 8,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:form",
+      "line": 13,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:input",
+      "line": 14,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:log",
+      "line": 12,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:params",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:state",
+      "line": 15,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:storageKey",
+      "line": 7,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/app.js",
+      "target": "symbol:web/src/app.js#variable:tenantId",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/client.js",
+      "target": "symbol:web/src/client.js#class:ChatClient",
+      "line": 12,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/client.js",
+      "target": "symbol:web/src/client.js#class:HttpError",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/sse.js",
+      "target": "symbol:web/src/sse.js#function:createParser",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/view.js",
+      "target": "symbol:web/src/view.js#function:addUserMessage",
+      "line": 7,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/view.js",
+      "target": "symbol:web/src/view.js#function:initialState",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/view.js",
+      "target": "symbol:web/src/view.js#function:reduce",
+      "line": 11,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/src/view.js",
+      "target": "symbol:web/src/view.js#function:render",
+      "line": 49,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/test/client.test.js",
+      "target": "symbol:web/test/client.test.js#function:json",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/test/client.test.js",
+      "target": "symbol:web/test/client.test.js#function:stream",
+      "line": 7,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/test/view.test.js",
+      "target": "symbol:web/test/view.test.js#variable:run",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/dev-server.js",
+      "target": "runtime:javascript:fs",
+      "specifier": "node:fs",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/dev-server.js",
+      "target": "runtime:javascript:http",
+      "specifier": "node:http",
+      "line": 4,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/dev-server.js",
+      "target": "runtime:javascript:path",
+      "specifier": "node:path",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/dev-server.js",
+      "target": "runtime:javascript:url",
+      "specifier": "node:url",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/smoke.mjs",
+      "target": "file:web/src/client.js",
+      "specifier": "./src/client.js",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/smoke.mjs",
+      "target": "file:web/src/view.js",
+      "specifier": "./src/view.js",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/src/app.js",
+      "target": "file:web/src/client.js",
+      "specifier": "./client.js",
+      "line": 2,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/src/app.js",
+      "target": "file:web/src/view.js",
+      "specifier": "./view.js",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/src/client.js",
+      "target": "file:web/src/sse.js",
+      "specifier": "./sse.js",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/client.test.js",
+      "target": "file:web/src/client.js",
+      "specifier": "../src/client.js",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/client.test.js",
+      "target": "runtime:javascript:assert",
+      "specifier": "node:assert/strict",
+      "line": 1,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/client.test.js",
+      "target": "runtime:javascript:test",
+      "specifier": "node:test",
+      "line": 2,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/sse.test.js",
+      "target": "file:web/src/sse.js",
+      "specifier": "../src/sse.js",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/sse.test.js",
+      "target": "runtime:javascript:assert",
+      "specifier": "node:assert/strict",
+      "line": 1,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/sse.test.js",
+      "target": "runtime:javascript:test",
+      "specifier": "node:test",
+      "line": 2,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/view.test.js",
+      "target": "file:web/src/view.js",
+      "specifier": "../src/view.js",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/view.test.js",
+      "target": "runtime:javascript:assert",
+      "specifier": "node:assert/strict",
+      "line": 1,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/view.test.js",
+      "target": "runtime:javascript:test",
+      "specifier": "node:test",
+      "line": 2,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    }
+  ],
+  "warnings": [
+    "Python AST unavailable: python3 failed"
+  ],
+  "stats": {
+    "unresolvedCalls": 46
+  }
+}
