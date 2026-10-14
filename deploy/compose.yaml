@@ -21,10 +21,11 @@ services:
 
   temporal:
     # ponytail: dev server on SQLite, one process; Temporal cluster on Postgres is the production target (ADP-02).
+    # The image runs as uid 1000 (temporal); a named volume mounted on its home directory inherits that owner.
     image: temporalio/temporal:1.9.1
-    command: ["server", "start-dev", "--ip", "0.0.0.0", "--db-filename", "/data/temporal.db"]
+    command: ["server", "start-dev", "--ip", "0.0.0.0", "--db-filename", "/home/temporal/temporal.db"]
     volumes:
-      - temporaldata:/data
+      - temporalhome:/home/temporal
     ports:
       - "127.0.0.1:7233:7233"
       - "127.0.0.1:8233:8233"
@@ -65,6 +66,6 @@ services:
 
 volumes:
   pgdata:
-  temporaldata:
+  temporalhome:
   qdrantdata:
   ollamadata:

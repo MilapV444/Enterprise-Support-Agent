@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "58aff5b6b6f968ca50d9274baf98a195db02b704",
-  "sourceHash": "d2545820c032595501e1382794e711c3a7a58ccbc36300b46aeff0cc4d1fc703",
+  "revision": "7f0a63f3ba123418393d44c4a216d1ed29fed297",
+  "sourceHash": "75543255b40a9cac03a98f183d513f0234ddadfa585af7c95a4eddfe771d4819",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -370,6 +370,76 @@
       "contentHash": "49f1ec8d3e440c56a225d49fffb04f4078e35c34e574fec4e2bb5bc49e00ca32"
     },
     {
+      "id": "file:src/core/context/__init__.py",
+      "type": "file",
+      "label": "src/core/context/__init__.py",
+      "path": "src/core/context/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "cee8f647dc9a319d84525a8e040572c101262b636226ea95a8b42f1767646397"
+    },
+    {
+      "id": "file:src/core/context/assembler.py",
+      "type": "file",
+      "label": "src/core/context/assembler.py",
+      "path": "src/core/context/assembler.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "57a5a7dfb849b1db206ae06468ede4d82cc97b33e6490ba28361fcc04d84451c"
+    },
+    {
+      "id": "file:src/core/context/budget.py",
+      "type": "file",
+      "label": "src/core/context/budget.py",
+      "path": "src/core/context/budget.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "7cc528335e58e7d4425f18c26d5c4dfc9f48f408740f7525e8b31af9077383a0"
+    },
+    {
+      "id": "file:src/core/orchestrator/decisions.py",
+      "type": "file",
+      "label": "src/core/orchestrator/decisions.py",
+      "path": "src/core/orchestrator/decisions.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "95d7fe387624df79f3fba3024e2a913e928e27053ec28f9dbd8fb7e76d96977a"
+    },
+    {
+      "id": "file:src/core/orchestrator/planner.py",
+      "type": "file",
+      "label": "src/core/orchestrator/planner.py",
+      "path": "src/core/orchestrator/planner.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ffe37e61df155506544e4d84513e2581d5cb48f3882bd9d3e64a7a294747e252"
+    },
+    {
+      "id": "file:src/core/orchestrator/statechart.py",
+      "type": "file",
+      "label": "src/core/orchestrator/statechart.py",
+      "path": "src/core/orchestrator/statechart.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8020c22deb8826173a1fdd25fd77960d7cbdee923bd8b6cd8454110a9e4d18a9"
+    },
+    {
+      "id": "file:src/core/orchestrator/triage.py",
+      "type": "file",
+      "label": "src/core/orchestrator/triage.py",
+      "path": "src/core/orchestrator/triage.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c9659b454f87cd084ba1d32e7e7ebca248e9aa5b53e28666aa9eaddd875eabcf"
+    },
+    {
       "id": "file:src/core/release_paths.py",
       "type": "file",
       "label": "src/core/release_paths.py",
@@ -470,6 +540,56 @@
       "contentHash": "a44bfff2633063be47a90cca034518547c48ad7b7edf9938acd8e28651f85b5d"
     },
     {
+      "id": "file:src/schemas/__init__.py",
+      "type": "file",
+      "label": "src/schemas/__init__.py",
+      "path": "src/schemas/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "a02fc24924c788d88e1ec3eee83ee6d50c0602e755b8ce8d9d3d51001c24f0ae"
+    },
+    {
+      "id": "file:src/schemas/thread_state.py",
+      "type": "file",
+      "label": "src/schemas/thread_state.py",
+      "path": "src/schemas/thread_state.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "72ebb4f45af03cf3e31904c73dd0fc24b5b9c8e1049c1286271c5c2bb3da1f95"
+    },
+    {
+      "id": "file:src/workflows/__init__.py",
+      "type": "file",
+      "label": "src/workflows/__init__.py",
+      "path": "src/workflows/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c59a18df64a54eb1b7204ae93bd29f82e32c338af93b9c61d9717338048ca246"
+    },
+    {
+      "id": "file:src/workflows/activities.py",
+      "type": "file",
+      "label": "src/workflows/activities.py",
+      "path": "src/workflows/activities.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2292e47e9c3aa3eda642c7bc83595423753c38e8a7413f3337e3f0630ed6be70"
+    },
+    {
+      "id": "file:src/workflows/ticket.py",
+      "type": "file",
+      "label": "src/workflows/ticket.py",
+      "path": "src/workflows/ticket.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "bbe48b605e50e11d7dce41f86b4dbb021533b36c93b6a005c46f0333561128c5"
+    },
+    {
       "id": "file:tests/channels/test_api.py",
       "type": "file",
       "label": "tests/channels/test_api.py",
@@ -480,6 +600,16 @@
       "contentHash": "f3956af3d4ad1116eeab6c2ec2d90aedf958519282815c0764a4e192b25f5b13"
     },
     {
+      "id": "file:tests/context/test_assembler.py",
+      "type": "file",
+      "label": "tests/context/test_assembler.py",
+      "path": "tests/context/test_assembler.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "da2f7e36dcc773b0d3380a11587a35dcbb44d61ebbfd8227f207045a9fb9654a"
+    },
+    {
       "id": "file:tests/data/test_schema.py",
       "type": "file",
       "label": "tests/data/test_schema.py",
@@ -488,6 +618,26 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "64742858303f1534e3515103f0f362c1eac87979bad859effd4ee729f42d7f69"
+    },
+    {
+      "id": "file:tests/decisions/test_decisions.py",
+      "type": "file",
+      "label": "tests/decisions/test_decisions.py",
+      "path": "tests/decisions/test_decisions.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "7ad5cbed97ed4d7ece003574ffdfbc204ef87abc06e30f3247d1c40170060596"
+    },
+    {
+      "id": "file:tests/deploy/test_backbone.py",
+      "type": "file",
+      "label": "tests/deploy/test_backbone.py",
+      "path": "tests/deploy/test_backbone.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "3187ec64c61a5440fcc7b588232ce7f129df642d156143004543befe81ce29de"
     },
     {
       "id": "file:tests/deploy/test_compose.py",
@@ -550,6 +700,16 @@
       "contentHash": "ba66737fb05b94200427f6287a22b6a2fe5604317a02b7db8b23b9d05bbaa823"
     },
     {
+      "id": "file:tests/orchestrator/test_statechart.py",
+      "type": "file",
+      "label": "tests/orchestrator/test_statechart.py",
+      "path": "tests/orchestrator/test_statechart.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "d36e63b0374aaee6ff022affc8a0157dbf4d32132f66769b477f788612bb51f5"
+    },
+    {
       "id": "file:tests/storage/test_events.py",
       "type": "file",
       "label": "tests/storage/test_events.py",
@@ -598,6 +758,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "56fea5ab6dedef5035d131099e216eadbe4242b563651d6cfc47a8004cd53091"
+    },
+    {
+      "id": "file:tests/workflows/test_ticket.py",
+      "type": "file",
+      "label": "tests/workflows/test_ticket.py",
+      "path": "tests/workflows/test_ticket.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c11d72bf2fdcf021b8db6cd21724ce21fb291d21ff0e4024c839bb0dc1551df7"
     },
     {
       "id": "file:web/dev-server.js",
