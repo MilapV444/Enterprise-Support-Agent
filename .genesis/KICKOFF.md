@@ -4,9 +4,9 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: M1-07.3 — M1 Core: slot-budget context assembler with token counting, provider prompt caching and passage compression
+- active task: M1-08.4 — M1 Core: circuit breaker, Reflexion retries, step caps and incident diagnostic packet
 - blocker: none
-- next action: Human independent review of src/core/context/ and tests/context/
+- next action: Human independent review of src/core/recovery/, src/schemas/diagnostic.py, tests/recovery/
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
 - gates: tests:pass, independent-review:pending
 - recent failures: none
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: 6fd186fe9031c9e0e53bab46e151597728e09b16bab9fd4f501f8e9941d2ad72. Use --since only after receiving that full packet; kickoff is not the packet.
+Context fingerprint: 15ef053beb7cf813f222417f7b6551d5b42d76e6b94924e958c79a4dfb16b92e. Use --since only after receiving that full packet; kickoff is not the packet.
 - KNOWLEDGE-e7e3c99f: Approval shorthand
+- KNOWLEDGE-205fb661: Jev (TypeSafe System One) API contract
 - DECISION-6b7412f4: v1 runtime: learning deployment profile, USD 10/month cap
-- ASSUMPTION-9db6ab86: Jev (TypeSafe) HTTP contract is assumed, not verified: POST {base_url}/v1/evaluate with {state, ques…
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

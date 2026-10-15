@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "7f0a63f3ba123418393d44c4a216d1ed29fed297",
-  "sourceHash": "75543255b40a9cac03a98f183d513f0234ddadfa585af7c95a4eddfe771d4819",
+  "revision": "7db7718d7426147806346f2d8cb817d33071941f",
+  "sourceHash": "7c6e4527e608a77128f738eeb5fb36da42036e9ce50d695cc0fe23c716b20a55",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -407,7 +407,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "95d7fe387624df79f3fba3024e2a913e928e27053ec28f9dbd8fb7e76d96977a"
+      "contentHash": "762fca8243f6bc8038cb1513e94fca06057fa268d70e36169023c159981455e8"
     },
     {
       "id": "file:src/core/orchestrator/planner.py",
@@ -437,7 +437,27 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c9659b454f87cd084ba1d32e7e7ebca248e9aa5b53e28666aa9eaddd875eabcf"
+      "contentHash": "d99a7942395d8b9b4a247a49ba0a0a88e6d141c459583ec9b8f117b6a8adef04"
+    },
+    {
+      "id": "file:src/core/recovery/__init__.py",
+      "type": "file",
+      "label": "src/core/recovery/__init__.py",
+      "path": "src/core/recovery/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "395f70b2721935b9d09e66d3bfa2de76c95c0587367986cd62933d4fd542e58e"
+    },
+    {
+      "id": "file:src/core/recovery/breaker.py",
+      "type": "file",
+      "label": "src/core/recovery/breaker.py",
+      "path": "src/core/recovery/breaker.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "17c2a42be177561a7dbfd34de6b70a6a7358c4738feb26bea34572044b3049cc"
     },
     {
       "id": "file:src/core/release_paths.py",
@@ -550,6 +570,16 @@
       "contentHash": "a02fc24924c788d88e1ec3eee83ee6d50c0602e755b8ce8d9d3d51001c24f0ae"
     },
     {
+      "id": "file:src/schemas/diagnostic.py",
+      "type": "file",
+      "label": "src/schemas/diagnostic.py",
+      "path": "src/schemas/diagnostic.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2d10f1d3f143f15cef051e960c0a9acac9b6a762ed57675e588321688eb31c3e"
+    },
+    {
       "id": "file:src/schemas/thread_state.py",
       "type": "file",
       "label": "src/schemas/thread_state.py",
@@ -627,7 +657,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "7ad5cbed97ed4d7ece003574ffdfbc204ef87abc06e30f3247d1c40170060596"
+      "contentHash": "d8f068b5d24952adb68fe3b7b7f71e3aa947936f612f1039627d579a634e0ea5"
     },
     {
       "id": "file:tests/deploy/test_backbone.py",
@@ -708,6 +738,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "d36e63b0374aaee6ff022affc8a0157dbf4d32132f66769b477f788612bb51f5"
+    },
+    {
+      "id": "file:tests/recovery/test_breaker.py",
+      "type": "file",
+      "label": "tests/recovery/test_breaker.py",
+      "path": "tests/recovery/test_breaker.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "830ef50467dc05ce60d7b51631345f7ad14a0a8013427be10ea694b87997289a"
     },
     {
       "id": "file:tests/storage/test_events.py",

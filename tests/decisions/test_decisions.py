@@ -1,4 +1,5 @@
-"""M1-06: Jev decision client and question sets with masked input and a fallback LLM classifier (FR-5)."""
+"""M1-06: Jev decision client against the documented TypeSafe API, question sets with masked input and a
+fallback LLM classifier (FR-5)."""
 
 import json
 
@@ -6,19 +7,29 @@ import httpx
 import pytest
 
 from core.orchestrator.decisions import (
-    QUESTIONS_VERSION,
+    TRIAGE_QUESTIONS,
     Answer,
     DecisionEngine,
     JevClient,
+    JevRejected,
     JevUnavailable,
     Masked,
     SecurityViolation,
     mask,
+    parse_answer,
 )
 from core.orchestrator.statechart import build
 from core.orchestrator.triage import ASK_CUSTOMER, FALLBACK_MAX_CONFIDENCE, llm_fallback, triage, triage_hook
 
 MESSAGE = {"message": Masked("My last invoice charged me twice")}
+
+# Answer examples copied from the TypeSafe API reference.
+DOC_CHOICE = {"type": "choice", "choice": "billing", "confidence": 0.81,
+              "probabilities": {"billing": 0.88, "technical": 0.12, "sales": 0.0}}
+DOC_SCORE = {"type": "score", "score": 1.05, "confidence": 0.92,
+             "legend": {"0": "Calm", "1": "Frustrated", "2": "Very angry"},
+             "probabilities": {"0": 0.0, "1": 0.95, "2": 0.05}}
+DOC_NOUL = {"type": "noul", "noul": 0.95}
 
 
 class FakeJev:
@@ -28,20 +39,30 @@ class FakeJev:
         self.answers, self.down, self.sent = answers or {}, down, []
 
     def evaluate(self, state, questions):
-        self.sent.append((state, [q["id"] for q in questions]))
+        self.sent.append((state, questions))
         if self.down:
             raise JevUnavailable("timeout")
-        return {qid: self.answers[qid] for qid in (q["id"] for q in questions) if qid in self.answers}
+        return {qid: self.answers[qid] for qid in questions if qid in self.answers}
 
 
 def triage_answers(intent="BILLING_INQUIRY", severity=1, missing=False, confidence=0.95):
-    return {"intent": Answer(intent, confidence), "severity": Answer("x", confidence, severity),
+    return {"intent": Answer(intent, confidence), "severity": Answer(float(severity), confidence, severity),
             "missing_details": Answer(missing, confidence)}
 
 
 def fallback_reply(**fields):
     return llm_fallback(lambda prompt: json.dumps({"intent": "BILLING_INQUIRY", "severity": 1,
                                                    "missing_details": False, "confidence": 0.99, **fields}))
+
+
+def test_documented_answers_parse_into_one_shape():
+    assert parse_answer(DOC_CHOICE) == Answer("billing", 0.81)
+    assert parse_answer(DOC_SCORE) == Answer(1.05, 0.92, 1)
+    split = {"type": "score", "score": 2.8, "confidence": 0.3,
+             "probabilities": {"0": 0.0, "1": 0.4, "2": 0.0, "3": 0.0, "4": 0.6}}
+    assert parse_answer(split).index == 4  # the most likely level, not the weighted score (2.8)
+    assert parse_answer(DOC_NOUL) == Answer(True, 0.95)
+    assert parse_answer({"type": "noul", "noul": 0.2}) == Answer(False, 0.8)
 
 
 def test_triage_maps_typed_answers_onto_acuity():
@@ -52,7 +73,7 @@ def test_triage_maps_typed_answers_onto_acuity():
 
 
 def test_confidence_is_the_weakest_answer():
-    answers = {**triage_answers(), "severity": Answer("x", 0.6, 1)}
+    answers = {**triage_answers(), "severity": Answer(1.0, 0.6, 1)}
     assert triage(DecisionEngine(FakeJev(answers)), MESSAGE)["confidence"] == 0.6
 
 
@@ -90,17 +111,18 @@ def test_guards_need_a_confident_yes_and_fail_safe():
         engine = DecisionEngine(FakeJev({"confirmed": answer} if answer else {}, down=down))
         return engine.guard("confirmed", "Has the customer confirmed the fix?", MESSAGE)
 
-    assert guard(Answer(True, 0.95)) is True
-    assert guard(Answer(True, 0.7)) is False
-    assert guard(Answer(False, 0.99)) is False
+    assert guard(parse_answer({"type": "noul", "noul": 0.95})) is True
+    assert guard(parse_answer({"type": "noul", "noul": 0.7})) is False
+    assert guard(parse_answer({"type": "noul", "noul": 0.01})) is False
     assert guard(down=True) is False
     assert guard() is False  # no answer at all
 
 
-def test_numbers_and_money_stay_out_of_jev_questions():
-    engine = DecisionEngine(FakeJev({"big": Answer(True, 1.0)}))
+def test_numbers_and_money_stay_out_of_question_wording_but_not_option_names():
+    engine = DecisionEngine(FakeJev({"big": Answer(True, 1.0), "tool": Answer("read_logs_v2", 0.9)}))
     with pytest.raises(ValueError, match="numbers and money"):
         engine.guard("big", "Is the refund above $1,000?", MESSAGE)
+    assert engine.select_tool(["read_logs_v2"], MESSAGE) == "read_logs_v2"
 
 
 def test_tool_selection_picks_from_the_shortlist_or_nothing():
@@ -114,24 +136,70 @@ def test_tool_selection_picks_from_the_shortlist_or_nothing():
     assert pick(Answer("reset_vpn", 0.99)) is None  # not on the shortlist
     assert pick(down=True) is None
     assert pick(candidates=()) is None
+    with pytest.raises(ValueError, match="at most 255"):
+        pick(candidates=[f"tool_{i}" for i in range(255)])
 
 
-def test_http_client_sends_the_versioned_question_set_and_maps_failures():
+def client(handler, **options):
+    return JevClient("key-1", transport=httpx.MockTransport(handler), backoff=0, **options)
+
+
+def test_requests_use_the_documented_systemone_shape():
     seen = []
 
     def handler(request):
-        seen.append((request.headers["Authorization"], json.loads(request.content)))
-        return httpx.Response(200, json={"answers": {"confirmed": {"value": True, "confidence": 0.97}}})
+        seen.append((request.method, str(request.url), request.headers["Authorization"],
+                     json.loads(request.content)))
+        usage = {"input_tokens": 3, "output_tokens": 1}
+        return httpx.Response(200, json={"model": "jev-1.13.0", "usage": usage,
+                                         "answers": {"is_urgent": DOC_NOUL}})
 
-    client = JevClient("https://jev.test", "key-1", transport=httpx.MockTransport(handler))
-    answers = client.evaluate({"message": "hi"}, [{"id": "confirmed", "type": "noul", "question": "Fixed?"}])
-    assert answers["confirmed"] == Answer(True, 0.97, None)
-    assert seen[0][0] == "Bearer key-1" and seen[0][1]["version"] == QUESTIONS_VERSION
+    jev = client(handler)
+    answers = jev.evaluate({"message": "hi"}, {"is_urgent": {"type": "noul", "instructions": "Urgent?"}})
+    method, url, auth, body = seen[0]
+    assert (method, url, auth) == ("POST", "https://api.typesafe.ai/v1/systemone", "Bearer key-1")
+    assert body == {"state": {"message": "hi"}, "model": "jev-latest",
+                    "questions": {"is_urgent": {"type": "noul", "instructions": "Urgent?"}}}
+    assert answers == {"is_urgent": Answer(True, 0.95)}
+    assert jev.last == {"model": "jev-1.13.0", "usage": {"input_tokens": 3, "output_tokens": 1}}
 
-    for broken in (lambda r: httpx.Response(503), lambda r: httpx.Response(200, json={"oops": 1}),
-                   lambda r: (_ for _ in ()).throw(httpx.ReadTimeout("slow"))):
-        with pytest.raises(JevUnavailable):
-            JevClient("https://jev.test", "k", transport=httpx.MockTransport(broken)).evaluate({}, [])
+
+def test_triage_questions_follow_the_documented_rules():
+    intent = TRIAGE_QUESTIONS["intent"]
+    assert intent["type"] == "choice" and isinstance(intent["criteria"], dict)
+    assert 2 <= len(TRIAGE_QUESTIONS["severity"]["criteria"]) <= 10
+    assert set(TRIAGE_QUESTIONS["missing_details"]["criteria"]) == {"true", "false"}
+
+
+def test_overload_is_retried_once():
+    replies = [httpx.Response(529), httpx.Response(200, json={"model": "m", "usage": {},
+                                                             "answers": {"q": DOC_NOUL}})]
+    assert client(lambda request: replies.pop(0)).evaluate({}, {"q": {}}) == {"q": Answer(True, 0.95)}
+    with pytest.raises(JevUnavailable):
+        client(lambda request: httpx.Response(429)).evaluate({}, {})
+
+
+@pytest.mark.parametrize("status", [400, 401, 413, 415, 422])
+def test_refused_requests_are_reported_as_rejected(status):
+    with pytest.raises(JevRejected):
+        client(lambda request: httpx.Response(status, json={"error": "bad"})).evaluate({}, {})
+
+
+@pytest.mark.parametrize("reply", [
+    lambda request: httpx.Response(503),
+    lambda request: httpx.Response(200, json={"oops": 1}),
+    lambda request: httpx.Response(200, json={"answers": {"q": {"type": "mystery"}}}),
+    lambda request: (_ for _ in ()).throw(httpx.ReadTimeout("slow")),
+])
+def test_outages_and_malformed_replies_count_as_jev_down(reply):
+    with pytest.raises(JevUnavailable) as raised:
+        client(reply).evaluate({}, {"q": {}})
+    assert not isinstance(raised.value, JevRejected)
+
+
+def test_a_rejected_request_still_fails_safe():
+    jev = client(lambda request: httpx.Response(401, json={"error": "invalid key"}))
+    assert DecisionEngine(jev).guard("ok", "Is it fixed?", MESSAGE) is False
 
 
 def run_case(jev, fallback=None):

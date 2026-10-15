@@ -37,7 +37,7 @@ def triage(engine, masked_state, fallback=None):
             answers, source = checked(fallback(masked_state), TRIAGE_QUESTIONS), "fallback"
         except JevUnavailable:
             return ASK_CUSTOMER
-    intent, severity = answers["intent"].value, answers["severity"].index
+    intent, severity = answers["intent"].value, answers["severity"].index  # most likely severity level
     confidence = min(answers["intent"].confidence, answers["severity"].confidence)
     if source == "fallback":
         confidence = min(confidence, FALLBACK_MAX_CONFIDENCE)
@@ -47,7 +47,7 @@ def triage(engine, masked_state, fallback=None):
         acuity = 5 if severity >= 3 else 4
     return {"intent": intent, "acuity": acuity, "confidence": confidence,
             "missing_params": answers["missing_details"].value is True, "sop_name": SOP_INTENTS.get(intent),
-            "rationale": f"{source}: {intent}, severity {SEVERITY[severity]}"}
+            "rationale": f"{source}: {intent}, severity {SEVERITY[severity].split(':')[0]}"}
 
 
 def llm_fallback(complete):
@@ -55,17 +55,19 @@ def llm_fallback(complete):
     def classify(masked_state):
         prompt = (
             "Classify the customer message. Reply with JSON only: "
-            '{"intent": one of ' + json.dumps(INTENTS) + ', "severity": index into ' + json.dumps(SEVERITY)
+            '{"intent": one of ' + json.dumps(list(INTENTS))
+            + ', "severity": index into ' + json.dumps(SEVERITY)
             + ', "missing_details": true or false, "confidence": 0 to 1}\n\nMessage: '
             + masked_state["message"].text
         )
         try:
             reply = json.loads(complete(prompt))
             confidence = float(reply["confidence"])
+            level = int(reply["severity"])
             return {"intent": Answer(reply["intent"], confidence),
-                    "severity": Answer(SEVERITY[int(reply["severity"])], confidence, int(reply["severity"])),
+                    "severity": Answer(float(level), confidence, level),
                     "missing_details": Answer(reply["missing_details"], confidence)}
-        except (ValueError, KeyError, TypeError, IndexError) as error:
+        except (ValueError, KeyError, TypeError) as error:
             raise JevUnavailable(f"fallback classifier: {error}") from error
     return classify
 

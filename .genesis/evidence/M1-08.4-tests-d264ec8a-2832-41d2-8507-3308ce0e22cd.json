@@ -1,0 +1,30 @@
+{
+  "task": "M1-08.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "d264ec8a-2832-41d2-8507-3308ce0e22cd",
+  "command": "python -m pytest tests/recovery/ -q",
+  "started_at": "2026-10-15T15:20:10.505Z",
+  "observed_at": "2026-10-15T15:20:41.792Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "............                                                             [100%]\r\n12 passed in 0.43s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "7db7718d7426147806346f2d8cb817d33071941f",
+    "dirty": true
+  },
+  "source_hash": "ec5cae11570e20b591338cdbaeb548b926adf68105dc6332b5cdedfe89baf963",
+  "before_hash": "ec5cae11570e20b591338cdbaeb548b926adf68105dc6332b5cdedfe89baf963",
+  "config_hash": "0c25d673ba5c766fd4603684aa0ec26eeed80f4bbdc41b11063ced04cf02fede",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "55d58b3c8279980399bcc14577937c2c4a631c4d53b1ee225ab7786bb15add95"
+}
