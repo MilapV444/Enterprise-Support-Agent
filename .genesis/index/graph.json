@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "7db7718d7426147806346f2d8cb817d33071941f",
-  "sourceHash": "7c6e4527e608a77128f738eeb5fb36da42036e9ce50d695cc0fe23c716b20a55",
+  "revision": "24c4015b8f6d19bd4b4a9b9b3d61e429f4a46f08",
+  "sourceHash": "cf59164d6f088cb2c702df0b53ae85f28d46e5a84077178080945479d0094103",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -480,6 +480,16 @@
       "contentHash": "7e75ec94d20ab2683ba5d6fb6fa42f58222f01cb5801f901976e4f4c5d95febb"
     },
     {
+      "id": "file:src/cost/router.py",
+      "type": "file",
+      "label": "src/cost/router.py",
+      "path": "src/cost/router.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "d7c2b10142515339c4ab282675da60fb0fac749356c20b337fbf1a1d6ad99422"
+    },
+    {
       "id": "file:src/data/__init__.py",
       "type": "file",
       "label": "src/data/__init__.py",
@@ -558,6 +568,86 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "a44bfff2633063be47a90cca034518547c48ad7b7edf9938acd8e28651f85b5d"
+    },
+    {
+      "id": "file:src/knowledge/index/__init__.py",
+      "type": "file",
+      "label": "src/knowledge/index/__init__.py",
+      "path": "src/knowledge/index/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2685a2e716b2e47bb2e4fb2f03b866393f2a185621ceb87603db385616fd5c16"
+    },
+    {
+      "id": "file:src/knowledge/index/store.py",
+      "type": "file",
+      "label": "src/knowledge/index/store.py",
+      "path": "src/knowledge/index/store.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "08826c05348a95818934a5c4a50be09e3246422d5fd5feb94d322b9cf8679b7c"
+    },
+    {
+      "id": "file:src/knowledge/ingest/__init__.py",
+      "type": "file",
+      "label": "src/knowledge/ingest/__init__.py",
+      "path": "src/knowledge/ingest/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "06b240353c4d88d07ccc6d62a50ebc8e6fd9a367fd6a19f01d6dc4c6c52f3208"
+    },
+    {
+      "id": "file:src/knowledge/ingest/chunker.py",
+      "type": "file",
+      "label": "src/knowledge/ingest/chunker.py",
+      "path": "src/knowledge/ingest/chunker.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "105eb6b65f86de73604c738513e4133b94a3ff7777043042bfe7e185fbaef566"
+    },
+    {
+      "id": "file:src/knowledge/ingest/pipeline.py",
+      "type": "file",
+      "label": "src/knowledge/ingest/pipeline.py",
+      "path": "src/knowledge/ingest/pipeline.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "cae51ed89b99d1fe84e507a24dfb44230dfce9f5c178adfa505338e9f0faaeeb"
+    },
+    {
+      "id": "file:src/knowledge/retrieval/__init__.py",
+      "type": "file",
+      "label": "src/knowledge/retrieval/__init__.py",
+      "path": "src/knowledge/retrieval/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "88d03e16d45e574cfa2a93bf558783ea81b400205a38ff014d6ef039c7a00f8e"
+    },
+    {
+      "id": "file:src/knowledge/retrieval/pipeline.py",
+      "type": "file",
+      "label": "src/knowledge/retrieval/pipeline.py",
+      "path": "src/knowledge/retrieval/pipeline.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "038c2c9b5c26bc08c9ef0d0ee4df6871ed24fadb29a0ffd6b4a10246e4ebf783"
+    },
+    {
+      "id": "file:src/reliability/fallbacks.py",
+      "type": "file",
+      "label": "src/reliability/fallbacks.py",
+      "path": "src/reliability/fallbacks.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "79cd1d78e057509523e765dcaee4943673fc0347760bf05c51ee903e114718e5"
     },
     {
       "id": "file:src/schemas/__init__.py",
@@ -730,6 +820,36 @@
       "contentHash": "ba66737fb05b94200427f6287a22b6a2fe5604317a02b7db8b23b9d05bbaa823"
     },
     {
+      "id": "file:tests/knowledge/ingest/test_chunker.py",
+      "type": "file",
+      "label": "tests/knowledge/ingest/test_chunker.py",
+      "path": "tests/knowledge/ingest/test_chunker.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "90c13a8ae7e30e9de4d642ca8d13e695c3b46409ecda609c02f61956aedffd7a"
+    },
+    {
+      "id": "file:tests/knowledge/ingest/test_ingest.py",
+      "type": "file",
+      "label": "tests/knowledge/ingest/test_ingest.py",
+      "path": "tests/knowledge/ingest/test_ingest.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1f88405881eab436a7a61bc89f15f11941e025ec781cc551d57ca2a2bb8c59a6"
+    },
+    {
+      "id": "file:tests/knowledge/retrieval/test_retrieval.py",
+      "type": "file",
+      "label": "tests/knowledge/retrieval/test_retrieval.py",
+      "path": "tests/knowledge/retrieval/test_retrieval.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "a3fee4d1dc1d7440bbc56a944e420079311673be17f1ed9aa33dd95ae6191038"
+    },
+    {
       "id": "file:tests/orchestrator/test_statechart.py",
       "type": "file",
       "label": "tests/orchestrator/test_statechart.py",
@@ -748,6 +868,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "830ef50467dc05ce60d7b51631345f7ad14a0a8013427be10ea694b87997289a"
+    },
+    {
+      "id": "file:tests/router/test_router.py",
+      "type": "file",
+      "label": "tests/router/test_router.py",
+      "path": "tests/router/test_router.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2e8966a445e3cbd27ce0d9dd079dd48a798856b37ddb379c86fa738068d3eaee"
     },
     {
       "id": "file:tests/storage/test_events.py",
