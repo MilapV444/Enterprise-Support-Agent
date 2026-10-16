@@ -1,0 +1,30 @@
+{
+  "task": "M1-09.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "2bcdfb1f-ffad-4fcf-b273-72b66d8bfa37",
+  "command": "python -m pytest tests/router/ -q",
+  "started_at": "2026-10-16T14:55:19.478Z",
+  "observed_at": "2026-10-16T14:55:27.488Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".......................                                                  [100%]\r\n23 passed in 2.19s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "24c4015b8f6d19bd4b4a9b9b3d61e429f4a46f08",
+    "dirty": true
+  },
+  "source_hash": "983017b6e6cca56b848c118dee3ba08597bac762cbaabec25eee58e58a099d0b",
+  "before_hash": "983017b6e6cca56b848c118dee3ba08597bac762cbaabec25eee58e58a099d0b",
+  "config_hash": "359fd096df9b1df7f2aa2316b5266e7d8b0fc30d8ef57a740fc8406b6991604c",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "7c187a024192a020a24f9ad020d590c66dd1bcd9f64b2db4c338a4f7e31478de"
+}

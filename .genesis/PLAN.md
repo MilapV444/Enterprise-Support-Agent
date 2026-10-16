@@ -1138,35 +1138,35 @@
 
 ### M1-08.4 — M1 Core: circuit breaker, Reflexion retries, step caps and incident diagnostic packet
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-4
 - scope: src/core/recovery/, src/schemas/diagnostic.py, tests/recovery/
-- gates: tests: python -m pytest tests/recovery/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/recovery/ -q, independent-review: pass
 - next: Human independent review of src/core/recovery/, src/schemas/diagnostic.py, tests/recovery/
 
 ### M1-09.4 — M1 Core: model router over free tiers and capped Claude with Jev difficulty routing, cascade, provider fallbacks and retry budgets
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: FR-40, NFR-17
 - scope: src/cost/router.py, src/reliability/fallbacks.py, tests/router/
-- gates: tests: python -m pytest tests/router/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/router/ -q, independent-review: pass
+- next: Human independent review of src/cost/router.py, src/reliability/fallbacks.py, tests/router/
 
 ### M1-10.4 — M1 Core: knowledge sources, audience labels, chunking, nightly batch with instant purge, public and per-tenant collections, copied ACLs
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-10, FR-11, FR-12
 - scope: src/knowledge/ingest/, src/knowledge/index/, tests/knowledge/ingest/
-- gates: tests: python -m pytest tests/knowledge/ingest/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/knowledge/ingest/ -q, independent-review: pass
+- next: Human independent review of src/knowledge/ingest/, src/knowledge/index/, tests/knowledge/ingest/
 
 ### M1-11.4 — M1 Core: retrieval pipeline: rewrite, hybrid search with RRF, screening, validated LLM rerank, top-10
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-13
 - scope: src/knowledge/retrieval/, tests/knowledge/retrieval/
 - gates: tests: python -m pytest tests/knowledge/retrieval/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- next: Human independent review of src/knowledge/retrieval/ and tests/knowledge/retrieval/
 
 ### M1-12.4 — M1 Core: input screening with Llama Guard and Prompt Guard bands and spotlighting of untrusted text
 
