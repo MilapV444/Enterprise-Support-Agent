@@ -1,0 +1,30 @@
+{
+  "task": "M1-12.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "35dee225-39b6-420b-85e0-327999f977a6",
+  "command": "python -m pytest tests/safety/screening/ -q",
+  "started_at": "2026-10-20T16:23:40.111Z",
+  "observed_at": "2026-10-20T16:23:50.810Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................                                                 [100%]\r\n24 passed in 0.12s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "f59856b263aedff11fe1c8364bf958dfd590b047",
+    "dirty": true
+  },
+  "source_hash": "c574f34449cf96b20d0e2ba4e42481b21e3bfd707e5e6af3b94ee4cb4015284c",
+  "before_hash": "c574f34449cf96b20d0e2ba4e42481b21e3bfd707e5e6af3b94ee4cb4015284c",
+  "config_hash": "9b923d050d1ab86e67e9ae16510f15947766bd819402e191163f6569a5b71950",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "beacd0556f48cc631c7819e64c27c771b4a236fab118fe16e187185c5823eaff"
+}

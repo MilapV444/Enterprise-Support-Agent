@@ -1,0 +1,30 @@
+{
+  "task": "M1-13.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "62f05f0b-9e8f-4c0f-bf0a-597f204d4575",
+  "command": "python -m pytest tests/safety/pii/ -q",
+  "started_at": "2026-10-20T17:53:45.530Z",
+  "observed_at": "2026-10-20T17:54:07.332Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".........................                                                [100%]\r\n25 passed in 13.41s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "f59856b263aedff11fe1c8364bf958dfd590b047",
+    "dirty": true
+  },
+  "source_hash": "4b3e5680e2a3e9a8102a6ffa3cc73df1dc5508ffe5b2156e1879fb425aa03bdc",
+  "before_hash": "4b3e5680e2a3e9a8102a6ffa3cc73df1dc5508ffe5b2156e1879fb425aa03bdc",
+  "config_hash": "9d0c823b6f9f0ffb063cd38a7d7af7413f0bdc1c3f220b30749a840f7f46db12",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "987d55a0291e98ebe33869c6f0ab1e6a14c4a0f2bbce234a0026db5177d94aa2"
+}

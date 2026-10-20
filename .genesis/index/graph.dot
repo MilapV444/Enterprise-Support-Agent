@@ -65,6 +65,12 @@ digraph genesis {
   "file:src/knowledge/retrieval/__init__.py" [label="src/knowledge/retrieval/__init__.py",class="file"];
   "file:src/knowledge/retrieval/pipeline.py" [label="src/knowledge/retrieval/pipeline.py",class="file"];
   "file:src/reliability/fallbacks.py" [label="src/reliability/fallbacks.py",class="file"];
+  "file:src/safety/pii/__init__.py" [label="src/safety/pii/__init__.py",class="file"];
+  "file:src/safety/pii/tokens.py" [label="src/safety/pii/tokens.py",class="file"];
+  "file:src/safety/pii/vault.py" [label="src/safety/pii/vault.py",class="file"];
+  "file:src/safety/screening/__init__.py" [label="src/safety/screening/__init__.py",class="file"];
+  "file:src/safety/screening/pipeline.py" [label="src/safety/screening/pipeline.py",class="file"];
+  "file:src/safety/screening/scorers.py" [label="src/safety/screening/scorers.py",class="file"];
   "file:src/schemas/__init__.py" [label="src/schemas/__init__.py",class="file"];
   "file:src/schemas/diagnostic.py" [label="src/schemas/diagnostic.py",class="file"];
   "file:src/schemas/thread_state.py" [label="src/schemas/thread_state.py",class="file"];
@@ -88,6 +94,9 @@ digraph genesis {
   "file:tests/orchestrator/test_statechart.py" [label="tests/orchestrator/test_statechart.py",class="file"];
   "file:tests/recovery/test_breaker.py" [label="tests/recovery/test_breaker.py",class="file"];
   "file:tests/router/test_router.py" [label="tests/router/test_router.py",class="file"];
+  "file:tests/safety/pii/test_pii_tokens.py" [label="tests/safety/pii/test_pii_tokens.py",class="file"];
+  "file:tests/safety/pii/test_vault.py" [label="tests/safety/pii/test_vault.py",class="file"];
+  "file:tests/safety/screening/test_screening.py" [label="tests/safety/screening/test_screening.py",class="file"];
   "file:tests/storage/test_events.py" [label="tests/storage/test_events.py",class="file"];
   "file:tests/storage/test_objects.py" [label="tests/storage/test_objects.py",class="file"];
   "file:tests/test_dependencies.py" [label="tests/test_dependencies.py",class="file"];

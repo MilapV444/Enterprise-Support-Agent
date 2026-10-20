@@ -1162,27 +1162,27 @@
 
 ### M1-11.4 — M1 Core: retrieval pipeline: rewrite, hybrid search with RRF, screening, validated LLM rerank, top-10
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-13
 - scope: src/knowledge/retrieval/, tests/knowledge/retrieval/
-- gates: tests: python -m pytest tests/knowledge/retrieval/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/knowledge/retrieval/ -q, independent-review: pass
 - next: Human independent review of src/knowledge/retrieval/ and tests/knowledge/retrieval/
 
 ### M1-12.4 — M1 Core: input screening with Llama Guard and Prompt Guard bands and spotlighting of untrusted text
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-30
 - scope: src/safety/screening/, tests/safety/screening/
-- gates: tests: python -m pytest tests/safety/screening/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/safety/screening/ -q, independent-review: pass
+- next: Human independent review of src/safety/screening/ and tests/safety/screening/
 
 ### M1-13.4 — M1 Core: PII tokenization with a vault, needs_pii restore only, and vault-down degrade
 
-- state/risk: queued / high
+- state/risk: active / high
 - requirements: FR-31, AC-14
 - scope: src/safety/pii/, tests/safety/pii/
 - gates: tests: python -m pytest tests/safety/pii/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- next: Human independent review of src/safety/pii/ and tests/safety/pii/
 
 ### M1-14.4 — M1 Core: output checks for leakage, URLs / markdown and unbacked promises
 
