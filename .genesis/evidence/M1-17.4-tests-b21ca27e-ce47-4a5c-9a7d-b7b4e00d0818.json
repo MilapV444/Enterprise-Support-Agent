@@ -1,0 +1,30 @@
+{
+  "task": "M1-17.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "b21ca27e-ce47-4a5c-9a7d-b7b4e00d0818",
+  "command": "python -m pytest tests/e2e/test_scenarios_core.py -q",
+  "started_at": "2026-10-21T17:20:24.098Z",
+  "observed_at": "2026-10-21T17:20:41.854Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".....                                                                    [100%]\r\n5 passed in 8.73s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "90a8b4509413bdd0a04e6966828b75653cb99cda",
+    "dirty": true
+  },
+  "source_hash": "927c59693e6fbcf275042e412f6ffde310089cd2881752ce4c09afd80805b45f",
+  "before_hash": "927c59693e6fbcf275042e412f6ffde310089cd2881752ce4c09afd80805b45f",
+  "config_hash": "7fdc9b72ffc5835c129f50fee68ec91c0a3436efbe3c397c6e640d802d21f86b",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "25f25dfe7c2510d3793461f4d2fb7569bb0f38a77f18a3d94a5a75dc006519a5"
+}

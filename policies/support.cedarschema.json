@@ -1,0 +1,64 @@
+{
+  "": {
+    "entityTypes": {
+      "Role": {},
+      "User": {
+        "memberOfTypes": ["Role"],
+        "shape": {"type": "Record", "attributes": {"tenant_id": {"type": "String"}}}
+      },
+      "Ticket": {
+        "shape": {"type": "Record", "attributes": {
+          "tenant_id": {"type": "String"},
+          "author": {"type": "Entity", "name": "User"}
+        }}
+      },
+      "Account": {
+        "shape": {"type": "Record", "attributes": {
+          "tenant_id": {"type": "String"},
+          "owner": {"type": "Entity", "name": "User"}
+        }}
+      },
+      "Environment": {
+        "shape": {"type": "Record", "attributes": {
+          "tenant_id": {"type": "String"},
+          "name": {"type": "String"}
+        }}
+      }
+    },
+    "actions": {
+      "read": {},
+      "write": {},
+      "production_change": {"memberOf": [{"id": "write"}]},
+      "read_ticket": {
+        "memberOf": [{"id": "read"}],
+        "appliesTo": {"principalTypes": ["User"], "resourceTypes": ["Ticket"],
+                      "context": {"type": "Record", "attributes": {"in_blackout": {"type": "Boolean"}}}}
+      },
+      "read_account": {
+        "memberOf": [{"id": "read"}],
+        "appliesTo": {"principalTypes": ["User"], "resourceTypes": ["Account"],
+                      "context": {"type": "Record", "attributes": {"in_blackout": {"type": "Boolean"}}}}
+      },
+      "update_contact": {
+        "memberOf": [{"id": "write"}],
+        "appliesTo": {"principalTypes": ["User"], "resourceTypes": ["Account"],
+                      "context": {"type": "Record", "attributes": {"in_blackout": {"type": "Boolean"}}}}
+      },
+      "restart_cluster": {
+        "memberOf": [{"id": "production_change"}],
+        "appliesTo": {"principalTypes": ["User"], "resourceTypes": ["Environment"],
+                      "context": {"type": "Record", "attributes": {"in_blackout": {"type": "Boolean"}}}}
+      },
+      "apply_migration": {
+        "memberOf": [{"id": "production_change"}],
+        "appliesTo": {"principalTypes": ["User"], "resourceTypes": ["Environment"],
+                      "context": {"type": "Record", "attributes": {"in_blackout": {"type": "Boolean"}}}}
+      },
+      "terminate_service": {
+        "memberOf": [{"id": "production_change"}],
+        "appliesTo": {"principalTypes": ["User"], "resourceTypes": ["Environment"],
+                      "context": {"type": "Record", "attributes": {"in_blackout": {"type": "Boolean"}}}}
+      }
+    }
+  }
+}

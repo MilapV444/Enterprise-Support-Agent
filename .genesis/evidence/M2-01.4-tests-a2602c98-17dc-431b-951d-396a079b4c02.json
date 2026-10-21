@@ -1,0 +1,30 @@
+{
+  "task": "M2-01.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "a2602c98-17dc-431b-951d-396a079b4c02",
+  "command": "python -m pytest tests/memory/conversation/ -q",
+  "started_at": "2026-10-21T17:40:12.864Z",
+  "observed_at": "2026-10-21T17:40:29.083Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "....................                                                     [100%]\r\n20 passed in 6.52s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "90a8b4509413bdd0a04e6966828b75653cb99cda",
+    "dirty": true
+  },
+  "source_hash": "8978202e136e951dc0fd8a2ec7f9f0155a037cc32dcc30e7464f334a972d487d",
+  "before_hash": "8978202e136e951dc0fd8a2ec7f9f0155a037cc32dcc30e7464f334a972d487d",
+  "config_hash": "3ef981638277648a03c43418cea76a7bcc152ee4f55f2e261fe0ebe474b1bf71",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "afa17a5308300e8bf26af5472c5a661aa4bf323a89add068387b0cdb113b630c"
+}
