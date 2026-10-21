@@ -1,0 +1,30 @@
+{
+  "task": "M1-14.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "8db95f0e-632d-44f8-90e0-f1164c02a9b0",
+  "command": "python -m pytest tests/safety/output/ -q",
+  "started_at": "2026-10-21T16:27:41.937Z",
+  "observed_at": "2026-10-21T16:28:22.144Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".......................                                                  [100%]\r\n23 passed in 0.37s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "90a8b4509413bdd0a04e6966828b75653cb99cda",
+    "dirty": true
+  },
+  "source_hash": "9caca98a83a4cbadc5d882147b47a8521a3dae81c4b145e4b36b885ec728ef48",
+  "before_hash": "9caca98a83a4cbadc5d882147b47a8521a3dae81c4b145e4b36b885ec728ef48",
+  "config_hash": "7d0bf7ae08d7da6f28daa3ffcb75cdcc1f2a7561dd91464e7fd0f8e01d4239ac",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "54f4cde13b85c7795ecc7ae0f466f314461ae13ceb112fd7bff299fd025a8bd4"
+}

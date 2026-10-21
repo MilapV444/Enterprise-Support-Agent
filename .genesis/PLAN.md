@@ -1178,47 +1178,47 @@
 
 ### M1-13.4 — M1 Core: PII tokenization with a vault, needs_pii restore only, and vault-down degrade
 
-- state/risk: active / high
+- state/risk: done / high
 - requirements: FR-31, AC-14
 - scope: src/safety/pii/, tests/safety/pii/
-- gates: tests: python -m pytest tests/safety/pii/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/safety/pii/ -q, independent-review: pass
 - next: Human independent review of src/safety/pii/ and tests/safety/pii/
 
 ### M1-14.4 — M1 Core: output checks for leakage, URLs / markdown and unbacked promises
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: FR-32
 - scope: src/safety/output/, tests/safety/output/
-- gates: tests: python -m pytest tests/safety/output/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/safety/output/ -q, independent-review: pass
+- next: Human independent review of src/safety/output/ and tests/safety/output/
 
 ### M1-15.4 — M1 Core: Cedar authorization with cedarpy: ticket visibility, blackout windows, fail-closed writes
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-33, NFR-22
 - scope: src/safety/authz/, policies/, tests/safety/authz/
-- gates: tests: python -m pytest tests/safety/authz/ -q, independent-review: pending
-- next: Run the task pre-flight.
+- gates: tests: python -m pytest tests/safety/authz/ -q, independent-review: pass
+- next: Human independent review of src/safety/authz/, policies/ and tests/safety/authz/
 
 ### M1-16.4 — M1 Core: decision records with a user 'why' view, AI disclosure, and the transcript archive
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: FR-34
 - scope: src/safety/governance/, tests/safety/governance/
-- gates: tests: python -m pytest tests/safety/governance/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/safety/governance/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M1-17.4 — M1 Core: end-to-end tests for framework scenarios 1, 2 and 5
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: AC-1, AC-2, AC-5
 - scope: tests/e2e/test_scenarios_core.py
-- gates: tests: python -m pytest tests/e2e/test_scenarios_core.py -q, independent-review: pending
+- gates: tests: python -m pytest tests/e2e/test_scenarios_core.py -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M2-01.4 — M2: conversation memory: verbatim + rolling summary + pins with unpin, Jev case linking
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-15
 - scope: src/memory/conversation/, tests/memory/conversation/
 - gates: tests: python -m pytest tests/memory/conversation/ -q, independent-review: pending

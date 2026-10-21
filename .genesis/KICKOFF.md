@@ -4,9 +4,9 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: M1-13.4 — M1 Core: PII tokenization with a vault, needs_pii restore only, and vault-down degrade
+- active task: M2-01.4 — M2: conversation memory: verbatim + rolling summary + pins with unpin, Jev case linking
 - blocker: none
-- next action: Human independent review of src/safety/pii/ and tests/safety/pii/
+- next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
 - gates: tests:pass, independent-review:pending
 - recent failures: none
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: f4b6fae802e44732e596391fdb2e2b4a6e7db793f746cdf05ae3cede39d3fdc3. Use --since only after receiving that full packet; kickoff is not the packet.
-- KNOWLEDGE-e7e3c99f: Approval shorthand
-- DECISION-6b7412f4: v1 runtime: learning deployment profile, USD 10/month cap
+Context fingerprint: 5c6152c096a9717a56ca2bb0d268c3d62a2b2a35b516a9e5aedaf3d75ade9c51. Use --since only after receiving that full packet; kickoff is not the packet.
+- KNOWLEDGE-634b024b: M2-01.4 conversation memory: schema and limits
 - KNOWLEDGE-205fb661: Jev (TypeSafe System One) API contract
+- KNOWLEDGE-7d33c13a: Run gates with the project venv on PATH
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

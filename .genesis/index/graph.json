@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "f59856b263aedff11fe1c8364bf958dfd590b047",
-  "sourceHash": "880bffc5e96106f33cd1b7d03981c50b3ab5a2d15ecdb0057d324111aaad1884",
+  "revision": "90a8b4509413bdd0a04e6966828b75653cb99cda",
+  "sourceHash": "3fe713d69d6e7a679decff0d00a93b56af97c0f993ab605c2fae5c67de16728f",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -640,6 +640,36 @@
       "contentHash": "038c2c9b5c26bc08c9ef0d0ee4df6871ed24fadb29a0ffd6b4a10246e4ebf783"
     },
     {
+      "id": "file:src/memory/conversation/__init__.py",
+      "type": "file",
+      "label": "src/memory/conversation/__init__.py",
+      "path": "src/memory/conversation/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "211369d0e40d2329c26e019f30f9a67a7cea1c2c84710850e3749fb85e42beb4"
+    },
+    {
+      "id": "file:src/memory/conversation/cases.py",
+      "type": "file",
+      "label": "src/memory/conversation/cases.py",
+      "path": "src/memory/conversation/cases.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "7a6b9679bd92dbaed84a30cfe5a262cbd9c59ad5a2ab992a16ebcb4c5568b1f4"
+    },
+    {
+      "id": "file:src/memory/conversation/dialogue.py",
+      "type": "file",
+      "label": "src/memory/conversation/dialogue.py",
+      "path": "src/memory/conversation/dialogue.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "38220ba36b29d7d94dd137c80a12a0154b23e7b629913a56a58ab1ead307f3a3"
+    },
+    {
       "id": "file:src/reliability/fallbacks.py",
       "type": "file",
       "label": "src/reliability/fallbacks.py",
@@ -648,6 +678,86 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "79cd1d78e057509523e765dcaee4943673fc0347760bf05c51ee903e114718e5"
+    },
+    {
+      "id": "file:src/safety/authz/__init__.py",
+      "type": "file",
+      "label": "src/safety/authz/__init__.py",
+      "path": "src/safety/authz/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "80752c69a80f25fc796e99c6fabfd28b80fde604f5910164d049634f8c93e0a9"
+    },
+    {
+      "id": "file:src/safety/authz/cedar.py",
+      "type": "file",
+      "label": "src/safety/authz/cedar.py",
+      "path": "src/safety/authz/cedar.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "4f0938c9fdefc5c24a06c10beaf81a39ab85f2b3dfe8b03032626cf26683d388"
+    },
+    {
+      "id": "file:src/safety/governance/__init__.py",
+      "type": "file",
+      "label": "src/safety/governance/__init__.py",
+      "path": "src/safety/governance/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "5a676235c459471602a434eb3be58c0bdec95dfef416189f4574df66db743f0e"
+    },
+    {
+      "id": "file:src/safety/governance/archive.py",
+      "type": "file",
+      "label": "src/safety/governance/archive.py",
+      "path": "src/safety/governance/archive.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "a62f9544e079b154381f71fe3cc238e07cff08a55d581f6f02d105593e5f93d5"
+    },
+    {
+      "id": "file:src/safety/governance/disclosure.py",
+      "type": "file",
+      "label": "src/safety/governance/disclosure.py",
+      "path": "src/safety/governance/disclosure.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "3ea5faf264e77c32812efe82f5fd141933fb80ef7b640a73c08e73593a80f1d5"
+    },
+    {
+      "id": "file:src/safety/governance/records.py",
+      "type": "file",
+      "label": "src/safety/governance/records.py",
+      "path": "src/safety/governance/records.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "dd8b9d275261e27bc6a93bbb047ddc7034e8a15b99b0f2b9fcd737b1c169455a"
+    },
+    {
+      "id": "file:src/safety/output/__init__.py",
+      "type": "file",
+      "label": "src/safety/output/__init__.py",
+      "path": "src/safety/output/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ee958b8991a729b98a7c92704fd034932c8a152b66b4cd3268fc239c33363cd9"
+    },
+    {
+      "id": "file:src/safety/output/checks.py",
+      "type": "file",
+      "label": "src/safety/output/checks.py",
+      "path": "src/safety/output/checks.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "44a0f18eef99e57ef8372294a1e1ed2b350830f1cb3135bab82b2eb386036052"
     },
     {
       "id": "file:src/safety/pii/__init__.py",
@@ -830,6 +940,16 @@
       "contentHash": "d01ad7133de9aa0cc7d56933c07ec3b2242c0da33436ae6572dcdfb9f51e3656"
     },
     {
+      "id": "file:tests/e2e/test_scenarios_core.py",
+      "type": "file",
+      "label": "tests/e2e/test_scenarios_core.py",
+      "path": "tests/e2e/test_scenarios_core.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c1943f4f027620d991b5c1ad2d9e04e2d756c4bad2d6181bb2a7c709d6ee047f"
+    },
+    {
       "id": "file:tests/identity/conftest.py",
       "type": "file",
       "label": "tests/identity/conftest.py",
@@ -910,6 +1030,16 @@
       "contentHash": "a3fee4d1dc1d7440bbc56a944e420079311673be17f1ed9aa33dd95ae6191038"
     },
     {
+      "id": "file:tests/memory/conversation/test_conversation_memory.py",
+      "type": "file",
+      "label": "tests/memory/conversation/test_conversation_memory.py",
+      "path": "tests/memory/conversation/test_conversation_memory.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "713262280bab9ed3de7b146a5186f46f4ff96dfa476f61b95f74951ed98ad877"
+    },
+    {
       "id": "file:tests/orchestrator/test_statechart.py",
       "type": "file",
       "label": "tests/orchestrator/test_statechart.py",
@@ -938,6 +1068,36 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "2e8966a445e3cbd27ce0d9dd079dd48a798856b37ddb379c86fa738068d3eaee"
+    },
+    {
+      "id": "file:tests/safety/authz/test_cedar.py",
+      "type": "file",
+      "label": "tests/safety/authz/test_cedar.py",
+      "path": "tests/safety/authz/test_cedar.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1322ae8974cbfee27f0d9eb5542c2a9a87b1c379d03f01813be1b5443f78ad73"
+    },
+    {
+      "id": "file:tests/safety/governance/test_governance.py",
+      "type": "file",
+      "label": "tests/safety/governance/test_governance.py",
+      "path": "tests/safety/governance/test_governance.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "831dabc34c8db28366ea3a8b36ab13eaba0ef8cb20664c6bd45dd3925bee0731"
+    },
+    {
+      "id": "file:tests/safety/output/test_output_checks.py",
+      "type": "file",
+      "label": "tests/safety/output/test_output_checks.py",
+      "path": "tests/safety/output/test_output_checks.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8ad960dbc0dd29bde42d9480b3c7e0385028870d93728b69a20168a8373c96b1"
     },
     {
       "id": "file:tests/safety/pii/test_pii_tokens.py",
