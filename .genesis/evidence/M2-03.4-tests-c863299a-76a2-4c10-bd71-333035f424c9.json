@@ -1,0 +1,30 @@
+{
+  "task": "M2-03.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "c863299a-76a2-4c10-bd71-333035f424c9",
+  "command": "python -m pytest tests/erasure/ -q",
+  "started_at": "2026-10-22T17:41:05.578Z",
+  "observed_at": "2026-10-22T17:41:53.538Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "..........                                                               [100%]\r\n10 passed in 38.25s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "cee2817ebf0fad4836a1d4c3ebb0897c1f902b2b",
+    "dirty": true
+  },
+  "source_hash": "5fdf62a43d8c88453e7db416627deaa754bfec6345414f511bbeb135b7322150",
+  "before_hash": "5fdf62a43d8c88453e7db416627deaa754bfec6345414f511bbeb135b7322150",
+  "config_hash": "10a529b41b0fecddd39dbfc5d665383b1bef3a0d5493398cf2ba8cf2ab46f8ac",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "fadee3326cdb07a2502a31aa2fca134e7dbac5dfa5406e2f4ffd89e7aa183b64"
+}

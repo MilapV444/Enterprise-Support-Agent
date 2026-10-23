@@ -1,0 +1,30 @@
+{
+  "task": "M2-05.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "29791db6-3bbc-4ef1-b3f4-18448d6740ab",
+  "command": "python -m pytest tests/tools/validation/ -q",
+  "started_at": "2026-10-23T16:11:35.282Z",
+  "observed_at": "2026-10-23T16:11:54.676Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "..........................                                               [100%]\r\n26 passed in 4.17s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "cee2817ebf0fad4836a1d4c3ebb0897c1f902b2b",
+    "dirty": true
+  },
+  "source_hash": "a6b6a284940638cdba9cf7870f76854eb6aa3f251712a8e27beb1b89928e9eea",
+  "before_hash": "a6b6a284940638cdba9cf7870f76854eb6aa3f251712a8e27beb1b89928e9eea",
+  "config_hash": "9a1a479ff1b92204affabc7db7f3492a0536390ca3cf6e3e2fd372dd00650b74",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "83f864ea826e5dae233b6ccc59bae3dd2571809ae8a9d00b81f805eb21175bce"
+}

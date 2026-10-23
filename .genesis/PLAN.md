@@ -1218,47 +1218,47 @@
 
 ### M2-01.4 — M2: conversation memory: verbatim + rolling summary + pins with unpin, Jev case linking
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-15
 - scope: src/memory/conversation/, tests/memory/conversation/
-- gates: tests: python -m pytest tests/memory/conversation/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/memory/conversation/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M2-02.4 — M2: long-term facts with validity dates and the write path (extraction, subject check, allow-listed tool fields, Jev reconcile on masked text)
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-16, FR-17
 - scope: src/memory/facts/, tests/memory/facts/
-- gates: tests: python -m pytest tests/memory/facts/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/memory/facts/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M2-03.4 — M2: TTLs, erasure inventory and erasure workflow across every store, back-office erasure, backup handling
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-19, NFR-5, AC-12
 - scope: src/memory/lifecycle/, src/data/erasure.py, tests/erasure/
-- gates: tests: python -m pytest tests/erasure/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/erasure/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M2-04.4 — M2: tool registry of Python tools with reviewed risk class, Jev shortlist and pick, argument provenance
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-20, FR-21
 - scope: src/tools/registry/, src/tools/schemas/, tests/tools/registry/
-- gates: tests: python -m pytest tests/tools/registry/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/tools/registry/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M2-05.4 — M2: approval tiers with Jev gate (tighten only), dry-run preview and per-call threshold
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-22, AC-10
 - scope: src/tools/validation/, tests/tools/validation/
-- gates: tests: python -m pytest tests/tools/validation/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/tools/validation/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M2-06.4 — M2: tool execution with on-behalf-of or scoped service-account credentials, a Temporal task queue per system, output screening, safe retries and breakers
 
-- state/risk: queued / high
+- state/risk: active / high
 - requirements: FR-23
 - scope: src/tools/execution/, tests/tools/execution/
 - gates: tests: python -m pytest tests/tools/execution/ -q, independent-review: pending

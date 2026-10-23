@@ -4,7 +4,7 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: M2-01.4 — M2: conversation memory: verbatim + rolling summary + pins with unpin, Jev case linking
+- active task: M2-06.4 — M2: tool execution with on-behalf-of or scoped service-account credentials, a Temporal task queue per system, output screening, safe retries and breakers
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: 5c6152c096a9717a56ca2bb0d268c3d62a2b2a35b516a9e5aedaf3d75ade9c51. Use --since only after receiving that full packet; kickoff is not the packet.
-- KNOWLEDGE-634b024b: M2-01.4 conversation memory: schema and limits
-- KNOWLEDGE-205fb661: Jev (TypeSafe System One) API contract
-- KNOWLEDGE-7d33c13a: Run gates with the project venv on PATH
+Context fingerprint: b7d32d28c2747c27d2015fa513ef2c7bbb778a932f7091c053bb78a184588d8c. Use --since only after receiving that full packet; kickoff is not the packet.
+- KNOWLEDGE-c60fdc50: M2-06.4 tool execution: shape and limits
+- KNOWLEDGE-60b6dd3c: M2-04.4 tool registry and provenance: shape and limits
+- KNOWLEDGE-60b69bfa: M2-03.4 erasure: inventory, retained stores and limits
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.
