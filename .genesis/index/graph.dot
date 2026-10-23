@@ -50,6 +50,7 @@ digraph genesis {
   "file:src/core/secrets.py" [label="src/core/secrets.py",class="file"];
   "file:src/cost/router.py" [label="src/cost/router.py",class="file"];
   "file:src/data/__init__.py" [label="src/data/__init__.py",class="file"];
+  "file:src/data/erasure.py" [label="src/data/erasure.py",class="file"];
   "file:src/data/events.py" [label="src/data/events.py",class="file"];
   "file:src/data/keys/__init__.py" [label="src/data/keys/__init__.py",class="file"];
   "file:src/data/keys/envelope.py" [label="src/data/keys/envelope.py",class="file"];
@@ -67,6 +68,13 @@ digraph genesis {
   "file:src/memory/conversation/__init__.py" [label="src/memory/conversation/__init__.py",class="file"];
   "file:src/memory/conversation/cases.py" [label="src/memory/conversation/cases.py",class="file"];
   "file:src/memory/conversation/dialogue.py" [label="src/memory/conversation/dialogue.py",class="file"];
+  "file:src/memory/facts/__init__.py" [label="src/memory/facts/__init__.py",class="file"];
+  "file:src/memory/facts/store.py" [label="src/memory/facts/store.py",class="file"];
+  "file:src/memory/facts/writer.py" [label="src/memory/facts/writer.py",class="file"];
+  "file:src/memory/lifecycle/__init__.py" [label="src/memory/lifecycle/__init__.py",class="file"];
+  "file:src/memory/lifecycle/backoffice.py" [label="src/memory/lifecycle/backoffice.py",class="file"];
+  "file:src/memory/lifecycle/inventory.py" [label="src/memory/lifecycle/inventory.py",class="file"];
+  "file:src/memory/lifecycle/retention.py" [label="src/memory/lifecycle/retention.py",class="file"];
   "file:src/reliability/fallbacks.py" [label="src/reliability/fallbacks.py",class="file"];
   "file:src/safety/authz/__init__.py" [label="src/safety/authz/__init__.py",class="file"];
   "file:src/safety/authz/cedar.py" [label="src/safety/authz/cedar.py",class="file"];
@@ -85,6 +93,12 @@ digraph genesis {
   "file:src/schemas/__init__.py" [label="src/schemas/__init__.py",class="file"];
   "file:src/schemas/diagnostic.py" [label="src/schemas/diagnostic.py",class="file"];
   "file:src/schemas/thread_state.py" [label="src/schemas/thread_state.py",class="file"];
+  "file:src/tools/execution/__init__.py" [label="src/tools/execution/__init__.py",class="file"];
+  "file:src/tools/execution/calls.py" [label="src/tools/execution/calls.py",class="file"];
+  "file:src/tools/registry/__init__.py" [label="src/tools/registry/__init__.py",class="file"];
+  "file:src/tools/registry/provenance.py" [label="src/tools/registry/provenance.py",class="file"];
+  "file:src/tools/schemas/__init__.py" [label="src/tools/schemas/__init__.py",class="file"];
+  "file:src/tools/validation/__init__.py" [label="src/tools/validation/__init__.py",class="file"];
   "file:src/workflows/__init__.py" [label="src/workflows/__init__.py",class="file"];
   "file:src/workflows/activities.py" [label="src/workflows/activities.py",class="file"];
   "file:src/workflows/ticket.py" [label="src/workflows/ticket.py",class="file"];
@@ -95,6 +109,7 @@ digraph genesis {
   "file:tests/deploy/test_backbone.py" [label="tests/deploy/test_backbone.py",class="file"];
   "file:tests/deploy/test_compose.py" [label="tests/deploy/test_compose.py",class="file"];
   "file:tests/e2e/test_scenarios_core.py" [label="tests/e2e/test_scenarios_core.py",class="file"];
+  "file:tests/erasure/test_erasure.py" [label="tests/erasure/test_erasure.py",class="file"];
   "file:tests/identity/conftest.py" [label="tests/identity/conftest.py",class="file"];
   "file:tests/identity/test_identity.py" [label="tests/identity/test_identity.py",class="file"];
   "file:tests/identity/test_sessions.py" [label="tests/identity/test_sessions.py",class="file"];
@@ -104,6 +119,7 @@ digraph genesis {
   "file:tests/knowledge/ingest/test_ingest.py" [label="tests/knowledge/ingest/test_ingest.py",class="file"];
   "file:tests/knowledge/retrieval/test_retrieval.py" [label="tests/knowledge/retrieval/test_retrieval.py",class="file"];
   "file:tests/memory/conversation/test_conversation_memory.py" [label="tests/memory/conversation/test_conversation_memory.py",class="file"];
+  "file:tests/memory/facts/test_facts.py" [label="tests/memory/facts/test_facts.py",class="file"];
   "file:tests/orchestrator/test_statechart.py" [label="tests/orchestrator/test_statechart.py",class="file"];
   "file:tests/recovery/test_breaker.py" [label="tests/recovery/test_breaker.py",class="file"];
   "file:tests/router/test_router.py" [label="tests/router/test_router.py",class="file"];
@@ -117,6 +133,9 @@ digraph genesis {
   "file:tests/storage/test_objects.py" [label="tests/storage/test_objects.py",class="file"];
   "file:tests/test_dependencies.py" [label="tests/test_dependencies.py",class="file"];
   "file:tests/test_skeleton.py" [label="tests/test_skeleton.py",class="file"];
+  "file:tests/tools/execution/test_execution.py" [label="tests/tools/execution/test_execution.py",class="file"];
+  "file:tests/tools/registry/test_registry.py" [label="tests/tools/registry/test_registry.py",class="file"];
+  "file:tests/tools/validation/test_validation.py" [label="tests/tools/validation/test_validation.py",class="file"];
   "file:tests/web/test_web.py" [label="tests/web/test_web.py",class="file"];
   "file:tests/workflows/test_ticket.py" [label="tests/workflows/test_ticket.py",class="file"];
   "file:web/dev-server.js" [label="web/dev-server.js",class="file"];

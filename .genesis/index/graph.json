@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "90a8b4509413bdd0a04e6966828b75653cb99cda",
-  "sourceHash": "3fe713d69d6e7a679decff0d00a93b56af97c0f993ab605c2fae5c67de16728f",
+  "revision": "cee2817ebf0fad4836a1d4c3ebb0897c1f902b2b",
+  "sourceHash": "f4543a7443466609e5e1b0b6c1fb3aea9ac448d39850ec5a03e2a4168b2492fe",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -500,6 +500,16 @@
       "contentHash": "1f971a60aa87f887e39ab49cc1f1e68db12f83e4990f2677e6f3f21ec81f735b"
     },
     {
+      "id": "file:src/data/erasure.py",
+      "type": "file",
+      "label": "src/data/erasure.py",
+      "path": "src/data/erasure.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "b579ed70dcca26c2d1a260745021ea39525f7aa8063092710a07c1d0f290c1fa"
+    },
+    {
       "id": "file:src/data/events.py",
       "type": "file",
       "label": "src/data/events.py",
@@ -668,6 +678,76 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "38220ba36b29d7d94dd137c80a12a0154b23e7b629913a56a58ab1ead307f3a3"
+    },
+    {
+      "id": "file:src/memory/facts/__init__.py",
+      "type": "file",
+      "label": "src/memory/facts/__init__.py",
+      "path": "src/memory/facts/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "59dc2f4dea8bb2abb222ed6b3e97b30f8434d4f8147a55e8ee0ded17c7ab3a90"
+    },
+    {
+      "id": "file:src/memory/facts/store.py",
+      "type": "file",
+      "label": "src/memory/facts/store.py",
+      "path": "src/memory/facts/store.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "3e7410ec69f62c3807bc368f14d09809dd909845e5596af13951781320d65907"
+    },
+    {
+      "id": "file:src/memory/facts/writer.py",
+      "type": "file",
+      "label": "src/memory/facts/writer.py",
+      "path": "src/memory/facts/writer.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "6e564d5f15ba5afc9603e84ea5863fdacfdc4ab7e88d6d3cfa2213101ff9cf4b"
+    },
+    {
+      "id": "file:src/memory/lifecycle/__init__.py",
+      "type": "file",
+      "label": "src/memory/lifecycle/__init__.py",
+      "path": "src/memory/lifecycle/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "40909358ffc97f0e8c6712afcace2ec71dc46975b903f273319286570611d7c3"
+    },
+    {
+      "id": "file:src/memory/lifecycle/backoffice.py",
+      "type": "file",
+      "label": "src/memory/lifecycle/backoffice.py",
+      "path": "src/memory/lifecycle/backoffice.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "bfd29231aa6fec37476149db11c95f127a4071bd9bacd26f2aa5e9d747c14f8d"
+    },
+    {
+      "id": "file:src/memory/lifecycle/inventory.py",
+      "type": "file",
+      "label": "src/memory/lifecycle/inventory.py",
+      "path": "src/memory/lifecycle/inventory.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "40bd4a2f31f0ce57bb83a6e8d31636af958bbfcd0628e2e91270fa5024d29d5c"
+    },
+    {
+      "id": "file:src/memory/lifecycle/retention.py",
+      "type": "file",
+      "label": "src/memory/lifecycle/retention.py",
+      "path": "src/memory/lifecycle/retention.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "77c2ae433aac54d677f41aeb5167440cebbdef19f97858bd9144fd5d18615195"
     },
     {
       "id": "file:src/reliability/fallbacks.py",
@@ -850,6 +930,66 @@
       "contentHash": "72ebb4f45af03cf3e31904c73dd0fc24b5b9c8e1049c1286271c5c2bb3da1f95"
     },
     {
+      "id": "file:src/tools/execution/__init__.py",
+      "type": "file",
+      "label": "src/tools/execution/__init__.py",
+      "path": "src/tools/execution/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1fd7b94632542eb1a0d8b8c17ee8c6bfdccadbbbd0836502aa4f7766447ca255"
+    },
+    {
+      "id": "file:src/tools/execution/calls.py",
+      "type": "file",
+      "label": "src/tools/execution/calls.py",
+      "path": "src/tools/execution/calls.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8298dae27983970a6a821e380ee3bc02990341c2e407f806fe05843aaeee87c1"
+    },
+    {
+      "id": "file:src/tools/registry/__init__.py",
+      "type": "file",
+      "label": "src/tools/registry/__init__.py",
+      "path": "src/tools/registry/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "23525a401f0009abbb525bede014d67b77b78a7fa2272a9195846d6a5b63ae65"
+    },
+    {
+      "id": "file:src/tools/registry/provenance.py",
+      "type": "file",
+      "label": "src/tools/registry/provenance.py",
+      "path": "src/tools/registry/provenance.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "76ae7d3bfbce8265664795583497841725f9c9275cf75f72a2c0e71df4fd51a5"
+    },
+    {
+      "id": "file:src/tools/schemas/__init__.py",
+      "type": "file",
+      "label": "src/tools/schemas/__init__.py",
+      "path": "src/tools/schemas/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "44b0c0de2eaec5a7e9d75e40a5721733fe312bb99a17f94a9552ba5f1a1f0ecd"
+    },
+    {
+      "id": "file:src/tools/validation/__init__.py",
+      "type": "file",
+      "label": "src/tools/validation/__init__.py",
+      "path": "src/tools/validation/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2542c32bb6807fd5030b7ec40bf7d68d250532fab64b67d3e372eb4346977783"
+    },
+    {
       "id": "file:src/workflows/__init__.py",
       "type": "file",
       "label": "src/workflows/__init__.py",
@@ -950,6 +1090,16 @@
       "contentHash": "c1943f4f027620d991b5c1ad2d9e04e2d756c4bad2d6181bb2a7c709d6ee047f"
     },
     {
+      "id": "file:tests/erasure/test_erasure.py",
+      "type": "file",
+      "label": "tests/erasure/test_erasure.py",
+      "path": "tests/erasure/test_erasure.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e9695fec4771e2ab574e6891f837edc812c75176ab39334f0e780d8dba4d303b"
+    },
+    {
       "id": "file:tests/identity/conftest.py",
       "type": "file",
       "label": "tests/identity/conftest.py",
@@ -1038,6 +1188,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "713262280bab9ed3de7b146a5186f46f4ff96dfa476f61b95f74951ed98ad877"
+    },
+    {
+      "id": "file:tests/memory/facts/test_facts.py",
+      "type": "file",
+      "label": "tests/memory/facts/test_facts.py",
+      "path": "tests/memory/facts/test_facts.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8af0b83cd5ca45734b283e5f4e7160788491b8996322cd91fbecf7f2587827bc"
     },
     {
       "id": "file:tests/orchestrator/test_statechart.py",
@@ -1168,6 +1328,36 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "27b35deb3df7696393f99c665810b1c1443f3ca015931ddc5a2c4c4e959ebcba"
+    },
+    {
+      "id": "file:tests/tools/execution/test_execution.py",
+      "type": "file",
+      "label": "tests/tools/execution/test_execution.py",
+      "path": "tests/tools/execution/test_execution.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "5d251b08d45ddf9f8d89c416d7db9b006aa581e8f8e50167b9e685a92deb2332"
+    },
+    {
+      "id": "file:tests/tools/registry/test_registry.py",
+      "type": "file",
+      "label": "tests/tools/registry/test_registry.py",
+      "path": "tests/tools/registry/test_registry.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e7dfd0674794d76b91ec911d6b5039f473b210825376d2c12dab20398424acf4"
+    },
+    {
+      "id": "file:tests/tools/validation/test_validation.py",
+      "type": "file",
+      "label": "tests/tools/validation/test_validation.py",
+      "path": "tests/tools/validation/test_validation.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "64354b416c469b58b2755d81b840f0dcbd5d0862b79679269f77801b6c79ad82"
     },
     {
       "id": "file:tests/web/test_web.py",

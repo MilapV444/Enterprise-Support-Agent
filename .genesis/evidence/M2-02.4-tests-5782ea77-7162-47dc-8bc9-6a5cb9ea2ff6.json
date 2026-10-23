@@ -1,0 +1,30 @@
+{
+  "task": "M2-02.4",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "5782ea77-7162-47dc-8bc9-6a5cb9ea2ff6",
+  "command": "python -m pytest tests/memory/facts/ -q",
+  "started_at": "2026-10-22T16:24:54.917Z",
+  "observed_at": "2026-10-22T16:25:12.353Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "...........                                                              [100%]\r\n11 passed in 8.04s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "cee2817ebf0fad4836a1d4c3ebb0897c1f902b2b",
+    "dirty": true
+  },
+  "source_hash": "af9dc93f82c1bae3e392a40a90efed860c69c8e1742d984b6dea296c3861b8ec",
+  "before_hash": "af9dc93f82c1bae3e392a40a90efed860c69c8e1742d984b6dea296c3861b8ec",
+  "config_hash": "b6b748f5f02598c49f5e1000f23f12c2a738af8be75f197b736b91fc1496301a",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "c31405b13c8b3e0b8bb3b282ce9292fd1b9546c3c94a82bd006d6c226afdf861"
+}
