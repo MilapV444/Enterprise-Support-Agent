@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "cee2817ebf0fad4836a1d4c3ebb0897c1f902b2b",
-  "sourceHash": "f4543a7443466609e5e1b0b6c1fb3aea9ac448d39850ec5a03e2a4168b2492fe",
+  "revision": "b793f1195e0571c73264ea48a828c410b50fed1e",
+  "sourceHash": "1d819b1d20c29079d49a6a2e22ba8c424b5f546b3e3d6fbf20e80199f004af7e",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -327,7 +327,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "f4bad8bcba22678359a620b121c902d9d80c948287df0d19e332190ed94f82f6"
+      "contentHash": "5e7999e97c21cbb6f64be6c42dfd135fc5e5a5eaf426684f0ec5e72019650fa4"
     },
     {
       "id": "file:src/channels/identity/tiers.py",
@@ -578,6 +578,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "a44bfff2633063be47a90cca034518547c48ad7b7edf9938acd8e28651f85b5d"
+    },
+    {
+      "id": "file:src/hitl/gate/__init__.py",
+      "type": "file",
+      "label": "src/hitl/gate/__init__.py",
+      "path": "src/hitl/gate/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "dccd92a7d860dc352186b9989d9b15d6568b1f6c2bc1f42273050127eeaa8dc7"
     },
     {
       "id": "file:src/knowledge/index/__init__.py",
@@ -930,6 +940,16 @@
       "contentHash": "72ebb4f45af03cf3e31904c73dd0fc24b5b9c8e1049c1286271c5c2bb3da1f95"
     },
     {
+      "id": "file:src/tools/audit.py",
+      "type": "file",
+      "label": "src/tools/audit.py",
+      "path": "src/tools/audit.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "4f399f693912a2ba556f9f1ee32bbfee75c7b737beaadde76eae1b75e1304b72"
+    },
+    {
       "id": "file:src/tools/execution/__init__.py",
       "type": "file",
       "label": "src/tools/execution/__init__.py",
@@ -937,7 +957,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "1fd7b94632542eb1a0d8b8c17ee8c6bfdccadbbbd0836502aa4f7766447ca255"
+      "contentHash": "24e74a3142ab34c8860a672a5c4244ebc8b38cd5a9c9836462987e741337ee6e"
     },
     {
       "id": "file:src/tools/execution/calls.py",
@@ -947,7 +967,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "8298dae27983970a6a821e380ee3bc02990341c2e407f806fe05843aaeee87c1"
+      "contentHash": "62d563f9c3f70c98c06a61c781cb276eb928c14d8691d5a2bf404cfafde4c141"
     },
     {
       "id": "file:src/tools/registry/__init__.py",
@@ -970,6 +990,36 @@
       "contentHash": "76ae7d3bfbce8265664795583497841725f9c9275cf75f72a2c0e71df4fd51a5"
     },
     {
+      "id": "file:src/tools/sagas/__init__.py",
+      "type": "file",
+      "label": "src/tools/sagas/__init__.py",
+      "path": "src/tools/sagas/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "51dc0b3fe557435e716f03338d85e2fabaa4242b6f86202bbad43f87906adbe6"
+    },
+    {
+      "id": "file:src/tools/sagas/activities.py",
+      "type": "file",
+      "label": "src/tools/sagas/activities.py",
+      "path": "src/tools/sagas/activities.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8c4cfec5f136292c1a4885d84b9f430e312238655df6607009cf653a1f9210e4"
+    },
+    {
+      "id": "file:src/tools/sagas/workflow.py",
+      "type": "file",
+      "label": "src/tools/sagas/workflow.py",
+      "path": "src/tools/sagas/workflow.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "583fff2e72f49be36621f2ca5c18eabe4fe7a756ceb9430b4bb3996567054f58"
+    },
+    {
       "id": "file:src/tools/schemas/__init__.py",
       "type": "file",
       "label": "src/tools/schemas/__init__.py",
@@ -987,7 +1037,17 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2542c32bb6807fd5030b7ec40bf7d68d250532fab64b67d3e372eb4346977783"
+      "contentHash": "25160262ac71412418d3ece35e4d25ea733276f3017ab24663edc8f12463cb08"
+    },
+    {
+      "id": "file:src/tools/validation/approvals.py",
+      "type": "file",
+      "label": "src/tools/validation/approvals.py",
+      "path": "src/tools/validation/approvals.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2d48dca43d8c7ff621527f1506cd99350c8fc492adfc6022e554e32478c75f72"
     },
     {
       "id": "file:src/workflows/__init__.py",
@@ -1100,6 +1160,16 @@
       "contentHash": "e9695fec4771e2ab574e6891f837edc812c75176ab39334f0e780d8dba4d303b"
     },
     {
+      "id": "file:tests/hitl/gate/test_gate.py",
+      "type": "file",
+      "label": "tests/hitl/gate/test_gate.py",
+      "path": "tests/hitl/gate/test_gate.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e27102e3b467eed2fdf324b8492099936de5fea291143b7b065cfe6718d79479"
+    },
+    {
       "id": "file:tests/identity/conftest.py",
       "type": "file",
       "label": "tests/identity/conftest.py",
@@ -1117,7 +1187,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "1d6291baad3929f87158a3e75306db2b90e0cca151a8c63bbc29d7ab6f03de35"
+      "contentHash": "3cea1b9bcad9ab794a2da7066a13442b3cc1cc524f0498fa39fff91f3657ff56"
     },
     {
       "id": "file:tests/identity/test_sessions.py",
@@ -1337,7 +1407,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "5d251b08d45ddf9f8d89c416d7db9b006aa581e8f8e50167b9e685a92deb2332"
+      "contentHash": "e1ffedf53e406cd7b164a8f1b1efe002f3e466a87ea0f488a22c913ceb7f2272"
     },
     {
       "id": "file:tests/tools/registry/test_registry.py",
@@ -1350,6 +1420,16 @@
       "contentHash": "e7dfd0674794d76b91ec911d6b5039f473b210825376d2c12dab20398424acf4"
     },
     {
+      "id": "file:tests/tools/sagas/test_sagas.py",
+      "type": "file",
+      "label": "tests/tools/sagas/test_sagas.py",
+      "path": "tests/tools/sagas/test_sagas.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2c20f292765aed2a2a4bbfab50dda4cde36a955b3e096a3b00e2b2f8f54655bf"
+    },
+    {
       "id": "file:tests/tools/validation/test_validation.py",
       "type": "file",
       "label": "tests/tools/validation/test_validation.py",
@@ -1357,7 +1437,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "64354b416c469b58b2755d81b840f0dcbd5d0862b79679269f77801b6c79ad82"
+      "contentHash": "e66a9b7e1fc7f6e828dccc051f6ad59d3de9cebe5521e266bbdf1e405df41d1a"
     },
     {
       "id": "file:tests/web/test_web.py",

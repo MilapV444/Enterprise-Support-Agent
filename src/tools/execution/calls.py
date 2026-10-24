@@ -3,6 +3,10 @@
 Each external system has its own Temporal task queue ("tools-<system>") and worker pool, so a slow CRM cannot
 starve billing. Temporal does not retry tool activities itself: the worker's executor decides what is safe to
 retry (tools.execution). This module imports only the stdlib and temporalio so workflows can use it.
+
+A ToolCall is workflow data and lives in Temporal's history, so it carries no credential and no roles: only
+a reference to the customer's session. The executor resolves the principal and mints the on-behalf-of token
+inside the activity, and takes Cedar roles from a trusted source.
 """
 
 from dataclasses import dataclass, field
@@ -24,8 +28,7 @@ class ToolCall:
     principal_id: str
     case_id: str
     checkpoint_id: str
-    roles: list[str] = field(default_factory=list)
-    access_token: str | None = None   # the customer's session token, exchanged for an on-behalf-of token
+    session_id: str | None = None     # the customer's live session (a reference, not a credential)
     resource: dict[str, Any] = field(default_factory=dict)  # {"action", "type", "id", "attrs"} for Cedar
 
 
