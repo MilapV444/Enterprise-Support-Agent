@@ -4,7 +4,7 @@
 
 - workflow: new-product
 - phase: build
-- plan approval: Intelligent_developer_123 at 2026-10-24T16:49:23.952Z
+- plan approval: Intelligent_developer_123 at 2026-10-25T09:34:43.676Z
 
 ## Tasks
 
@@ -1650,15 +1650,15 @@
 
 ### M2-08.6 — M2: Jev confidence gate on drafts with send / co-pilot / hand-off bands and money / SLA figures always to co-pilot
 
-- state/risk: active / high
+- state/risk: done / high
 - requirements: FR-35
 - scope: src/hitl/gate/, tests/hitl/gate/
-- gates: tests: python -m pytest tests/hitl/gate/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/hitl/gate/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M2-09.6 — M2: escalation packet, skills queues with SLAs and aging, approval rights by role and amount, approval card
 
-- state/risk: queued / high
+- state/risk: rejected / high
 - requirements: FR-36, FR-37
 - scope: src/hitl/queues/, src/hitl/approval/, tests/hitl/approval/
 - gates: tests: python -m pytest tests/hitl/approval/ -q, independent-review: pending
@@ -1666,7 +1666,7 @@
 
 ### M2-10.6 — M2: handoff on request, waiting UX with estimate and cancel, checks on human replies, Streamlit console, reason codes
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: FR-38, FR-39
 - scope: src/hitl/handoff/, console/, tests/hitl/handoff/
 - gates: tests: python -m pytest tests/hitl/handoff/ -q, independent-review: pending
@@ -1674,7 +1674,7 @@
 
 ### M2-11.6 — M2: end-to-end tests for framework scenarios 3 and 4
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: AC-3, AC-4
 - scope: tests/e2e/test_scenarios_actions.py
 - gates: tests: python -m pytest tests/e2e/test_scenarios_actions.py -q, independent-review: pending
@@ -1682,7 +1682,7 @@
 
 ### M3-01.6 — M3: coordinator with specialist subgraphs, static registry, Jev delegation and depth / span / step limits
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: FR-25, FR-26
 - scope: src/agents/topology/, tests/agents/topology/
 - gates: tests: python -m pytest tests/agents/topology/ -q, independent-review: pending
@@ -1690,7 +1690,7 @@
 
 ### M3-02.6 — M3: typed agent contracts and briefs, specialist identities, low-risk writes only when running alone
 
-- state/risk: queued / high
+- state/risk: rejected / high
 - requirements: FR-27, FR-28
 - scope: src/agents/contracts/, tests/agents/contracts/
 - gates: tests: python -m pytest tests/agents/contracts/ -q, independent-review: pending
@@ -1698,7 +1698,7 @@
 
 ### M3-03.6 — M3: conflict scoring, numeric disagreements to a human, one merged reply in one voice with redirect check; scenario 7 test
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: FR-29, AC-7
 - scope: src/agents/merge/, tests/agents/merge/, tests/e2e/test_scenario_multiagent.py
 - gates: tests: python -m pytest tests/agents/merge/ tests/e2e/test_scenario_multiagent.py -q, independent-review: pending
@@ -1706,7 +1706,7 @@
 
 ### M4-01.6 — M4: rate limits (Upstash), degrade to knowledge-base answers, one active turn per conversation, exact usage counter; scenario 8 test
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-16, AC-8
 - scope: src/reliability/admission/, tests/reliability/admission/
 - gates: tests: python -m pytest tests/reliability/admission/ -q, independent-review: pending
@@ -1714,7 +1714,7 @@
 
 ### M4-02.6 — M4: request coalescing, incident mode and latency budgets
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-18
 - scope: src/reliability/bursts/, tests/reliability/bursts/
 - gates: tests: python -m pytest tests/reliability/bursts/ -q, independent-review: pending
@@ -1722,7 +1722,7 @@
 
 ### M4-03.6 — M4: daily pg_dump to R2, scripted restore drill, erasure log
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-19
 - scope: deploy/backup/, tests/reliability/backup/
 - gates: tests: python -m pytest tests/reliability/backup/ -q, independent-review: pending
@@ -1730,7 +1730,7 @@
 
 ### M4-04.6 — M4: breaker-open requests held up to 24 h, delivered to the inbox on recovery, else handed to a human; scenario 6 test
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-17, AC-6
 - scope: src/reliability/hold/, tests/e2e/test_scenario_degradation.py
 - gates: tests: python -m pytest tests/e2e/test_scenario_degradation.py -q, independent-review: pending
@@ -1738,7 +1738,7 @@
 
 ### M4-05.6 — M4: per-tenant answer cache with Jev eligibility and versioned keys, tenant budgets with soft cap, usage reports, exact cost and release cost gate
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: FR-42, FR-43
 - scope: src/cost/cache/, src/cost/budgets/, tests/cost/
 - gates: tests: python -m pytest tests/cost/ -q, independent-review: pending
@@ -1746,7 +1746,7 @@
 
 ### M5-01.6 — M5: OpenTelemetry instrumentation with PII scrubbing and tail sampling, Jaeger / Langfuse export, JSON logs, retention and erasure by ID
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-11, NFR-12
 - scope: src/observability/tracing/, tests/observability/tracing/
 - gates: tests: python -m pytest tests/observability/tracing/ -q, independent-review: pending
@@ -1754,7 +1754,7 @@
 
 ### M5-02.6 — M5: internal SLOs and alerts, token telemetry, failure classification by rules then Jev
 
-- state/risk: queued / low
+- state/risk: rejected / low
 - requirements: NFR-13, NFR-14, NFR-15
 - scope: src/observability/alerts/, tests/observability/alerts/
 - gates: tests: python -m pytest tests/observability/alerts/ -q
@@ -1762,7 +1762,7 @@
 
 ### M5-03.6 — M5: evaluation datasets (episodes + opted-in samples), non-Claude judge, per-route calibration, retrieval evaluation
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-6, NFR-7, FR-14
 - scope: evals/datasets/, evals/scoring/, tests/evals/scoring/
 - gates: tests: python -m pytest tests/evals/scoring/ -q, independent-review: pending
@@ -1770,7 +1770,7 @@
 
 ### M5-04.6 — M5: evaluation suites with fakes / recordings, cadence, release gate, shadow and canary
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-8, NFR-9, NFR-10, AC-9
 - scope: evals/suites/, evals/gate.py, tests/evals/gate/
 - gates: tests: python -m pytest tests/evals/gate/ -q, independent-review: pending
@@ -1778,7 +1778,7 @@
 
 ### M5-05.6 — M5: mocked-model harness, property-based invariant tests, injection set, contract tests, migration and checkpoint tests, load and chaos tests
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-20, NFR-21, NFR-23, NFR-25, AC-13
 - scope: tests/invariants/, tests/contracts/, tests/load/
 - gates: tests: python -m pytest tests/invariants/ tests/contracts/ tests/load/ -q, independent-review: pending
@@ -1786,7 +1786,7 @@
 
 ### M5-06.6 — M5: deploy to the Oracle VM with rollout / rollback scripts, model pinning, Continue-As-New, re-index and spend limits
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-28, NFR-29, NFR-36, AC-15
 - scope: deploy/vm/, tests/deploy/vm/
 - gates: tests: python -m pytest tests/deploy/vm/ -q, independent-review: pending
@@ -1794,7 +1794,7 @@
 
 ### M6-01.6 — M6: feedback signals and survey, Jev feedback triage, failure taxonomy and reviews
 
-- state/risk: queued / low
+- state/risk: rejected / low
 - requirements: NFR-31, NFR-32
 - scope: src/improvement/feedback/, tests/improvement/feedback/
 - gates: tests: python -m pytest tests/improvement/feedback/ -q
@@ -1802,13 +1802,181 @@
 
 ### M6-02.6 — M6: improvement levers, few-shot curation excluded from tests, article drafts with human publishing, failure → test, validation
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: NFR-33, NFR-34
 - scope: src/improvement/levers/, tests/improvement/levers/
 - gates: tests: python -m pytest tests/improvement/levers/ -q, independent-review: pending
 - next: Run the task pre-flight.
 
 ### M6-03.6 — M6: user-distribution check, owned-risk review, retraining data pipeline without erased users (no GPU run)
+
+- state/risk: rejected / low
+- requirements: NFR-35
+- scope: src/improvement/evolution/, tests/improvement/evolution/
+- gates: tests: python -m pytest tests/improvement/evolution/ -q
+- next: Run the task pre-flight.
+
+### M2-09a — M2: approval policy and lifetime: the Cedar approve_action rule and ApprovalRequest entity in policies/ (specialists below the tenant's senior amount, senior specialists above, never the handler or the customer, never across tenants), and a configurable approval lifetime in the approval gate so requests can live through the 1-hour SLA and 72-hour cancellation
+
+- state/risk: done / high
+- requirements: FR-37, FR-33, FR-22
+- scope: policies/, src/tools/validation/approvals.py, tests/tools/validation/, tests/safety/authz/
+- gates: tests: python -m pytest tests/tools/validation/ tests/safety/authz/ -q, independent-review: pass
+- next: Run the task pre-flight.
+
+### M2-09.7 — M2: escalation packet, skills queues with SLAs and aging, approval rights by role and amount, approval card
+
+- state/risk: done / high
+- requirements: FR-36, FR-37
+- scope: src/hitl/queues/, src/hitl/approval/, tests/hitl/approval/
+- gates: tests: python -m pytest tests/hitl/approval/ -q, independent-review: pass
+- next: Run the task pre-flight.
+
+### M2-10.7 — M2: handoff on request, waiting UX with estimate and cancel, checks on human replies, Streamlit console, reason codes
+
+- state/risk: done / medium
+- requirements: FR-38, FR-39
+- scope: src/hitl/handoff/, console/, tests/hitl/handoff/
+- gates: tests: python -m pytest tests/hitl/handoff/ -q, independent-review: pass
+- next: Run the task pre-flight.
+
+### M2-11.7 — M2: end-to-end tests for framework scenarios 3 and 4
+
+- state/risk: active / medium
+- requirements: AC-3, AC-4
+- scope: tests/e2e/test_scenarios_actions.py
+- gates: tests: python -m pytest tests/e2e/test_scenarios_actions.py -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M3-01.7 — M3: coordinator with specialist subgraphs, static registry, Jev delegation and depth / span / step limits
+
+- state/risk: queued / medium
+- requirements: FR-25, FR-26
+- scope: src/agents/topology/, tests/agents/topology/
+- gates: tests: python -m pytest tests/agents/topology/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M3-02.7 — M3: typed agent contracts and briefs, specialist identities, low-risk writes only when running alone
+
+- state/risk: queued / high
+- requirements: FR-27, FR-28
+- scope: src/agents/contracts/, tests/agents/contracts/
+- gates: tests: python -m pytest tests/agents/contracts/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M3-03.7 — M3: conflict scoring, numeric disagreements to a human, one merged reply in one voice with redirect check; scenario 7 test
+
+- state/risk: queued / medium
+- requirements: FR-29, AC-7
+- scope: src/agents/merge/, tests/agents/merge/, tests/e2e/test_scenario_multiagent.py
+- gates: tests: python -m pytest tests/agents/merge/ tests/e2e/test_scenario_multiagent.py -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M4-01.7 — M4: rate limits (Upstash), degrade to knowledge-base answers, one active turn per conversation, exact usage counter; scenario 8 test
+
+- state/risk: queued / medium
+- requirements: NFR-16, AC-8
+- scope: src/reliability/admission/, tests/reliability/admission/
+- gates: tests: python -m pytest tests/reliability/admission/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M4-02.7 — M4: request coalescing, incident mode and latency budgets
+
+- state/risk: queued / medium
+- requirements: NFR-18
+- scope: src/reliability/bursts/, tests/reliability/bursts/
+- gates: tests: python -m pytest tests/reliability/bursts/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M4-03.7 — M4: daily pg_dump to R2, scripted restore drill, erasure log
+
+- state/risk: queued / medium
+- requirements: NFR-19
+- scope: deploy/backup/, tests/reliability/backup/
+- gates: tests: python -m pytest tests/reliability/backup/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M4-04.7 — M4: breaker-open requests held up to 24 h, delivered to the inbox on recovery, else handed to a human; scenario 6 test
+
+- state/risk: queued / medium
+- requirements: NFR-17, AC-6
+- scope: src/reliability/hold/, tests/e2e/test_scenario_degradation.py
+- gates: tests: python -m pytest tests/e2e/test_scenario_degradation.py -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M4-05.7 — M4: per-tenant answer cache with Jev eligibility and versioned keys, tenant budgets with soft cap, usage reports, exact cost and release cost gate
+
+- state/risk: queued / medium
+- requirements: FR-42, FR-43
+- scope: src/cost/cache/, src/cost/budgets/, tests/cost/
+- gates: tests: python -m pytest tests/cost/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M5-01.7 — M5: OpenTelemetry instrumentation with PII scrubbing and tail sampling, Jaeger / Langfuse export, JSON logs, retention and erasure by ID
+
+- state/risk: queued / medium
+- requirements: NFR-11, NFR-12
+- scope: src/observability/tracing/, tests/observability/tracing/
+- gates: tests: python -m pytest tests/observability/tracing/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M5-02.7 — M5: internal SLOs and alerts, token telemetry, failure classification by rules then Jev
+
+- state/risk: queued / low
+- requirements: NFR-13, NFR-14, NFR-15
+- scope: src/observability/alerts/, tests/observability/alerts/
+- gates: tests: python -m pytest tests/observability/alerts/ -q
+- next: Run the task pre-flight.
+
+### M5-03.7 — M5: evaluation datasets (episodes + opted-in samples), non-Claude judge, per-route calibration, retrieval evaluation
+
+- state/risk: queued / medium
+- requirements: NFR-6, NFR-7, FR-14
+- scope: evals/datasets/, evals/scoring/, tests/evals/scoring/
+- gates: tests: python -m pytest tests/evals/scoring/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M5-04.7 — M5: evaluation suites with fakes / recordings, cadence, release gate, shadow and canary
+
+- state/risk: queued / medium
+- requirements: NFR-8, NFR-9, NFR-10, AC-9
+- scope: evals/suites/, evals/gate.py, tests/evals/gate/
+- gates: tests: python -m pytest tests/evals/gate/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M5-05.7 — M5: mocked-model harness, property-based invariant tests, injection set, contract tests, migration and checkpoint tests, load and chaos tests
+
+- state/risk: queued / medium
+- requirements: NFR-20, NFR-21, NFR-23, NFR-25, AC-13
+- scope: tests/invariants/, tests/contracts/, tests/load/
+- gates: tests: python -m pytest tests/invariants/ tests/contracts/ tests/load/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M5-06.7 — M5: deploy to the Oracle VM with rollout / rollback scripts, model pinning, Continue-As-New, re-index and spend limits
+
+- state/risk: queued / medium
+- requirements: NFR-28, NFR-29, NFR-36, AC-15
+- scope: deploy/vm/, tests/deploy/vm/
+- gates: tests: python -m pytest tests/deploy/vm/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M6-01.7 — M6: feedback signals and survey, Jev feedback triage, failure taxonomy and reviews
+
+- state/risk: queued / low
+- requirements: NFR-31, NFR-32
+- scope: src/improvement/feedback/, tests/improvement/feedback/
+- gates: tests: python -m pytest tests/improvement/feedback/ -q
+- next: Run the task pre-flight.
+
+### M6-02.7 — M6: improvement levers, few-shot curation excluded from tests, article drafts with human publishing, failure → test, validation
+
+- state/risk: queued / medium
+- requirements: NFR-33, NFR-34
+- scope: src/improvement/levers/, tests/improvement/levers/
+- gates: tests: python -m pytest tests/improvement/levers/ -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### M6-03.7 — M6: user-distribution check, owned-risk review, retraining data pipeline without erased users (no GPU run)
 
 - state/risk: queued / low
 - requirements: NFR-35

@@ -1,6 +1,7 @@
 digraph genesis {
   rankdir=LR;
   node [shape=box,fontname="system-ui"];
+  "file:console/app.py" [label="console/app.py",class="file"];
   "file:scripts/adp_registry.py" [label="scripts/adp_registry.py",class="file"];
   "file:scripts/generate_adp_index.py" [label="scripts/generate_adp_index.py",class="file"];
   "file:scripts/generate_architecture_tldr.py" [label="scripts/generate_architecture_tldr.py",class="file"];
@@ -58,7 +59,10 @@ digraph genesis {
   "file:src/data/storage/__init__.py" [label="src/data/storage/__init__.py",class="file"];
   "file:src/data/storage/objects.py" [label="src/data/storage/objects.py",class="file"];
   "file:src/data/storage/snapshots.py" [label="src/data/storage/snapshots.py",class="file"];
+  "file:src/hitl/approval/__init__.py" [label="src/hitl/approval/__init__.py",class="file"];
   "file:src/hitl/gate/__init__.py" [label="src/hitl/gate/__init__.py",class="file"];
+  "file:src/hitl/handoff/__init__.py" [label="src/hitl/handoff/__init__.py",class="file"];
+  "file:src/hitl/queues/__init__.py" [label="src/hitl/queues/__init__.py",class="file"];
   "file:src/knowledge/index/__init__.py" [label="src/knowledge/index/__init__.py",class="file"];
   "file:src/knowledge/index/store.py" [label="src/knowledge/index/store.py",class="file"];
   "file:src/knowledge/ingest/__init__.py" [label="src/knowledge/ingest/__init__.py",class="file"];
@@ -114,9 +118,13 @@ digraph genesis {
   "file:tests/decisions/test_decisions.py" [label="tests/decisions/test_decisions.py",class="file"];
   "file:tests/deploy/test_backbone.py" [label="tests/deploy/test_backbone.py",class="file"];
   "file:tests/deploy/test_compose.py" [label="tests/deploy/test_compose.py",class="file"];
+  "file:tests/e2e/test_scenarios_actions.py" [label="tests/e2e/test_scenarios_actions.py",class="file"];
   "file:tests/e2e/test_scenarios_core.py" [label="tests/e2e/test_scenarios_core.py",class="file"];
   "file:tests/erasure/test_erasure.py" [label="tests/erasure/test_erasure.py",class="file"];
+  "file:tests/hitl/approval/test_approval.py" [label="tests/hitl/approval/test_approval.py",class="file"];
   "file:tests/hitl/gate/test_gate.py" [label="tests/hitl/gate/test_gate.py",class="file"];
+  "file:tests/hitl/handoff/test_console.py" [label="tests/hitl/handoff/test_console.py",class="file"];
+  "file:tests/hitl/handoff/test_handoff.py" [label="tests/hitl/handoff/test_handoff.py",class="file"];
   "file:tests/identity/conftest.py" [label="tests/identity/conftest.py",class="file"];
   "file:tests/identity/test_identity.py" [label="tests/identity/test_identity.py",class="file"];
   "file:tests/identity/test_sessions.py" [label="tests/identity/test_sessions.py",class="file"];
@@ -143,6 +151,8 @@ digraph genesis {
   "file:tests/tools/execution/test_execution.py" [label="tests/tools/execution/test_execution.py",class="file"];
   "file:tests/tools/registry/test_registry.py" [label="tests/tools/registry/test_registry.py",class="file"];
   "file:tests/tools/sagas/test_sagas.py" [label="tests/tools/sagas/test_sagas.py",class="file"];
+  "file:tests/tools/validation/conftest.py" [label="tests/tools/validation/conftest.py",class="file"];
+  "file:tests/tools/validation/test_trusted_authorization.py" [label="tests/tools/validation/test_trusted_authorization.py",class="file"];
   "file:tests/tools/validation/test_validation.py" [label="tests/tools/validation/test_validation.py",class="file"];
   "file:tests/web/test_web.py" [label="tests/web/test_web.py",class="file"];
   "file:tests/workflows/test_ticket.py" [label="tests/workflows/test_ticket.py",class="file"];

@@ -5,10 +5,12 @@ dry runs (FR-22, AC-10). Runs against the compose Postgres; Cedar is real; Jev i
 
 import json
 import random
+import re
 import shutil
 import subprocess
 import threading
 import uuid
+from datetime import timedelta
 from decimal import Decimal
 from pathlib import Path
 
@@ -125,33 +127,27 @@ def engine(**options):
     return DecisionEngine(ScriptedJev(**options))
 
 
-# Postgres, Cedar with an approval policy, and a stand-in staff identity -----------------------------------
+# Postgres, the production Cedar policies, and a stand-in staff identity -----------------------------------
 
-APPROVE_POLICY = """
-permit (principal in Role::"specialist", action == Action::"approve_action", resource)
-when { resource.tenant_id == principal.tenant_id && resource.level == "specialist"
-       && resource.handler != principal && resource.customer != principal };
-permit (principal in Role::"senior_specialist", action == Action::"approve_action", resource)
-when { resource.tenant_id == principal.tenant_id && resource.handler != principal
-       && resource.customer != principal };
-"""
+APPROVE_RULE = re.compile(r'permit \(principal in Role::"(?:senior_)?specialist", action == '
+                          r'Action::"approve_action".*?\};', re.DOTALL)
 
 
 @pytest.fixture(scope="module")
-def policy_dir(tmp_path_factory):
-    """The real policies plus the approve_action policy M2-09 will add to policies/ (not there yet)."""
+def policy_dir():
+    """The production policies (policies/), approve_action included since M2-09a."""
+    return Path(POLICY_DIR)
+
+
+@pytest.fixture(scope="module")
+def no_approve_rule(tmp_path_factory):
+    """The production policies with the approve_action permits taken out."""
     folder = tmp_path_factory.mktemp("policies")
-    shutil.copy(Path(POLICY_DIR) / "support.cedar", folder / "support.cedar")
-    with open(folder / "support.cedar", "a", encoding="utf-8") as policies:
-        policies.write(APPROVE_POLICY)
-    schema = json.loads((Path(POLICY_DIR) / "support.cedarschema.json").read_text(encoding="utf-8"))
-    schema[""]["entityTypes"]["ApprovalRequest"] = {"shape": {"type": "Record", "attributes": {
-        "tenant_id": {"type": "String"}, "level": {"type": "String"},
-        "handler": {"type": "Entity", "name": "User"}, "customer": {"type": "Entity", "name": "User"}}}}
-    schema[""]["actions"]["approve_action"] = {"memberOf": [{"id": "write"}], "appliesTo": {
-        "principalTypes": ["User"], "resourceTypes": ["ApprovalRequest"],
-        "context": {"type": "Record", "attributes": {"in_blackout": {"type": "Boolean"}}}}}
-    (folder / "support.cedarschema.json").write_text(json.dumps(schema), encoding="utf-8")
+    text = (Path(POLICY_DIR) / "support.cedar").read_text(encoding="utf-8")
+    stripped, removed = APPROVE_RULE.subn("", text)
+    assert removed == 2
+    (folder / "support.cedar").write_text(stripped, encoding="utf-8")
+    shutil.copy(Path(POLICY_DIR) / "support.cedarschema.json", folder / "support.cedarschema.json")
     return folder
 
 
@@ -347,14 +343,65 @@ def test_a_senior_amount_needs_a_senior_specialist(gate):
     gate.execute(ctx, REFUND, refund(5000), STATE, request_id)
 
 
-def test_without_an_approve_policy_in_cedar_nobody_can_approve(database):
-    """The production policies have no approve_action yet (M2-09): every specialist grant fails closed."""
-    strict = ApprovalGate(connect, engine(), Authorizer(), verify)
+def test_without_an_approve_rule_in_cedar_nobody_can_approve(database, no_approve_rule):
+    """Fail closed: take the approve_action permits out of the policies and every specialist grant fails."""
+    strict = ApprovalGate(connect, engine(), Authorizer(policy_dir=no_approve_rule), verify)
     ctx = case()
     decision = strict.validate(ctx, REFUND, refund(1240), STATE)
     request_id = strict.request(ctx, REFUND, refund(1240), decision)
     with pytest.raises(NotApproved, match="authorization policy"):
         strict.grant("t_us", request_id, "tok-sue")
+
+
+def test_the_production_policies_let_a_senior_specialist_approve_a_specialist_level_request(gate):
+    ctx = case()
+    decision = gate.validate(ctx, REFUND, refund(1240), STATE)
+    assert decision.level == "specialist"
+    request_id = gate.request(ctx, REFUND, refund(1240), decision)
+    gate.grant("t_us", request_id, "tok-sue")
+    gate.execute(ctx, REFUND, refund(1240), STATE, request_id)
+
+
+# Approval lifetimes (M2-09a) -------------------------------------------------------------------------------
+
+def expires_in(request_id):
+    (seconds,) = psql(DB, "SELECT extract(epoch FROM expires_at - created_at)::int FROM approval_requests "
+                          f"WHERE id = '{request_id}'")[0]
+    return int(seconds)
+
+
+def test_a_request_lives_for_the_gates_lifetime_or_the_one_it_asks_for(database, policy_dir):
+    ctx = case()
+    short = ApprovalGate(connect, engine(), Authorizer(policy_dir=policy_dir), verify)
+    decision = short.validate(ctx, REFUND, refund(1240), STATE)
+    assert expires_in(short.request(ctx, REFUND, refund(1240), decision)) == 30 * 60
+    long = short.request(ctx, REFUND, refund(1240), decision, ttl=timedelta(hours=72))
+    assert expires_in(long) == 72 * 3600
+    queue = ApprovalGate(connect, engine(), Authorizer(policy_dir=policy_dir), verify, ttl=timedelta(hours=1))
+    assert expires_in(queue.request(ctx, REFUND, refund(1240), decision)) == 3600
+
+
+@pytest.mark.parametrize("ttl", [timedelta(hours=72, seconds=1), timedelta(0), timedelta(seconds=-5),
+                                 "1 hour", 3600])
+def test_a_lifetime_is_positive_and_at_most_three_days(database, policy_dir, ttl):
+    with pytest.raises(ValueError):
+        ApprovalGate(connect, engine(), Authorizer(policy_dir=policy_dir), verify, ttl=ttl)
+    gate = ApprovalGate(connect, engine(), Authorizer(policy_dir=policy_dir), verify)
+    ctx = case()
+    decision = gate.validate(ctx, REFUND, refund(1240), STATE)
+    with pytest.raises(ValueError):
+        gate.request(ctx, REFUND, refund(1240), decision, ttl=ttl)
+
+
+@pytest.mark.parametrize("request_id", ["pending", "", "1; DROP TABLE approval_requests", "12345"])
+def test_a_malformed_request_id_is_refused_cleanly(gate, request_id):
+    ctx = case()
+    with pytest.raises(NotApproved, match="not an approval request id"):
+        gate.grant("t_us", request_id, "tok-sam")
+    with pytest.raises(NotApproved, match="not an approval request id"):
+        gate.revoke("t_us", request_id)
+    with pytest.raises(NotApproved, match="not an approval request id"):
+        gate.execute(ctx, REFUND, refund(1240), STATE, request_id)
 
 
 def test_without_a_staff_identity_provider_nothing_verifies(database, policy_dir):

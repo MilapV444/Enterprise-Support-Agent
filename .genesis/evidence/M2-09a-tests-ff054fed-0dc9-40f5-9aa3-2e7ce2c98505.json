@@ -1,0 +1,30 @@
+{
+  "task": "M2-09a",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "ff054fed-0dc9-40f5-9aa3-2e7ce2c98505",
+  "command": "python -m pytest tests/tools/validation/ tests/safety/authz/ -q",
+  "started_at": "2026-10-25T10:11:13.652Z",
+  "observed_at": "2026-10-25T10:12:33.726Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 57%]\r\n.....................................................                    [100%]\r\n125 passed in 66.64s (0:01:06)\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "9482759e19eee58e591579aeb61aa999c7110077",
+    "dirty": true
+  },
+  "source_hash": "4a6daa636ebb34b04aa5e05034e80c27275fab3e21539ce2c6d001ca065db18d",
+  "before_hash": "4a6daa636ebb34b04aa5e05034e80c27275fab3e21539ce2c6d001ca065db18d",
+  "config_hash": "e9f53602c9cef70500fd52da79ab68a468a8f3c8398cfbda5a148fc966a75c22",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "4ee54ff26a2d28b437caeccc651bc339f2f36c7a53f9dc10277590b4a4550181"
+}

@@ -1,14 +1,24 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "b793f1195e0571c73264ea48a828c410b50fed1e",
-  "sourceHash": "1d819b1d20c29079d49a6a2e22ba8c424b5f546b3e3d6fbf20e80199f004af7e",
+  "revision": "9482759e19eee58e591579aeb61aa999c7110077",
+  "sourceHash": "8f176a44812f7b57c84902191aa4ff6a207df95f2aa6f4d7f5a0ef03060357b9",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
     "confidenceScale": "0..1"
   },
   "nodes": [
+    {
+      "id": "file:console/app.py",
+      "type": "file",
+      "label": "console/app.py",
+      "path": "console/app.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "3d7a0fbb157eea3bc63d8d1678b0b0192292967ff8788337d920c7b03e548375"
+    },
     {
       "id": "file:scripts/adp_registry.py",
       "type": "file",
@@ -580,6 +590,16 @@
       "contentHash": "a44bfff2633063be47a90cca034518547c48ad7b7edf9938acd8e28651f85b5d"
     },
     {
+      "id": "file:src/hitl/approval/__init__.py",
+      "type": "file",
+      "label": "src/hitl/approval/__init__.py",
+      "path": "src/hitl/approval/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "3594a630ffd9935f87d194ead50c3c6e162be50673c8bb87dcf171edb00861d1"
+    },
+    {
       "id": "file:src/hitl/gate/__init__.py",
       "type": "file",
       "label": "src/hitl/gate/__init__.py",
@@ -588,6 +608,26 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "dccd92a7d860dc352186b9989d9b15d6568b1f6c2bc1f42273050127eeaa8dc7"
+    },
+    {
+      "id": "file:src/hitl/handoff/__init__.py",
+      "type": "file",
+      "label": "src/hitl/handoff/__init__.py",
+      "path": "src/hitl/handoff/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1c8b95be792a5a56af3f2ddc538161098047ab4daa2a745d9c4ccf9bd87a7fdb"
+    },
+    {
+      "id": "file:src/hitl/queues/__init__.py",
+      "type": "file",
+      "label": "src/hitl/queues/__init__.py",
+      "path": "src/hitl/queues/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "d3b19684099f8c07cdfa77958c9eba08d491b31b5ef6483cb65eea701d19e73b"
     },
     {
       "id": "file:src/knowledge/index/__init__.py",
@@ -1047,7 +1087,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2d48dca43d8c7ff621527f1506cd99350c8fc492adfc6022e554e32478c75f72"
+      "contentHash": "2715b46f15ac7081c486fd1e0d05dd0ad29c65598b0b1553d89ed366b857c5a7"
     },
     {
       "id": "file:src/workflows/__init__.py",
@@ -1140,6 +1180,16 @@
       "contentHash": "d01ad7133de9aa0cc7d56933c07ec3b2242c0da33436ae6572dcdfb9f51e3656"
     },
     {
+      "id": "file:tests/e2e/test_scenarios_actions.py",
+      "type": "file",
+      "label": "tests/e2e/test_scenarios_actions.py",
+      "path": "tests/e2e/test_scenarios_actions.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "d2d9708f2c315675711bd387caeec22c1ae08e4f96c3817942dfa716c5d2b602"
+    },
+    {
       "id": "file:tests/e2e/test_scenarios_core.py",
       "type": "file",
       "label": "tests/e2e/test_scenarios_core.py",
@@ -1160,6 +1210,16 @@
       "contentHash": "e9695fec4771e2ab574e6891f837edc812c75176ab39334f0e780d8dba4d303b"
     },
     {
+      "id": "file:tests/hitl/approval/test_approval.py",
+      "type": "file",
+      "label": "tests/hitl/approval/test_approval.py",
+      "path": "tests/hitl/approval/test_approval.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "411840b9e12fc1ad600dbfb1fa464c032ed327824c9a55b4f9cd1ab2b61f9f30"
+    },
+    {
       "id": "file:tests/hitl/gate/test_gate.py",
       "type": "file",
       "label": "tests/hitl/gate/test_gate.py",
@@ -1168,6 +1228,26 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "e27102e3b467eed2fdf324b8492099936de5fea291143b7b065cfe6718d79479"
+    },
+    {
+      "id": "file:tests/hitl/handoff/test_console.py",
+      "type": "file",
+      "label": "tests/hitl/handoff/test_console.py",
+      "path": "tests/hitl/handoff/test_console.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "83e1dc0a1ef9d1b8e38ee694ae73cf50f70f3c620bd02468e31ceb09ce94af95"
+    },
+    {
+      "id": "file:tests/hitl/handoff/test_handoff.py",
+      "type": "file",
+      "label": "tests/hitl/handoff/test_handoff.py",
+      "path": "tests/hitl/handoff/test_handoff.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "6c8277c550a51a71bcdcab37602c19d123872466bcb193114a55f3e7904fc21e"
     },
     {
       "id": "file:tests/identity/conftest.py",
@@ -1307,7 +1387,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "1322ae8974cbfee27f0d9eb5542c2a9a87b1c379d03f01813be1b5443f78ad73"
+      "contentHash": "445ed35caa81ea93efe96ab470782415931dc21c3deb637cc6335039ac6b6e2c"
     },
     {
       "id": "file:tests/safety/governance/test_governance.py",
@@ -1430,6 +1510,26 @@
       "contentHash": "2c20f292765aed2a2a4bbfab50dda4cde36a955b3e096a3b00e2b2f8f54655bf"
     },
     {
+      "id": "file:tests/tools/validation/conftest.py",
+      "type": "file",
+      "label": "tests/tools/validation/conftest.py",
+      "path": "tests/tools/validation/conftest.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "f55d29135941fd38ff5325fa41a3110073aaf71300ab16c486866ce34753b656"
+    },
+    {
+      "id": "file:tests/tools/validation/test_trusted_authorization.py",
+      "type": "file",
+      "label": "tests/tools/validation/test_trusted_authorization.py",
+      "path": "tests/tools/validation/test_trusted_authorization.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "04157c471fe86a0622e020e45fa27ff2e5f456ead16b4d7a2e2df4a070c23ff5"
+    },
+    {
       "id": "file:tests/tools/validation/test_validation.py",
       "type": "file",
       "label": "tests/tools/validation/test_validation.py",
@@ -1437,7 +1537,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "e66a9b7e1fc7f6e828dccc051f6ad59d3de9cebe5521e266bbdf1e405df41d1a"
+      "contentHash": "ea3bf7652780698fef0d1791a05696cbde984c170ca164ee5ed242a30853d249"
     },
     {
       "id": "file:tests/web/test_web.py",

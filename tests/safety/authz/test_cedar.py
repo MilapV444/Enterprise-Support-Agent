@@ -105,6 +105,75 @@ def test_cached_reads_are_per_principal_and_resource():
     assert authz.check(SARAH, "read_ticket", "Ticket", "T-2", ticket()) == "deny"
 
 
+SAM = User("t_us", "sam", ("specialist",))
+SUE = User("t_us", "sue", ("senior_specialist",))
+EVE = User("t_eu", "eve", ("senior_specialist",))
+
+
+def request(level, handler="svc:agent", customer="sarah", tenant="t_us"):
+    return {"tenant_id": tenant, "level": level, "handler": entity("User", handler),
+            "customer": entity("User", customer)}
+
+
+@pytest.mark.parametrize("user, level, verdict", [
+    (SAM, "specialist", "allow"),             # a specialist approves below the senior amount
+    (SAM, "senior_specialist", "deny"),       # but not above it
+    (SUE, "specialist", "allow"),             # a senior specialist approves both
+    (SUE, "senior_specialist", "allow"),
+    (SUPPORT, "specialist", "deny"),          # support staff are not approvers
+    (ADMIN, "specialist", "deny"),            # nor are tenant admins
+    (SAM, "customer", "deny"),                # customer confirmations are not a specialist approval
+    (SUE, "anything-else", "deny"),
+])
+def test_approval_rights_follow_role_and_level(authz, user, level, verdict):
+    assert authz.check(user, "approve_action", "ApprovalRequest", "r-1", request(level)) == verdict
+
+
+def test_nobody_approves_their_own_conversation_their_own_request_or_another_tenants(authz):
+    for user in (SAM, SUE):
+        own = request("specialist", handler=user.id)
+        assert authz.check(user, "approve_action", "ApprovalRequest", "r-1", own) == "deny"
+    assert authz.check(SUE, "approve_action", "ApprovalRequest", "r-1",
+                       request("specialist", customer="sue")) == "deny"
+    assert authz.check(EVE, "approve_action", "ApprovalRequest", "r-1", request("specialist")) == "deny"
+    foreign = request("specialist", tenant="t_eu")
+    assert authz.check(SUE, "approve_action", "ApprovalRequest", "r-1", foreign) == "deny"
+
+
+def test_approving_is_a_write_so_an_unreachable_engine_refuses_it():
+    clock = [0.0]
+    authz, state = flaky(clock)
+    assert authz.check(SAM, "approve_action", "ApprovalRequest", "r-1", request("specialist")) == "allow"
+    state["down"] = True
+    assert authz.check(SAM, "approve_action", "ApprovalRequest", "r-1", request("specialist")) == "deny"
+
+
+@pytest.mark.parametrize("action", ["restart_cluster", "apply_migration", "terminate_service"])
+def test_production_actions_apply_to_environments_only(authz, action):
+    assert authz.check(OPS, action, "Environment", "prod", PROD) == "allow"
+    assert authz.check(OPS, action, "Account", "A-1", account()) == "deny"   # not an environment
+    assert authz.check(OPS, action, "Ticket", "T-1", ticket()) == "deny"
+    assert authz.check(ADMIN, action, "Environment", "prod", PROD) == "deny"  # cloud_admin only
+    assert authz.check(OPS, action, "Environment", "prod", PROD, blackout=True) == "approval_required"
+
+
+@pytest.mark.parametrize("group", ["production_change", "write", "read"])
+def test_action_groups_cannot_be_requested_directly(authz, group):
+    for user, resource_type, attrs in ((OPS, "Environment", PROD), (ADMIN, "Account", account())):
+        assert authz.check(user, group, resource_type, "x", attrs) == "deny"
+
+
+def test_the_schema_classifies_every_production_action_under_write():
+    schema = json.loads((Path(POLICY_DIR) / "support.cedarschema.json").read_text())
+    actions = schema[""]["actions"]
+    production = [name for name, spec in actions.items()
+                  if {"id": "production_change"} in spec.get("memberOf", [])]
+    assert sorted(production) == ["apply_migration", "restart_cluster", "terminate_service"]
+    assert actions["production_change"]["memberOf"] == [{"id": "write"}]
+    assert all(actions[name]["appliesTo"]["resourceTypes"] == ["Environment"] for name in production)
+    assert actions["approve_action"]["memberOf"] == [{"id": "write"}]
+
+
 def test_blackout_windows_are_decided_in_code():
     windows = [{"start": "2026-11-27T00:00:00+00:00", "end": "2026-11-30T23:59:59+00:00"}]
     assert in_blackout(windows, datetime(2026, 11, 28, 12, tzinfo=timezone.utc))
