@@ -1,0 +1,30 @@
+{
+  "task": "M2-11.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "46033d97-fafb-4f00-934c-ad18c0f6911f",
+  "command": "python -m pytest tests/e2e/test_scenarios_actions.py -q",
+  "started_at": "2026-10-25T12:05:47.725Z",
+  "observed_at": "2026-10-25T12:06:13.686Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "...x....                                                                 [100%]\r\n7 passed, 1 xfailed in 12.80s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "9482759e19eee58e591579aeb61aa999c7110077",
+    "dirty": true
+  },
+  "source_hash": "2dce1fa7282501ad082fa200483110f894f95705fa702f4017327dde3911201e",
+  "before_hash": "2dce1fa7282501ad082fa200483110f894f95705fa702f4017327dde3911201e",
+  "config_hash": "5c97495a6510cb13e32e83b3e0ed951437ad24ed562f3972d698356a4e917c79",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "a0945c72ac7f223b6d09626d1ed366cce08add7e160ab3ae90d04d5e7e6fee60"
+}

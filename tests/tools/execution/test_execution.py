@@ -3,7 +3,10 @@ idempotency keys, never on 401 / 403), per-system breakers, egress allow-lists, 
 service-account credentials, output screening and offload, and one Temporal task queue per system (FR-23)."""
 
 import asyncio
+import base64
+import dataclasses
 import random
+import re
 import subprocess
 import time
 import uuid
@@ -99,15 +102,29 @@ class Fake:
         return httpx.Response(status, json=body)
 
 
+BEARER = "BEARER-SENTINEL-eyJhbGciOiJFZERTQSJ9.customer-access-token"  # what the customer's client holds
+
+
 class FakeIdentity:
+    """Live sessions on the server side, as channels.identity keeps them. There is deliberately no
+    exchange(access_token): the executor must never need the customer's bearer token."""
+
+    SESSIONS = {"s-sarah": ("t_us", "sarah", "T2_SSO"), "s-anon": ("t_us", "sarah", "T0_ANON"),
+                "s-bob": ("t_us", "bob", "T2_SSO")}
+
     def __init__(self):
         self.exchanged = []
 
-    def exchange(self, access_token, audience):
-        if access_token == "anonymous":
+    def session_principal(self, tenant_id, session_id):
+        tenant, principal, tier = self.SESSIONS.get(session_id, (None, None, None))
+        if tenant != tenant_id:
+            raise PermissionError("session ended or expired")
+        return principal, tier
+
+    def exchange_for_session(self, tenant_id, session_id, audience):
+        _, tier = self.session_principal(tenant_id, session_id)
+        if Tier[tier] < Tier.T2_SSO:
             raise StepUpRequired(Tier.T2_SSO)
-        if access_token == "expired":
-            raise PermissionError("session ended")
         self.exchanged.append(audience)
         return f"obo-{audience}"
 
@@ -119,19 +136,22 @@ SYSTEMS = {
 }
 
 
-def executor(fake, systems=SYSTEMS, registry=None, clock=None, blobs=None):
+def executor(fake, systems=SYSTEMS, registry=None, clock=None, blobs=None, roles_of=None):
     sleeps = []
+    extra = {"roles_of": roles_of} if roles_of else {}
     run = Executor(registry or build_registry(), systems, Screener(lambda text: (0.0, []), pattern_injection),
                    identity=FakeIdentity(), authorizer=Authorizer(), blobs=blobs,
                    transport=httpx.MockTransport(fake), sleep=sleeps.append, rng=random.Random(1),
-                   clock=clock or time.monotonic)
+                   clock=clock or time.monotonic, **extra)
     return run, sleeps
 
 
 def call(tool_id, arguments, **options):
     return ToolCall(tool_call_id=options.pop("tool_call_id", "call-1"), tool_id=tool_id, arguments=arguments,
-                    tenant_id="t_us", principal_id="sarah", case_id="case-1", checkpoint_id="ckpt-7",
-                    access_token=options.pop("access_token", "session-token"), **options)
+                    tenant_id=options.pop("tenant_id", "t_us"),
+                    principal_id=options.pop("principal_id", "sarah"),
+                    case_id="case-1", checkpoint_id="ckpt-7", session_id=options.pop("session_id", "s-sarah"),
+                    **options)
 
 
 INVOICE = {"invoice_id": "INV-9821"}
@@ -204,8 +224,7 @@ def test_a_failing_system_opens_its_own_breaker_and_fails_fast():
     with pytest.raises(ToolFailure, match="SYSTEM_UNAVAILABLE"):
         run.run(call("billing.get_invoice", INVOICE))
     assert len(fake.requests) == sent  # nothing reached the system while open
-    crm = run.run(call("crm.get_contact", {"account_id": "A-1"}, roles=["tenant_admin"],
-                       resource=own_account()))
+    crm = run.run(call("crm.get_contact", {"account_id": "A-1"}, resource=own_account()))
     assert crm.data["id"] == "A-1"  # the CRM's breaker is separate
 
     now[0] += BREAKER_COOLDOWN + 1
@@ -215,9 +234,9 @@ def test_a_failing_system_opens_its_own_breaker_and_fails_fast():
 
 # Credentials ------------------------------------------------------------------------------------------------
 
-def own_account(tenant="t_us"):
+def own_account(tenant="t_us", owner="sarah"):
     return {"action": "read_account", "type": "Account", "id": "A-1",
-            "attrs": {"tenant_id": tenant, "owner": entity("User", "sarah")}}
+            "attrs": {"tenant_id": tenant, "owner": entity("User", owner)}}
 
 
 def test_an_on_behalf_of_token_for_the_systems_audience_is_sent():
@@ -227,14 +246,55 @@ def test_an_on_behalf_of_token_for_the_systems_audience_is_sent():
     assert fake.requests[0].headers["Authorization"] == "Bearer obo-account-tools"
 
 
-@pytest.mark.parametrize("token, code", [("anonymous", "STEP_UP_REQUIRED"),
-                                         ("expired", "AUTHENTICATION_EXPIRED")])
-def test_no_token_no_call(token, code):
+@pytest.mark.parametrize("options, code", [
+    ({"session_id": "s-anon"}, "STEP_UP_REQUIRED"),                 # live, but too low a tier
+    ({"session_id": "s-ended"}, "AUTHENTICATION_EXPIRED"),          # no such live session
+    ({"session_id": None}, "AUTHENTICATION_EXPIRED"),               # no session named at all
+    ({"session_id": "s-sarah", "tenant_id": "t_eu"}, "AUTHENTICATION_EXPIRED"),  # another tenant's session
+    ({"session_id": "s-bob"}, "FORBIDDEN"),                         # someone else's session
+])
+def test_no_live_session_of_the_principal_no_call(options, code):
     fake = Fake()
     run, _ = executor(fake)
     with pytest.raises(ToolFailure, match=code):
-        run.run(call("billing.get_invoice", INVOICE, access_token=token))
+        run.run(call("billing.get_invoice", INVOICE, **options))
     assert fake.requests == []
+
+
+@pytest.mark.parametrize("options, code", [
+    ({"session_id": None}, "AUTHENTICATION_EXPIRED"),
+    ({"session_id": "s-ended"}, "AUTHENTICATION_EXPIRED"),
+    ({"session_id": "s-bob"}, "FORBIDDEN"),
+])
+def test_a_service_account_call_also_needs_the_principals_live_session(options, code):
+    fake = Fake()
+    run, _ = executor(fake)
+    with pytest.raises(ToolFailure, match=code):
+        run.run(call("crm.get_contact", {"account_id": "A-1"}, resource=own_account(), **options))
+    assert fake.requests == []
+
+
+def test_a_call_cannot_carry_a_bearer_token_or_its_own_roles():
+    names = {f.name for f in dataclasses.fields(ToolCall)}
+    assert "access_token" not in names and "roles" not in names
+    with pytest.raises(TypeError):
+        call("crm.get_contact", {"account_id": "A-1"}, roles=["tenant_admin", "cloud_admin"])
+    with pytest.raises(TypeError):
+        call("billing.get_invoice", INVOICE, access_token=BEARER)
+
+
+def test_cedar_roles_come_from_the_trusted_directory_only():
+    """Sarah reads Bob's account: allowed only if the directory says she is the tenant's admin."""
+    bobs = own_account(owner="bob")
+    fake = Fake()
+    run, _ = executor(fake)
+    with pytest.raises(ToolFailure, match="FORBIDDEN"):
+        run.run(call("crm.get_contact", {"account_id": "A-1"}, resource=bobs))
+    def directory(tenant, principal):
+        return ("tenant_admin",) if principal == "sarah" else ()
+    admin, _ = executor(fake, roles_of=directory)
+    assert admin.run(call("crm.get_contact", {"account_id": "A-1"}, resource=bobs)).data
+    assert len(fake.requests) == 1
 
 
 def test_a_service_account_call_is_checked_by_cedar_before_anything_is_sent():
@@ -338,6 +398,34 @@ def test_a_slow_system_does_not_hold_up_another_systems_queue(temporal):
              call("crm.get_contact", {"account_id": "A-1"}, tool_call_id="crm-1", resource=own_account())]
     finished = run_workflow(ThreeCalls, calls, build_registry(slow=1.5), Fake())
     assert finished.index("crm-1") < finished.index("billing-2")  # billing's single worker is busy
+
+
+def test_the_workflow_history_holds_a_session_reference_never_a_bearer_token(temporal):
+    fake = Fake()
+
+    async def go():
+        client = await Client.connect("127.0.0.1:7233")
+        run, _ = executor(fake)
+        pools = workers(client, ToolActivities(run), SYSTEMS)
+        queue = f"wf-{uuid.uuid4().hex}"
+        from temporalio.worker import Worker
+        async with Worker(client, task_queue=queue, workflows=[OneCall]):
+            for pool in pools:
+                await pool.__aenter__()
+            try:
+                handle = await client.start_workflow(OneCall.run, call("billing.get_invoice", INVOICE),
+                                                     id=f"t-{uuid.uuid4().hex}", task_queue=queue)
+                await handle.result()
+                return (await handle.fetch_history()).to_json()
+            finally:
+                for pool in pools:
+                    await pool.__aexit__(None, None, None)
+    history = asyncio.run(go())
+    decoded = history + " ".join(base64.b64decode(chunk).decode("utf-8", "replace")
+                                 for chunk in re.findall(r'"data":\s*"([A-Za-z0-9+/=]+)"', history))
+    assert "s-sarah" in decoded  # the session reference is what the workflow carries
+    assert BEARER not in decoded and "access_token" not in decoded and "obo-account-tools" not in decoded
+    assert fake.requests[0].headers["Authorization"] == "Bearer obo-account-tools"  # still authenticated
 
 
 def test_a_tool_failure_reaches_the_workflow_once_and_typed(temporal):

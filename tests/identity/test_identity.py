@@ -127,6 +127,48 @@ def test_on_behalf_of_tokens(identity, outbox):
         identity.verify_obo(token, API_AUDIENCE)
 
 
+def test_a_session_reference_gives_the_same_on_behalf_of_token_without_the_bearer_token(identity, outbox):
+    """M2-06c: durable workflows carry the session id; the token is minted from the live session record."""
+    token = verified(identity, outbox)
+    sid = claims(identity, token)["sid"]
+    assert identity.session_principal("t_us", sid) == ("sarah", "T1_VERIFIED")
+    minted = identity.exchange_for_session("t_us", sid, "status-tools")
+    by_session = identity.verify_obo(minted, "status-tools")
+    by_token = identity.verify_obo(identity.exchange(token, "status-tools"), "status-tools")
+    keep = ("sub", "act", "aud", "tid", "tier", "scope")
+    assert {k: by_session[k] for k in keep} == {k: by_token[k] for k in keep}
+    with pytest.raises(StepUpRequired):  # the same tier rule
+        identity.exchange_for_session("t_us", sid, "account-tools")
+    with pytest.raises(TokenError, match="session"):  # a session of another tenant does not resolve
+        identity.exchange_for_session("t_eu", sid, "status-tools")
+    with pytest.raises(TokenError, match="session"):
+        identity.session_principal("t_us", "not-a-session")
+    with pytest.raises(ValueError):
+        identity.exchange_for_session("t_us", sid, "admin-everything")
+
+
+def test_a_session_reference_stops_working_when_the_session_does(identity, outbox):
+    token = verified(identity, outbox)
+    sid = claims(identity, token)["sid"]
+    identity.logout(token)
+    with pytest.raises(TokenError, match="session"):
+        identity.exchange_for_session("t_us", sid, "public-read-tools")
+    other = verified(identity, outbox)
+    other_sid = claims(identity, other)["sid"]
+    sql(f"UPDATE sessions SET last_seen_at = now() - interval '31 minutes' WHERE id = '{other_sid}'")
+    with pytest.raises(TokenError, match="session"):
+        identity.exchange_for_session("t_us", other_sid, "public-read-tools")
+
+
+def test_a_session_reference_follows_a_step_up(identity, outbox):
+    anonymous = identity.anonymous("t_us")
+    sid = claims(identity, anonymous)["sid"]
+    stronger = sso(identity, current=verified(identity, outbox, current=anonymous))
+    assert claims(identity, stronger)["sid"] == sid
+    obo = identity.verify_obo(identity.exchange_for_session("t_us", sid, "account-tools"), "account-tools")
+    assert (obo["sub"], obo["tier"]) == ("sarah", "T2_SSO")
+
+
 def test_anonymous_gets_only_the_read_only_public_audience(identity):
     token = identity.anonymous("t_us")
     obo = identity.verify_obo(identity.exchange(token, "public-read-tools"), "public-read-tools")

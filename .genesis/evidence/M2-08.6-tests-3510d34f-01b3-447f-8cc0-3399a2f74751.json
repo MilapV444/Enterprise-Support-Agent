@@ -1,0 +1,30 @@
+{
+  "task": "M2-08.6",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "3510d34f-01b3-447f-8cc0-3399a2f74751",
+  "command": "python -m pytest tests/hitl/gate/ -q",
+  "started_at": "2026-10-24T17:25:02.678Z",
+  "observed_at": "2026-10-24T17:26:05.463Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "............................................                             [100%]\r\n44 passed in 5.56s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "b793f1195e0571c73264ea48a828c410b50fed1e",
+    "dirty": true
+  },
+  "source_hash": "033fb27b0281f6084b5e4ea83ec144fa0e49f32978457a12f96320f02df4b68f",
+  "before_hash": "033fb27b0281f6084b5e4ea83ec144fa0e49f32978457a12f96320f02df4b68f",
+  "config_hash": "a5d05a80ec6b162e82d17b8451e6c2f398c0d2203f85166db1bd0ba4d6173fbe",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "e3cd11be3292f1e87e737093ca550892d780ff5cd5c7a002b467b4d249b02f1b"
+}

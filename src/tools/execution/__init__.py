@@ -6,9 +6,12 @@ its pool size. Executor.run(call):
 
 1. breaker: after 5 consecutive transient failures within 60 s the system's breaker opens for 30 s and calls
    fail at once (SYSTEM_UNAVAILABLE); one trial call is let through after the cool-down.
-2. credentials: an on-behalf-of token for the system's audience (the downstream enforces the user's rights);
-   or, for a system without OBO, a scoped service account and an agent-side Cedar check first: a refusal
-   stops the call before anything goes on the network (FORBIDDEN).
+2. identity and credentials, resolved here inside the activity: the principal is the one the call's live
+   session belongs to (a mismatch is FORBIDDEN, an ended session AUTHENTICATION_EXPIRED); then an
+   on-behalf-of token for the system's audience, minted from the session (the downstream enforces the
+   user's rights); or, for a system without OBO, a scoped service account and an agent-side Cedar check
+   first, with roles from the trusted roles_of() directory: a refusal stops the call before anything goes
+   on the network (FORBIDDEN). No bearer token or role list ever travels in the call.
 3. the call: tool code gets, through current(), an HTTP client that can only reach the system's own hosts
    (no metadata endpoint, no other host: SSRF), the credential, and an idempotency key.
 4. retries: reads, and writes to systems that honour idempotency keys (key = checkpoint_id:tool_call_id,
@@ -146,24 +149,40 @@ def as_text(data):
 
 class Executor:
     def __init__(self, registry, systems, screener, *, identity=None, authorizer=None, blobs=None,
-                 transport=None, sleep=time.sleep, clock=time.monotonic, rng=random, budget=None):
-        """systems: {name: System}; identity: channels.identity Identity (OBO); authorizer: Cedar Authorizer;
-        blobs: object store for large outputs; transport: httpx transport (tests)."""
-        self.registry, self.systems, self.screener = registry, systems, screener
+                 transport=None, sleep=time.sleep, clock=time.monotonic, rng=random, budget=None,
+                 roles_of=lambda tenant_id, principal_id: ()):
+        """systems: {name: System}; identity: channels.identity Identity (sessions and OBO); authorizer: Cedar
+        Authorizer; blobs: object store for large outputs; transport: httpx transport (tests);
+        roles_of(tenant, principal): the principal's roles from a trusted directory. Customers carry no roles
+        today (their tokens have none), so the default is none; never take roles from the call."""
+        self.registry, self.systems, self.screener, self.roles_of = registry, systems, screener, roles_of
         self.identity, self.authorizer, self.blobs, self.transport = identity, authorizer, blobs, transport
         self.sleep, self.rng, self.budget = sleep, rng, budget or RetryBudget()
         self.breakers = {name: Breaker(clock) for name in systems}
 
+    def _principal(self, call):
+        """The call's principal, verified against the live session it names (never taken on trust)."""
+        if not call.session_id:
+            raise ToolFailure("AUTHENTICATION_EXPIRED", "the call names no session")
+        try:
+            principal_id, _ = self.identity.session_principal(call.tenant_id, call.session_id)
+        except Exception as error:  # ended, expired or another tenant's session
+            raise ToolFailure("AUTHENTICATION_EXPIRED", type(error).__name__) from error
+        if principal_id != call.principal_id:
+            raise ToolFailure("FORBIDDEN", "the session belongs to someone else")
+        return principal_id
+
     def _credential(self, call, system):
+        principal_id = self._principal(call)
         if system.credential == "obo":
             try:
-                return self.identity.exchange(call.access_token, system.audience)
+                return self.identity.exchange_for_session(call.tenant_id, call.session_id, system.audience)
             except StepUpRequired as error:
                 raise ToolFailure("STEP_UP_REQUIRED", str(error)) from error
-            except Exception as error:  # an expired or revoked session token
+            except Exception as error:  # the session ended between the two checks
                 raise ToolFailure("AUTHENTICATION_EXPIRED", type(error).__name__) from error
         resource = call.resource
-        user = User(call.tenant_id, call.principal_id, tuple(call.roles))
+        user = User(call.tenant_id, principal_id, tuple(self.roles_of(call.tenant_id, principal_id)))
         verdict = self.authorizer.check(user, resource.get("action", ""), resource.get("type", ""),
                                         resource.get("id", ""), resource.get("attrs", {}))
         if verdict != "allow":

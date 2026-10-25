@@ -112,13 +112,33 @@ class Identity:
             raise ValueError(f"unknown audience {audience!r}")
         with self.connect() as conn:
             claims = self._live_claims(conn, access_token)
+        return self._mint_obo(claims["tid"], claims["sub"], claims["tier"], audience)
+
+    def session_principal(self, tenant_id, session_id):
+        """(principal_id, tier name) of a live session, from the server-side session record; counts as
+        activity. TokenError when the session has ended, expired or belongs to another tenant."""
+        with self.connect() as conn:
+            live = sessions.touch(conn, tenant_id, session_id)
+        if live is None:
+            raise TokenError("session ended or expired")
+        return live
+
+    def exchange_for_session(self, tenant_id, session_id, audience):
+        """The same on-behalf-of token as exchange(), from a session reference instead of the bearer token,
+        so durable workflows carry only the (non-secret) session id. Same tier and scope rules."""
+        if audience not in AUDIENCES:
+            raise ValueError(f"unknown audience {audience!r}")
+        principal_id, tier = self.session_principal(tenant_id, session_id)
+        return self._mint_obo(tenant_id, principal_id, tier, audience)
+
+    def _mint_obo(self, tenant_id, principal_id, tier_name, audience):
         minimum, allowed = AUDIENCES[audience]
-        tier = Tier[claims["tier"]]
+        tier = Tier[tier_name]
         if tier < minimum:
             raise StepUpRequired(minimum)
         now = int(time.time())
-        return encode({"iss": ISSUER, "aud": audience, "sub": claims["sub"], "act": {"sub": AGENT},
-                       "tid": claims["tid"], "tier": tier.name,
+        return encode({"iss": ISSUER, "aud": audience, "sub": principal_id, "act": {"sub": AGENT},
+                       "tid": tenant_id, "tier": tier.name,
                        "scope": " ".join(s for s in SCOPES[tier] if s in allowed),
                        "iat": now, "exp": now + OBO_TTL}, self.key)
 
