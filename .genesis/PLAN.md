@@ -1842,31 +1842,31 @@
 
 ### M2-11.7 — M2: end-to-end tests for framework scenarios 3 and 4
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: AC-3, AC-4
 - scope: tests/e2e/test_scenarios_actions.py
-- gates: tests: python -m pytest tests/e2e/test_scenarios_actions.py -q, independent-review: pending
+- gates: tests: python -m pytest tests/e2e/test_scenarios_actions.py -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M3-01.7 — M3: coordinator with specialist subgraphs, static registry, Jev delegation and depth / span / step limits
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: FR-25, FR-26
 - scope: src/agents/topology/, tests/agents/topology/
-- gates: tests: python -m pytest tests/agents/topology/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/agents/topology/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M3-02.7 — M3: typed agent contracts and briefs, specialist identities, low-risk writes only when running alone
 
-- state/risk: queued / high
+- state/risk: done / high
 - requirements: FR-27, FR-28
 - scope: src/agents/contracts/, tests/agents/contracts/
-- gates: tests: python -m pytest tests/agents/contracts/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/agents/contracts/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M3-03.7 — M3: conflict scoring, numeric disagreements to a human, one merged reply in one voice with redirect check; scenario 7 test
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-29, AC-7
 - scope: src/agents/merge/, tests/agents/merge/, tests/e2e/test_scenario_multiagent.py
 - gates: tests: python -m pytest tests/agents/merge/ tests/e2e/test_scenario_multiagent.py -q, independent-review: pending

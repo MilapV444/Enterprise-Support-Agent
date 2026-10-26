@@ -1,0 +1,30 @@
+{
+  "task": "M3-03.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "f440c5b7-a88d-4027-a3d7-1360ffc36c7b",
+  "command": "python -m pytest tests/agents/merge/ tests/e2e/test_scenario_multiagent.py -q",
+  "started_at": "2026-10-26T17:28:01.381Z",
+  "observed_at": "2026-10-26T17:28:08.481Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".........................................                                [100%]\r\n41 passed in 4.47s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "5b167fcf6d9eccc4b9f9ec32a27dc542e082b68b",
+    "dirty": true
+  },
+  "source_hash": "5b9c4f120580392d9d3727eca9f4b2a97b20062603e5bf5758d5eab22c5a6c2e",
+  "before_hash": "5b9c4f120580392d9d3727eca9f4b2a97b20062603e5bf5758d5eab22c5a6c2e",
+  "config_hash": "026f9d9da46a73699e30943d1ddd452d42af6e44af893c7cd894bf8784c7dd1f",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "5e11de6ca85c572104aa11e3a2b7f67ff60ea9bd2b210aef446588fc9055e631"
+}

@@ -1,0 +1,30 @@
+{
+  "task": "M3-01.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "990f9bc0-6e76-4758-bfaa-be6d1dba545d",
+  "command": "python -m pytest tests/agents/topology/ -q",
+  "started_at": "2026-10-26T15:43:41.186Z",
+  "observed_at": "2026-10-26T15:44:09.419Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "...................                                                      [100%]\r\n19 passed in 13.79s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "5b167fcf6d9eccc4b9f9ec32a27dc542e082b68b",
+    "dirty": true
+  },
+  "source_hash": "8630d6d337f4911c86079333a8a0143c854f72f4341199814a34adf2d3a8d3a4",
+  "before_hash": "8630d6d337f4911c86079333a8a0143c854f72f4341199814a34adf2d3a8d3a4",
+  "config_hash": "cd5ab2fe8ce31053c421628d29c26ee53f0a40218825b9c5bbebbd75508b379e",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "f88aa97738fc84cf8c4054b0ec5ca2239dd9818f617c715af445d6c17fd843d5"
+}

@@ -1,0 +1,30 @@
+{
+  "task": "M3-02.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "2194af42-828b-4455-952d-d2d57a238e33",
+  "command": "python -m pytest tests/agents/contracts/ -q",
+  "started_at": "2026-10-26T17:08:18.564Z",
+  "observed_at": "2026-10-26T17:08:45.514Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "..................                                                       [100%]\r\n18 passed in 10.51s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "5b167fcf6d9eccc4b9f9ec32a27dc542e082b68b",
+    "dirty": true
+  },
+  "source_hash": "f49809f393474edf345d5faf414e937879a36ab47e49bebd3152149d5be31cec",
+  "before_hash": "f49809f393474edf345d5faf414e937879a36ab47e49bebd3152149d5be31cec",
+  "config_hash": "9174e37ea01dc5237581646836ec9459d2aa0ad8be8bf7f45a8c397dd972620d",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "358371454f03eb4fdfd3eda3cb1d18cb1dd8fe9445404bb3d3047267b3977eb9",
+    "variables": {}
+  },
+  "hash": "8170c31d5c5058c4cb8ee7c4be72477192c31725c7aba697e1fcef93cc256ce0"
+}
