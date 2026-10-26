@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "9482759e19eee58e591579aeb61aa999c7110077",
-  "sourceHash": "8f176a44812f7b57c84902191aa4ff6a207df95f2aa6f4d7f5a0ef03060357b9",
+  "revision": "5b167fcf6d9eccc4b9f9ec32a27dc542e082b68b",
+  "sourceHash": "5754e6e2c904baa7fec628c3aa7c648007101bf56a8ff77c751f77306f072c52",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -228,6 +228,36 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "13083ab599fcb7493a97d804c2177166848b0cc80cfc867f69288abfaa27d559"
+    },
+    {
+      "id": "file:src/agents/contracts/__init__.py",
+      "type": "file",
+      "label": "src/agents/contracts/__init__.py",
+      "path": "src/agents/contracts/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2f788630b7342f99544292269f1b516f9a06b460aea46c7ac99cad8ad56a013e"
+    },
+    {
+      "id": "file:src/agents/merge/__init__.py",
+      "type": "file",
+      "label": "src/agents/merge/__init__.py",
+      "path": "src/agents/merge/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e9244f18383b7d0fcef730c78f5856bbe09ad98cce2e91025151538118c001d0"
+    },
+    {
+      "id": "file:src/agents/topology/__init__.py",
+      "type": "file",
+      "label": "src/agents/topology/__init__.py",
+      "path": "src/agents/topology/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "8f07e9094157be294f0c6beeb223c23de16b34d1ecd89c4d018a829cfb3789d4"
     },
     {
       "id": "file:src/channels/api/__init__.py",
@@ -1120,6 +1150,36 @@
       "contentHash": "bbe48b605e50e11d7dce41f86b4dbb021533b36c93b6a005c46f0333561128c5"
     },
     {
+      "id": "file:tests/agents/contracts/test_contracts.py",
+      "type": "file",
+      "label": "tests/agents/contracts/test_contracts.py",
+      "path": "tests/agents/contracts/test_contracts.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "478444209071a576b30ae1704371a5259c89011c2235cc297b1fd27785c3abf0"
+    },
+    {
+      "id": "file:tests/agents/merge/test_merge.py",
+      "type": "file",
+      "label": "tests/agents/merge/test_merge.py",
+      "path": "tests/agents/merge/test_merge.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "f65352a0f39336d3722fee3dc42852fc5016d7103000bd1f26089d30785026b5"
+    },
+    {
+      "id": "file:tests/agents/topology/test_topology.py",
+      "type": "file",
+      "label": "tests/agents/topology/test_topology.py",
+      "path": "tests/agents/topology/test_topology.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "725ff5bbc0a5d2b9e957650b22078c77cfcf2fbbd10804f8736abb2cf509dd4e"
+    },
+    {
       "id": "file:tests/channels/test_api.py",
       "type": "file",
       "label": "tests/channels/test_api.py",
@@ -1178,6 +1238,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "d01ad7133de9aa0cc7d56933c07ec3b2242c0da33436ae6572dcdfb9f51e3656"
+    },
+    {
+      "id": "file:tests/e2e/test_scenario_multiagent.py",
+      "type": "file",
+      "label": "tests/e2e/test_scenario_multiagent.py",
+      "path": "tests/e2e/test_scenario_multiagent.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2d9b87bbe9a2e5dd5359eae1bf2edcf6a6d3a2f7d41dcfac04025be6f2b10439"
     },
     {
       "id": "file:tests/e2e/test_scenarios_actions.py",

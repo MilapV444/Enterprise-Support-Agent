@@ -23,6 +23,9 @@ digraph genesis {
   "file:scripts/generate_lld_user_app.py" [label="scripts/generate_lld_user_app.py",class="file"];
   "file:scripts/lld_layout.py" [label="scripts/lld_layout.py",class="file"];
   "file:scripts/organize_adps.py" [label="scripts/organize_adps.py",class="file"];
+  "file:src/agents/contracts/__init__.py" [label="src/agents/contracts/__init__.py",class="file"];
+  "file:src/agents/merge/__init__.py" [label="src/agents/merge/__init__.py",class="file"];
+  "file:src/agents/topology/__init__.py" [label="src/agents/topology/__init__.py",class="file"];
   "file:src/channels/api/__init__.py" [label="src/channels/api/__init__.py",class="file"];
   "file:src/channels/api/__main__.py" [label="src/channels/api/__main__.py",class="file"];
   "file:src/channels/api/app.py" [label="src/channels/api/app.py",class="file"];
@@ -112,12 +115,16 @@ digraph genesis {
   "file:src/workflows/__init__.py" [label="src/workflows/__init__.py",class="file"];
   "file:src/workflows/activities.py" [label="src/workflows/activities.py",class="file"];
   "file:src/workflows/ticket.py" [label="src/workflows/ticket.py",class="file"];
+  "file:tests/agents/contracts/test_contracts.py" [label="tests/agents/contracts/test_contracts.py",class="file"];
+  "file:tests/agents/merge/test_merge.py" [label="tests/agents/merge/test_merge.py",class="file"];
+  "file:tests/agents/topology/test_topology.py" [label="tests/agents/topology/test_topology.py",class="file"];
   "file:tests/channels/test_api.py" [label="tests/channels/test_api.py",class="file"];
   "file:tests/context/test_assembler.py" [label="tests/context/test_assembler.py",class="file"];
   "file:tests/data/test_schema.py" [label="tests/data/test_schema.py",class="file"];
   "file:tests/decisions/test_decisions.py" [label="tests/decisions/test_decisions.py",class="file"];
   "file:tests/deploy/test_backbone.py" [label="tests/deploy/test_backbone.py",class="file"];
   "file:tests/deploy/test_compose.py" [label="tests/deploy/test_compose.py",class="file"];
+  "file:tests/e2e/test_scenario_multiagent.py" [label="tests/e2e/test_scenario_multiagent.py",class="file"];
   "file:tests/e2e/test_scenarios_actions.py" [label="tests/e2e/test_scenarios_actions.py",class="file"];
   "file:tests/e2e/test_scenarios_core.py" [label="tests/e2e/test_scenarios_core.py",class="file"];
   "file:tests/erasure/test_erasure.py" [label="tests/erasure/test_erasure.py",class="file"];
