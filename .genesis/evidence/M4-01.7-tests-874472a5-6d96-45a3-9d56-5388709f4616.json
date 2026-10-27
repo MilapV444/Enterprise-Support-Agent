@@ -1,0 +1,30 @@
+{
+  "task": "M4-01.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "874472a5-6d96-45a3-9d56-5388709f4616",
+  "command": "python -m pytest tests/reliability/admission/ -q",
+  "started_at": "2026-10-27T17:05:36.126Z",
+  "observed_at": "2026-10-27T17:05:39.439Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".......................                                                  [100%]\r\n23 passed in 0.52s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "a1cb89a9745b387ee5692a7ab2caab1794b07a34",
+    "dirty": true
+  },
+  "source_hash": "168c5ce9e8b713085ce3355a864aed3d38ed72885029028d18887fb37d1a826c",
+  "before_hash": "168c5ce9e8b713085ce3355a864aed3d38ed72885029028d18887fb37d1a826c",
+  "config_hash": "338136b892f526cb163ad19fb8995560b485a5bdc5e20bbab48412136887c4e4",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "423475eeb1167aa83ce42c271e31c0b1c03fcfa36b5df5790d7963a376d4fdbc"
+}

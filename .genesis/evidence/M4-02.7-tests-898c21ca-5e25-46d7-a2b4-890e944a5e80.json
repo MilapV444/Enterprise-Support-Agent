@@ -1,0 +1,30 @@
+{
+  "task": "M4-02.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "898c21ca-5e25-46d7-a2b4-890e944a5e80",
+  "command": "python -m pytest tests/reliability/bursts/ -q",
+  "started_at": "2026-10-27T17:17:43.873Z",
+  "observed_at": "2026-10-27T17:17:46.796Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "...............                                                          [100%]\r\n15 passed in 0.54s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "a1cb89a9745b387ee5692a7ab2caab1794b07a34",
+    "dirty": true
+  },
+  "source_hash": "aad024cfd04241997a031607ef0d0bb821834b933d30b9d77232f1986c197b55",
+  "before_hash": "aad024cfd04241997a031607ef0d0bb821834b933d30b9d77232f1986c197b55",
+  "config_hash": "4ede9d0ff679a8f5d13d9417b4bc9f2160bd04d64f4b2e45863798f5ecb23dce",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "e6fb3194558c96a83a74bd3bc8515fb900a09f2a289212a08cc87ee8e4f577de"
+}

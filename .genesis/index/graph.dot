@@ -2,6 +2,7 @@ digraph genesis {
   rankdir=LR;
   node [shape=box,fontname="system-ui"];
   "file:console/app.py" [label="console/app.py",class="file"];
+  "file:deploy/backup/pgbackup.py" [label="deploy/backup/pgbackup.py",class="file"];
   "file:scripts/adp_registry.py" [label="scripts/adp_registry.py",class="file"];
   "file:scripts/generate_adp_index.py" [label="scripts/generate_adp_index.py",class="file"];
   "file:scripts/generate_architecture_tldr.py" [label="scripts/generate_architecture_tldr.py",class="file"];
@@ -83,6 +84,8 @@ digraph genesis {
   "file:src/memory/lifecycle/backoffice.py" [label="src/memory/lifecycle/backoffice.py",class="file"];
   "file:src/memory/lifecycle/inventory.py" [label="src/memory/lifecycle/inventory.py",class="file"];
   "file:src/memory/lifecycle/retention.py" [label="src/memory/lifecycle/retention.py",class="file"];
+  "file:src/reliability/admission/__init__.py" [label="src/reliability/admission/__init__.py",class="file"];
+  "file:src/reliability/bursts/__init__.py" [label="src/reliability/bursts/__init__.py",class="file"];
   "file:src/reliability/fallbacks.py" [label="src/reliability/fallbacks.py",class="file"];
   "file:src/safety/authz/__init__.py" [label="src/safety/authz/__init__.py",class="file"];
   "file:src/safety/authz/cedar.py" [label="src/safety/authz/cedar.py",class="file"];
@@ -144,6 +147,9 @@ digraph genesis {
   "file:tests/memory/facts/test_facts.py" [label="tests/memory/facts/test_facts.py",class="file"];
   "file:tests/orchestrator/test_statechart.py" [label="tests/orchestrator/test_statechart.py",class="file"];
   "file:tests/recovery/test_breaker.py" [label="tests/recovery/test_breaker.py",class="file"];
+  "file:tests/reliability/admission/test_admission.py" [label="tests/reliability/admission/test_admission.py",class="file"];
+  "file:tests/reliability/backup/test_backup.py" [label="tests/reliability/backup/test_backup.py",class="file"];
+  "file:tests/reliability/bursts/test_bursts.py" [label="tests/reliability/bursts/test_bursts.py",class="file"];
   "file:tests/router/test_router.py" [label="tests/router/test_router.py",class="file"];
   "file:tests/safety/authz/test_cedar.py" [label="tests/safety/authz/test_cedar.py",class="file"];
   "file:tests/safety/governance/test_governance.py" [label="tests/safety/governance/test_governance.py",class="file"];

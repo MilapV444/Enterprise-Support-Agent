@@ -4,7 +4,7 @@
 
 - workflow: new-product
 - phase: build
-- plan approval: Intelligent_developer_123 at 2026-10-25T09:34:43.676Z
+- plan approval: Intelligent_developer_123 at 2026-10-27T16:31:55.671Z
 
 ## Tasks
 
@@ -1866,31 +1866,31 @@
 
 ### M3-03.7 — M3: conflict scoring, numeric disagreements to a human, one merged reply in one voice with redirect check; scenario 7 test
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-29, AC-7
 - scope: src/agents/merge/, tests/agents/merge/, tests/e2e/test_scenario_multiagent.py
-- gates: tests: python -m pytest tests/agents/merge/ tests/e2e/test_scenario_multiagent.py -q, independent-review: pending
+- gates: tests: python -m pytest tests/agents/merge/ tests/e2e/test_scenario_multiagent.py -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M4-01.7 — M4: rate limits (Upstash), degrade to knowledge-base answers, one active turn per conversation, exact usage counter; scenario 8 test
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: NFR-16, AC-8
 - scope: src/reliability/admission/, tests/reliability/admission/
-- gates: tests: python -m pytest tests/reliability/admission/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/reliability/admission/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M4-02.7 — M4: request coalescing, incident mode and latency budgets
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: NFR-18
 - scope: src/reliability/bursts/, tests/reliability/bursts/
-- gates: tests: python -m pytest tests/reliability/bursts/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/reliability/bursts/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M4-03.7 — M4: daily pg_dump to R2, scripted restore drill, erasure log
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: NFR-19
 - scope: deploy/backup/, tests/reliability/backup/
 - gates: tests: python -m pytest tests/reliability/backup/ -q, independent-review: pending
@@ -1983,4 +1983,12 @@
 - scope: src/improvement/evolution/, tests/improvement/evolution/
 - gates: tests: python -m pytest tests/improvement/evolution/ -q
 - next: Run the task pre-flight.
+
+### PERF-01 — Test speed: data.migrate.psql runs SQL over one reused psycopg connection per database (reset before each call, locked, reconnect on drop) instead of a docker exec psql process per query; same text rows, same PsqlError; PG* env vars replace the PSQL override
+
+- state/risk: rejected / medium
+- requirements: NFR-24, NFR-25
+- scope: src/data/migrate.py
+- gates: tests: python -m pytest tests/data tests/agents/contracts tests/agents/topology tests/channels tests/e2e tests/erasure tests/hitl/approval tests/hitl/handoff tests/identity tests/keys tests/knowledge/ingest tests/knowledge/retrieval tests/memory/conversation tests/memory/facts tests/orchestrator tests/safety/governance tests/safety/pii tests/storage tests/tools/sagas tests/tools/validation tests/web tests/workflows -q, lint: python -m ruff check src tests, independent-review: pending
+- next: Ask the human: re-add as PERF-01b with lint on src only, or with tests/deploy/test_backbone.py in scope
 
