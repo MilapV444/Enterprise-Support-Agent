@@ -1,0 +1,30 @@
+{
+  "task": "M4-03.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "f252e913-c441-4050-be4e-2515e077ac7a",
+  "command": "python -m pytest tests/reliability/backup/ -q",
+  "started_at": "2026-10-27T18:14:07.620Z",
+  "observed_at": "2026-10-27T18:15:11.637Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".........                                                                [100%]\r\n9 passed in 61.20s (0:01:01)\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "a1cb89a9745b387ee5692a7ab2caab1794b07a34",
+    "dirty": true
+  },
+  "source_hash": "348d702aee11e04a4df6780b5bdb49753bda3d1b21e44eba9647b6043830beaa",
+  "before_hash": "348d702aee11e04a4df6780b5bdb49753bda3d1b21e44eba9647b6043830beaa",
+  "config_hash": "2de4401e4dca38ff8608076242ffe842d5829182ee669f2e7bc8de3f79bc2233",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "5bbddf365cbd629d2390cb9305d09cf9ac0fb3b0e3b322e4d373a529e59d94f9"
+}

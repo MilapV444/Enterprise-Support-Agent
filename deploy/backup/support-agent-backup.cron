@@ -1,0 +1,10 @@
+# Postgres backups for the v1 VM (NFR-19). Install with: crontab -u agent deploy/backup/support-agent-backup.cron
+# The R2 credentials come from OpenBao (core.secrets); RESTORE_DSN_BASE is set in /opt/support-agent/.env.
+SHELL=/bin/bash
+PYTHONPATH=/opt/support-agent/src:/opt/support-agent
+
+# Daily at 02:30 UTC: dump agent, agent_vault and agent_keys to R2, prune dumps and erasure-log entries past 35 days.
+30 2 * * * cd /opt/support-agent && set -a && . ./.env && set +a && .venv/bin/python deploy/backup/pgbackup.py daily >> /var/log/support-agent/backup.log 2>&1
+
+# Monthly restore drill, first Sunday at 04:00 UTC: restore into restore_* databases, replay erasures, check.
+0 4 1-7 * * [ "$(date -u +\%u)" = 7 ] && cd /opt/support-agent && set -a && . ./.env && set +a && .venv/bin/python deploy/backup/pgbackup.py drill >> /var/log/support-agent/backup-drill.log 2>&1

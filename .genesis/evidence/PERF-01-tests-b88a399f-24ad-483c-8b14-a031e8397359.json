@@ -1,0 +1,30 @@
+{
+  "task": "PERF-01",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "b88a399f-24ad-483c-8b14-a031e8397359",
+  "command": "python -m pytest tests/data tests/agents/contracts tests/agents/topology tests/channels tests/e2e tests/erasure tests/hitl/approval tests/hitl/handoff tests/identity tests/keys tests/knowledge/ingest tests/knowledge/retrieval tests/memory/conversation tests/memory/facts tests/orchestrator tests/safety/governance tests/safety/pii tests/storage tests/tools/sagas tests/tools/validation tests/web tests/workflows -q",
+  "started_at": "2026-10-27T16:39:52.090Z",
+  "observed_at": "2026-10-27T16:44:06.155Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 13%]\r\n..................................................x..................... [ 26%]\r\n........................................................................ [ 39%]\r\n........................................................................ [ 52%]\r\n........................................................................ [ 65%]\r\n........................................................................ [ 79%]\r\n........................................................................ [ 92%]\r\n..........................................                               [100%]\r\n545 passed, 1 xfailed in 250.21s (0:04:10)\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "a1cb89a9745b387ee5692a7ab2caab1794b07a34",
+    "dirty": true
+  },
+  "source_hash": "29d3aa41d36fe18d7135a03fbbe4c0826347964805c3baf652fc160d9ae466c7",
+  "before_hash": "29d3aa41d36fe18d7135a03fbbe4c0826347964805c3baf652fc160d9ae466c7",
+  "config_hash": "3e34c92287d049ffef12cf57ed2a762c96903502cb5e962a2eb3dc8a525753c0",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "f7bf5012f931b3889ead46a4924f2928e1a1d6f9ce921ae756971df2f9495ab0"
+}
