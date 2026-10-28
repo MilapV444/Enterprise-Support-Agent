@@ -1,0 +1,30 @@
+{
+  "task": "M5-02.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "f2e42ccf-db1f-43e0-b169-c5b74d8d927b",
+  "command": "python -m pytest tests/observability/alerts/ -q",
+  "started_at": "2026-10-28T17:25:22.141Z",
+  "observed_at": "2026-10-28T17:25:24.909Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "............................                                             [100%]\r\n28 passed in 0.24s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "60699ffa1670e6dd57d3e0585643ebbae462b55e",
+    "dirty": true
+  },
+  "source_hash": "c097cf35e578e24834b32bb1e019f6729aebe8d5f8e1f5ec7e7dcaae470b1072",
+  "before_hash": "c097cf35e578e24834b32bb1e019f6729aebe8d5f8e1f5ec7e7dcaae470b1072",
+  "config_hash": "bf3c123d534126d96ae4d38bbe272fefd27f7267cfda63d976ae03f764c764a8",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "15dd943d749380ec25b3f6d64294916acb9767fba7816ff012ce20d502f4b15b"
+}
