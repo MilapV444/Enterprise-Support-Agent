@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "a1cb89a9745b387ee5692a7ab2caab1794b07a34",
-  "sourceHash": "0d793d4bddce1b8f97ea86a94158d3ad338964633d4738a98db157595c93801f",
+  "revision": "60699ffa1670e6dd57d3e0585643ebbae462b55e",
+  "sourceHash": "72f68ebe0fe3583c330ab6cc0f785868ddf4c81189c2f252412f1a4e6a97655d",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -530,6 +530,26 @@
       "contentHash": "7e75ec94d20ab2683ba5d6fb6fa42f58222f01cb5801f901976e4f4c5d95febb"
     },
     {
+      "id": "file:src/cost/budgets/__init__.py",
+      "type": "file",
+      "label": "src/cost/budgets/__init__.py",
+      "path": "src/cost/budgets/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "cd5e21430dd2b484ace0fba8bc745b7ebe281652c343cb345d02992cf8be62e2"
+    },
+    {
+      "id": "file:src/cost/cache/__init__.py",
+      "type": "file",
+      "label": "src/cost/cache/__init__.py",
+      "path": "src/cost/cache/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "92894af46423cd3cd043202e5a677b6d4dfcedaac173632ede843fe44068632a"
+    },
+    {
       "id": "file:src/cost/router.py",
       "type": "file",
       "label": "src/cost/router.py",
@@ -840,6 +860,26 @@
       "contentHash": "77c2ae433aac54d677f41aeb5167440cebbdef19f97858bd9144fd5d18615195"
     },
     {
+      "id": "file:src/observability/alerts/__init__.py",
+      "type": "file",
+      "label": "src/observability/alerts/__init__.py",
+      "path": "src/observability/alerts/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "b08e9eca7b6fba51319a7206d9192f18f49978a26c6942405ab13422cae7a69f"
+    },
+    {
+      "id": "file:src/observability/tracing/__init__.py",
+      "type": "file",
+      "label": "src/observability/tracing/__init__.py",
+      "path": "src/observability/tracing/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "97349108ee889b671b46e35f22d2f93b2d2be5d356eb9e01660b0e8d337463a1"
+    },
+    {
       "id": "file:src/reliability/admission/__init__.py",
       "type": "file",
       "label": "src/reliability/admission/__init__.py",
@@ -868,6 +908,26 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "79cd1d78e057509523e765dcaee4943673fc0347760bf05c51ee903e114718e5"
+    },
+    {
+      "id": "file:src/reliability/hold/__init__.py",
+      "type": "file",
+      "label": "src/reliability/hold/__init__.py",
+      "path": "src/reliability/hold/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ea489c8d4dac2f9be63df17386774e2f7414d46d5c89a2535871cfaaf343be2c"
+    },
+    {
+      "id": "file:src/reliability/hold/activities.py",
+      "type": "file",
+      "label": "src/reliability/hold/activities.py",
+      "path": "src/reliability/hold/activities.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e53bbefaa00aaea9a22827be4ba9b2161b12a49fccfd7a48facd39f0401960f4"
     },
     {
       "id": "file:src/safety/authz/__init__.py",
@@ -1230,6 +1290,16 @@
       "contentHash": "da2f7e36dcc773b0d3380a11587a35dcbb44d61ebbfd8227f207045a9fb9654a"
     },
     {
+      "id": "file:tests/cost/test_cost.py",
+      "type": "file",
+      "label": "tests/cost/test_cost.py",
+      "path": "tests/cost/test_cost.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "d6bc5d656d6a7fdc480c0b11e4f587f51fc21836244743be0fdc0eea1fdacfc8"
+    },
+    {
       "id": "file:tests/data/test_schema.py",
       "type": "file",
       "label": "tests/data/test_schema.py",
@@ -1268,6 +1338,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "d01ad7133de9aa0cc7d56933c07ec3b2242c0da33436ae6572dcdfb9f51e3656"
+    },
+    {
+      "id": "file:tests/e2e/test_scenario_degradation.py",
+      "type": "file",
+      "label": "tests/e2e/test_scenario_degradation.py",
+      "path": "tests/e2e/test_scenario_degradation.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "76687be2cebc1a196d154e742455e21e8810bbc93f62344c64fe24d47f3f5b25"
     },
     {
       "id": "file:tests/e2e/test_scenario_multiagent.py",
@@ -1448,6 +1528,26 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "8af0b83cd5ca45734b283e5f4e7160788491b8996322cd91fbecf7f2587827bc"
+    },
+    {
+      "id": "file:tests/observability/alerts/test_alerts.py",
+      "type": "file",
+      "label": "tests/observability/alerts/test_alerts.py",
+      "path": "tests/observability/alerts/test_alerts.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "1dddfb35e69b1153c17a96bfed4e6eb89a26a709560b98784acde8e55303ec7b"
+    },
+    {
+      "id": "file:tests/observability/tracing/test_tracing.py",
+      "type": "file",
+      "label": "tests/observability/tracing/test_tracing.py",
+      "path": "tests/observability/tracing/test_tracing.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "952f3c205e66fff42cfdcbed86b03aa3720013449ce62e8142cad77fed5520cb"
     },
     {
       "id": "file:tests/orchestrator/test_statechart.py",

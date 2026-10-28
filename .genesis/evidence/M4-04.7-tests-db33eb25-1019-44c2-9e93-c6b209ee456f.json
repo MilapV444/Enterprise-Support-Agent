@@ -1,0 +1,30 @@
+{
+  "task": "M4-04.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "db33eb25-1019-44c2-9e93-c6b209ee456f",
+  "command": "python -m pytest tests/e2e/test_scenario_degradation.py -q",
+  "started_at": "2026-10-28T16:26:31.791Z",
+  "observed_at": "2026-10-28T16:27:03.683Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": ".........                                                                [100%]\r\n9 passed in 29.07s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "60699ffa1670e6dd57d3e0585643ebbae462b55e",
+    "dirty": true
+  },
+  "source_hash": "11665c93d3c4205b3e8bc4913b03e1043b03e4c49b9c1b420622de503fdecd52",
+  "before_hash": "11665c93d3c4205b3e8bc4913b03e1043b03e4c49b9c1b420622de503fdecd52",
+  "config_hash": "7358aef938154720d22ff834ad9bb946fa80ac6eb91db4994285c14a91cf4f86",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "3d678d43e40dd04ddd7993eb98aced8674fc5801d49eaaef62c9ae48575b8db9"
+}

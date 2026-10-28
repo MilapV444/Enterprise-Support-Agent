@@ -1,0 +1,30 @@
+{
+  "task": "M5-01.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "02eda4ef-bd03-4773-8199-a5685a5c0e62",
+  "command": "python -m pytest tests/observability/tracing/ -q",
+  "started_at": "2026-10-28T17:06:18.942Z",
+  "observed_at": "2026-10-28T17:06:23.247Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "..............                                                           [100%]\r\n14 passed in 2.12s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "60699ffa1670e6dd57d3e0585643ebbae462b55e",
+    "dirty": true
+  },
+  "source_hash": "b188ef2a3d49d128250c09ef85d503a092c5022926c9b5894f47379007c98287",
+  "before_hash": "b188ef2a3d49d128250c09ef85d503a092c5022926c9b5894f47379007c98287",
+  "config_hash": "f61ec497fdbc75f32c75dfab727da1504ecf82bc17d2b3234bb7d48106430fe5",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "122b754e126c84441848aed362ea27d54ad040bff056e6e738eb90d85769d320"
+}

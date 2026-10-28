@@ -1890,39 +1890,39 @@
 
 ### M4-03.7 — M4: daily pg_dump to R2, scripted restore drill, erasure log
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: NFR-19
 - scope: deploy/backup/, tests/reliability/backup/
-- gates: tests: python -m pytest tests/reliability/backup/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/reliability/backup/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M4-04.7 — M4: breaker-open requests held up to 24 h, delivered to the inbox on recovery, else handed to a human; scenario 6 test
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: NFR-17, AC-6
 - scope: src/reliability/hold/, tests/e2e/test_scenario_degradation.py
-- gates: tests: python -m pytest tests/e2e/test_scenario_degradation.py -q, independent-review: pending
+- gates: tests: python -m pytest tests/e2e/test_scenario_degradation.py -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M4-05.7 — M4: per-tenant answer cache with Jev eligibility and versioned keys, tenant budgets with soft cap, usage reports, exact cost and release cost gate
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: FR-42, FR-43
 - scope: src/cost/cache/, src/cost/budgets/, tests/cost/
-- gates: tests: python -m pytest tests/cost/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/cost/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M5-01.7 — M5: OpenTelemetry instrumentation with PII scrubbing and tail sampling, Jaeger / Langfuse export, JSON logs, retention and erasure by ID
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: NFR-11, NFR-12
 - scope: src/observability/tracing/, tests/observability/tracing/
-- gates: tests: python -m pytest tests/observability/tracing/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/observability/tracing/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M5-02.7 — M5: internal SLOs and alerts, token telemetry, failure classification by rules then Jev
 
-- state/risk: queued / low
+- state/risk: active / low
 - requirements: NFR-13, NFR-14, NFR-15
 - scope: src/observability/alerts/, tests/observability/alerts/
 - gates: tests: python -m pytest tests/observability/alerts/ -q

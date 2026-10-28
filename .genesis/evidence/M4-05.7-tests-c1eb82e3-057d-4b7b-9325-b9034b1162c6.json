@@ -1,0 +1,30 @@
+{
+  "task": "M4-05.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "c1eb82e3-057d-4b7b-9325-b9034b1162c6",
+  "command": "python -m pytest tests/cost/ -q",
+  "started_at": "2026-10-28T16:47:08.169Z",
+  "observed_at": "2026-10-28T16:47:23.914Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "..........................                                               [100%]\r\n26 passed in 13.42s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "60699ffa1670e6dd57d3e0585643ebbae462b55e",
+    "dirty": true
+  },
+  "source_hash": "b3efea30407b42ff529e37cdaf21aa6cee1a5dec5ec579055065733e373b02ab",
+  "before_hash": "b3efea30407b42ff529e37cdaf21aa6cee1a5dec5ec579055065733e373b02ab",
+  "config_hash": "c4d15532d8734080d35e2f230a81b282bc03328c3d884623375757a74f737a12",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "6fc568dced697263407368727b3aa5e7beb1c231f9e7eea48cb1bd49569c06d8"
+}
