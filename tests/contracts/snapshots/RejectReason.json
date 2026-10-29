@@ -1,0 +1,10 @@
+{
+ "enum": [
+  "mismatched_amount",
+  "policy_violation",
+  "state_changed",
+  "suspected_fraud",
+  "unauthorized_user",
+  "wrong_account"
+ ]
+}

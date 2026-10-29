@@ -3,6 +3,10 @@ digraph genesis {
   node [shape=box,fontname="system-ui"];
   "file:console/app.py" [label="console/app.py",class="file"];
   "file:deploy/backup/pgbackup.py" [label="deploy/backup/pgbackup.py",class="file"];
+  "file:evals/datasets/__init__.py" [label="evals/datasets/__init__.py",class="file"];
+  "file:evals/gate.py" [label="evals/gate.py",class="file"];
+  "file:evals/scoring/__init__.py" [label="evals/scoring/__init__.py",class="file"];
+  "file:evals/suites/__init__.py" [label="evals/suites/__init__.py",class="file"];
   "file:scripts/adp_registry.py" [label="scripts/adp_registry.py",class="file"];
   "file:scripts/generate_adp_index.py" [label="scripts/generate_adp_index.py",class="file"];
   "file:scripts/generate_architecture_tldr.py" [label="scripts/generate_architecture_tldr.py",class="file"];
@@ -129,6 +133,9 @@ digraph genesis {
   "file:tests/agents/topology/test_topology.py" [label="tests/agents/topology/test_topology.py",class="file"];
   "file:tests/channels/test_api.py" [label="tests/channels/test_api.py",class="file"];
   "file:tests/context/test_assembler.py" [label="tests/context/test_assembler.py",class="file"];
+  "file:tests/contracts/test_checkpoints.py" [label="tests/contracts/test_checkpoints.py",class="file"];
+  "file:tests/contracts/test_policy_lints.py" [label="tests/contracts/test_policy_lints.py",class="file"];
+  "file:tests/contracts/test_schema_contracts.py" [label="tests/contracts/test_schema_contracts.py",class="file"];
   "file:tests/cost/test_cost.py" [label="tests/cost/test_cost.py",class="file"];
   "file:tests/data/test_schema.py" [label="tests/data/test_schema.py",class="file"];
   "file:tests/decisions/test_decisions.py" [label="tests/decisions/test_decisions.py",class="file"];
@@ -139,6 +146,8 @@ digraph genesis {
   "file:tests/e2e/test_scenarios_actions.py" [label="tests/e2e/test_scenarios_actions.py",class="file"];
   "file:tests/e2e/test_scenarios_core.py" [label="tests/e2e/test_scenarios_core.py",class="file"];
   "file:tests/erasure/test_erasure.py" [label="tests/erasure/test_erasure.py",class="file"];
+  "file:tests/evals/gate/test_gate.py" [label="tests/evals/gate/test_gate.py",class="file"];
+  "file:tests/evals/scoring/test_scoring.py" [label="tests/evals/scoring/test_scoring.py",class="file"];
   "file:tests/hitl/approval/test_approval.py" [label="tests/hitl/approval/test_approval.py",class="file"];
   "file:tests/hitl/gate/test_gate.py" [label="tests/hitl/gate/test_gate.py",class="file"];
   "file:tests/hitl/handoff/test_console.py" [label="tests/hitl/handoff/test_console.py",class="file"];
@@ -147,10 +156,17 @@ digraph genesis {
   "file:tests/identity/test_identity.py" [label="tests/identity/test_identity.py",class="file"];
   "file:tests/identity/test_sessions.py" [label="tests/identity/test_sessions.py",class="file"];
   "file:tests/identity/test_tokens.py" [label="tests/identity/test_tokens.py",class="file"];
+  "file:tests/invariants/harness.py" [label="tests/invariants/harness.py",class="file"];
+  "file:tests/invariants/test_injection_set.py" [label="tests/invariants/test_injection_set.py",class="file"];
+  "file:tests/invariants/test_invariants.py" [label="tests/invariants/test_invariants.py",class="file"];
   "file:tests/keys/test_envelope.py" [label="tests/keys/test_envelope.py",class="file"];
   "file:tests/knowledge/ingest/test_chunker.py" [label="tests/knowledge/ingest/test_chunker.py",class="file"];
   "file:tests/knowledge/ingest/test_ingest.py" [label="tests/knowledge/ingest/test_ingest.py",class="file"];
   "file:tests/knowledge/retrieval/test_retrieval.py" [label="tests/knowledge/retrieval/test_retrieval.py",class="file"];
+  "file:tests/load/ac13.py" [label="tests/load/ac13.py",class="file"];
+  "file:tests/load/locustfile.py" [label="tests/load/locustfile.py",class="file"];
+  "file:tests/load/test_api_load.py" [label="tests/load/test_api_load.py",class="file"];
+  "file:tests/load/test_chaos.py" [label="tests/load/test_chaos.py",class="file"];
   "file:tests/memory/conversation/test_conversation_memory.py" [label="tests/memory/conversation/test_conversation_memory.py",class="file"];
   "file:tests/memory/facts/test_facts.py" [label="tests/memory/facts/test_facts.py",class="file"];
   "file:tests/observability/alerts/test_alerts.py" [label="tests/observability/alerts/test_alerts.py",class="file"];

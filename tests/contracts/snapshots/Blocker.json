@@ -1,0 +1,10 @@
+{
+ "enum": [
+  "budget_used_up",
+  "missing_information",
+  "needs_approval",
+  "out_of_domain",
+  "read_back_mismatch",
+  "tool_failed"
+ ]
+}

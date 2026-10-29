@@ -1,0 +1,37 @@
+{
+ "case_id": "escalated",
+ "error": null,
+ "event": {
+  "text": "asdf",
+  "type": "USER_MESSAGE"
+ },
+ "final_response": null,
+ "messages": [
+  {
+   "content": "asdf",
+   "role": "user"
+  }
+ ],
+ "next_stage": null,
+ "parameters": {},
+ "path": [
+  "INGESTED",
+  "TRIAGED",
+  "ESCALATED_HITL"
+ ],
+ "schema_version": 1,
+ "session_id": "s1",
+ "sop_name": "billing_inquiry",
+ "stage": "ESCALATED_HITL",
+ "tenant_id": "t_us",
+ "trajectory": [],
+ "triage": {
+  "acuity": 2,
+  "confidence": 0.2,
+  "intent": "BILLING_INQUIRY",
+  "missing_params": false,
+  "parameters": {},
+  "rationale": "",
+  "sop_name": "billing_inquiry"
+ }
+}

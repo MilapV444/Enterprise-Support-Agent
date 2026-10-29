@@ -1922,7 +1922,7 @@
 
 ### M5-02.7 — M5: internal SLOs and alerts, token telemetry, failure classification by rules then Jev
 
-- state/risk: active / low
+- state/risk: done / low
 - requirements: NFR-13, NFR-14, NFR-15
 - scope: src/observability/alerts/, tests/observability/alerts/
 - gates: tests: python -m pytest tests/observability/alerts/ -q
@@ -1930,31 +1930,31 @@
 
 ### M5-03.7 — M5: evaluation datasets (episodes + opted-in samples), non-Claude judge, per-route calibration, retrieval evaluation
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: NFR-6, NFR-7, FR-14
 - scope: evals/datasets/, evals/scoring/, tests/evals/scoring/
-- gates: tests: python -m pytest tests/evals/scoring/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/evals/scoring/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M5-04.7 — M5: evaluation suites with fakes / recordings, cadence, release gate, shadow and canary
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: NFR-8, NFR-9, NFR-10, AC-9
 - scope: evals/suites/, evals/gate.py, tests/evals/gate/
-- gates: tests: python -m pytest tests/evals/gate/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/evals/gate/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M5-05.7 — M5: mocked-model harness, property-based invariant tests, injection set, contract tests, migration and checkpoint tests, load and chaos tests
 
-- state/risk: queued / medium
+- state/risk: done / medium
 - requirements: NFR-20, NFR-21, NFR-23, NFR-25, AC-13
 - scope: tests/invariants/, tests/contracts/, tests/load/
-- gates: tests: python -m pytest tests/invariants/ tests/contracts/ tests/load/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/invariants/ tests/contracts/ tests/load/ -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### M5-06.7 — M5: deploy to the Oracle VM with rollout / rollback scripts, model pinning, Continue-As-New, re-index and spend limits
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: NFR-28, NFR-29, NFR-36, AC-15
 - scope: deploy/vm/, tests/deploy/vm/
 - gates: tests: python -m pytest tests/deploy/vm/ -q, independent-review: pending

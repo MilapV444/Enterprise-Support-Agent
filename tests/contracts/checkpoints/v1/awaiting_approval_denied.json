@@ -1,0 +1,47 @@
+{
+ "case_id": "awaiting_approval_denied",
+ "error": null,
+ "event": {
+  "text": "Refund INV-7 in full",
+  "type": "USER_MESSAGE"
+ },
+ "final_response": null,
+ "messages": [
+  {
+   "content": "Refund INV-7 in full",
+   "role": "user"
+  }
+ ],
+ "missing": [],
+ "needs_approval": true,
+ "next_stage": null,
+ "parameters": {
+  "amount": 4200.0,
+  "invoice_id": "INV-7"
+ },
+ "path": [
+  "INGESTED",
+  "TRIAGED",
+  "COLLECTING_PARAMS",
+  "EXECUTING_SOP",
+  "AWAITING_APPROVAL"
+ ],
+ "schema_version": 1,
+ "session_id": "s1",
+ "sop_name": "billing_inquiry",
+ "stage": "AWAITING_APPROVAL",
+ "tenant_id": "t_us",
+ "trajectory": [],
+ "triage": {
+  "acuity": 2,
+  "confidence": 0.95,
+  "intent": "BILLING_INQUIRY",
+  "missing_params": false,
+  "parameters": {
+   "amount": 4200.0
+  },
+  "rationale": "",
+  "sop_name": "billing_inquiry"
+ },
+ "waiting_since": 1800000000.0
+}

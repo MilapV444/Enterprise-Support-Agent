@@ -1,0 +1,7 @@
+{
+ "enum": [
+  "blocked",
+  "completed",
+  "needs_user"
+ ]
+}

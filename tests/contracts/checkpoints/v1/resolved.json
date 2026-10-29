@@ -1,0 +1,43 @@
+{
+ "case_id": "resolved",
+ "error": null,
+ "event": {
+  "text": "What is on invoice INV-7?",
+  "type": "USER_MESSAGE"
+ },
+ "final_response": "Done.",
+ "messages": [
+  {
+   "content": "What is on invoice INV-7?",
+   "role": "user"
+  }
+ ],
+ "missing": [],
+ "needs_approval": false,
+ "next_stage": null,
+ "parameters": {
+  "invoice_id": "INV-7"
+ },
+ "path": [
+  "INGESTED",
+  "TRIAGED",
+  "COLLECTING_PARAMS",
+  "EXECUTING_SOP",
+  "RESOLVED"
+ ],
+ "schema_version": 1,
+ "session_id": "s1",
+ "sop_name": "billing_inquiry",
+ "stage": "RESOLVED",
+ "tenant_id": "t_us",
+ "trajectory": [],
+ "triage": {
+  "acuity": 2,
+  "confidence": 0.95,
+  "intent": "BILLING_INQUIRY",
+  "missing_params": false,
+  "parameters": {},
+  "rationale": "",
+  "sop_name": "billing_inquiry"
+ }
+}

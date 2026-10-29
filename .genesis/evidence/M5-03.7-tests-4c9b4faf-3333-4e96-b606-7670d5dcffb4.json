@@ -1,0 +1,30 @@
+{
+  "task": "M5-03.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "4c9b4faf-3333-4e96-b606-7670d5dcffb4",
+  "command": "python -m pytest tests/evals/scoring/ -q",
+  "started_at": "2026-10-29T15:52:56.596Z",
+  "observed_at": "2026-10-29T15:53:04.104Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "....................                                                     [100%]\r\n20 passed in 5.42s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "ac5d9b628f9570498cbd051b4083bd40d4d76cff",
+    "dirty": true
+  },
+  "source_hash": "9169a241c5822fa638eadd8aa3a5cf16d3df8fc3d11edf42e91db8a881b7d849",
+  "before_hash": "9169a241c5822fa638eadd8aa3a5cf16d3df8fc3d11edf42e91db8a881b7d849",
+  "config_hash": "a41f423527fc3ab000d02f6f497eff53bc7c0a40bfe4ab533637a73e9ee8316e",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "9f16102c747105d21f4bd741063c1243de069b71867f2d5c14e9e00e24913444"
+}

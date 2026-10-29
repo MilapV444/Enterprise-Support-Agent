@@ -1,0 +1,8 @@
+{
+ "enum": [
+  "destructive_irreversible",
+  "high_risk_write",
+  "low_risk_write",
+  "read_only"
+ ]
+}

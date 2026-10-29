@@ -1,0 +1,38 @@
+{
+ "case_id": "awaiting_customer",
+ "error": null,
+ "event": {
+  "text": "It is broken",
+  "type": "USER_MESSAGE"
+ },
+ "final_response": null,
+ "messages": [
+  {
+   "content": "It is broken",
+   "role": "user"
+  }
+ ],
+ "next_stage": null,
+ "parameters": {},
+ "path": [
+  "INGESTED",
+  "TRIAGED",
+  "AWAITING_CUSTOMER"
+ ],
+ "schema_version": 1,
+ "session_id": "s1",
+ "sop_name": null,
+ "stage": "AWAITING_CUSTOMER",
+ "tenant_id": "t_us",
+ "trajectory": [],
+ "triage": {
+  "acuity": 3,
+  "confidence": 0.4,
+  "intent": "UNKNOWN",
+  "missing_params": true,
+  "parameters": {},
+  "rationale": "",
+  "sop_name": null
+ },
+ "waiting_since": 1800000000.0
+}

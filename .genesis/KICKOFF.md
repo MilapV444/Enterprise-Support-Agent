@@ -4,11 +4,11 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: M5-02.7 — M5: internal SLOs and alerts, token telemetry, failure classification by rules then Jev
+- active task: M5-06.7 — M5: deploy to the Oracle VM with rollout / rollback scripts, model pinning, Continue-As-New, re-index and spend limits
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
-- gates: tests:pass
+- gates: tests:pending, independent-review:pending
 - recent failures: none
 
 ## Resume
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: de7eb518063aa63b4367c569d06a48830a28488cf8a1797478e3536778178381. Use --since only after receiving that full packet; kickoff is not the packet.
-- KNOWLEDGE-26926501: M5-02.7 SLOs, tripwires, token telemetry, failure classification
-- KNOWLEDGE-4c3ec801: Open issues register (single source; update by superseding)
-- KNOWLEDGE-6a6e25a2: M4-04.7 held requests: breaker-open reads held up to 24 h
+Context fingerprint: 9c4feca490df4573ccc48e5ca73d99423a3dd0f2a9963f4337bed4e600bcb014. Use --since only after receiving that full packet; kickoff is not the packet.
+- KNOWLEDGE-76007a68: Open issues register (single source; update by superseding)
+- DECISION-6b7412f4: v1 runtime: learning deployment profile, USD 10/month cap
+- KNOWLEDGE-70b90f23: M4-01.7 admission control: limits, degradation, one turn per conversation
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

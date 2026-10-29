@@ -1,0 +1,259 @@
+{
+ "$defs": {
+  "Blocker": {
+   "enum": [
+    "missing_information",
+    "tool_failed",
+    "out_of_domain",
+    "needs_approval",
+    "budget_used_up",
+    "read_back_mismatch"
+   ],
+   "title": "Blocker",
+   "type": "string"
+  },
+  "ExecutedAction": {
+   "additionalProperties": false,
+   "properties": {
+    "tool_call_id": {
+     "title": "Tool Call Id",
+     "type": "string"
+    },
+    "tool_id": {
+     "title": "Tool Id",
+     "type": "string"
+    },
+    "verified": {
+     "const": true,
+     "title": "Verified",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "tool_id",
+    "tool_call_id",
+    "verified"
+   ],
+   "title": "ExecutedAction",
+   "type": "object"
+  },
+  "Finding": {
+   "additionalProperties": false,
+   "properties": {
+    "evidence": {
+     "items": {
+      "type": "string"
+     },
+     "minItems": 1,
+     "title": "Evidence",
+     "type": "array"
+    },
+    "text": {
+     "maxLength": 4000,
+     "minLength": 1,
+     "title": "Text",
+     "type": "string"
+    }
+   },
+   "required": [
+    "text",
+    "evidence"
+   ],
+   "title": "Finding",
+   "type": "object"
+  },
+  "ProposedAction": {
+   "additionalProperties": false,
+   "properties": {
+    "arguments": {
+     "additionalProperties": true,
+     "title": "Arguments",
+     "type": "object"
+    },
+    "evidence": {
+     "items": {
+      "type": "string"
+     },
+     "minItems": 1,
+     "title": "Evidence",
+     "type": "array"
+    },
+    "reason": {
+     "maxLength": 4000,
+     "minLength": 1,
+     "title": "Reason",
+     "type": "string"
+    },
+    "tool_id": {
+     "title": "Tool Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "tool_id",
+    "arguments",
+    "reason",
+    "evidence"
+   ],
+   "title": "ProposedAction",
+   "type": "object"
+  },
+  "Result": {
+   "additionalProperties": false,
+   "properties": {
+    "blocker": {
+     "anyOf": [
+      {
+       "$ref": "#/$defs/Blocker"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null
+    },
+    "evidence": {
+     "default": [],
+     "items": {
+      "type": "string"
+     },
+     "title": "Evidence",
+     "type": "array"
+    },
+    "executed_actions": {
+     "default": [],
+     "items": {
+      "$ref": "#/$defs/ExecutedAction"
+     },
+     "title": "Executed Actions",
+     "type": "array"
+    },
+    "findings": {
+     "default": [],
+     "items": {
+      "$ref": "#/$defs/Finding"
+     },
+     "title": "Findings",
+     "type": "array"
+    },
+    "proposed_actions": {
+     "default": [],
+     "items": {
+      "$ref": "#/$defs/ProposedAction"
+     },
+     "title": "Proposed Actions",
+     "type": "array"
+    },
+    "role": {
+     "title": "Role",
+     "type": "string"
+    },
+    "status": {
+     "$ref": "#/$defs/Status"
+    },
+    "steps": {
+     "maximum": 2,
+     "minimum": 0,
+     "title": "Steps",
+     "type": "integer"
+    },
+    "task_id": {
+     "title": "Task Id",
+     "type": "string"
+    }
+   },
+   "required": [
+    "task_id",
+    "role",
+    "status",
+    "steps"
+   ],
+   "title": "Result",
+   "type": "object"
+  },
+  "Status": {
+   "enum": [
+    "completed",
+    "blocked",
+    "needs_user"
+   ],
+   "title": "Status",
+   "type": "string"
+  }
+ },
+ "additionalProperties": false,
+ "properties": {
+  "case_id": {
+   "title": "Case Id",
+   "type": "string"
+  },
+  "conversation_id": {
+   "title": "Conversation Id",
+   "type": "string"
+  },
+  "entity_ids": {
+   "additionalProperties": {
+    "type": "string"
+   },
+   "default": {},
+   "title": "Entity Ids",
+   "type": "object"
+  },
+  "evidence_refs": {
+   "default": [],
+   "items": {
+    "type": "string"
+   },
+   "title": "Evidence Refs",
+   "type": "array"
+  },
+  "objective": {
+   "maxLength": 4000,
+   "title": "Objective",
+   "type": "string"
+  },
+  "pinned_constraints": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Pinned Constraints",
+   "type": "array"
+  },
+  "role": {
+   "title": "Role",
+   "type": "string"
+  },
+  "steps": {
+   "maximum": 2,
+   "minimum": 1,
+   "title": "Steps",
+   "type": "integer"
+  },
+  "task_id": {
+   "title": "Task Id",
+   "type": "string"
+  },
+  "upstream": {
+   "anyOf": [
+    {
+     "$ref": "#/$defs/Result"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null
+  }
+ },
+ "required": [
+  "task_id",
+  "role",
+  "case_id",
+  "conversation_id",
+  "objective",
+  "pinned_constraints",
+  "steps"
+ ],
+ "title": "Brief",
+ "type": "object"
+}

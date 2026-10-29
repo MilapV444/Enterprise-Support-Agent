@@ -1,0 +1,7 @@
+{
+ "enum": [
+  "account",
+  "billing",
+  "technical"
+ ]
+}

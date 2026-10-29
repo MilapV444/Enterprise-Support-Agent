@@ -1,0 +1,68 @@
+{
+ "properties": {
+  "approval_threshold": {
+   "type": "<class 'float'>"
+  },
+  "case_id": {
+   "type": "<class 'str'>"
+  },
+  "error": {
+   "type": "str | None"
+  },
+  "event": {
+   "type": "dict[str, typing.Any]"
+  },
+  "final_response": {
+   "type": "str | None"
+  },
+  "iterations": {
+   "type": "<class 'int'>"
+  },
+  "messages": {
+   "type": "typing.Annotated[list[dict[str, str]], <built-in function add>]"
+  },
+  "missing": {
+   "type": "list[str]"
+  },
+  "needs_approval": {
+   "type": "<class 'bool'>"
+  },
+  "next_stage": {
+   "type": "str | None"
+  },
+  "parameters": {
+   "type": "dict[str, typing.Any]"
+  },
+  "path": {
+   "type": "typing.Annotated[list[str], <built-in function add>]"
+  },
+  "reflexion_trials": {
+   "type": "<class 'int'>"
+  },
+  "schema_version": {
+   "type": "<class 'int'>"
+  },
+  "session_id": {
+   "type": "<class 'str'>"
+  },
+  "sop_name": {
+   "type": "str | None"
+  },
+  "stage": {
+   "type": "str | None"
+  },
+  "tenant_id": {
+   "type": "<class 'str'>"
+  },
+  "trajectory": {
+   "type": "typing.Annotated[list[dict[str, typing.Any]], <built-in function add>]"
+  },
+  "triage": {
+   "type": "dict[str, typing.Any] | None"
+  },
+  "waiting_since": {
+   "type": "float | None"
+  }
+ },
+ "schema_version": 1
+}
