@@ -1,0 +1,83 @@
+{
+ "description": "One scoped-ReAct step: thought, optional read-only action and its observation, and the outcome.",
+ "properties": {
+  "action": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Action"
+  },
+  "action_input": {
+   "additionalProperties": true,
+   "title": "Action Input",
+   "type": "object"
+  },
+  "answer": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Answer"
+  },
+  "observation": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Observation"
+  },
+  "outcome": {
+   "default": "continue",
+   "enum": [
+    "continue",
+    "answer",
+    "needs_sop",
+    "critique"
+   ],
+   "title": "Outcome",
+   "type": "string"
+  },
+  "parameters": {
+   "additionalProperties": true,
+   "title": "Parameters",
+   "type": "object"
+  },
+  "sop_name": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Sop Name"
+  },
+  "thought": {
+   "title": "Thought",
+   "type": "string"
+  }
+ },
+ "required": [
+  "thought"
+ ],
+ "title": "Step",
+ "type": "object"
+}

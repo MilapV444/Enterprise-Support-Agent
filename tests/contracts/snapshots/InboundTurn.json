@@ -1,0 +1,57 @@
+{
+ "description": "What the orchestrator receives for one accepted turn.",
+ "properties": {
+  "assurance_tier": {
+   "title": "Assurance Tier",
+   "type": "string"
+  },
+  "attachment_refs": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Attachment Refs",
+   "type": "array"
+  },
+  "channel": {
+   "default": "WEB_WIDGET",
+   "title": "Channel",
+   "type": "string"
+  },
+  "content": {
+   "title": "Content",
+   "type": "string"
+  },
+  "conversation_id": {
+   "title": "Conversation Id",
+   "type": "string"
+  },
+  "principal_id": {
+   "title": "Principal Id",
+   "type": "string"
+  },
+  "received_at": {
+   "format": "date-time",
+   "title": "Received At",
+   "type": "string"
+  },
+  "tenant_id": {
+   "title": "Tenant Id",
+   "type": "string"
+  },
+  "turn_id": {
+   "title": "Turn Id",
+   "type": "string"
+  }
+ },
+ "required": [
+  "tenant_id",
+  "principal_id",
+  "assurance_tier",
+  "conversation_id",
+  "turn_id",
+  "content",
+  "attachment_refs"
+ ],
+ "title": "InboundTurn",
+ "type": "object"
+}

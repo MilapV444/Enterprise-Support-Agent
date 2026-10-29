@@ -1,0 +1,30 @@
+{
+  "task": "M5-04.7",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "f32de272-6fc4-4518-9730-74a84be7bfbc",
+  "command": "python -m pytest tests/evals/gate/ -q",
+  "started_at": "2026-10-29T16:09:08.185Z",
+  "observed_at": "2026-10-29T16:09:11.137Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "....................                                                     [100%]\r\n20 passed in 0.46s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "ac5d9b628f9570498cbd051b4083bd40d4d76cff",
+    "dirty": true
+  },
+  "source_hash": "c967f8c93358541edbf5875ea051a8ecf39dba682bf10742fe0664b1256519a3",
+  "before_hash": "c967f8c93358541edbf5875ea051a8ecf39dba682bf10742fe0664b1256519a3",
+  "config_hash": "bd8b2a3264363c2ab83dc11474793b7f3bf19bdfbaebc19dfe4cee6d38b06e55",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "9662fe21772485ca2bfae245c7594c2b513e0b499aef2815d3d7dd497e5cea87"
+}

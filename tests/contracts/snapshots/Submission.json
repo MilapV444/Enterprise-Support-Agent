@@ -1,0 +1,49 @@
+{
+ "$defs": {
+  "RejectReason": {
+   "enum": [
+    "mismatched_amount",
+    "wrong_account",
+    "unauthorized_user",
+    "suspected_fraud",
+    "policy_violation",
+    "state_changed"
+   ],
+   "title": "RejectReason",
+   "type": "string"
+  }
+ },
+ "additionalProperties": false,
+ "properties": {
+  "confirmed": {
+   "additionalProperties": true,
+   "default": {},
+   "title": "Confirmed",
+   "type": "object"
+  },
+  "reason_code": {
+   "anyOf": [
+    {
+     "$ref": "#/$defs/RejectReason"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null
+  },
+  "verdict": {
+   "enum": [
+    "approve",
+    "reject"
+   ],
+   "title": "Verdict",
+   "type": "string"
+  }
+ },
+ "required": [
+  "verdict"
+ ],
+ "title": "Submission",
+ "type": "object"
+}

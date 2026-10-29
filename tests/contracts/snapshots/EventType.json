@@ -1,0 +1,11 @@
+{
+ "enum": [
+  "action_card",
+  "citation",
+  "error",
+  "final",
+  "handoff",
+  "status",
+  "text_delta"
+ ]
+}

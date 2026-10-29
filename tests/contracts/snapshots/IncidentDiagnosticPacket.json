@@ -1,0 +1,64 @@
+{
+ "properties": {
+  "case_id": {
+   "title": "Case Id",
+   "type": "string"
+  },
+  "created_at": {
+   "format": "date-time",
+   "title": "Created At",
+   "type": "string"
+  },
+  "failure_reason": {
+   "title": "Failure Reason",
+   "type": "string"
+  },
+  "last_error": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Last Error"
+  },
+  "reflexion_trials": {
+   "title": "Reflexion Trials",
+   "type": "integer"
+  },
+  "steps": {
+   "title": "Steps",
+   "type": "integer"
+  },
+  "suggested_human_action": {
+   "default": "Review the failed attempts and confirm the step's inputs manually.",
+   "title": "Suggested Human Action",
+   "type": "string"
+  },
+  "tenant_id": {
+   "title": "Tenant Id",
+   "type": "string"
+  },
+  "trajectory": {
+   "items": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "title": "Trajectory",
+   "type": "array"
+  }
+ },
+ "required": [
+  "tenant_id",
+  "case_id",
+  "failure_reason",
+  "steps",
+  "reflexion_trials",
+  "trajectory"
+ ],
+ "title": "IncidentDiagnosticPacket",
+ "type": "object"
+}

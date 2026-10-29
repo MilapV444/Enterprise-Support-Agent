@@ -1,0 +1,151 @@
+{
+ "$defs": {
+  "Domain": {
+   "enum": [
+    "billing",
+    "technical",
+    "account"
+   ],
+   "title": "Domain",
+   "type": "string"
+  },
+  "Reason": {
+   "enum": [
+    "confidence_gate_low",
+    "action_approval_required",
+    "reflexion_limit_exceeded",
+    "user_requested_human",
+    "significant_decision_review",
+    "system_dependency_held"
+   ],
+   "title": "Reason",
+   "type": "string"
+  }
+ },
+ "additionalProperties": false,
+ "description": "The one escalation record a person receives (HL-D12): provenance, context, evidence, diagnosis and the\nproposed action. Built by the agent runtime from its own state, never from customer input as such.",
+ "properties": {
+  "approval_request_id": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Approval Request Id"
+  },
+  "case_id": {
+   "title": "Case Id",
+   "type": "string"
+  },
+  "channel": {
+   "title": "Channel",
+   "type": "string"
+  },
+  "citations": {
+   "default": [],
+   "items": {
+    "type": "string"
+   },
+   "title": "Citations",
+   "type": "array"
+  },
+  "conversation_id": {
+   "title": "Conversation Id",
+   "type": "string"
+  },
+  "customer_id": {
+   "title": "Customer Id",
+   "type": "string"
+  },
+  "diagnostic_trace": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Diagnostic Trace"
+  },
+  "domain": {
+   "$ref": "#/$defs/Domain"
+  },
+  "handler_id": {
+   "title": "Handler Id",
+   "type": "string"
+  },
+  "identity_tier": {
+   "title": "Identity Tier",
+   "type": "string"
+  },
+  "last_turns": {
+   "items": {
+    "type": "string"
+   },
+   "maxItems": 3,
+   "title": "Last Turns",
+   "type": "array"
+  },
+  "pinned_facts": {
+   "default": [],
+   "items": {
+    "type": "string"
+   },
+   "title": "Pinned Facts",
+   "type": "array"
+  },
+  "proposed_action": {
+   "anyOf": [
+    {
+     "additionalProperties": true,
+     "type": "object"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Proposed Action"
+  },
+  "reason": {
+   "$ref": "#/$defs/Reason"
+  },
+  "summary": {
+   "title": "Summary",
+   "type": "string"
+  },
+  "tenant_id": {
+   "title": "Tenant Id",
+   "type": "string"
+  },
+  "tool_outputs": {
+   "default": [],
+   "items": {
+    "type": "string"
+   },
+   "title": "Tool Outputs",
+   "type": "array"
+  }
+ },
+ "required": [
+  "tenant_id",
+  "case_id",
+  "conversation_id",
+  "customer_id",
+  "handler_id",
+  "identity_tier",
+  "channel",
+  "reason",
+  "domain",
+  "summary",
+  "last_turns"
+ ],
+ "title": "Packet",
+ "type": "object"
+}

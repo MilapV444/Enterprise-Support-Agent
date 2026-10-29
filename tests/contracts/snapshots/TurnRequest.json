@@ -1,0 +1,22 @@
+{
+ "properties": {
+  "attachment_refs": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Attachment Refs",
+   "type": "array"
+  },
+  "content": {
+   "maxLength": 16384,
+   "minLength": 1,
+   "title": "Content",
+   "type": "string"
+  }
+ },
+ "required": [
+  "content"
+ ],
+ "title": "TurnRequest",
+ "type": "object"
+}

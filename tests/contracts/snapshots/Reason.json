@@ -1,0 +1,10 @@
+{
+ "enum": [
+  "action_approval_required",
+  "confidence_gate_low",
+  "reflexion_limit_exceeded",
+  "significant_decision_review",
+  "system_dependency_held",
+  "user_requested_human"
+ ]
+}

@@ -1,0 +1,55 @@
+{
+ "description": "What the triage decision (Jev, ADP-05) returns for one message.",
+ "properties": {
+  "acuity": {
+   "maximum": 5,
+   "minimum": 1,
+   "title": "Acuity",
+   "type": "integer"
+  },
+  "confidence": {
+   "maximum": 1.0,
+   "minimum": 0.0,
+   "title": "Confidence",
+   "type": "number"
+  },
+  "intent": {
+   "title": "Intent",
+   "type": "string"
+  },
+  "missing_params": {
+   "default": false,
+   "title": "Missing Params",
+   "type": "boolean"
+  },
+  "parameters": {
+   "additionalProperties": true,
+   "title": "Parameters",
+   "type": "object"
+  },
+  "rationale": {
+   "default": "",
+   "title": "Rationale",
+   "type": "string"
+  },
+  "sop_name": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Sop Name"
+  }
+ },
+ "required": [
+  "intent",
+  "acuity",
+  "confidence"
+ ],
+ "title": "Triage",
+ "type": "object"
+}

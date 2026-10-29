@@ -1,0 +1,64 @@
+{
+ "additionalProperties": false,
+ "properties": {
+  "evidence": {
+   "items": {
+    "type": "string"
+   },
+   "minItems": 1,
+   "title": "Evidence",
+   "type": "array"
+  },
+  "role": {
+   "default": "",
+   "title": "Role",
+   "type": "string"
+  },
+  "text": {
+   "maxLength": 2000,
+   "minLength": 1,
+   "title": "Text",
+   "type": "string"
+  },
+  "topic": {
+   "maxLength": 200,
+   "minLength": 1,
+   "title": "Topic",
+   "type": "string"
+  },
+  "unit": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Unit"
+  },
+  "value": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Value"
+  }
+ },
+ "required": [
+  "topic",
+  "text",
+  "evidence"
+ ],
+ "title": "Claim",
+ "type": "object"
+}
