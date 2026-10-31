@@ -28,6 +28,7 @@ MANIFEST
 
 # Virtual environments
 .env
+deploy/ssh.local.env
 .venv
 env/
 venv/

@@ -5,6 +5,7 @@ Development server: the signing key and the mock SSO provider's key are generate
 working after a restart), and one-time codes are printed to the console instead of being emailed.
 """
 
+import os
 import sys
 
 import psycopg
@@ -34,6 +35,8 @@ if __name__ == "__main__":
         idp = MockIdP()
         identity = Identity(lambda: psycopg.connect(database_url(), autocommit=True),
                             idp=(idp.issuer, idp.public_key), send_otp=print_code)
-        uvicorn.run(build_app(None, identity, mock_idp=idp), host="127.0.0.1", port=8000)
+        host = os.environ.get("SUPPORT_AGENT_HOST", "127.0.0.1")
+        port = int(os.environ.get("SUPPORT_AGENT_PORT", "8000"))
+        uvicorn.run(build_app(None, identity, mock_idp=idp), host=host, port=port)
     else:
         sys.exit(__doc__)
