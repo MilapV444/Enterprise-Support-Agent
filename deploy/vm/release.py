@@ -205,15 +205,28 @@ class Release:
                                 "to rebuild the knowledge index in place (DL-D11)")
         if current:
             problems += self.workflow_problems(current["commit"], commit)
-        _, listeners = self.run(["ss", "-ltnpH", "sport = :8000"], check=False)
-        if listeners.strip() and "docker-proxy" not in listeners:
+        if self.port_held_outside_compose():
             problems.append("port 8000 is held by a process outside compose (a hand-started server?): "
-                            + listeners.strip().splitlines()[0][-120:])
+                            + self.port_held_outside_compose()[-120:])
         _, df = self.run(["df", "--output=avail", "-B1", "/"], check=False)
         free = [int(n) for n in re.findall(r"\d+", df)]
         if free and free[-1] < MIN_FREE_BYTES:
             problems.append(f"only {free[-1] / 1024 ** 3:.1f} GB free on /; a build needs 3 GB")
         return problems
+
+    def port_held_outside_compose(self):
+        """The listener on 8000 when it is not Docker's: '' if free or Docker's. Without root, ss cannot name
+        the owner of a root process (docker-proxy), so an unnamed listener is checked against docker ps."""
+        _, listeners = self.run(["ss", "-ltnpH", "sport = :8000"], check=False)
+        line = listeners.strip().splitlines()[0] if listeners.strip() else ""
+        if not line or "docker-proxy" in line:
+            return ""
+        if "users:" not in line:
+            _, published = self.run([*self.docker, "ps", "--filter", "publish=8000", "--format",
+                                     "{{.Names}}"], check=False)
+            if published.strip():
+                return ""
+        return line
 
     def workflow_problems(self, old, new):
         changed = [p for p in self.git("diff", "--name-only", old, new, "--", "src").splitlines() if p]

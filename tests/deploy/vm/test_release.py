@@ -28,7 +28,7 @@ class FakeVM:
 
     def __init__(self, tmp_path):
         self.calls, self.head, self.live_image = [], OLD, None
-        self.dirty, self.listeners, self.free = "", "", 20 * 1024 ** 3
+        self.dirty, self.listeners, self.free, self.published = "", "", 20 * 1024 ** 3, ""
         self.locks = {OLD: LOCK, NEW: LOCK, NEWER: LOCK}
         self.changed, self.sources, self.running, self.temporal_ok = [], {}, [], True
         self.failing, self.images = set(), []
@@ -52,6 +52,8 @@ class FakeVM:
         if docker[:1] == ["build"]:
             self.images.append(docker[docker.index("-t") + 1])
             return 0, "", ""
+        if docker[:1] == ["ps"]:
+            return 0, self.published, ""
         if docker[:2] == ["image", "ls"]:
             return 0, "\n".join(self.images), ""
         if docker[:2] == ["image", "rm"]:
@@ -232,6 +234,13 @@ def test_a_hand_started_server_on_the_port_and_a_full_disk_refuse(vm, tmp_path):
     assert "held by a process outside compose" in problems and "2.0 GB free" in problems
     vm.listeners = 'LISTEN 0 4096 0.0.0.0:8000 0.0.0.0:* users:(("docker-proxy",pid=1,fd=4))'
     vm.free = 20 * 1024 ** 3
+    assert releaser(vm, tmp_path).rollout("origin/main", log=lambda *a: None) == NEW
+
+
+def test_a_listener_ss_cannot_name_is_ours_only_if_a_container_publishes_the_port(vm, tmp_path):
+    vm.listeners = "LISTEN 0 4096 0.0.0.0:8000 0.0.0.0:*"            # root's docker-proxy, seen without root
+    assert "held by a process outside compose" in refusal(vm, tmp_path)
+    vm.published = "support-agent-api-1"
     assert releaser(vm, tmp_path).rollout("origin/main", log=lambda *a: None) == NEW
 
 
