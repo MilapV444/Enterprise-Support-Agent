@@ -98,7 +98,7 @@ def test_only_knowledge_collections_are_touched(name, scope):
 def test_the_ledger_is_priced_with_the_deployed_models_and_an_unpriced_model_is_reported():
     prices = spend.prices(LOCK)
     assert prices["claude-opus-5-5"] == (Decimal("4.0"), Decimal("20.0"))
-    rows = [("claude-opus-5-5", 1_000_000, 100_000), ("llama-3.1-8b-instant", 9, 9), ("gpt-9", 5, 5)]
+    rows = [("claude-opus-5-5", 1_000_000, 100_000), ("openai/gpt-oss-20b", 9, 9), ("gpt-9", 5, 5)]
     total, unpriced = spend.month_spend(rows, prices)
     assert total == Decimal("6") and unpriced == ["gpt-9"]
     lines, over = spend.verdict(total, unpriced, 10)

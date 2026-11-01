@@ -203,9 +203,19 @@ def test_with_jev_and_every_model_down_triage_asks_and_the_turn_still_ends_in_a_
     assert loop(stack, world, jev=False).run(turn) == "handed_off"         # register B10, contained here
 
 
+def test_with_the_knowledge_base_down_the_turn_is_still_answered_without_passages(stack):
+    world = World()
+    runner = loop(stack, world)
+    runner.s.retriever.retrieve = lambda *args, **kwargs: 1 / 0          # the embedder or the index is down
+    turn = inbound("How do I reset my password?")
+    assert runner.run(turn) == "answered"
+    assert "citation" not in [kind for kind, _ in published(turn)]
+    assert "(no knowledge passage matched)" in world.model[-1][-1]["content"]
+
+
 def test_anything_that_breaks_mid_turn_ends_in_an_error_message(stack):
     runner = loop(stack, World())
-    runner.s.retriever.retrieve = lambda *args, **kwargs: 1 / 0
+    runner.s.router.answer = lambda *args, **kwargs: 1 / 0
     turn = inbound("How do I reset my password?")
     assert runner.run(turn) == "failed"
     assert published(turn)[-1] == ("error", {"turn_id": turn.turn_id, "text": FAILED})

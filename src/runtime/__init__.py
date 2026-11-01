@@ -107,8 +107,12 @@ class TurnLoop:
     def knowledge_answer(self, state, instruction=""):
         latest = Masked(state["messages"][-1]["content"])
         tier = (state.get("event") or {}).get("tier", "T0_ANON")
-        sections = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1],
-                                             latest.text).sections[:EVIDENCE]
+        try:
+            sections = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1],
+                                                 latest.text).sections[:EVIDENCE]
+        except Exception:  # noqa: BLE001 - the embedder or index is down: answer without passages, say so
+            log.warning("retrieval failed; answering without knowledge passages", exc_info=True)
+            sections = []
         self.evidence[(state["tenant_id"], state["case_id"])] = sections
         passages = "\n\n".join(delimit(f"{s.title}\n{s.text}", f"knowledge {s.doc_id}") for s in sections) \
             or "(no knowledge passage matched)"
