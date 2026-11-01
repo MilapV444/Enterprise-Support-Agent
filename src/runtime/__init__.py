@@ -51,6 +51,7 @@ FAILED = ("Something went wrong on our side while answering. A person will follo
 PROCEDURE = ("No change has been made to your account: describe what the customer can do themselves, and say "
              "a person will carry out anything that needs an account change.")
 EVIDENCE = 3
+CUSTOMER = ("customer_visible",)   # a customer's answer cites only these chunks (S18)
 
 
 class NoJev:
@@ -107,8 +108,12 @@ class TurnLoop:
     def knowledge_answer(self, state, instruction=""):
         latest = Masked(state["messages"][-1]["content"])
         tier = (state.get("event") or {}).get("tier", "T0_ANON")
-        sections = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1],
-                                             latest.text).sections[:EVIDENCE]
+        try:
+            sections = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1],
+                                                 latest.text, audiences=CUSTOMER).sections[:EVIDENCE]
+        except Exception:  # noqa: BLE001 - the embedder or index is down: answer without passages, say so
+            log.warning("retrieval failed; answering without knowledge passages", exc_info=True)
+            sections = []
         self.evidence[(state["tenant_id"], state["case_id"])] = sections
         passages = "\n\n".join(delimit(f"{s.title}\n{s.text}", f"knowledge {s.doc_id}") for s in sections) \
             or "(no knowledge passage matched)"

@@ -98,7 +98,7 @@ def test_only_knowledge_collections_are_touched(name, scope):
 def test_the_ledger_is_priced_with_the_deployed_models_and_an_unpriced_model_is_reported():
     prices = spend.prices(LOCK)
     assert prices["claude-opus-5-5"] == (Decimal("4.0"), Decimal("20.0"))
-    rows = [("claude-opus-5-5", 1_000_000, 100_000), ("llama-3.1-8b-instant", 9, 9), ("gpt-9", 5, 5)]
+    rows = [("claude-opus-5-5", 1_000_000, 100_000), ("openai/gpt-oss-20b", 9, 9), ("gpt-9", 5, 5)]
     total, unpriced = spend.month_spend(rows, prices)
     assert total == Decimal("6") and unpriced == ["gpt-9"]
     lines, over = spend.verdict(total, unpriced, 10)
@@ -193,6 +193,7 @@ def test_the_vm_tools_import_nothing_the_image_lacks():
     import tomllib
 
     allowed = {"psycopg", "qdrant_client", "httpx", "uvicorn", "fastapi"} | set(sys.stdlib_module_names)
+    allowed |= {"truststore"}  # optional: imported under try / except ImportError, laptop only
     packages = {"channels", "core", "cost", "data", "knowledge", "evals", "runtime"}
     deps = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["dependencies"]
     assert {"qdrant-client>=1.12,<1.13", "httpx>=0.27", "uvicorn>=0.30", "fastapi>=0.115"} <= set(deps)

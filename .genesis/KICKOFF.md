@@ -4,11 +4,11 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: M7-01 — M7: the turn loop: accepted turns are triaged, answered from the knowledge base by the free-tier model through the output checks, and the reply is published on the stream (or a clarifying question or hand-off), run by a worker locally and on the VM, with a seeded knowledge base
+- active task: SWEEP-01 — Sweep: fix the critical register items B12, B13, B14 (API stream capacity, cursor, first-status latency), B15 (CI collection), S14 and B7 (output checks), S17 (non-bypass app login role), S18 (customer retrieval audience filter), B10 (triage outage), B11 (admission partition)
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
-- gates: tests:pass, independent-review:pending
+- gates: tests:pending, independent-review:pending
 - recent failures: none
 
 ## Resume
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: a5eec815a539b912e894a3cb2b8ff9975804fad5233389a8a62b0f5d8889876c. Use --since only after receiving that full packet; kickoff is not the packet.
-- KNOWLEDGE-cee7c088: Open issues register (single source; update by superseding)
-- KNOWLEDGE-7d6e4209: M7-01 the turn loop: accepted turns are answered
+Context fingerprint: f4fbd084156c45fe2ddeae5af83ca483b3dae87ae3f47b3ea51507a372bfba21. Use --since only after receiving that full packet; kickoff is not the packet.
+- KNOWLEDGE-f9530a8d: Open issues register (single source; update by superseding)
 - KNOWLEDGE-8e930ef2: M5-05.7 mocked-model harness, invariants, injection set, contracts, checkpoints, load and chaos
+- KNOWLEDGE-8132fd2c: M4-02.7 bursts: coalescing, incident mode, latency budgets
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

@@ -61,7 +61,11 @@ def llm_fallback(complete):
             + masked_state["message"].text
         )
         try:
-            reply = json.loads(complete(prompt))
+            raw = complete(prompt)
+        except Exception as error:  # noqa: BLE001 - a provider outage is "no decision", like a parse error
+            raise JevUnavailable(f"fallback classifier unavailable: {error}") from error
+        try:
+            reply = json.loads(raw)
             confidence = float(reply["confidence"])
             level = int(reply["severity"])
             return {"intent": Answer(reply["intent"], confidence),

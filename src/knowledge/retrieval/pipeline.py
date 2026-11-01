@@ -103,13 +103,17 @@ def rrf(rankings, k=RRF_K):
     return sorted(scores, key=lambda item: -scores[item])
 
 
-def access_filter(groups, include_restricted):
+def access_filter(groups, include_restricted, audiences=None):
+    """audiences: the chunk audiences this reader may see (customers: ("customer_visible",)); None for all."""
     open_to = [models.IsEmptyCondition(is_empty=models.PayloadField(key="acl_groups"))]
     if groups:
         open_to.append(models.FieldCondition(key="acl_groups", match=models.MatchAny(any=list(groups))))
     hidden = [] if include_restricted else [
         models.FieldCondition(key="is_restricted", match=models.MatchValue(value=True))]
-    return models.Filter(must=[models.Filter(should=open_to)], must_not=hidden)
+    must = [models.Filter(should=open_to)]
+    if audiences is not None:
+        must.append(models.FieldCondition(key="audience", match=models.MatchAny(any=list(audiences))))
+    return models.Filter(must=must, must_not=hidden)
 
 
 def screen(text):
@@ -138,11 +142,13 @@ class Retriever:
         """embed(texts) -> vectors; complete(prompt) -> str for the rewrite and the reranker."""
         self.client, self.embed, self.complete, self.namespace = client, embed, complete, namespace
 
-    def retrieve(self, tier, tenant_id, history, latest, groups=(), live_check=None):
+    def retrieve(self, tier, tenant_id, history, latest, groups=(), live_check=None, audiences=None):
+        """audiences: limit the passages to these chunk audiences: a customer-facing answer passes
+        ("customer_visible",) (KR-D2, register S18); a specialist's co-pilot may read internal ones."""
         query = rewrite(self.complete, history, latest)
         dense = self.embed([query.text])[0]
         keywords = sparse(" ".join([query.text, *query.identifiers, *query.identifiers]))
-        restrict = access_filter(groups, include_restricted=live_check is not None)
+        restrict = access_filter(groups, include_restricted=live_check is not None, audiences=audiences)
         rankings, payloads = [], {}
         for name in collections_for(tier, tenant_id, self.namespace):
             if not self.client.collection_exists(name):
@@ -159,6 +165,8 @@ class Retriever:
             if payload["parent_id"] in seen:
                 continue
             if payload.get("is_restricted") and not live_check(payload):
+                continue
+            if audiences is not None and payload.get("audience") not in audiences:   # belt and braces
                 continue
             seen.add(payload["parent_id"])
             text, flagged = screen(payload["parent_text"])

@@ -3,6 +3,9 @@
 For a laptop: settings come from the environment, then from the repository's .env (QDRANT_URL, OLLAMA_URL and
 DATABASE_URL default to the local compose stack). Needs PII_TOKEN_KEY and at least one model key (GROQ_API_KEY
 or GEMINI_API_KEY) for answers; without a model key every turn is handed to a person.
+
+TLS is verified against the operating system's certificate store (truststore), as a browser does: on a laptop
+whose antivirus or proxy inspects HTTPS, Python's bundled list rejects every provider (register B4).
 """
 
 import os
@@ -18,6 +21,12 @@ ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
 if __name__ == "__main__":
     if (sys.argv[1] if len(sys.argv) > 1 else "serve") != "serve":
         sys.exit(__doc__)
+    try:
+        import truststore
+
+        truststore.inject_into_ssl()
+    except ImportError:
+        print("truststore is not installed: using Python's own certificate list", flush=True)
     if ENV_FILE.exists():
         for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
             key, sep, value = line.strip().partition("=")

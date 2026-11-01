@@ -1,0 +1,30 @@
+{
+  "task": "M7-01",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "f0272670-3899-45c6-97b6-6b79d5b25ff7",
+  "command": "python -m pytest tests/runtime/ tests/deploy/vm/ -q",
+  "started_at": "2026-11-01T09:58:47.846Z",
+  "observed_at": "2026-11-01T09:59:54.409Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 88%]\r\n.........                                                                [100%]\r\n81 passed in 63.02s (0:01:03)\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "810a5c29a036b02db9aef53581ea5d1366736097",
+    "dirty": true
+  },
+  "source_hash": "f541464615f7641e1281d732f373c0e999a731bf6d715e9292d4f47c121f161a",
+  "before_hash": "f541464615f7641e1281d732f373c0e999a731bf6d715e9292d4f47c121f161a",
+  "config_hash": "0365521fd8102304e88d5407fd022af6a2375ada30ae22d2e6cb687d271db8b3",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "9eec948cdd44d34f38a02662f0c012022fbff2d1cf537dd89a6a0cd59067a77e"
+}

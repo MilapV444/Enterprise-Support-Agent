@@ -13,6 +13,7 @@
 import ipaddress
 import math
 import re
+import unicodedata
 from collections import Counter
 from dataclasses import dataclass, field
 from urllib.parse import urlparse
@@ -31,7 +32,11 @@ LINK = re.compile(r"\[([^\]]+)\]\(([^)\s]+)\)")
 BARE_URL = re.compile(r"\bhttps?://[^\s<>()\[\]]+")
 PROMISES = {
     "refund": r"\b(we|i)('ll| will| shall) (issue a )?refund|\bwill be (refunded|credited)|\brefund you\b|"
-              r"\bcredit (to )?your account\b",
+              r"\bcredit (to )?your account\b|"
+              # past-tense success claims (register B7): "has been refunded", "your refund was processed"
+              r"\b(has|have) been (refunded|credited|reimbursed)\b|"
+              r"\b(refund|credit|reimbursement)s? (has|have|was|were) (been )?(processed|issued|completed|"
+              r"applied|approved|sent)\b|\b(we|i)('ve| have) (refunded|credited|reimbursed)\b",
     "guarantee": r"\bguarantee[sd]?\b|\b(we|i) promise\b",
     "waiver": r"\bwaive[sd]?\b|\bat no (extra )?(cost|charge)\b|\bfree of charge\b",
     "price": r"\bwill (only )?cost\b|\bprice will be\b|\bdiscount of\b",
@@ -102,12 +107,26 @@ class Check:
     rewrite_instruction: str | None = None
 
 
+SPACED = re.compile(r"(?<!\S)(?:\S )(?:\S ){6,}\S(?!\S)")
+
+
+def secret_views(draft):
+    """The draft as written, and as a reader would reassemble it: NFKC, invisible format characters removed,
+    single characters spaced apart joined back (register S14: obfuscation must not hide a credential)."""
+    folded = "".join(c for c in unicodedata.normalize("NFKC", draft) if unicodedata.category(c) != "Cf")
+    joined = SPACED.sub(lambda m: m.group(0).replace(" ", ""), folded)
+    return list(dict.fromkeys([draft, folded, joined]))
+
+
 def check(draft, *, system_prompt="", internal_passages=(), allowed_domains=(), verified_actions=(),
           attempt=1):
     """Check one draft. attempt=2 is the draft after the single allowed rewrite."""
-    leaks = [f"credential: {m.group(0)[:6]}..." for m in CREDENTIALS.finditer(draft)]
-    leaks += [f"high-entropy string: {m.group(0)[:6]}..." for m in CANDIDATE.finditer(draft)
-              if entropy(m.group(0)) >= 4.5 and not CREDENTIALS.search(m.group(0))]
+    leaks = []
+    for view in secret_views(draft):
+        leaks += [f"credential: {m.group(0)[:6]}..." for m in CREDENTIALS.finditer(view)]
+        leaks += [f"high-entropy string: {m.group(0)[:6]}..." for m in CANDIDATE.finditer(view)
+                  if entropy(m.group(0)) >= 4.5 and not CREDENTIALS.search(m.group(0))]
+    leaks = list(dict.fromkeys(leaks))
     if system_prompt and shared_run(draft, system_prompt):
         leaks.append("system prompt text")
     if any(shared_run(draft, passage) for passage in internal_passages):
