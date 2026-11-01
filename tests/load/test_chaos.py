@@ -81,9 +81,6 @@ def test_with_jev_down_a_case_waits_for_the_customer_and_runs_nothing(seed):
     assert "COLLECTING_PARAMS" not in state["path"] and not any(s.get("sop_name") for s in ran)
 
 
-@pytest.mark.xfail(strict=True, reason="register B10: triage's fallback lets a provider outage escape (it "
-                                       "catches only parse errors), so Jev and the model both down crashes "
-                                       "the turn")
 def test_with_jev_and_the_fallback_model_both_down_triage_asks_the_customer():
     def down(prompt):
         raise AllProvidersFailed([ProviderError("groq", "down", transient=True)])
@@ -254,9 +251,6 @@ class Switchable(Local):
         return super().__getattribute__(name)
 
 
-@pytest.mark.xfail(strict=True, reason="register B11: the local fallback cannot see a lock held in the "
-                                       "shared store, so a partition lets a second turn start on a busy "
-                                       "conversation")
 def test_a_partition_does_not_let_a_second_turn_start_on_a_busy_conversation():
     store = Switchable()
     admission = Admission(store)

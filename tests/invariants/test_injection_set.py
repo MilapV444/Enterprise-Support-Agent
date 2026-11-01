@@ -116,8 +116,6 @@ OBFUSCATED = {"zero-width": KEY[:10] + "\u200b" + KEY[10:], "spaced": " ".join(K
               "word-joiner": KEY.replace("_", "\u2060_")}
 
 
-@pytest.mark.xfail(strict=True, reason="register S14: credentials are matched on the raw text, so an "
-                                       "invisible or spacing character inside one hides it")
 @pytest.mark.parametrize("obfuscated", OBFUSCATED.values(), ids=list(OBFUSCATED))
 def test_an_obfuscated_credential_is_blocked(obfuscated):
     assert check(f"The key is {obfuscated}", system_prompt=SYSTEM_PROMPT).verdict == "block"

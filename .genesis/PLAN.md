@@ -4,7 +4,7 @@
 
 - workflow: new-product
 - phase: build
-- plan approval: Intelligent_developer_123 at 2026-10-31T17:18:08.034Z
+- plan approval: Intelligent_developer_123 at 2026-11-01T10:00:50.786Z
 
 ## Tasks
 
@@ -2002,9 +2002,25 @@
 
 ### M7-01 — M7: the turn loop: accepted turns are triaged, answered from the knowledge base by the free-tier model through the output checks, and the reply is published on the stream (or a clarifying question or hand-off), run by a worker locally and on the VM, with a seeded knowledge base
 
-- state/risk: active / medium
+- state/risk: rejected / medium
 - requirements: FR-1, FR-6, FR-9, FR-13, FR-30, FR-32, FR-40, AC-1, AC-2
 - scope: src/runtime/, tests/runtime/, deploy/vm/, tests/deploy/vm/
-- gates: tests: python -m pytest tests/runtime/ tests/deploy/vm/ -q, independent-review: pending
+- gates: tests: python -m pytest tests/runtime/ tests/deploy/vm/ -q, independent-review: pass
+- next: Run the task pre-flight.
+
+### M7-02 — M7: the turn loop answers accepted turns (supersedes M7-01; also owns the user's knowledge-base update and evals/golden_questions.md)
+
+- state/risk: done / medium
+- requirements: FR-1, FR-6, FR-9, FR-13, FR-30, FR-32, FR-40, AC-1, AC-2
+- scope: src/runtime/, tests/runtime/, deploy/vm/, tests/deploy/vm/, evals/golden_questions.md
+- gates: tests: python -m pytest tests/runtime/ tests/deploy/vm/ -q, independent-review: pass
+- next: Run the task pre-flight.
+
+### SWEEP-01 — Sweep: fix the critical register items B12, B13, B14 (API stream capacity, cursor, first-status latency), B15 (CI collection), S14 and B7 (output checks), S17 (non-bypass app login role), S18 (customer retrieval audience filter), B10 (triage outage), B11 (admission partition)
+
+- state/risk: active / high
+- requirements: FR-6, FR-9, FR-13, FR-32, FR-5, NFR-16, NFR-24, AC-11, AC-13
+- scope: src/channels/api/, src/safety/output/, src/knowledge/retrieval/, src/core/orchestrator/, src/reliability/admission/, src/runtime/, deploy/vm/, web/, tests/channels/, tests/safety/, tests/knowledge/, tests/orchestrator/, tests/reliability/, tests/load/, tests/invariants/, tests/evals/, tests/e2e/, tests/runtime/, tests/deploy/vm/
+- gates: tests: python -m pytest tests/channels tests/safety tests/knowledge tests/orchestrator tests/reliability tests/load tests/invariants tests/evals tests/e2e tests/runtime tests/deploy/vm -q, independent-review: pending
 - next: Run the task pre-flight.
 

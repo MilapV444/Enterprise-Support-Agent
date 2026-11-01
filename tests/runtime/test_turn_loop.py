@@ -108,7 +108,7 @@ def stack():
     client, namespace = QdrantClient(url="http://127.0.0.1:6333"), f"rt{uuid.uuid4().hex[:8]}_"
     with psycopg.connect(DSN, autocommit=True) as conn:
         report = seed_kb.seed(client, embed, DIMENSIONS, conn, namespace=namespace)
-    assert report["indexed"] == len(list(seed_kb.KB.glob("*.md")))
+    assert report["indexed"] == len(seed_kb.documents()[0])
     yield client, namespace
     for item in client.get_collections().collections:
         if item.name.startswith(namespace):
@@ -154,7 +154,7 @@ def test_a_question_the_knowledge_base_covers_gets_a_checked_reply_with_its_sour
     final = published(turn)[-1][1]
     assert "Forgot password" in final["text"] and final["ai_generated"] and final["disclosure"]
     sources = {data["doc_id"] for kind, data in published(turn) if kind == "citation"}
-    assert "kb-password-reset" in sources
+    assert "kb-help-password-reset-lockout" in sources
     assert psql(DB, f"SELECT decision FROM decision_records WHERE turn_id = '{turn.turn_id}'") == [["answer"]]
 
 
@@ -318,3 +318,26 @@ def test_qdrant_is_the_configured_one_unless_it_is_unset_or_loopback(configured,
     environ = {"QDRANT_URL": configured, "QDRANT_SERVICE_URL": "http://qdrant:6333"}
     assert production.qdrant_url(environ) == expected
     assert production.qdrant_url({}) == "http://127.0.0.1:6333"           # a laptop with nothing set
+
+
+def test_only_customer_visible_articles_are_seeded_public(stack):
+    """The internal policies, runbooks and tickets in deploy/vm/kb never reach the public collection
+    (KR-D2)."""
+    client, namespace = stack
+    points, _ = client.scroll(f"{namespace}public_knowledge_v1", limit=10_000,
+                              with_payload=["audience", "source_kind"])
+    assert points and all(p.payload["audience"] == "customer_visible" and p.payload["source_kind"] != "ticket"
+                          for p in points)
+    assert "kb-policy-internal-refund-approval-matrix" in seed_kb.documents()[1]
+
+
+def test_a_customer_answer_asks_retrieval_for_customer_visible_passages_only(stack):
+    runner, seen = loop(stack, World()), []
+    original = runner.s.retriever.retrieve
+
+    def retrieve(*args, **kwargs):
+        seen.append(kwargs.get("audiences"))
+        return original(*args, **kwargs)
+    runner.s.retriever.retrieve = retrieve
+    assert runner.run(inbound("How do I reset my password?")) == "answered"
+    assert seen and all(audiences == ("customer_visible",) for audiences in seen)   # register S18

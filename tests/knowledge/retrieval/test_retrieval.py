@@ -165,3 +165,27 @@ def test_a_full_length_ranking_with_one_unknown_id_is_rejected(loaded):
     result = retriever(loaded, rewrite_reply("How to handle account issues"),
                        json.dumps({"ranked": ranking})).retrieve("T0_ANON", "t_us", [], "account help")
     assert result.ranking == "rrf_fallback" and len(result.sections) == TOP_K
+
+
+def test_a_customer_facing_search_returns_only_customer_visible_passages(loaded):
+    """KR-D2, register S18: internal runbooks and policies never reach a customer's answer."""
+    client, _ = loaded
+    namespace = f"a{uuid.uuid4().hex[:8]}_"
+    with psycopg.connect(DSN, autocommit=True) as conn:
+        Ingestion(Index(client, DIMENSIONS, namespace), embed, conn).run_batch("public", "kb", [
+            doc("refund-policy-internal", "Refund approval thresholds for agents: refunds above 500 need a "
+                "lead.", audience="internal"),
+            doc("refund-help", "How refunds work: refunds go back to the original card within 5 days.",
+                audience="customer_visible")])
+    try:
+        search = Retriever(client, embed, fixed(rewrite_reply("refunds"), "not a ranking"), namespace)
+        customer = search.retrieve("T0_ANON", "t_us", [], "how do refunds work",
+                                   audiences=("customer_visible",))
+        assert {s.doc_id for s in customer.sections} == {"refund-help"}
+        staff = Retriever(client, embed, fixed(rewrite_reply("refunds"), "not a ranking"), namespace)
+        assert {s.doc_id for s in staff.retrieve("T0_ANON", "t_us", [], "refunds").sections} == {
+            "refund-policy-internal", "refund-help"}             # no audience given: everything (co-pilot)
+    finally:
+        for item in client.get_collections().collections:
+            if item.name.startswith(namespace):
+                client.delete_collection(item.name)

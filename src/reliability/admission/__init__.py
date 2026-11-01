@@ -157,6 +157,16 @@ class Local:
             self.data[key] = (owner, self.clock() + ttl)
             return True
 
+    def put(self, key, owner, ttl):
+        """Record a lock the shared store granted (the mirror that keeps a partition from double-booking)."""
+        with self.lock:
+            self.data[key] = (owner, self.clock() + ttl)
+
+    def forget(self, key, owner):
+        with self.lock:
+            if self._get(key) == owner:
+                del self.data[key]
+
 
 # Admission --------------------------------------------------------------------------------------------------
 
@@ -169,10 +179,20 @@ class Admission:
 
     def _do(self, operation, *args):
         try:
-            return getattr(self.store, operation)(*args)
+            result = getattr(self.store, operation)(*args)
         except StoreUnavailable as error:
             log.warning("admission store unavailable (%s); using local limits", error)
             return getattr(self.fallback, operation)(*args)
+        self._mirror(operation, args, result)
+        return result
+
+    def _mirror(self, operation, args, result):
+        """Keep the fallback's locks in step with the shared store's, so a partition cannot admit a second
+        turn on a conversation the store already gave to a running turn (register B11)."""
+        if operation in ("acquire", "extend") and result and hasattr(self.fallback, "put"):
+            self.fallback.put(*args)
+        elif operation == "release" and result and hasattr(self.fallback, "forget"):
+            self.fallback.forget(*args)
 
     def _window(self):
         now = self.clock()

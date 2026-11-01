@@ -1,0 +1,13 @@
+{
+  "task": "M7-01",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "6ce0f426-0c16-4e3f-9b88-d612de534c85",
+  "human": "Intelligent_developer_123",
+  "reason": "I approve (tested locally: hi answered)",
+  "observed_at": "2026-11-01T10:00:02.066Z",
+  "source_hash": "f541464615f7641e1281d732f373c0e999a731bf6d715e9292d4f47c121f161a",
+  "config_hash": "0365521fd8102304e88d5407fd022af6a2375ada30ae22d2e6cb687d271db8b3",
+  "reviewed_proofs": "f5d90a132c5ce6bd80db7505d84a38615944ff2a7a98ffad35c9baf542904b85",
+  "hash": "d09b2089f908f48659181f101e086a2c5475d4a9b1814cb72cb74ca9da8f5a69"
+}

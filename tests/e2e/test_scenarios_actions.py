@@ -364,8 +364,6 @@ def test_scenario_3_a_refund_the_erp_did_not_apply_is_not_claimed(finance):
     assert finance.say(DONE, rewrite=DONE).verdict == "escalate"
 
 
-@pytest.mark.xfail(strict=True,
-                   reason="open-issues register B7: the output checks miss past-tense success claims")
 def test_scenario_3_a_past_tense_success_claim_is_held_without_a_verified_action(finance):
     finance.turn(DISPUTE)
     assert finance.say(PAST_TENSE, rewrite=PAST_TENSE).verdict == "escalate"

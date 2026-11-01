@@ -193,6 +193,7 @@ def test_the_vm_tools_import_nothing_the_image_lacks():
     import tomllib
 
     allowed = {"psycopg", "qdrant_client", "httpx", "uvicorn", "fastapi"} | set(sys.stdlib_module_names)
+    allowed |= {"truststore"}  # optional: imported under try / except ImportError, laptop only
     packages = {"channels", "core", "cost", "data", "knowledge", "evals", "runtime"}
     deps = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["dependencies"]
     assert {"qdrant-client>=1.12,<1.13", "httpx>=0.27", "uvicorn>=0.30", "fastapi>=0.115"} <= set(deps)
