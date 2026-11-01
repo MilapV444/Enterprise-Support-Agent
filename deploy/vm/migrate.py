@@ -29,6 +29,21 @@ CREATE_ROLE = ("  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '{0}') THE
 BOOTSTRAP = ("DO $$\nBEGIN\n" + "".join(CREATE_ROLE.format(role) for role in ROLES) + "END $$;\n"
              + f"GRANT {', '.join(ROLES)} TO CURRENT_USER;\n"
              + "GRANT USAGE, CREATE ON SCHEMA public TO app_owner;\n")
+# The app connects as this role (no BYPASSRLS). Forgotten SET ROLE cannot read another tenant (S17).
+APP_LOGIN = """
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'app_login') THEN
+    CREATE ROLE app_login LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+  END IF;
+END $$;
+GRANT app_runtime TO app_login;
+GRANT USAGE ON SCHEMA public TO app_login;
+"""
+
+
+def sql_string(value):
+    return "'" + value.replace("'", "''") + "'"
 
 
 def psql_environment(url):
@@ -85,6 +100,11 @@ def main():
     vault = os.environ.get("VAULT_DATABASE", "agent_vault")
     keys = os.environ.get("KEYS_DATABASE", "agent_keys")
     migrate.psql(main_db, BOOTSTRAP)
+    migrate.psql(main_db, APP_LOGIN)
+    migrate.psql(main_db, f'GRANT CONNECT ON DATABASE "{main_db}" TO app_login')
+    password = env.get("PGPASSWORD") or os.environ.get("APP_LOGIN_PASSWORD")
+    if password:
+        migrate.psql(main_db, "ALTER ROLE app_login PASSWORD " + sql_string(password))
     for database in (vault, keys):
         migrate.ensure_database(database, maintenance_db=main_db)
         migrate.psql(database, BOOTSTRAP)

@@ -19,7 +19,7 @@ import httpx
 
 log = logging.getLogger(__name__)
 
-QUESTIONS_VERSION = "2026-10-15.1"
+QUESTIONS_VERSION = "2026-11-01.1"
 INTENTS = {
     "BILLING_INQUIRY": "Invoices, charges, payments or refunds",
     "TECHNICAL_OUTAGE": "Something is broken, failing or unavailable",
@@ -35,9 +35,11 @@ TRIAGE_QUESTIONS = {
     "severity": {"type": "score", "instructions": "How severe is the customer's problem?",
                  "criteria": SEVERITY},
     "missing_details": {"type": "noul",
-                        "instructions": "Are details missing that are needed to act on this intent?",
-                        "criteria": {"true": "Something the agent needs to act is not stated",
-                                     "false": "Everything needed to act is stated"}},
+                        "instructions": ("Read the whole conversation, including short replies. Are details "
+                                         "still missing to match a help article? Account changes are not "
+                                         "performed here, so an email or ticket id is not required."),
+                        "criteria": {"true": "The problem is still too vague to look up help",
+                                     "false": "The issue is clear enough to answer from documentation"}},
 }
 TOOL_QUESTION = "Which tool is strictly required for the next diagnostic step?"
 NO_TOOL = "NONE_REQUIRED"

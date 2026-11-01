@@ -1,4 +1,4 @@
-"""Gate 1: triage of the latest customer message (ADP-05 into the ADP-01 TRIAGED node).
+"""Gate 1: triage of the customer thread (ADP-05 into the ADP-01 TRIAGED node).
 
 Jev answers the triage question set in one request; code maps intent and severity onto the statechart's
 acuity levels. When Jev is down, an LLM classifier answers the same questions, but its confidence is capped
@@ -54,10 +54,13 @@ def llm_fallback(complete):
     """Fallback classifier over `complete(prompt) -> str`, any chat model returning JSON."""
     def classify(masked_state):
         prompt = (
-            "Classify the customer message. Reply with JSON only: "
+            "Classify the customer conversation. Short replies inherit earlier context. "
+            "missing_details is false once the issue is clear enough to look up help "
+            "(a named product plus a password or login problem is enough). "
+            "Reply with JSON only: "
             '{"intent": one of ' + json.dumps(list(INTENTS))
             + ', "severity": index into ' + json.dumps(SEVERITY)
-            + ', "missing_details": true or false, "confidence": 0 to 1}\n\nMessage: '
+            + ', "missing_details": true or false, "confidence": 0 to 1}\n\nConversation:\n'
             + masked_state["message"].text
         )
         try:
@@ -76,9 +79,14 @@ def llm_fallback(complete):
     return classify
 
 
+def thread_text(messages, limit=8):
+    """Role-tagged recent thread for triage; one line is not enough after a clarifying reply."""
+    lines = [f"{m.get('role', 'user')}: {m.get('content', '')}" for m in (messages or [])[-limit:]]
+    return "\n".join(lines) if lines else ""
+
+
 def triage_hook(engine, fallback=None):
-    """The statechart's `triage(state)` hook: masks the latest message and triages it."""
+    """The statechart's `triage(state)` hook: masks the recent thread and triages it."""
     def hook(state):
-        messages = state.get("messages") or [{}]
-        return triage(engine, {"message": mask(messages[-1].get("content", ""))}, fallback)
+        return triage(engine, {"message": mask(thread_text(state.get("messages")))}, fallback)
     return hook

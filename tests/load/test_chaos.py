@@ -67,18 +67,18 @@ def test_with_jev_down_every_decision_point_fails_safe(outage):
 @pytest.mark.parametrize("seed", range(50))
 def test_with_jev_down_a_case_waits_for_the_customer_and_runs_nothing(seed):
     rng = random.Random(seed)
-    ran = []
+    sops = []
     decide, fallback = engine(ScriptedJev(rng, behaviours=OUTAGES)), llm_fallback(ScriptedModel(rng))
     hooks = {"triage": triage_hook(decide, fallback),
              "collect": lambda s: {"parameters": {"amount": 50}, "missing": []},
-             "execute_sop": lambda s: ran.append(s) or {"response": "Done."},
-             "react_step": lambda s: ran.append(s) or {"thought": "x", "outcome": "answer", "answer": "x"},
+             "execute_sop": lambda s: sops.append(s) or {"response": "Done."},
+             "react_step": lambda s: {"thought": "x", "outcome": "answer", "answer": "x"},
              "revalidate": lambda s: True}
     start = {"tenant_id": "t", "case_id": "c", "session_id": "s",
              "event": {"type": "USER_MESSAGE", "text": "help"}}
     state = build(hooks, InMemorySaver()).invoke(start, thread("t", "c"))
-    # the fallback classifier may triage, but its confidence is capped below what an SOP needs
-    assert "COLLECTING_PARAMS" not in state["path"] and not any(s.get("sop_name") for s in ran)
+    # the fallback classifier may answer from the knowledge path, never collect or execute an SOP
+    assert "COLLECTING_PARAMS" not in state["path"] and not sops
 
 
 def test_with_jev_and_the_fallback_model_both_down_triage_asks_the_customer():

@@ -63,6 +63,7 @@ def test_raw_personal_data_in_a_draft_is_redacted():
 @pytest.mark.parametrize("draft", [
     "We will refund the $12,400 overage today.", "I guarantee this will never happen again.",
     "We'll waive the fee for this month.", "Your upgrade will only cost $10.", "We will compensate you.",
+    "Your refund has been processed.",  # register B7
 ])
 def test_unbacked_commitments_are_held_for_a_rewrite(draft):
     result = check(draft)

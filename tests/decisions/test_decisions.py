@@ -205,7 +205,8 @@ def test_a_rejected_request_still_fails_safe():
 def run_case(jev, fallback=None):
     hooks = {"triage": triage_hook(DecisionEngine(jev), fallback),
              "collect": lambda s: {"parameters": {}, "missing": []},
-             "execute_sop": lambda s: {"response": "ok"}}
+             "execute_sop": lambda s: {"response": "ok"},
+             "react_step": lambda s: {"thought": "kb", "outcome": "answer", "answer": "ok"}}
     return build(hooks).invoke({"tenant_id": "t_us", "case_id": "c1", "session_id": "s1",
                                 "event": {"type": "USER_MESSAGE", "text": "I was charged twice, a@b.com"}})
 
@@ -218,4 +219,16 @@ def test_typed_answers_drive_statechart_routing():
 
 def test_with_jev_down_a_fallback_guess_never_runs_an_sop_on_its_own():
     state = run_case(FakeJev(down=True), fallback_reply())
-    assert state["stage"] == "AWAITING_CUSTOMER" and state["triage"]["confidence"] == FALLBACK_MAX_CONFIDENCE
+    assert "COLLECTING_PARAMS" not in state["path"] and "EXECUTING_SOP" not in state["path"]
+    assert state["stage"] == "RESOLVED" and state["triage"]["confidence"] == FALLBACK_MAX_CONFIDENCE
+
+
+def test_triage_sees_the_whole_thread_not_only_the_last_line():
+    jev = FakeJev(triage_answers("PASSWORD_RESET", missing=False))
+    triage_hook(DecisionEngine(jev))({"messages": [
+        {"role": "user", "content": "I forgot the password"},
+        {"role": "assistant", "content": "Which service?"},
+        {"role": "user", "content": "yes, what is the process"},
+    ]})
+    sent = jev.sent[-1][0]["message"]
+    assert "forgot the password" in sent and "what is the process" in sent

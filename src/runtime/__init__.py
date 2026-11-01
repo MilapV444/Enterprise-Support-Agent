@@ -105,11 +105,16 @@ class TurnLoop:
     def check(self, draft):
         return finalise(draft, lambda instruction: draft, system_prompt=SYSTEM)
 
+    def customer_query(self, messages):
+        texts = [m.get("content", "") for m in messages if m.get("role") == "user"]
+        return " ".join(texts[-4:]) or (messages[-1]["content"] if messages else "")
+
     def knowledge_answer(self, state, instruction=""):
-        latest = Masked(state["messages"][-1]["content"])
+        messages = state["messages"]
+        latest = Masked(self.customer_query(messages))
         tier = (state.get("event") or {}).get("tier", "T0_ANON")
         try:
-            sections = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1],
+            sections = self.s.retriever.retrieve(tier, state["tenant_id"], messages[:-1],
                                                  latest.text, audiences=CUSTOMER).sections[:EVIDENCE]
         except Exception:  # noqa: BLE001 - the embedder or index is down: answer without passages, say so
             log.warning("retrieval failed; answering without knowledge passages", exc_info=True)
@@ -117,9 +122,10 @@ class TurnLoop:
         self.evidence[(state["tenant_id"], state["case_id"])] = sections
         passages = "\n\n".join(delimit(f"{s.title}\n{s.text}", f"knowledge {s.doc_id}") for s in sections) \
             or "(no knowledge passage matched)"
+        thread = "\n".join(f"{m.get('role', 'user')}: {m.get('content', '')}" for m in messages[-8:])
         reply = self.s.router.answer(
             [{"role": "system", "content": SYSTEM},
-             {"role": "user", "content": f"{passages}\n\n{delimit(latest.text, 'customer message')}\n"
+             {"role": "user", "content": f"{passages}\n\n{delimit(thread, 'conversation')}\n"
                                          f"{instruction}Answer the customer."}],
             self.s.engine, {"message": latest}, verify=lambda text: self.check(text).verdict == "deliver")
         return reply
@@ -136,12 +142,14 @@ class TurnLoop:
             return {"error": f"no answer for the procedure ({reply.outcome})"}
         return {"response": reply.text}
 
-    def clarifying_question(self, masked):
+    def clarifying_question(self, state, masked):
+        thread = "\n".join(f"{m.get('role', 'user')}: {m.get('content', '')}"
+                           for m in (state.get("messages") or [])[-8:]) or masked
         reply = self.s.router.answer(
             [{"role": "system", "content": SYSTEM},
-             {"role": "user", "content": f"{delimit(masked, 'customer message')}\nAsk the customer one "
-                                         "short, calm question that pins down the problem. Do not guess a "
-                                         "diagnosis."}],
+             {"role": "user", "content": f"{delimit(thread, 'conversation')}\nAsk the customer one short, "
+                                         "calm question that is not already answered in the conversation. "
+                                         "Do not guess a diagnosis."}],
             self.s.engine, {"message": Masked(masked)},
             verify=lambda text: self.check(text).verdict == "deliver")
         return reply.text if reply.outcome == "answered" else None
@@ -177,7 +185,7 @@ class TurnLoop:
                 self.publish(turn, "final", disclose({"role": "assistant", "text": text}))
                 return "answered"
             if state.get("stage") == "AWAITING_CUSTOMER":
-                question = self.clarifying_question(masked)
+                question = self.clarifying_question(state, masked)
                 if question:
                     self.record(turn, "ask_customer", "We need one more detail before we can help.",
                                 ["Content safety"], trace)

@@ -11,6 +11,7 @@ import json
 
 from data.migrate import psql
 
+CHANNEL = "conversation_events"  # LISTEN / NOTIFY so an open stream does not wait out a poll (B14)
 SCHEMA_NAME = "events_0001_outbound_event_log.sql"
 SCHEMA = """
 CREATE TABLE outbound_event_log (
@@ -60,6 +61,7 @@ class EventLog:
                 "INSERT INTO outbound_event_log (tenant_id, conversation_id, event_type, data) "
                 "VALUES (%s, %s, %s, %s::jsonb) RETURNING id",
                 (tenant_id, conversation_id, event_type, json.dumps(data))).fetchone()
+        self.conn.execute("SELECT pg_notify(%s, %s)", (CHANNEL, conversation_id))
         return str(event_id)
 
     def replay(self, tenant_id, conversation_id, last_event_id):

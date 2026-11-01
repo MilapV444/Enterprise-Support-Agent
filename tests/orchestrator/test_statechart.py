@@ -74,6 +74,17 @@ def test_sop_runs_through_the_deterministic_path(saver):
     assert state["final_response"] == "Done." and state["schema_version"] == SCHEMA_VERSION
 
 
+def test_a_second_user_turn_does_not_keep_asking_when_intent_is_known(saver):
+    hooks = Hooks(
+        triage={"intent": "PASSWORD_RESET", "acuity": 2, "confidence": 0.95, "missing_params": True,
+                "sop_name": "password_reset"})
+    graph, config = build(hooks, saver), thread("t_us", "c-reset")
+    assert graph.invoke(start("c-reset", "I forgot the password"), config)["stage"] == "AWAITING_CUSTOMER"
+    state = graph.invoke({"event": {"type": "USER_MESSAGE", "text": "Nimbus Cloud Platform"}}, config)
+    assert state["stage"] == "RESOLVED" and "COLLECTING_PARAMS" in state["path"]
+    assert_legal(state["path"])
+
+
 def test_ambiguous_message_waits_for_the_customer_then_continues(saver):
     hooks = Hooks(triage=[{"intent": "?", "acuity": 3, "confidence": 0.6}, SOP])
     graph, config = build(hooks, saver), thread("t_us", "c2")

@@ -21,6 +21,7 @@ services:
       SUPPORT_AGENT_HOST: 0.0.0.0
       SUPPORT_AGENT_PORT: "8000"
       SUPPORT_AGENT_DEV_AUTH: "0"
+      APP_DATABASE_URL: ${APP_DATABASE_URL:-}
     ports:
       - "0.0.0.0:8000:8000"
     depends_on: [temporal, qdrant, jaeger, openbao, ollama]

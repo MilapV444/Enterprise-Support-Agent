@@ -82,7 +82,7 @@ class World:
         prompt = messages[-1]["content"]
         if "standalone search query" in prompt:
             text = json.dumps({"standalone_query": "reset password", "exact_identifiers": []})
-        elif "Classify the customer message" in prompt:
+        elif "Classify the customer conversation" in prompt or "Classify the customer message" in prompt:
             text = json.dumps({"intent": "GENERAL_INQUIRY", "severity": 1, "missing_details": False,
                                "confidence": 0.95})
         elif "Ask the customer one short" in prompt:
@@ -162,7 +162,16 @@ def test_without_jev_the_llm_classifier_triages_and_the_turn_is_still_answered(s
     world = World()
     turn = inbound("How do I reset my password?")
     assert loop(stack, world, jev=False).run(turn) == "answered"
-    assert world.jev == [] and any("Classify the customer message" in m[-1]["content"] for m in world.model)
+    assert world.jev == [] and any("Classify the customer conversation" in m[-1]["content"] for m in world.model)
+
+
+def test_a_password_reset_follow_up_is_answered_instead_of_asked_again(stack):
+    world = World(triage=triage_answers("PASSWORD_RESET", 0.95, 1, 0.9))
+    conversation = f"c-{uuid.uuid4().hex[:8]}"
+    runner = loop(stack, world)
+    assert runner.run(inbound("I forgot the password", conversation)) == "asked"
+    world.triage = triage_answers("PASSWORD_RESET", 0.95, 1, 0.9)
+    assert runner.run(inbound("yes, what is the process", conversation)) == "answered"
 
 
 def test_a_vague_message_gets_one_clarifying_question_not_a_guess(stack):

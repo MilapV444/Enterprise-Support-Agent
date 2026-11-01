@@ -1,0 +1,30 @@
+{
+  "task": "SWEEP-01",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "5c827ddb-770f-4b88-a18e-e850f5f8876d",
+  "command": "python -m pytest tests/channels tests/safety tests/knowledge tests/orchestrator tests/reliability tests/load tests/invariants tests/evals tests/e2e tests/runtime tests/deploy/vm -q",
+  "started_at": "2026-11-01T12:18:13.291Z",
+  "observed_at": "2026-11-01T12:31:41.058Z",
+  "exit_code": 1,
+  "signal": null,
+  "stdout": "........................................................................ [  3%]\r\n........................................................................ [  7%]\r\n........................................................................ [ 10%]\r\n..................F..................................................... [ 14%]\r\n........................................................................ [ 17%]\r\n........................................................................ [ 21%]\r\n........................................................................ [ 24%]\r\n............................................x........................... [ 28%]\r\n........................................................................ [ 31%]\r\n........................................................................ [ 35%]\r\n........................................................................ [ 38%]\r\n........................................................................ [ 42%]\r\n........................................................................ [ 45%]\r\n........................................................................ [ 49%]\r\n........................................................................ [ 52%]\r\n........................................................................ [ 56%]\r\n........................................................................ [ 60%]\r\n........................................................................ [ 63%]\r\n........................................................................ [ 67%]\r\n........................................................................ [ 70%]\r\n........................................................................ [ 74%]\r\n........................................................................ [ 77%]\r\n........................................................................ [ 81%]\r\n........................................................................ [ 84%]\r\n.....................................xxx................................ [ 88%]\r\n........................................................................ [ 91%]\r\n........................................................................ [ 95%]\r\n........................................................................ [ 98%]\r\n........................                                                 [100%]\r\n================================== FAILURES ===================================\r\n______ test_thirty_concurrent_customers_get_every_event_within_one_poll _______\r\n\r\napi = 'http://127.0.0.1:50698'\r\n\r\n    def test_thirty_concurrent_customers_get_every_event_within_one_poll(api):\r\n        \"\"\"Every turn's status and final reply arrive. First status is well under the old 1s poll (B14);\r\n        AC-13's 1.0 s p95 is the release locust run, and this in-process suite shares the machine.\"\"\"\r\n        samples = load(api, users=30, seed=1)\r\n        assert [f for f in failures(samples) if not f.startswith(\"first status\")] == []\r\n        assert p95([s.first_status for s in samples]) <= 2.0\r\n        overhead = [s.final - MODEL_SECONDS[s.route] for s in samples]\r\n>       assert p95(overhead) <= 1.5, p95(overhead)\r\nE       AssertionError: 2.0676866999128833\r\nE       assert 2.0676866999128833 <= 1.5\r\nE        +  where 2.0676866999128833 = p95([2.0158491999609396, 1.6840724000241607, 0.9928019999526441, 0.6648997000884265, 0.8416466999799013, 2.0676866999128833, ...])\r\n\r\ntests\\load\\test_api_load.py:146: AssertionError\r\n============================== warnings summary ===============================\r\n.venv\\Lib\\site-packages\\langsmith\\_internal\\_beta_decorator.py:92: 13 warnings\r\n  C:\\Users\\omkar\\Documents\\ANTERN\\Projects\\Enterprise Support Agent\\.venv\\Lib\\site-packages\\langsmith\\_internal\\_beta_decorator.py:92: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead\r\n    if asyncio.iscoroutinefunction(func):\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n=========================== short test summary info ===========================\r\nFAILED tests/load/test_api_load.py::test_thirty_concurrent_customers_get_every_event_within_one_poll\r\n1 failed, 2035 passed, 4 xfailed, 13 warnings in 707.38s (0:11:47)\r\n",
+  "stderr": "",
+  "failure": "command-failed",
+  "receipt": null,
+  "revision": {
+    "commit": "f97db0d768f97ec4d6e80cacb30dfb6e5b35b9a8",
+    "dirty": true
+  },
+  "source_hash": "0c4ee83787be1caab0579d30d94167564bc7018335a88b06935617a73c0090a9",
+  "before_hash": "0c4ee83787be1caab0579d30d94167564bc7018335a88b06935617a73c0090a9",
+  "config_hash": "3854ce865c7c264d58b6823fb129924065307a7f49f9a64adfbd89f1c0a17411",
+  "environment": {
+    "node": "v22.19.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "cbdddbf25e5ed5f3406b93881ae54f64d11a8c54f0bfe177d19d9d9946a6a971",
+    "variables": {}
+  },
+  "hash": "a992c7b8be04a3399cd4dd3671ca74fa2bedb2bc81c47f9913bc18595a6db8d9"
+}

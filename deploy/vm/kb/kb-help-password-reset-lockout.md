@@ -25,7 +25,7 @@ Users who sign in to Nimbus Cloud Platform with a local email and password can r
 3. Check your inbox for an email from `no-reply@notifications.nimbuscloud.example.com` with the subject `Nimbus Cloud Platform password reset request`.
 4. Click the single-use password reset link within **15 minutes** of issuance. After 15 minutes, the reset token expires automatically and you must request a new link.
 5. Complete your Multi-Factor Authentication (MFA) challenge (TOTP code or FIDO2 security key).
-6. Enter a new password that meets the Nimbus Cloud Platform password policy: at least **14 characters**, containing at least one uppercase letter, one lowercase letter, one number, and one special character, and not matching any of your last 12 passwords or known breached password hashes.
+6. Enter a new password that meets the Nimbus Cloud Platform password policy: at least **14 characters**, contaiOkay.ning at least one uppercase letter, one lowercase letter, one number, and one special character, and not matching any of your last 12 passwords or known breached password hashes.
 
 When your password is changed, Nimbus Cloud Platform immediately revokes all active browser sessions and temporary CLI access tokens (`nimbus auth token`), requiring you to re-authenticate across your devices. However, long-lived service account API keys are not affected by an individual user's password reset.
 

@@ -172,6 +172,16 @@ def test_the_role_bootstrap_is_valid_and_creates_every_role_once():
     sql = vm_migrate.BOOTSTRAP
     assert sql.count("DO $$") == 1 and sql.count("END $$;") == 1
     assert all(f"rolname = '{role}'" in sql for role in vm_migrate.ROLES)
+    assert "NOBYPASSRLS" in vm_migrate.APP_LOGIN and "CREATE ROLE app_login LOGIN" in vm_migrate.APP_LOGIN
+
+
+def test_app_login_cannot_bypass_row_level_security(ledger_db):
+    """register S17: the app's login role has no BYPASSRLS, so isolation does not depend on SET ROLE."""
+    psql(DB, vm_migrate.APP_LOGIN)
+    assert psql(DB, "SELECT rolbypassrls, rolcanlogin FROM pg_roles WHERE rolname = 'app_login'") == [
+        ["f", "t"]]
+    with pytest.raises(PsqlError, match="permission denied"):
+        psql(DB, "SET ROLE app_login; SELECT * FROM usage_ledger")
 
 
 # The API entry point ----------------------------------------------------------------------------------------

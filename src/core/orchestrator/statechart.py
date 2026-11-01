@@ -101,14 +101,17 @@ def build(hooks, checkpointer=None, read_only_tools=frozenset(), now=time.time):
 
     def triage(state):
         result = Triage.model_validate(hooks["triage"](state))
-        if result.acuity == 3 or result.missing_params:
+        user_turns = sum(1 for m in state.get("messages") or [] if m.get("role") == "user")
+        # ponytail: one clarifying turn; a reply plus a known intent is enough to look up docs (W18 later)
+        asked_once = user_turns >= 2 and result.intent != "UNKNOWN" and result.confidence >= 0.50
+        if (result.acuity == 3 or result.missing_params) and not asked_once:
             target = S.AWAITING_CUSTOMER
         elif result.confidence < 0.50:
             target = S.ESCALATED_HITL
         elif result.acuity <= 2 and result.confidence >= 0.90:
             target = S.COLLECTING_PARAMS
-        elif result.acuity >= 4 and result.confidence >= 0.85:
-            target = S.DELIBERATING
+        elif result.confidence >= 0.85 or asked_once:
+            target = S.DELIBERATING  # fallback SOP never executes; it answers from the knowledge base
         else:
             target = S.AWAITING_CUSTOMER
         return {"triage": result.model_dump(), "sop_name": result.sop_name, "parameters": result.parameters,

@@ -26,7 +26,7 @@ IGNORE = (ROOT / "deploy" / "vm" / "Dockerfile.dockerignore").read_text(encoding
 
 def bash():
     """A real bash: on Windows, Git's (System32's bash.exe is the WSL launcher)."""
-    for candidate in (r"C:\Program Files\Gitinash.exe", shutil.which("bash")):
+    for candidate in (r"C:\Program Files\Git\bin\bash.exe", shutil.which("bash")):
         if candidate and Path(candidate).exists() and "system32" not in candidate.lower():
             return candidate
     pytest.fail("no bash to check the setup script with")
