@@ -8,6 +8,7 @@ adapter parse the replies), so the run is free and repeatable."""
 
 import importlib.util
 import json
+import re
 import subprocess
 import time
 import uuid
@@ -155,6 +156,7 @@ def test_a_question_the_knowledge_base_covers_gets_a_checked_reply_with_its_sour
     assert "Forgot password" in final["text"] and final["ai_generated"] and final["disclosure"]
     sources = {data["doc_id"] for kind, data in published(turn) if kind == "citation"}
     assert "kb-help-password-reset-lockout" in sources
+    assert all(data["excerpt"] for kind, data in published(turn) if kind == "citation")  # the drawer preview
     assert psql(DB, f"SELECT decision FROM decision_records WHERE turn_id = '{turn.turn_id}'") == [["answer"]]
 
 
@@ -261,6 +263,40 @@ def test_a_turn_posted_to_the_api_is_answered_on_its_event_stream(stack, monkeyp
         time.sleep(0.2)
     assert kinds[0] == "status" and kinds[-1] == "final"                     # queued, working, ..., final
     assert kinds.count("status") == 2
+
+
+def test_how_this_was_answered_is_summary_only_when_anonymous_and_full_once_signed_in(stack, monkeypatch):
+    monkeypatch.setenv("DATABASE_URL", DSN)
+    codes = []
+    identity = Identity(connector(DSN), idp=None, send_otp=lambda tenant, user, code: codes.append(code))
+    api = TestClient(build_app(None, identity, dispatch=lambda turn: None))
+    token = api.post("/v1/identity/anonymous", json={"tenant_id": "t_us"}).json()["access_token"]
+    conversation, auth = f"c-{uuid.uuid4().hex[:8]}", {"Authorization": f"Bearer {token}"}
+    turn_id = api.post(f"/v1/conversations/{conversation}/turns", json={"content": "How do I reset it?"},
+                       headers={**auth, "Idempotency-Key": "k-1"}).json()["turn_id"]
+    turn = inbound("How do I reset my password?", conversation).model_copy(update={"turn_id": turn_id})
+    assert loop(stack, World()).run(turn) == "answered"
+    path = f"/v1/conversations/{conversation}/turns/{turn_id}/trace"
+
+    anonymous = api.get(path, headers=auth).json()
+    assert anonymous["detail"] == "summary" and anonymous["shared_state"] == {}
+    assert all(agent["calls"] == [] for agent in anonymous["agents"])
+
+    challenge = api.post("/v1/identity/otp/start",
+                         json={"tenant_id": "t_us", "user_id": "sam@acme.test"}).json()["challenge_id"]
+    token = api.post("/v1/identity/otp/verify", headers=auth, json={
+        "tenant_id": "t_us", "challenge_id": challenge, "code": codes[-1]}).json()["access_token"]
+    auth = {"Authorization": f"Bearer {token}"}             # stepped up: the same session, same conversation
+    full = api.get(path, headers=auth).json()
+    assert full["detail"] == "full" and full["final"]["outcome"] == "composed"
+    knowledge = next(agent for agent in full["agents"] if agent["id"] == "knowledge")
+    assert knowledge["calls"][0]["name"] == "Retrieval lookup" and knowledge["calls"][0]["items"]
+    assert not re.search(r"confiden|score|threshold", json.dumps(full))
+    (why,) = api.get(f"/v1/conversations/{conversation}/decisions", params={"turn_id": turn_id},
+                     headers=auth).json()
+    assert why["decision"] == "answer" and why["checks"] == ["Content safety"]
+    missing = api.get(f"/v1/conversations/{conversation}/turns/not-a-turn/trace", headers=auth)
+    assert missing.status_code == 404
 
 
 def test_turns_of_one_conversation_run_one_at_a_time(stack):

@@ -1,9 +1,11 @@
-"""M1-03: the web chat end to end (FR-6, FR-9). The real API with sign-in runs on a free port behind the web
-dev server's /v1 proxy; a stand-in orchestrator answers each turn with a status event and then the reply; the
-same client and view code the page uses (web/smoke.mjs) must show the status first, then the checked reply."""
+"""M1-03: the web portal end to end (FR-6, FR-9). The real API with sign-in runs on a free port behind the
+Next.js production server's /v1 rewrite; a stand-in orchestrator answers each turn with a status event and
+then the reply; the same client and reducer the portal uses (web/smoke.ts) must show the status first, then
+the checked reply. Needs `npm ci` in web/ first."""
 
 import json
 import os
+import re
 import shutil
 import socket
 import subprocess
@@ -11,6 +13,7 @@ import threading
 import time
 from pathlib import Path
 
+import httpx
 import psycopg
 import pytest
 import uvicorn
@@ -29,6 +32,7 @@ WEB = ROOT / "web"
 DB = "test_web"
 DSN = f"postgresql://agent:change-me@127.0.0.1:5432/{DB}"  # credentials from .env.example
 NODE = shutil.which("node")
+NEXT = WEB / "node_modules" / "next" / "dist" / "bin" / "next"
 
 
 def free_port():
@@ -37,7 +41,7 @@ def free_port():
         return probe.getsockname()[1]
 
 
-def wait_for(port, seconds=15):
+def wait_for(port, seconds=30):
     deadline = time.monotonic() + seconds
     while time.monotonic() < deadline:
         with socket.socket() as probe:
@@ -62,6 +66,7 @@ def orchestrator(turn):
 @pytest.fixture(scope="module")
 def site():
     assert NODE, "Node.js is required for the web tests"
+    assert NEXT.exists(), "run `npm ci` in web/ first"
     subprocess.run(["docker", "compose", "-f", "deploy/compose.yaml", "--env-file", ".env.example",
                     "up", "-d", "--wait", "postgres"], cwd=ROOT, check=True, capture_output=True)
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
@@ -78,17 +83,20 @@ def site():
     thread = threading.Thread(target=server.run, daemon=True)
     thread.start()
     wait_for(api_port)
-    env = {**os.environ, "API_ORIGIN": f"http://127.0.0.1:{api_port}", "PORT": str(web_port)}
-    proxy = subprocess.Popen([NODE, "dev-server.js"], cwd=WEB, stdout=subprocess.DEVNULL, env=env)
+    env = {**os.environ, "API_ORIGIN": f"http://127.0.0.1:{api_port}", "NEXT_TELEMETRY_DISABLED": "1"}
+    subprocess.run([NODE, str(NEXT), "build"], cwd=WEB, env=env, check=True,
+                   capture_output=True)  # the /v1 rewrite is baked in at build time
+    portal = subprocess.Popen([NODE, str(NEXT), "start", "-H", "127.0.0.1", "-p", str(web_port)], cwd=WEB,
+                              stdout=subprocess.DEVNULL, env=env)
     wait_for(web_port)
     yield f"http://127.0.0.1:{web_port}"
-    proxy.terminate()
+    portal.terminate()
     server.should_exit = True
     thread.join(timeout=10)
 
 
 def test_status_shows_while_the_reply_is_held_then_the_checked_reply_renders(site):
-    run = subprocess.run([NODE, "smoke.mjs", site, "t_us"], cwd=WEB, capture_output=True, text=True,
+    run = subprocess.run([NODE, "smoke.ts", site, "t_us"], cwd=WEB, capture_output=True, text=True,
                          timeout=30)
     assert run.returncode == 0, run.stderr
     states = [json.loads(line) for line in run.stdout.splitlines()]
@@ -102,17 +110,14 @@ def test_status_shows_while_the_reply_is_held_then_the_checked_reply_renders(sit
         ("user", "My invoice is wrong"), ("assistant", "Your invoice was corrected.")]
 
 
-def test_dev_server_serves_the_page(site):
-    with socket.create_connection(("127.0.0.1", int(site.rsplit(":", 1)[1]))) as conn:
-        conn.sendall(b"GET / HTTP/1.1\r\nHost: x\r\nConnection: close\r\n\r\n")
-        page = b"".join(iter(lambda: conn.recv(65536), b"")).decode()
-    assert "200 OK" in page and '<script type="module" src="/src/app.js">' in page
-
-
-def test_page_loads_only_its_own_scripts_under_a_strict_policy():
-    page = (WEB / "index.html").read_text()
-    assert "<script>" not in page and 'src="http' not in page and 'href="http' not in page
-    vercel = json.loads((WEB / "vercel.json").read_text())
-    assert vercel["rewrites"][0]["source"] == "/v1/:path*"
-    policy = {h["key"]: h["value"] for h in vercel["headers"][0]["headers"]}["Content-Security-Policy"]
-    assert "default-src 'self'" in policy and "script-src 'self'" in policy and "unsafe" not in policy
+def test_the_portal_loads_only_its_own_scripts_under_a_strict_per_request_policy(site):
+    pages = [httpx.get(f"{site}{path}") for path in ("/", "/", "/t/t_us")]
+    assert all(page.status_code == 200 and "Support Portal" in page.text for page in pages)
+    policy = pages[0].headers["Content-Security-Policy"]
+    nonce = re.search(r"'nonce-([^']+)'", policy).group(1)
+    assert "default-src 'self'" in policy and "unsafe" not in policy and "frame-ancestors 'none'" in policy
+    assert nonce not in pages[1].headers["Content-Security-Policy"]                   # fresh per request
+    scripts = re.findall(r"<script\b[^>]*>", pages[0].text)
+    assert scripts and all(f'nonce="{nonce}"' in tag for tag in scripts)
+    assert 'src="http' not in pages[0].text and 'href="http' not in pages[0].text
+    assert pages[0].headers["X-Content-Type-Options"] == "nosniff"

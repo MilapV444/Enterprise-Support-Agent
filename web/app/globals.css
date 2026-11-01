@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/* Colour tokens: light by default, dark from the system setting. The rail stays dark in both. */
+:root {
+  --page: #f6f7f9;
+  --surface: #ffffff;
+  --subtle: #f2f4f7;
+  --line: #e3e7ed;
+  --ink: #142231;
+  --muted: #5b6878;
+  --user: #10243a;
+  --brand: #0f766e;
+  --brand-strong: #0b5e57;
+  --brand-soft: #e6f4f2;
+  --ok: #15803d;
+  --ok-soft: #ecfdf3;
+  --bad: #b42318;
+  --bad-soft: #fef3f2;
+  --warn-ink: #7a4a00;
+  --warn-bg: #fdf4de;
+  --warn-line: #f2d896;
+  --rail: #0d2133;
+  --rail-raised: #142c43;
+  --rail-line: #22405c;
+  --rail-ink: #e7eef5;
+  --rail-muted: #93a7bb;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0f1720;
+    --surface: #17212c;
+    --subtle: #1d2935;
+    --line: #2a3846;
+    --ink: #e6edf3;
+    --muted: #9aabbb;
+    --user: #24486e;
+    --brand: #2bb3a5;
+    --brand-strong: #5fd0c3;
+    --brand-soft: #143a38;
+    --ok: #4ade80;
+    --ok-soft: #13301f;
+    --bad: #ff8a80;
+    --bad-soft: #3a1a18;
+    --warn-ink: #f5d08a;
+    --warn-bg: #3a2c10;
+    --warn-line: #6b5420;
+    --rail: #0a1825;
+    --rail-raised: #10243a;
+    --rail-line: #1e3a55;
+  }
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-user: var(--user);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-warn-ink: var(--warn-ink);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-line: var(--warn-line);
+  --color-rail: var(--rail);
+  --color-rail-raised: var(--rail-raised);
+  --color-rail-line: var(--rail-line);
+  --color-rail-ink: var(--rail-ink);
+  --color-rail-muted: var(--rail-muted);
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+body {
+  background: var(--page);
+  color: var(--ink);
+}
+
+summary::-webkit-details-marker { display: none; }
+summary { list-style: none; }
+details[open] > summary .chevron { transform: rotate(180deg); }

@@ -2,10 +2,29 @@
   "name": "support-agent-web",
   "private": true,
   "type": "module",
-  "description": "Web chat for the support agent: static files, no build step, no dependencies.",
-  "engines": { "node": ">=20" },
+  "description": "Customer support portal: chat, sign-in, citations, the why view and the execution trace.",
+  "engines": { "node": ">=22.18" },
   "scripts": {
-    "test": "node --test",
-    "dev": "node dev-server.js"
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "smoke": "node smoke.ts"
+  },
+  "dependencies": {
+    "next": "15.5.28",
+    "react": "19.2.9",
+    "react-dom": "19.2.9"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "22.20.5",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "vitest": "4.1.12"
   }
 }
