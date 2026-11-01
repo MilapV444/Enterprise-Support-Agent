@@ -78,12 +78,14 @@ class DecisionLog:
                 (tenant_id, conversation_id, turn_id, decision, reason, Jsonb(list(checks)), Jsonb(trace),
                  decision in SIGNIFICANT and not signed_by)).fetchone()[0]
 
-    def why(self, tenant_id, conversation_id):
-        """The customer's view: what was decided, why, and which checks passed. Nothing else."""
+    def why(self, tenant_id, conversation_id, turn_id=None):
+        """The customer's view: what was decided, why, and which checks passed. Nothing else. turn_id narrows
+        it to one turn's decisions."""
         with self.connect() as conn, conn.transaction():
             self._context(conn, tenant_id)
             rows = conn.execute("SELECT decision, reason, checks, needs_human FROM decision_records "
-                                "WHERE conversation_id = %s ORDER BY id", (conversation_id,)).fetchall()
+                                "WHERE conversation_id = %s AND (%s::text IS NULL OR turn_id = %s) "
+                                "ORDER BY id", (conversation_id, turn_id, turn_id)).fetchall()
         return [{"decision": decision, "reason": reason, "checks": checks, "requires_human_review": human,
                  "human_available": True} for decision, reason, checks, human in rows]
 

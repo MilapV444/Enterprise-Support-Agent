@@ -13,7 +13,8 @@ turn at a time per conversation, and TurnLoop.run() takes it from there:
    (safety.output); a clarifying question when the case waits for the customer; a hand-off notice when it
    goes to a person;
 6. citation events for the passages used, then one final event with the AI disclosure, and a decision record
-   with its why view (safety.governance).
+   with its why view (safety.governance) and the steps the turn took, which channels.api.trace shows the
+   customer as a tier-filtered "how this was answered" view.
 
 Any failure publishes an error event: a customer never waits on silence. The case is the conversation for
 now (case linking is not wired); procedures (SOPs) have no tools yet, so a procedure turn answers from the
@@ -78,6 +79,7 @@ class TurnLoop:
     def __init__(self, services):
         self.s = services
         self.evidence = {}             # (tenant, conversation) -> sections used for this turn's answer
+        self.steps = {}                # (tenant, conversation) -> retrieval and answer steps, for the trace
         self.graph = build({"triage": triage_hook(services.engine, llm_fallback(services.complete)),
                             "collect": lambda state: {"parameters": state.get("parameters") or {},
                                                       "missing": []},
@@ -113,13 +115,19 @@ class TurnLoop:
         messages = state["messages"]
         latest = Masked(self.customer_query(messages))
         tier = (state.get("event") or {}).get("tier", "T0_ANON")
+        key, query, failed = (state["tenant_id"], state["case_id"]), latest.text, False
         try:
-            sections = self.s.retriever.retrieve(tier, state["tenant_id"], messages[:-1],
-                                                 latest.text, audiences=CUSTOMER).sections[:EVIDENCE]
+            result = self.s.retriever.retrieve(tier, state["tenant_id"], messages[:-1],
+                                               latest.text, audiences=CUSTOMER)
+            sections, query = result.sections[:EVIDENCE], result.query.text
         except Exception:  # noqa: BLE001 - the embedder or index is down: answer without passages, say so
             log.warning("retrieval failed; answering without knowledge passages", exc_info=True)
-            sections = []
-        self.evidence[(state["tenant_id"], state["case_id"])] = sections
+            sections, failed = [], True
+        self.evidence[key] = sections
+        steps = self.steps.setdefault(key, {})
+        steps["retrieval"] = {"query": query, "failed": failed,
+                              "collections": sorted({s.collection for s in sections}),
+                              "sources": [{"doc_id": s.doc_id, "title": s.title} for s in sections]}
         passages = "\n\n".join(delimit(f"{s.title}\n{s.text}", f"knowledge {s.doc_id}") for s in sections) \
             or "(no knowledge passage matched)"
         thread = "\n".join(f"{m.get('role', 'user')}: {m.get('content', '')}" for m in messages[-8:])
@@ -128,6 +136,7 @@ class TurnLoop:
              {"role": "user", "content": f"{passages}\n\n{delimit(thread, 'conversation')}\n"
                                          f"{instruction}Answer the customer."}],
             self.s.engine, {"message": latest}, verify=lambda text: self.check(text).verdict == "deliver")
+        steps["answer"] = {"outcome": reply.outcome, "retried": reply.cascaded}
         return reply
 
     def diagnose(self, state):
@@ -160,29 +169,39 @@ class TurnLoop:
         """Answer one accepted turn (channels.api.envelope.InboundTurn); always ends with a final, handoff or
         error event."""
         key = (turn.tenant_id, turn.conversation_id)
-        self.evidence[key] = []
+        self.evidence[key], self.steps[key] = [], {}
         try:
             self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
             verdict = self.s.screener.screen("user_message", turn.content)
+            steps = {"screening": verdict.band}
             if verdict.band == "block":
                 self.record(turn, "block", "Your message was stopped by our safety checks.",
                             ["Content safety"],
-                            {"screening": {"score": verdict.score, "categories": verdict.categories}})
+                            {"screening": {"score": verdict.score, "categories": verdict.categories},
+                             "steps": steps})
                 self.publish(turn, "final", disclose({"role": "assistant", "text": BLOCKED}))
                 return "blocked"
-            masked, _ = self.s.tokens.mask(turn.content)
+            masked, found = self.s.tokens.mask(turn.content)
+            config = thread(turn.tenant_id, turn.conversation_id)
+            seen = len(self.graph.get_state(config).values.get("path") or [])  # path spans the whole case
             state = self.graph.invoke(
                 {"tenant_id": turn.tenant_id, "case_id": turn.conversation_id,
                  "session_id": turn.principal_id,
-                 "event": {"type": "USER_MESSAGE", "text": masked, "tier": turn.assurance_tier}},
-                thread(turn.tenant_id, turn.conversation_id))
-            trace = {"triage": state.get("triage"), "path": state.get("path")}
+                 "event": {"type": "USER_MESSAGE", "text": masked, "tier": turn.assurance_tier}}, config)
+            triage = state.get("triage") or {}
+            steps.update(self.steps.get(key, {}), masked=bool(found), stages=(state.get("path") or [])[seen:],
+                         intent=triage.get("intent"),
+                         classifier=str(triage.get("rationale") or "").split(":", 1)[0] or None)
+            trace = {"triage": state.get("triage"), "path": state.get("path"), "steps": steps}
             if state.get("stage") == "RESOLVED" and state.get("final_response"):
-                text = self.check(state["final_response"]).text
+                checked = self.check(state["final_response"])
+                steps["review"] = checked.verdict
                 for section in self.evidence.get(key, []):
-                    self.publish(turn, "citation", {"doc_id": section.doc_id, "title": section.title})
+                    self.publish(turn, "citation", {"doc_id": section.doc_id, "title": section.title,
+                                                    "heading": section.heading,
+                                                    "excerpt": section.text[:600]})
                 self.record(turn, "answer", "We answered from our documentation.", ["Content safety"], trace)
-                self.publish(turn, "final", disclose({"role": "assistant", "text": text}))
+                self.publish(turn, "final", disclose({"role": "assistant", "text": checked.text}))
                 return "answered"
             if state.get("stage") == "AWAITING_CUSTOMER":
                 question = self.clarifying_question(state, masked)
@@ -203,6 +222,7 @@ class TurnLoop:
             return "failed"
         finally:
             self.evidence.pop(key, None)
+            self.steps.pop(key, None)
 
 
 class Dispatcher:

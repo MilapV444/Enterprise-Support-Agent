@@ -38,7 +38,9 @@ def triage(engine, masked_state, fallback=None):
         except JevUnavailable:
             return ASK_CUSTOMER
     intent, severity = answers["intent"].value, answers["severity"].index  # most likely severity level
-    confidence = min(answers["intent"].confidence, answers["severity"].confidence)
+    # Route on how sure we are of the intent; severity only sets acuity. A spread over severity levels
+    # ("I forgot my password": Low or Significant?) is not doubt about what the customer wants.
+    confidence = answers["intent"].confidence
     if source == "fallback":
         confidence = min(confidence, FALLBACK_MAX_CONFIDENCE)
     if intent in SOP_INTENTS:

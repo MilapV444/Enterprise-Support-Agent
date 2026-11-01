@@ -72,9 +72,9 @@ def test_triage_maps_typed_answers_onto_acuity():
     assert (outage["acuity"], outage["sop_name"]) == (5, None)
 
 
-def test_confidence_is_the_weakest_answer():
-    answers = {**triage_answers(), "severity": Answer(1.0, 0.6, 1)}
-    assert triage(DecisionEngine(FakeJev(answers)), MESSAGE)["confidence"] == 0.6
+def test_confidence_is_the_intent_confidence_not_severity():
+    answers = {**triage_answers(), "severity": Answer(1.0, 0.19, 2)}
+    assert triage(DecisionEngine(FakeJev(answers)), MESSAGE)["confidence"] == 0.95
 
 
 def test_jev_down_uses_the_fallback_classifier_capped_below_sop_confidence():
