@@ -15,7 +15,7 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: f9ba761d27350512b3c9e0ea4a02c1f26af124d807e5ae7afc6ed076569c29e0. Use --since only after receiving that full packet; kickoff is not the packet.
+Context fingerprint: c780f987a480a9bcbd0facca0ce3263ef43206bfa65c9363019416be7f9b5043. Use --since only after receiving that full packet; kickoff is not the packet.
 - KNOWLEDGE-7ca2df6e: Open issues register (single source; update by superseding)
 - KNOWLEDGE-7ed7e471: AGENT-02 specialists read the customer's records through the audited executor
 - KNOWLEDGE-0edf0ca8: AGENT-01 demo Nimbus systems, read-only tool catalog, executor audit
