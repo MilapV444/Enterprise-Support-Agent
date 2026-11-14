@@ -2090,15 +2090,15 @@
 
 ### LG-01 — Case state store replacing the LangGraph checkpointer (DECISION-bc6301b4): a case_state table (tenant, case, JSONB state, version, updated_at; RLS like the other case tables) with a Postgres store and an in-memory store for tests; load/save per (tenant, case), optimistic version check; path, messages and trajectory keep append semantics; nothing uses it yet
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-18, FR-2
 - scope: src/core/orchestrator/, src/schemas/thread_state.py, migrations/main/, tests/contracts/
-- gates: tests: python -m pytest tests/contracts -q, independent-review: pending
+- gates: tests: python -m pytest tests/contracts -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### LG-02 — Statechart without LangGraph: statechart.build keeps every node function and TRANSITIONS, replaces StateGraph with a loop (run node, merge with append semantics, save to the case store, follow next_stage), keeps the invoke/get_state shape; invoke(None) resumes a crashed turn from its last saved stage; runtime Services and production wire the case store instead of PostgresSaver; tests drop InMemorySaver
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-1, FR-18
 - scope: src/core/orchestrator/statechart.py, src/runtime/, tests/orchestrator/, tests/contracts/, tests/invariants/, tests/decisions/, tests/runtime/, tests/load/, tests/e2e/
 - gates: tests: python -m pytest tests/orchestrator tests/contracts tests/invariants tests/decisions tests/runtime tests/load/test_chaos.py tests/e2e -q, independent-review: pending

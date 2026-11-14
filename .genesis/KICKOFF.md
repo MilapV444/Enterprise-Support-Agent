@@ -4,7 +4,7 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: LG-01 — Case state store replacing the LangGraph checkpointer (DECISION-bc6301b4): a case_state table (tenant, case, JSONB state, version, updated_at; RLS like the other case tables) with a Postgres store and an in-memory store for tests; load/save per (tenant, case), optimistic version check; path, messages and trajectory keep append semantics; nothing uses it yet
+- active task: LG-02 — Statechart without LangGraph: statechart.build keeps every node function and TRANSITIONS, replaces StateGraph with a loop (run node, merge with append semantics, save to the case store, follow next_stage), keeps the invoke/get_state shape; invoke(None) resumes a crashed turn from its last saved stage; runtime Services and production wire the case store instead of PostgresSaver; tests drop InMemorySaver
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: cef3a371ebc9ef81c1081a9030ec8393adfb97aa4d8662ca7fd6c6b3493baf21. Use --since only after receiving that full packet; kickoff is not the packet.
+Context fingerprint: 6dd1ecc7af0f7e2a89bebb5df78b01fb4cce31472b87ec6b646fdfe384ced59b. Use --since only after receiving that full packet; kickoff is not the packet.
 - KNOWLEDGE-3853dc49: LangGraph removal: drafted tasks LG-00..LG-05 (not yet in the plan)
 - KNOWLEDGE-f0010a0b: Open issues register (single source; update by superseding)
-- KNOWLEDGE-8bde2972: M5-06.7 VM deployment: image, compose layer, rollout / rollback, migrate, re-index, spend
+- KNOWLEDGE-8e930ef2: M5-05.7 mocked-model harness, invariants, injection set, contracts, checkpoints, load and chaos
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

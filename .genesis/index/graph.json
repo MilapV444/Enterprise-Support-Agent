@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "e070dcd51dc6f8d662245870133459f5b14d97bd",
-  "sourceHash": "dcd6a6a600f1ec656aabd0e020b8c12c8da74bbce923599c25c37f014b30412e",
+  "revision": "4a7e078b0f8bfca98d5735e9feed5c54d30040bd",
+  "sourceHash": "987483cbe95a1c5861a33acb06f63e4965b7e81db8bcaec7231b2c0d38eb17b2",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -598,6 +598,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "7cc528335e58e7d4425f18c26d5c4dfc9f48f408740f7525e8b31af9077383a0"
+    },
+    {
+      "id": "file:src/core/orchestrator/case_state.py",
+      "type": "file",
+      "label": "src/core/orchestrator/case_state.py",
+      "path": "src/core/orchestrator/case_state.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "82120fe4dce9cea03818bee5e73fbfb6414016709f60f6013cc1b9ef337deac8"
     },
     {
       "id": "file:src/core/orchestrator/decisions.py",
@@ -1327,7 +1337,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "72ebb4f45af03cf3e31904c73dd0fc24b5b9c8e1049c1286271c5c2bb3da1f95"
+      "contentHash": "f4af7a49bc718471741cd3f99a9be58796fa3f6258a89f59b49b327aeb7c4bac"
     },
     {
       "id": "file:src/tools/audit.py",
@@ -1538,6 +1548,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "da2f7e36dcc773b0d3380a11587a35dcbb44d61ebbfd8227f207045a9fb9654a"
+    },
+    {
+      "id": "file:tests/contracts/test_case_state.py",
+      "type": "file",
+      "label": "tests/contracts/test_case_state.py",
+      "path": "tests/contracts/test_case_state.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "51973cb181f91aeacff08fa47dc6e8ff54b5a8de0fb476f72c745730659ba4df"
     },
     {
       "id": "file:tests/contracts/test_checkpoints.py",

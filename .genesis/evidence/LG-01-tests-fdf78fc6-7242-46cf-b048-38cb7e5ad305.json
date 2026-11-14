@@ -1,0 +1,30 @@
+{
+  "task": "LG-01",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "fdf78fc6-7242-46cf-b048-38cb7e5ad305",
+  "command": "python -m pytest tests/contracts -q",
+  "started_at": "2026-11-14T17:26:44.725Z",
+  "observed_at": "2026-11-14T17:27:00.297Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 49%]\r\n........................................................................ [ 99%]\r\n.                                                                        [100%]\r\n145 passed in 11.99s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "4a7e078b0f8bfca98d5735e9feed5c54d30040bd",
+    "dirty": true
+  },
+  "source_hash": "7b464d3479df58157efd66f8a915ea1d38e3ced444c0a2263539b5fe86f61e5c",
+  "before_hash": "7b464d3479df58157efd66f8a915ea1d38e3ced444c0a2263539b5fe86f61e5c",
+  "config_hash": "cd1ee554db061f933cc40bb625ef52638a40aac01254218fbed2dc07d87497f5",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "7f37cf55afdfc363462b9036a28a1ed80469c5f8e10d6e08286b79da492358d0"
+}

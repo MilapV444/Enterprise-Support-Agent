@@ -1,7 +1,8 @@
 """State of one case's orchestrator thread (ADP-01 state schema; MS-ADP-04 MS-D8, MS-D13).
 
-The LangGraph Postgres checkpointer stores this state and is the single source of truth (MS-D8). Values are
-plain JSON (no custom classes) so any checkpoint can be read back. Every state carries schema_version; a state
+The case state store (core.orchestrator.case_state, DECISION-bc6301b4) keeps this state and is the single
+source of truth (MS-D8); merge() applies a node's update. Values are plain JSON (no custom classes) so any
+saved state can be read back. Every state carries schema_version; a state
 from an older version is upgraded through MIGRATIONS, and one with no migration path goes to a human (MS-D13).
 """
 
@@ -74,6 +75,17 @@ class ThreadState(TypedDict, total=False):
     next_stage: str | None                           # routing decision of the last node
     error: str | None
     final_response: str | None
+
+
+APPEND = ("path", "messages", "trajectory")  # the list fields above that grow; every other field is replaced
+
+
+def merge(state, update):
+    """`state` with a node's `update` applied: APPEND fields are extended, every other field is replaced."""
+    merged = dict(state)
+    for name, value in update.items():
+        merged[name] = [*(state.get(name) or []), *value] if name in APPEND else value
+    return merged
 
 
 class UnsupportedSchema(ValueError):

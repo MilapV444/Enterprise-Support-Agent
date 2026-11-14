@@ -60,6 +60,7 @@ digraph genesis {
   "file:src/core/context/__init__.py" [label="src/core/context/__init__.py",class="file"];
   "file:src/core/context/assembler.py" [label="src/core/context/assembler.py",class="file"];
   "file:src/core/context/budget.py" [label="src/core/context/budget.py",class="file"];
+  "file:src/core/orchestrator/case_state.py" [label="src/core/orchestrator/case_state.py",class="file"];
   "file:src/core/orchestrator/decisions.py" [label="src/core/orchestrator/decisions.py",class="file"];
   "file:src/core/orchestrator/planner.py" [label="src/core/orchestrator/planner.py",class="file"];
   "file:src/core/orchestrator/statechart.py" [label="src/core/orchestrator/statechart.py",class="file"];
@@ -154,6 +155,7 @@ digraph genesis {
   "file:tests/channels/test_api.py" [label="tests/channels/test_api.py",class="file"];
   "file:tests/channels/test_trace.py" [label="tests/channels/test_trace.py",class="file"];
   "file:tests/context/test_assembler.py" [label="tests/context/test_assembler.py",class="file"];
+  "file:tests/contracts/test_case_state.py" [label="tests/contracts/test_case_state.py",class="file"];
   "file:tests/contracts/test_checkpoints.py" [label="tests/contracts/test_checkpoints.py",class="file"];
   "file:tests/contracts/test_policy_lints.py" [label="tests/contracts/test_policy_lints.py",class="file"];
   "file:tests/contracts/test_schema_contracts.py" [label="tests/contracts/test_schema_contracts.py",class="file"];

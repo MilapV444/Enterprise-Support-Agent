@@ -1,0 +1,13 @@
+{
+  "task": "LG-01",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "a4364472-31e2-4d6a-b81e-db18bbc787c2",
+  "human": "Intelligent_developer_123",
+  "reason": "Reviewed the case_state store, merge() and contract tests; gate passed",
+  "observed_at": "2026-11-14T17:27:40.406Z",
+  "source_hash": "7b464d3479df58157efd66f8a915ea1d38e3ced444c0a2263539b5fe86f61e5c",
+  "config_hash": "cd1ee554db061f933cc40bb625ef52638a40aac01254218fbed2dc07d87497f5",
+  "reviewed_proofs": "f3c992de5b0deb3c2d2e8844d586a2a2bb884d62b52356ae414155d5b934691d",
+  "hash": "7fea7226049b3ac650c6fc1c3339a8cbaef490f4e753867833f97305571a33fe"
+}
