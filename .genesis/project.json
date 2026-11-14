@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-14T16:58:00.319Z"
+    "updated_at": "2026-11-14T17:02:16.589Z"
   },
   "policy": {
     "ponytail": "full",
@@ -23,11 +23,11 @@
     }
   },
   "lifecycle": {
-    "phase": "build",
-    "status": "active",
-    "active_task": "SWEEP-07",
+    "phase": "verify",
+    "status": "ready",
+    "active_task": null,
     "blocker": null,
-    "next_action": "Run the task pre-flight."
+    "next_action": "Review completed work and choose the next bounded outcome."
   },
   "commands": {},
   "workflow": {
@@ -36793,7 +36793,7 @@
     {
       "id": "SWEEP-07",
       "outcome": "Fix register B25 (redirect check becomes a Jev choice self_service / hand_off / both; hold on hand_off or both at 0.5 or more, redraft once, then a person; the choice, its confidence and a masked excerpt of a rejected draft go in the internal trace) and B26 (Retriever.restricted_match: ID-only probe of restricted articles before triage; restricted beats readable and scores 0.65 or more -> no clarifying question, hand-off naming the owning team, queue from acl_groups in the trace)",
-      "state": "active",
+      "state": "done",
       "risk": "medium",
       "owner": null,
       "scope": [
@@ -36847,8 +36847,14 @@
           "kind": "review",
           "command": "",
           "mandatory": true,
-          "status": "pending",
-          "evidence": null
+          "status": "pass",
+          "evidence": {
+            "path": ".genesis/evidence/SWEEP-07-independent-review-e5b5f603-4e22-4851-8212-45cea850fcc4.json",
+            "hash": "3a5d00741c73df17c40eb67d9819fc6d1a11e707957b615413a25550411df70d",
+            "source_hash": "068463dbabd0e2290422cb7dec780b326f809187b1c7a991c00a1c1ecc02c91a",
+            "config_hash": "836fe23b465708658f0a33cd013f9f3d642f4c9008ba503d1d1da06b02f9587b",
+            "observed_at": "2026-11-14T17:02:13.937Z"
+          }
         }
       ],
       "next_action": "Run the task pre-flight.",
@@ -36857,7 +36863,7 @@
       "failures": [],
       "limitations": [],
       "created_at": "2026-11-14T16:48:33.527Z",
-      "updated_at": "2026-11-14T16:48:33.533Z",
+      "updated_at": "2026-11-14T17:02:14.914Z",
       "base_manifest": {
         ".env.example": "b29825a0670254a3e95845781c7370c40cde46c10e347adf177ae3871ac2cbbf",
         ".github/workflows/ci.yml": "356172f3ce1637a5d2b5a579592ac77af3835abf63f5ce7deacb492258df1ea4",
@@ -39746,6 +39752,15 @@
       "human": "Intelligent_developer_123",
       "reason": "Replaced by SWEEP-07 before any work: the redirect change must also update tests/e2e/test_scenario_multiagent.py, which scripts the old yes/no redirect answer",
       "revision": null
+    },
+    {
+      "id": "e5b5f603-4e22-4851-8212-45cea850fcc4",
+      "at": "2026-11-14T17:02:13.937Z",
+      "action": "approve",
+      "task": "SWEEP-07",
+      "human": "Intelligent_developer_123",
+      "reason": "Reviewed SWEEP-07 diff, gate proof (319 passed) and live re-test on the VM (Q12/Q13/new staff-only to their teams, ordinary answered; Q14, Q27, new own-admin answered; Q23 still handed off, known)",
+      "revision": null
     }
   ],
   "attempts": [
@@ -42630,14 +42645,14 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-14T16:57:59.769Z",
+    "at": "2026-11-14T17:02:16.172Z",
     "revision": {
-      "commit": "0d8f4db145bd0c449526a3de51a66762ce621f29",
+      "commit": "52b1cd367b2c4feaf5c4a5e477a404bd58c6d9a5",
       "dirty": true,
       "source_hash": "068463dbabd0e2290422cb7dec780b326f809187b1c7a991c00a1c1ecc02c91a"
     },
-    "active_task": "SWEEP-07",
-    "next_action": "Run the task pre-flight."
+    "active_task": null,
+    "next_action": "Review completed work and choose the next bounded outcome."
   },
   "legacy": null
 }

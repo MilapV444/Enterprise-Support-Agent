@@ -1,0 +1,13 @@
+{
+  "task": "SWEEP-07",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "e5b5f603-4e22-4851-8212-45cea850fcc4",
+  "human": "Intelligent_developer_123",
+  "reason": "Reviewed SWEEP-07 diff, gate proof (319 passed) and live re-test on the VM (Q12/Q13/new staff-only to their teams, ordinary answered; Q14, Q27, new own-admin answered; Q23 still handed off, known)",
+  "observed_at": "2026-11-14T17:02:13.937Z",
+  "source_hash": "068463dbabd0e2290422cb7dec780b326f809187b1c7a991c00a1c1ecc02c91a",
+  "config_hash": "836fe23b465708658f0a33cd013f9f3d642f4c9008ba503d1d1da06b02f9587b",
+  "reviewed_proofs": "a7b95892f2d8c985f7012158eea827fdd94a93063d23dfc4e4d9e226f90d5eb3",
+  "hash": "3a5d00741c73df17c40eb67d9819fc6d1a11e707957b615413a25550411df70d"
+}
