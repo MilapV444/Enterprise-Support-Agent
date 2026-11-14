@@ -20,8 +20,8 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 ## Functional requirements
 ### Agent Orchestration Core & Runtime
 
-- FR-1: **ADP-01 Planning paradigm** — Hybrid dual-process statechart — deterministic LangGraph FSM for SOPs + scoped ReAct for diagnostics. Covers ADP-01. Detail: [`ADP-01`](docs/decisions/adp/00-orchestration-core/ADP-01-planning-paradigm.md).
-- FR-2: **ADP-02 Workflow durability** — Temporal outer saga for durability, timers and approvals + LangGraph inner cognitive loop. Covers ADP-02. Detail: [`ADP-02`](docs/decisions/adp/00-orchestration-core/ADP-02-workflow-durability.md).
+- FR-1: **ADP-01 Planning paradigm** — Hybrid dual-process statechart — deterministic FSM for SOPs (a plain Python loop over a guarded transition table; no LangGraph, DECISION-bc6301b4) + scoped ReAct for diagnostics. Covers ADP-01. Detail: [`ADP-01`](docs/decisions/adp/00-orchestration-core/ADP-01-planning-paradigm.md).
+- FR-2: **ADP-02 Workflow durability** — Temporal runs every case: one workflow per case for durability, timers, approvals and sagas; each customer turn is one retried `run_turn` activity that runs the statechart in plain Python (no LangGraph, DECISION-bc6301b4 amends ADP-02). Covers ADP-02. Detail: [`ADP-02`](docs/decisions/adp/00-orchestration-core/ADP-02-workflow-durability.md).
 - FR-3: **ADP-03 Context engineering** — Tripartite slot allocator — 15 % system · 15 % profile · 35 % knowledge · 25 % dialogue · 10 % scratchpad. Covers ADP-03. Detail: [`ADP-03`](docs/decisions/adp/00-orchestration-core/ADP-03-context-engineering.md).
 - FR-4: **ADP-04 Error recovery & replanning** — Dual-process circuit breaker — max 2 Reflexion trials, a Jev step-success check, then human handoff. Covers ADP-04. Detail: [`ADP-04`](docs/decisions/adp/00-orchestration-core/ADP-04-error-recovery-replanning.md).
 - FR-5: **ADP-05 Decision model (Jev)** — Jev (TypeSafe) at triage, FSM guards and tool selection; code owns control flow; numbers and dates stay in code. Covers ADP-05. Detail: [`ADP-05`](docs/decisions/adp/00-orchestration-core/ADP-05-decision-model-jev.md).
@@ -46,7 +46,7 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 - FR-15: **MS-ADP-01 Conversation & case model** — Session → conversation → case (Jev links cases); last N turns verbatim + rolling summary + pinned items. Covers MS-D1, MS-D2. Detail: [`MS-ADP-01`](docs/decisions/adp/03-memory-state/MS-ADP-01-conversation-case-model.md).
 - FR-16: **MS-ADP-02 Long-term fact model** — Per-user facts only, with validity dates; account facts are never stored — always read from the CRM. Covers MS-D3, MS-D4, MS-D6. Detail: [`MS-ADP-02`](docs/decisions/adp/03-memory-state/MS-ADP-02-long-term-fact-model.md).
 - FR-17: **MS-ADP-03 Fact write path** — Extract at resolution from user turns + allow-listed tool fields; skip plans and third-party facts; Jev reconciles on masked text. Covers MS-D5, MS-D12, MS-D15, MS-D16, MS-D17, MS-D19. Detail: [`MS-ADP-03`](docs/decisions/adp/03-memory-state/MS-ADP-03-fact-write-path.md).
-- FR-18: **MS-ADP-04 Agent state & durability** — LangGraph checkpointer is the truth; checkpoints per node and around side effects; versioned with migrations; re-check after waits > 1 h. Covers MS-D7, MS-D8, MS-D9, MS-D13, MS-D18. Detail: [`MS-ADP-04`](docs/decisions/adp/03-memory-state/MS-ADP-04-agent-state-durability.md).
+- FR-18: **MS-ADP-04 Agent state & durability** — The case's state row in Postgres is the truth (DECISION-bc6301b4); saved after every stage and around side effects; versioned with migrations; re-check after waits > 1 h. Covers MS-D7, MS-D8, MS-D9, MS-D13, MS-D18. Detail: [`MS-ADP-04`](docs/decisions/adp/03-memory-state/MS-ADP-04-agent-state-durability.md).
 - FR-19: **MS-ADP-05 Retention & erasure** — Fixed TTL per memory type; back-office erasure / correction in v1; an erasure inventory covering every store. Covers MS-D10, MS-D11, MS-D14. Detail: [`MS-ADP-05`](docs/decisions/adp/03-memory-state/MS-ADP-05-retention-erasure.md).
 
 ### [4] Tools & Actions
@@ -59,7 +59,7 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 
 ### [5] Multi-Agent & Communication
 
-- FR-25: **MA-ADP-01 Topology & specialist set** — A coordinator + Generalist, Billing, Technical, Account & Ops specialists as LangGraph subgraphs; static registry. Covers MA-D1, MA-D2, MA-D10, MA-D11. Detail: [`MA-ADP-01`](docs/decisions/adp/05-multi-agent-communication/MA-ADP-01-topology-specialist-set.md).
+- FR-25: **MA-ADP-01 Topology & specialist set** — A coordinator + Generalist, Billing, Technical, Account & Ops specialists, each a bounded step loop run in parallel inside the turn (DECISION-bc6301b4); static registry. Covers MA-D1, MA-D2, MA-D10, MA-D11. Detail: [`MA-ADP-01`](docs/decisions/adp/05-multi-agent-communication/MA-ADP-01-topology-specialist-set.md).
 - FR-26: **MA-ADP-02 Delegation & limits** — Jev picks the lead and extra specialists; parallel if independent; depth 1, ≤ 5 specialists, 2 steps each, 6 per turn. Covers MA-D3, MA-D6, MA-D8. Detail: [`MA-ADP-02`](docs/decisions/adp/05-multi-agent-communication/MA-ADP-02-delegation-limits.md).
 - FR-27: **MA-ADP-03 Inter-agent contracts & context** — Typed task / result contracts via the coordinator; a brief plus on-demand reads of the conversation. Covers MA-D4, MA-D5. Detail: [`MA-ADP-03`](docs/decisions/adp/05-multi-agent-communication/MA-ADP-03-inter-agent-contracts-context.md).
 - FR-28: **MA-ADP-04 Specialist permissions & writes** — Own identity and allow-list; low-risk writes directly only when running alone; higher-risk writes proposed; actions reported only after verification. Covers MA-D9, MA-D14, MA-D18. Detail: [`MA-ADP-04`](docs/decisions/adp/05-multi-agent-communication/MA-ADP-04-specialist-permissions-writes.md).
@@ -155,7 +155,7 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 - **Purpose and budget:** learning project, not sold to businesses; total spend ≤ **USD 10/month** (NFR-36).
 - **Target design vs. v1 runtime:** the ADPs keep the production target (AWS in US + EU, Kubernetes, multi-AZ, GPUs, KMS). v1 implements every requirement on the learning profile below; capabilities that only exist at production scale are listed under *Non-goals*.
 - **Models:** free tiers by default: Groq / Gemini free tiers (or Ollama on the VM) serve the easy and mid-difficulty turns, the fallback and most evaluation; Anthropic Claude serves only the hardest turns (frontier tier) under a hard USD 10 console spend limit, and when the limit is reached those turns fall back to the best free model; **Jev (TypeSafe)** for decision points (free tier if offered, else the RP-D5 fallback LLM classifier); the evaluation judge comes from a non-Claude family (Gemini free tier); screening via Llama Guard 3 1B on Ollama.
-- **Runtime stack:** Python; LangGraph (inner loop, Postgres checkpointer) inside Temporal (outer workflows); Qdrant; Cedar via open-source `cedarpy`; OpenTelemetry; Streamlit specialist console; Docker Compose. All images must run on **ARM64** (the Oracle free VM is Ampere ARM).
+- **Runtime stack:** Python; Temporal (one workflow per case, one activity per turn) with case state in Postgres; Qdrant; Cedar via open-source `cedarpy`; OpenTelemetry; Streamlit specialist console; Docker Compose. All images must run on **ARM64** (the Oracle free VM is Ampere ARM).
 
 **Learning deployment profile (v1 form of the production infrastructure):**
 
