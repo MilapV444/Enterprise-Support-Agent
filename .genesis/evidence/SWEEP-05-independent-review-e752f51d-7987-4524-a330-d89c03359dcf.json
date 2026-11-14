@@ -1,0 +1,13 @@
+{
+  "task": "SWEEP-05",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "e752f51d-7987-4524-a330-d89c03359dcf",
+  "human": "Intelligent_developer_123",
+  "reason": "Reviewed SWEEP-05 diff, gate proof (395 passed) and live re-test on the VM (Q16 answered, status read from the tool, Q12 not blocked, unsafe still blocked)",
+  "observed_at": "2026-11-14T16:04:21.104Z",
+  "source_hash": "667b7a27d4133a565cc55b2290b507cb6a0e31518dd1b42fd19d1a81a27b35d0",
+  "config_hash": "b132a2a2053fe6ac53197ff78a0f0be1998c861a52ba3ebc29f3f3cdbea2fdcf",
+  "reviewed_proofs": "9890c6ac5474fa1863c50ce715dd14254411011316e05c572b3d68f5b38c186a",
+  "hash": "8e7c49162777ca7e679955f61ea817028f569376075375d0c3d4bbfdcb85793e"
+}
