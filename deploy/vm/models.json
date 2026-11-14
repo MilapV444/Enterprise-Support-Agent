@@ -8,7 +8,7 @@
   "screening": {"provider": "ollama", "model": "llama-guard3:1b"},
   "tiers": {
     "0": {"provider": "groq", "model": "openai/gpt-oss-20b", "usd_per_mtok": [0, 0]},
-    "1": {"provider": "gemini", "model": "gemini-flash-latest", "usd_per_mtok": [0, 0]},
+    "1": {"provider": "gemini", "model": "gemini-3.5-flash-lite", "usd_per_mtok": [0, 0]},
     "2": {"provider": "anthropic", "model": "claude-opus-5-5", "usd_per_mtok": [4.0, 20.0]}
   },
   "monthly_cap_usd": 10
