@@ -18,6 +18,13 @@ from data.migrate import psql
 
 SCHEMA_NAME = "orchestrator_0001_case_state.sql"
 SCHEMA = """
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'lifecycle_service') THEN
+    CREATE ROLE lifecycle_service NOLOGIN;
+  END IF;
+END $$;
+
 CREATE TABLE case_state (
   tenant_id  text NOT NULL REFERENCES tenants (id),
   case_id    text NOT NULL,
@@ -34,6 +41,7 @@ CREATE POLICY tenant_isolation ON case_state
 
 ALTER TABLE case_state OWNER TO app_owner;
 GRANT SELECT, INSERT, UPDATE ON case_state TO app_runtime;
+GRANT SELECT, DELETE ON case_state TO lifecycle_service;  -- erasure and retention (memory.lifecycle)
 """
 
 

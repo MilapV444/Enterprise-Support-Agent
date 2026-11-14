@@ -26,7 +26,7 @@ from agents.topology import (
     start_turn,
 )
 from core.orchestrator.decisions import Answer, DecisionEngine, JevUnavailable, Masked, SecurityViolation
-from core.orchestrator.statechart import postgres_checkpointer, thread
+from core.orchestrator.statechart import thread
 from data.migrate import psql
 from tests.tools.execution.test_execution import Fake, build_registry, executor
 from tools.registry import Registry
@@ -503,7 +503,10 @@ def test_the_plan_and_results_survive_the_postgres_checkpointer():
     database = "test_agents_topology"
     psql("postgres", f'DROP DATABASE IF EXISTS "{database}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{database}"')
-    with postgres_checkpointer(f"postgresql://agent:change-me@127.0.0.1:5432/{database}") as saver:
+    from langgraph.checkpoint.postgres import PostgresSaver  # the coordinator's own, until LG-03.2
+
+    with PostgresSaver.from_conn_string(f"postgresql://agent:change-me@127.0.0.1:5432/{database}") as saver:
+        saver.setup()
         turn(Jev(needs={"billing": 0.9}), checkpointer=saver)
         saved = saver.get_tuple(thread("t_us", "case-7")).checkpoint["channel_values"]
     assert saved["outcome"] == "delegated" and roles(saved) == ["billing", "technical"]

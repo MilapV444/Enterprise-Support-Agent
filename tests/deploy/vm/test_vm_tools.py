@@ -23,6 +23,8 @@ ROOT = Path(__file__).resolve().parents[3]
 DB = "test_vm_tools"
 DSN = f"postgresql://agent:change-me@127.0.0.1:5432/{DB}"      # credentials from .env.example
 LOCK = json.loads((ROOT / "deploy" / "vm" / "models.json").read_text(encoding="utf-8"))
+PAID = next(spec for spec in LOCK["tiers"].values() if any(spec["usd_per_mtok"]))  # whichever model is pinned
+RATE_IN, RATE_OUT = (Decimal(str(p)) for p in PAID["usd_per_mtok"])
 
 
 def load(name):
@@ -98,10 +100,10 @@ def test_only_knowledge_collections_are_touched(name, scope):
 
 def test_the_ledger_is_priced_with_the_deployed_models_and_an_unpriced_model_is_reported():
     prices = spend.prices(LOCK)
-    assert prices["claude-opus-5-5"] == (Decimal("4.0"), Decimal("20.0"))
-    rows = [("claude-opus-5-5", 1_000_000, 100_000), ("openai/gpt-oss-20b", 9, 9), ("gpt-9", 5, 5)]
+    assert prices[PAID["model"]] == (RATE_IN, RATE_OUT)
+    rows = [(PAID["model"], 1_000_000, 100_000), ("openai/gpt-oss-20b", 9, 9), ("gpt-9", 5, 5)]
     total, unpriced = spend.month_spend(rows, prices)
-    assert total == Decimal("6") and unpriced == ["gpt-9"]
+    assert total == RATE_IN + RATE_OUT / 10 and unpriced == ["gpt-9"]
     lines, over = spend.verdict(total, unpriced, 10)
     assert over and "gpt-9" in lines[1]
     assert spend.verdict(Decimal("9.99"), [], 10) == (["model spend this month: 9.9900 USD of 10 USD"], False)
@@ -116,18 +118,21 @@ def ledger_db():
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
     budgets.apply_schema(DB)
+    over_cap = int(2 * LOCK["monthly_cap_usd"] / RATE_IN * 1_000_000)  # prompt tokens costing twice the cap
+    model = PAID["model"]
     psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'Globex', 'EU');"
-             "INSERT INTO usage_ledger VALUES ('t_us', '2026-10', 'claude-opus-5-5', 'faq', 1000000, 100000),"
-             "('t_eu', '2026-10', 'claude-opus-5-5', 'diagnostic', 500000, 50000),"
-             "('t_eu', '2026-09', 'claude-opus-5-5', 'faq', 9000000, 0)")
+             f"INSERT INTO usage_ledger VALUES ('t_us', '2026-10', '{model}', 'faq', 1000000, 100000),"
+             f"('t_eu', '2026-10', '{model}', 'diagnostic', 500000, 50000),"
+             f"('t_eu', '2026-09', '{model}', 'faq', {over_cap}, 0)")
     return DSN
 
 
 def test_the_spend_check_sums_every_tenant_for_the_month(ledger_db, monkeypatch, capsys):
     monkeypatch.setenv("DATABASE_URL", ledger_db)
     assert spend.main(["2026-10"]) == 0
-    assert "9.0000 USD of 10 USD" in capsys.readouterr().out          # 6 + 3; September is not counted
-    assert spend.main(["2026-09"]) == 1                                 # 36 USD: over the cap
+    october = Decimal("1.5") * (RATE_IN + RATE_OUT / 10)               # September is not counted
+    assert f"{october:.4f} USD of 10 USD" in capsys.readouterr().out
+    assert spend.main(["2026-09"]) == 1                                 # twice the cap
 
 
 # The migration helpers --------------------------------------------------------------------------------------
@@ -228,9 +233,9 @@ def test_the_vm_api_has_no_mock_sso_route_and_answers_its_health_check(ledger_db
         production.app({"SUPPORT_AGENT_DEV_AUTH": "1"})
 
 
-def test_the_api_runs_as_app_login_with_the_checkpointer_on_the_owner_login(ledger_db, monkeypatch):
+def test_the_api_runs_as_app_login_case_state_store_included(ledger_db, monkeypatch):
     """register S17: with APP_DATABASE_URL = app_login (no BYPASSRLS) the app starts and serves; the
-    statechart checkpointer keeps the owner DATABASE_URL: it creates tables, which app_login cannot."""
+    statechart's case state store is on app_login too (tenant RLS, no tables of its own to create)."""
     from channels import sessions
 
     sessions.apply_schema(DB)
@@ -239,10 +244,10 @@ def test_the_api_runs_as_app_login_with_the_checkpointer_on_the_owner_login(ledg
     monkeypatch.setenv("DATABASE_URL", ledger_db)
     monkeypatch.setenv("APP_DATABASE_URL", ledger_db.replace("//agent:", "//app_login:", 1))
     monkeypatch.setenv("PII_TOKEN_KEY", "test-token-key")
-    owner_checkpointer, seen = production.checkpointer, []
-    monkeypatch.setattr(production, "checkpointer", lambda dsn: seen.append(dsn) or owner_checkpointer(dsn))
+    app_store, seen = production.store, []
+    monkeypatch.setattr(production, "store", lambda dsn: seen.append(dsn) or app_store(dsn))
     client = TestClient(production.app({"APP_REVISION": "r1"}))
-    assert seen == [ledger_db]
+    assert seen == [ledger_db.replace("//agent:", "//app_login:", 1)]
     assert client.get("/healthz").json() == {"status": "ok", "revision": "r1"}
     token = client.post("/v1/identity/anonymous", json={"tenant_id": "t_us"}).json()["access_token"]
     assert client.post("/v1/identity/logout", headers={"Authorization": f"Bearer {token}"}).status_code == 204

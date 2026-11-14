@@ -18,7 +18,6 @@ import httpx
 import psycopg
 import pytest
 from fastapi.testclient import TestClient
-from langgraph.checkpoint.memory import InMemorySaver
 from qdrant_client import QdrantClient
 
 from channels import sessions
@@ -27,6 +26,8 @@ from channels.api.envelope import InboundTurn
 from channels.identity import otp
 from channels.identity.server import build_app
 from channels.identity.service import Identity
+from core.orchestrator import case_state
+from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.decisions import DecisionEngine, JevClient
 from cost.router import Router
 from data import events
@@ -135,7 +136,7 @@ def stack():
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
-    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus):
+    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus, case_state):
         module.apply_schema(DB)
     psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'G', 'EU')")
     for tenant, principal, company in (("t_us", "sarah", "Acme"), ("t_us", "bob", "Bobco"),
@@ -170,7 +171,7 @@ def loop(stack, world, jev=True, tools=False):
                                                         audit=AuditLog(connect, lambda: None))}
     return TurnLoop(Services(engine=engine, router=router, retriever=retriever, screener=screener,
                              tokens=Tokenizer(b"runtime-test-key"), complete=complete, connect=connect,
-                             checkpointer=InMemorySaver(), decisions=DecisionLog(connect), **extra))
+                             store=MemoryStore(), decisions=DecisionLog(connect), **extra))
 
 
 def inbound(text, conversation=None, tier="T0_ANON", principal="anon:1", tenant="t_us", session=None):
@@ -412,11 +413,9 @@ def test_tiers_come_from_the_lock_and_only_the_keys_that_are_set():
     assert production.tiers(LOCK, {}) == [[], [], []]
 
 
-def test_a_small_model_outage_reads_as_no_answer_and_the_session_store_skips_the_pooler():
+def test_a_small_model_outage_reads_as_no_answer():
     with pytest.raises(ValueError, match="no small model answered"):
         production.small_model([[], []])("hi")
-    assert production.direct("postgresql://u:p@ep-x-pooler.eu.aws.neon.tech/db") == \
-        "postgresql://u:p@ep-x.eu.aws.neon.tech/db"
 
 
 def test_the_app_refuses_header_sign_in():
@@ -424,17 +423,14 @@ def test_the_app_refuses_header_sign_in():
         production.app({"SUPPORT_AGENT_DEV_AUTH": "1"})
 
 
-def test_the_checkpointer_survives_its_connections_being_dropped(stack):
+def test_the_case_state_store_survives_its_connections_being_dropped(stack):
     """Neon closes idle connections when its compute suspends; the pool checks each one before use."""
-    from core.orchestrator.statechart import thread as case_thread
-
-    saver = production.checkpointer(DSN, max_size=2)
-    config = case_thread("t_us", "c-drop")
-    assert saver.get_tuple(config) is None
+    store = production.store(DSN, max_size=2)
+    assert store.save("t_us", "c-drop", {"stage": "TRIAGED"}, 0) == 1
     psql(DB, "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = current_database() "
              "AND pid <> pg_backend_pid()")
-    assert saver.get_tuple(config) is None                      # a fresh connection, no error
-    saver.conn.close()
+    assert store.load("t_us", "c-drop") == ({"stage": "TRIAGED"}, 1)  # a fresh connection, no error
+    store.connect.__self__.close()                                       # the pool
 
 
 @pytest.mark.parametrize("configured, expected", [

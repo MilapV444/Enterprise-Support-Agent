@@ -3,9 +3,9 @@
 
 Erased, keyed on (tenant_id, principal_id):
     temporal      ticket workflow histories of the user's cases
-    checkpoints   LangGraph state of the user's cases
-    postgres      facts, dialogue turns / summaries / pins, the event log, submitted turns, one-time codes,
-                  conversations, the user's own cases and sessions
+    postgres      the case state of the user's own cases and conversations (the turn loop keys a case by its
+                  conversation), facts, dialogue turns / summaries / pins, the event log, submitted turns,
+                  one-time codes, conversations, the user's own cases and sessions
     vault         the PII values behind every token found in the user's data
     keys          the user's data keys (crypto-shredding: tool audit payloads and any copy restored from a
                   backup become unreadable)
@@ -48,11 +48,11 @@ from data.keys import KeyShredded, decrypt_field
 from data.migrate import psql
 from safety.pii.tokens import TOKEN, find
 
-STORES = ["temporal", "checkpoints", "postgres", "vault", "keys"]
+STORES = ["temporal", "postgres", "vault", "keys"]
 DELETE_WAIT = 30  # seconds to wait for Temporal's asynchronous deletion before retrying the activity
-CHECKPOINT_TABLES = ["checkpoint_writes", "checkpoint_blobs", "checkpoints"]
 OWN_CONVERSATIONS = "SELECT id FROM conversations WHERE tenant_id = %(t)s AND principal_id = %(p)s"
 POSTGRES = [  # (table, predicate), children before parents; every predicate names tenant and principal
+    ("case_state", f"tenant_id = %(t)s AND (case_id = ANY(%(cases)s) OR case_id IN ({OWN_CONVERSATIONS}))"),
     ("user_facts", "tenant_id = %(t)s AND principal_id = %(p)s"),
     ("dialogue_pins", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
     ("dialogue_summaries", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
@@ -257,18 +257,6 @@ class ErasureActivities:
                     raise
         return left
 
-    def _threads(self, request, plan):
-        return [f"{request.tenant_id}:{case}" for case in plan.case_ids]
-
-    def _checkpoint_tables(self, conn):
-        return [t for t in CHECKPOINT_TABLES if conn.execute("SELECT to_regclass(%s)", (t,)).fetchone()[0]]
-
-    def _purge_checkpoints(self, request, plan):
-        with self._main() as conn, conn.transaction():
-            return sum(conn.execute(f"DELETE FROM {table} WHERE thread_id = ANY(%s)",
-                                    (self._threads(request, plan),)).rowcount
-                       for table in self._checkpoint_tables(conn))
-
     def _purge_postgres(self, request, plan):
         args = {"t": request.tenant_id, "p": request.principal_id, "cases": plan.case_ids}
         with self._main() as conn, conn.transaction():
@@ -298,11 +286,6 @@ class ErasureActivities:
         t, p = request.tenant_id, request.principal_id
         args = {"t": t, "p": p, "cases": plan.case_ids}
         residual = {}
-        with self._main() as conn, conn.transaction():
-            residual["checkpoints"] = sum(
-                conn.execute(f"SELECT count(*) FROM {table} WHERE thread_id = ANY(%s)",
-                             (self._threads(request, plan),)).fetchone()[0]
-                for table in self._checkpoint_tables(conn))
         with self._main() as conn, conn.transaction():
             context(conn, t, p)
             residual["postgres"] = sum(conn.execute(f"SELECT count(*) FROM {table} WHERE {where}",

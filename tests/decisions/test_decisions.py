@@ -18,7 +18,7 @@ from core.orchestrator.decisions import (
     mask,
     parse_answer,
 )
-from core.orchestrator.statechart import build
+from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import ASK_CUSTOMER, FALLBACK_MAX_CONFIDENCE, llm_fallback, triage, triage_hook
 
 MESSAGE = {"message": Masked("My last invoice charged me twice")}
@@ -208,7 +208,8 @@ def run_case(jev, fallback=None):
              "execute_sop": lambda s: {"response": "ok"},
              "react_step": lambda s: {"thought": "kb", "outcome": "answer", "answer": "ok"}}
     return build(hooks).invoke({"tenant_id": "t_us", "case_id": "c1", "session_id": "s1",
-                                "event": {"type": "USER_MESSAGE", "text": "I was charged twice, a@b.com"}})
+                                "event": {"type": "USER_MESSAGE", "text": "I was charged twice, a@b.com"}},
+                               thread("t_us", "c1"))
 
 
 def test_typed_answers_drive_statechart_routing():

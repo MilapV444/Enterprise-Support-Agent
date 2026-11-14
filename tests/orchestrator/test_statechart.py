@@ -1,15 +1,18 @@
 """M1-04: statechart transitions, scoped ReAct bounds, waits, schema versions and crash-resume from the
-Postgres checkpointer (FR-1, FR-18)."""
+Postgres case state store (FR-1, FR-18; LG-02.2)."""
 
 import subprocess
 from itertools import pairwise
 from pathlib import Path
 
+import psycopg
 import pytest
 
+from core.orchestrator import case_state, statechart
+from core.orchestrator.case_state import PostgresStore
 from core.orchestrator.planner import MAX_STEPS
-from core.orchestrator.statechart import IllegalTransition, allowed, build, postgres_checkpointer, thread
-from data.migrate import psql
+from core.orchestrator.statechart import IllegalTransition, allowed, build, thread
+from data.migrate import migrate, psql
 from schemas import thread_state
 from schemas.thread_state import SCHEMA_VERSION, Stage
 
@@ -26,12 +29,25 @@ def database():
                     "up", "-d", "--wait", "postgres"], cwd=ROOT, check=True, capture_output=True)
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
+    migrate("main", DB)
+    case_state.apply_schema(DB)
+    psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US')")
+
+
+def connect():
+    return psycopg.connect(DSN, autocommit=True)
 
 
 @pytest.fixture
 def saver():
-    with postgres_checkpointer(DSN) as checkpointer:
-        yield checkpointer
+    return PostgresStore(connect)
+
+
+def put(store, config, **values):
+    """Overwrite fields of a case's saved state, as an operator or an older release would have left it."""
+    key = (config["configurable"]["tenant_id"], config["configurable"]["case_id"])
+    state, version = store.load(*key)
+    store.save(*key, {**state, **values}, version)
 
 
 class Hooks(dict):
@@ -152,12 +168,24 @@ def test_a_crashed_run_resumes_from_its_last_checkpoint(saver):
     hooks, config = Hooks(sop=flaky), thread("t_us", "c8")
     with pytest.raises(RuntimeError, match="worker died"):
         build(hooks, saver).invoke(start("c8"), config)
-    with postgres_checkpointer(DSN) as fresh:  # a new process: new connection, new graph
-        snapshot = build(hooks, fresh).get_state(config)
-        assert snapshot.values["stage"] == "COLLECTING_PARAMS" and snapshot.next == ("EXECUTING_SOP",)
-        state = build(hooks, fresh).invoke(None, config)
+    fresh = PostgresStore(connect)  # a new process: new store, new statechart
+    saved = build(hooks, fresh).get_state(config)
+    assert saved["stage"] == "COLLECTING_PARAMS" and saved["pending"] == "EXECUTING_SOP"
+    state = build(hooks, fresh).invoke(None, config)
     assert state["path"] == ["INGESTED", "TRIAGED", "COLLECTING_PARAMS", "EXECUTING_SOP", "RESOLVED"]
     assert (hooks.calls["triage"], hooks.calls["collect"], hooks.calls["execute_sop"]) == (1, 1, 2)
+
+
+@pytest.mark.parametrize("limit, finishes", [(6, True), (5, False)])
+def test_a_run_is_bounded_in_nodes(saver, monkeypatch, limit, finishes):
+    """The SOP path is six nodes (resume and five stages): exactly the limit finishes, one more is refused."""
+    monkeypatch.setattr(statechart, "MAX_NODES", limit)
+    graph, config = build(Hooks(), saver), thread("t_us", f"c-bound-{limit}")
+    if finishes:
+        assert graph.invoke(start("c-bound"), config)["stage"] == "RESOLVED"
+    else:
+        with pytest.raises(RuntimeError, match="more than 5 nodes"):
+            graph.invoke(start("c-bound"), config)
 
 
 def test_diagnosis_takes_bounded_steps_and_answers(saver):
@@ -200,7 +228,7 @@ def test_illegal_transitions_are_refused(saver):
     assert not allowed("ESCALATED_HITL", Stage.ESCALATED_HITL)
     graph, config = build(Hooks(), saver), thread("t_us", "c14")
     graph.invoke(start("c14"), config)
-    graph.update_state(config, {"next_stage": "EXECUTING_SOP"}, as_node="RESOLVED")
+    put(saver, config, pending="EXECUTING_SOP")  # a run that would leave RESOLVED for EXECUTING_SOP
     with pytest.raises(IllegalTransition, match="RESOLVED -> EXECUTING_SOP"):
         graph.invoke(None, config)
 
@@ -218,13 +246,13 @@ def test_events_that_do_not_fit_the_stage_change_nothing(saver):
 def test_unknown_schema_versions_go_to_a_human_and_known_ones_migrate(saver, monkeypatch):
     graph, config = build(Hooks(), saver), thread("t_us", "c17")
     graph.invoke(start("c17"), config)
-    graph.update_state(config, {"schema_version": 99})
+    put(saver, config, schema_version=99)
     state = graph.invoke(start("c17"), config)
     assert state["stage"] == "ESCALATED_HITL" and "schema version 99" in state["error"]
     monkeypatch.setitem(thread_state.MIGRATIONS, 0, lambda s: {"approval_threshold": 500.0})
     config = thread("t_us", "c18")
     graph.invoke(start("c18"), config)
-    graph.update_state(config, {"schema_version": 0})
+    put(saver, config, schema_version=0)
     migrated = graph.invoke(start("c18"), config)
     got = (migrated["schema_version"], migrated["approval_threshold"], migrated["stage"])
     assert got == (1, 500.0, "RESOLVED")

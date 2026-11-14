@@ -1,9 +1,11 @@
-"""System 1: the deterministic LangGraph statechart for one case (FR-1 / ADP-01; FR-18 / MS-ADP-04).
+"""System 1: the deterministic statechart for one case (FR-1 / ADP-01; FR-18 / MS-ADP-04).
 
 Every stage is a node. A node may only be entered through a transition listed in TRANSITIONS (the ADP-01 guard
-table); any non-terminal stage may also trip to ESCALATED_HITL (ADP-04). Waiting stages end the run with the
-state checkpointed; the next event (a customer message or an approval outcome) resumes it. A crashed run
-resumes from its last checkpoint with graph.invoke(None, thread(...)).
+table); any non-terminal stage may also trip to ESCALATED_HITL (ADP-04). A run is a plain loop (no LangGraph,
+DECISION-bc6301b4): run the node, merge its update (schemas.thread_state.merge), save the state to the case
+state store (core.orchestrator.case_state), follow next_stage. The saved state's `pending` names the node the
+run goes to next, so a crashed run resumes there with chart.invoke(None, thread(...)). Waiting stages end the
+run; the next event (a customer message or an approval outcome) resumes the case.
 
 The decisions inside the nodes are hooks, so the triage model (Jev), slot filling, SOP execution and the ReAct
 step plug in later without changing the graph:
@@ -14,13 +16,10 @@ step plug in later without changing the graph:
 """
 
 import time
-from contextlib import contextmanager
 
-from langgraph.checkpoint.postgres import PostgresSaver
-from langgraph.graph import END, START, StateGraph
-
+from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.planner import after_step
-from schemas.thread_state import Stage, Step, ThreadState, Triage, UnsupportedSchema, upgrade
+from schemas.thread_state import APPEND, Stage, Step, Triage, UnsupportedSchema, merge, upgrade
 
 S = Stage
 TRANSITIONS = {
@@ -37,6 +36,7 @@ TRANSITIONS = {
 TERMINAL = {S.ESCALATED_HITL}
 STALE_AFTER = 3600  # seconds of waiting after which the world is re-checked before acting (MS-D18)
 DEFAULT_APPROVAL_THRESHOLD = 1000.0
+MAX_NODES = 25      # nodes in one run; the bound LangGraph's recursion limit used to give
 
 
 class IllegalTransition(RuntimeError):
@@ -51,26 +51,54 @@ def allowed(source, target):
 
 
 def thread(tenant_id, case_id):
-    """LangGraph config for a case: one thread per (tenant, case)."""
-    return {"configurable": {"thread_id": f"{tenant_id}:{case_id}"}}
+    """A case's config: one thread per (tenant, case). The LangGraph-shaped thread_id stays until the
+    coordinator (agents.topology) no longer runs on LangGraph (LG-03.2)."""
+    return {"configurable": {"thread_id": f"{tenant_id}:{case_id}", "tenant_id": tenant_id,
+                             "case_id": case_id}}
 
 
-@contextmanager
-def postgres_checkpointer(dsn):
-    with PostgresSaver.from_conn_string(dsn) as saver:
-        saver.setup()
-        yield saver
+def _case(config):
+    return config["configurable"]["tenant_id"], config["configurable"]["case_id"]
 
 
-def build(hooks, checkpointer=None, read_only_tools=frozenset(), now=time.time):
-    graph = StateGraph(ThreadState)
+class Statechart:
+    def __init__(self, nodes, store):
+        self.nodes, self.store = nodes, store
+
+    def get_state(self, config):
+        """The case's saved state ({} for a new case)."""
+        return self.store.load(*_case(config))[0]
+
+    def invoke(self, event_input, config):
+        """Apply `event_input` and run from the entry node until the case waits or ends; with None, carry on
+        a crashed run from its pending node. Saves after every node; returns the final state."""
+        key = _case(config)
+        state, version = self.store.load(*key)
+        state = {**{name: [] for name in APPEND}, **state}  # append fields start empty, as in LangGraph
+        if event_input is not None:
+            state = {**merge(state, event_input), "pending": "resume"}
+            version = self.store.save(*key, state, version)
+        ran = 0
+        while state.get("pending"):
+            if ran == MAX_NODES:
+                raise RuntimeError(f"case {key[0]}:{key[1]} ran more than {MAX_NODES} nodes in one run")
+            state = merge(state, self.nodes[state["pending"]](state))
+            state["pending"] = state.get("next_stage") or None
+            version = self.store.save(*key, state, version)
+            ran += 1
+        return state
+
+
+def build(hooks, store=None, read_only_tools=frozenset(), now=time.time):
+    """The statechart on a case state store (a fresh MemoryStore when none is given)."""
+    nodes = {}
 
     def stage(target, work=lambda state: {}):
         def run(state):
             if not allowed(state.get("stage"), target):
                 raise IllegalTransition(f"{state.get('stage')} -> {target.value}")
             return {"next_stage": None, **work(state), "stage": target.value, "path": [target.value]}
-        graph.add_node(target.value, run)
+        nodes[target.value] = run
 
     def resume(state):
         """Entry: upgrade the state, then pick where this event takes the case."""
@@ -149,7 +177,7 @@ def build(hooks, checkpointer=None, read_only_tools=frozenset(), now=time.time):
     def wait(state):
         return {"waiting_since": now(), "next_stage": None}
 
-    graph.add_node("resume", resume)
+    nodes["resume"] = resume
     stage(S.INGESTED, ingest)
     stage(S.TRIAGED, triage)
     stage(S.COLLECTING_PARAMS, collect)
@@ -159,9 +187,4 @@ def build(hooks, checkpointer=None, read_only_tools=frozenset(), now=time.time):
     stage(S.AWAITING_CUSTOMER, wait)
     stage(S.RESOLVED)
     stage(S.ESCALATED_HITL)
-
-    targets = {s.value: s.value for s in S} | {END: END}
-    graph.add_edge(START, "resume")
-    for name in ["resume", *(s.value for s in S)]:
-        graph.add_conditional_edges(name, lambda state: state.get("next_stage") or END, targets)
-    return graph.compile(checkpointer=checkpointer)
+    return Statechart(nodes, MemoryStore() if store is None else store)

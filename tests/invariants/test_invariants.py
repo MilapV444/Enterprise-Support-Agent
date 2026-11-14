@@ -26,6 +26,7 @@ from agents.topology import (
     registry,
     start_turn,
 )
+from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.decisions import Masked
 from core.orchestrator.planner import MAX_REFLEXION, MAX_STEPS
 from core.orchestrator.statechart import DEFAULT_APPROVAL_THRESHOLD, allowed, build, thread
@@ -91,7 +92,7 @@ def next_event(stage, rng):
 
 @pytest.mark.parametrize("seed", SEEDS)
 def test_the_statechart_stays_legal_and_safe_whatever_the_models_say(seed):
-    rng, saver = random.Random(seed), InMemorySaver()
+    rng, saver = random.Random(seed), MemoryStore()
     world = World(rng)
     graph, config = build(world.hooks, saver, read_only_tools=READ_ONLY), thread("t_us", f"case-{seed}")
     event, seen = {"type": "USER_MESSAGE", "text": "My invoice is wrong and the VPN is down"}, 0
@@ -135,7 +136,7 @@ def test_the_draws_reach_every_stage_and_every_jev_failure():
     for seed in SEEDS:
         rng = random.Random(seed)
         world = World(rng)
-        graph, config = build(world.hooks, InMemorySaver(), read_only_tools=READ_ONLY), thread("t", str(seed))
+        graph, config = build(world.hooks, MemoryStore(), read_only_tools=READ_ONLY), thread("t", str(seed))
         state = graph.invoke({"tenant_id": "t", "case_id": str(seed), "session_id": "s",
                               "event": {"type": "USER_MESSAGE", "text": "help"}}, config)
         if state["stage"] == Stage.AWAITING_APPROVAL.value:

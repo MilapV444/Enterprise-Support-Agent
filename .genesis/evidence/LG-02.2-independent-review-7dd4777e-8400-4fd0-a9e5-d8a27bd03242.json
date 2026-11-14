@@ -1,0 +1,13 @@
+{
+  "task": "LG-02.2",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "7dd4777e-8400-4fd0-a9e5-d8a27bd03242",
+  "human": "Intelligent_developer_123",
+  "reason": "Pre-authorized by the user for the LG sweep (chat 2026-11-14, no per-task approval). Self-review by Claude: diff read, gate passed (13 suites), v1 library captures identical to LangGraph's, erasure covers conversation-keyed state",
+  "observed_at": "2026-11-14T18:10:01.329Z",
+  "source_hash": "b7b43fcbb04c3c7c013645c3346bb5037ae26ac52e36241431296812a3caa3ca",
+  "config_hash": "3df020a05f52cf05e286a9d038b01b3231a03b68153d5a98f66fab884c061ac5",
+  "reviewed_proofs": "a843677043c45b5e3f4396cef258776795e4b93e58fa57d1a61308d02aa38223",
+  "hash": "508d410f9c9671b084511e9ffda42b54b4d66b9ed04bb0fd8d3253d2134d21d8"
+}

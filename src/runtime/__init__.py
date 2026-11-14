@@ -5,7 +5,7 @@ turn at a time per conversation, and TurnLoop.run() takes it from there:
 
 1. a status event ("Looking into it");
 2. input screening (safety.screening): a blocked message is answered at once and nothing else sees it;
-3. PII tokens (safety.pii): from here on only tokenized text reaches Jev, the models or the checkpoint;
+3. PII tokens (safety.pii): from here on only tokenized text reaches Jev, the models or the case state;
 4. the statechart (core.orchestrator) on the case's thread, with Jev triage, or the LLM classifier when Jev is
    not configured (its confidence is capped below what an SOP needs);
 5. the answer: retrieval once per turn (knowledge.retrieval, the public collection for an anonymous customer,
@@ -26,7 +26,7 @@ turn at a time per conversation, and TurnLoop.run() takes it from there:
 Any failure publishes an error event: a customer never waits on silence. The case is the conversation for
 now (case linking is not wired); procedures (SOPs) have no tools yet, so a procedure turn answers from the
 knowledge base and changes nothing. Turns run in the API process, not yet on Temporal: a crash loses the turn
-in flight (its checkpoint survives). See the open-issues register.
+in flight (its case state survives). See the open-issues register.
 """
 
 import json
@@ -183,7 +183,7 @@ class Services:
     tokens: object                 # safety.pii.tokens.Tokenizer
     complete: object               # prompt -> text, a small model (triage fallback)
     connect: object                # () -> autocommit psycopg connection to the main database
-    checkpointer: object           # a LangGraph checkpointer
+    store: object                  # core.orchestrator.case_state store (PostgresStore; MemoryStore in tests)
     decisions: object = None       # safety.governance.records.DecisionLog
     executor: object = None        # tools.execution.Executor over `tools`, audited; None: no tools
     tools: object = None           # the frozen tool registry (tools.nimbus.catalog)
@@ -214,7 +214,7 @@ class TurnLoop:
                             "collect": lambda state: {"parameters": state.get("parameters") or {},
                                                       "missing": []},
                             "execute_sop": self.procedure, "react_step": self.diagnose,
-                            "revalidate": lambda state: True}, checkpointer=services.checkpointer)
+                            "revalidate": lambda state: True}, store=services.store)
 
     # Publishing --------------------------------------------------------------------------------------------
 
@@ -472,7 +472,7 @@ class TurnLoop:
             masked, found = self.s.tokens.mask(turn.content)
             self.probe_restricted(turn, masked)
             config = thread(turn.tenant_id, turn.conversation_id)
-            seen = len(self.graph.get_state(config).values.get("path") or [])  # path spans the whole case
+            seen = len(self.graph.get_state(config).get("path") or [])  # path spans the whole case
             state = self.graph.invoke(
                 {"tenant_id": turn.tenant_id, "case_id": turn.conversation_id,
                  # the statechart only checks one is there; tools take the live one from self.turns (B22)

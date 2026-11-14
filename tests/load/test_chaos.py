@@ -13,10 +13,10 @@ import threading
 
 import httpx
 import pytest
-from langgraph.checkpoint.memory import InMemorySaver
 
 from agents.merge import merge
 from agents.topology import Specialist, delegate, registry
+from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.decisions import Masked, mask
 from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import ASK_CUSTOMER, llm_fallback, triage, triage_hook
@@ -76,7 +76,7 @@ def test_with_jev_down_a_case_waits_for_the_customer_and_runs_nothing(seed):
              "revalidate": lambda s: True}
     start = {"tenant_id": "t", "case_id": "c", "session_id": "s",
              "event": {"type": "USER_MESSAGE", "text": "help"}}
-    state = build(hooks, InMemorySaver()).invoke(start, thread("t", "c"))
+    state = build(hooks, MemoryStore()).invoke(start, thread("t", "c"))
     # the fallback classifier may answer from the knowledge path, never collect or execute an SOP
     assert "COLLECTING_PARAMS" not in state["path"] and not sops
 
@@ -190,7 +190,7 @@ def test_a_case_resumed_after_its_worker_died_runs_its_procedure_exactly_once(vi
              "collect": hook("collect", {"parameters": {"zip": "10115"}, "missing": []}),
              "execute_sop": hook("execute_sop", {"response": "Done."}),
              "react_step": lambda s: {}, "revalidate": lambda s: True}
-    saver, config = InMemorySaver(), thread("t", "c")
+    saver, config = MemoryStore(), thread("t", "c")
     graph = build(hooks, saver)
     with pytest.raises(Killed):
         graph.invoke({"tenant_id": "t", "case_id": "c", "session_id": "s",

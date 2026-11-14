@@ -11,7 +11,7 @@ RP-D15, as the v1 profile does them: one VM, daily dumps rather than WAL streami
   and the erasure ledger names users only by a hash. Kept as long as backups are (35 days, DP-D9).
 - restore(): only into a database whose name starts with restore_ or standby_; the dump's SHA-256 must match
   its manifest. replay_erasures() then erases, in the restored copy, every user erased since the dump was
-  taken (main data and checkpoints, vault tokens, data keys: restoring agent_keys would otherwise bring
+  taken (main data and case state, vault tokens, data keys: restoring agent_keys would otherwise bring
   shredded keys back) before anything uses it.
 - drill(): restore all three, compare the migrations and row counts with the manifest, replay the erasures,
   verify that nothing of an erased user is left, and report.
@@ -128,7 +128,7 @@ def replay_erasures(store, dumped_at, activities):
     for entry in erasures_since(store, dumped_at):
         request = ErasureRequest(entry["tenant_id"], entry["principal_id"], "RESTORE_REPLAY")
         plan = asyncio.run(activities.collect(request))
-        for target in ("postgres", "checkpoints", "vault", "keys"):
+        for target in ("postgres", "vault", "keys"):
             asyncio.run(activities.purge(target, request, plan))
         left = {k: v for k, v in activities._verify(request, plan).items() if v}
         if left:

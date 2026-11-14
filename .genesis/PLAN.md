@@ -2130,15 +2130,15 @@
 
 ### LG-02.2 — Statechart and its data on the case state store (replaces LG-02): statechart.build keeps every node function and TRANSITIONS but runs them in a loop (run node, thread_state.merge, save to the store, follow next_stage); invoke(None) resumes a crashed turn from its last saved stage; thread() keeps its config shape (plus tenant_id, case_id) so the LangGraph coordinator works until LG-03.2; runtime and production use the store; workflows.activities gets the minimal interim change LG-04.2 later rewrites; erasure, retention and backup purge case_state in the same change (a deployed build must not leave case state erasure cannot reach), with DELETE granted to their role; tests drop InMemorySaver and postgres_checkpointer; no VM rollout until LG-05.2
 
-- state/risk: active / high
+- state/risk: done / high
 - requirements: FR-1, FR-18, FR-19, NFR-5
 - scope: src/core/orchestrator/, src/runtime/, src/workflows/activities.py, src/memory/lifecycle/, deploy/backup/, tests/orchestrator/, tests/contracts/, tests/invariants/, tests/decisions/, tests/runtime/, tests/load/, tests/e2e/, tests/erasure/, tests/memory/, tests/reliability/backup/, tests/agents/topology/, tests/workflows/, tests/deploy/vm/
-- gates: tests: python -m pytest tests/orchestrator tests/contracts tests/invariants tests/decisions tests/runtime tests/load/test_chaos.py tests/e2e tests/erasure tests/memory tests/reliability/backup tests/agents tests/workflows tests/deploy/vm -q, independent-review: pending
+- gates: tests: python -m pytest tests/orchestrator tests/contracts tests/invariants tests/decisions tests/runtime tests/load/test_chaos.py tests/e2e tests/erasure tests/memory tests/reliability/backup tests/agents tests/workflows tests/deploy/vm -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### LG-03.2 — Coordinator without LangGraph (replaces LG-03): agents.topology specialist_graph becomes a bounded step loop; coordinator becomes plan, first (thread-pool fan-out replacing Send), between, then, join as plain calls; merge_results order, ledger budgets and the per-turn run_tool are kept; no checkpointer parameter (it runs inside a statechart stage)
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-25, FR-26
 - scope: src/agents/topology/, src/runtime/, tests/agents/, tests/e2e/, tests/runtime/, tests/invariants/, tests/channels/
 - gates: tests: python -m pytest tests/agents tests/e2e tests/runtime tests/invariants tests/channels/test_trace.py -q, independent-review: pending

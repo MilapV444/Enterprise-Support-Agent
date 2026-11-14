@@ -2,7 +2,7 @@
 
 One customer turn runs through the components built in M1 the way the dispatch hook will chain them:
 
-    screen (M1-12) -> PII tokens (M1-13) -> statechart on the Postgres checkpointer (M1-04) with Jev triage
+    screen (M1-12) -> PII tokens (M1-13) -> statechart on the Postgres case state (M1-04) with Jev triage
     (M1-06) -> scoped ReAct: Jev picks a read-only tool, hybrid retrieval from Qdrant (M1-10/11) -> model
     router (M1-09) -> output checks (M1-14) -> AI disclosure + decision record with a why view (M1-16)
 
@@ -22,8 +22,10 @@ import pytest
 from qdrant_client import QdrantClient
 
 from core.context.assembler import delimit
+from core.orchestrator import case_state
+from core.orchestrator.case_state import PostgresStore
 from core.orchestrator.decisions import DecisionEngine, JevClient, Masked
-from core.orchestrator.statechart import build, postgres_checkpointer, thread
+from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import triage_hook
 from cost.router import Router
 from data.migrate import migrate, psql
@@ -126,6 +128,7 @@ def services():
     migrate("main", DB)
     ingest.apply_schema(DB)
     apply_schema(DB)
+    case_state.apply_schema(DB)
     psql(DB, f"INSERT INTO tenants (id, name, region) VALUES ('{TENANT}', 'Acme', 'US')")
     client, namespace = QdrantClient(url="http://127.0.0.1:6333"), f"e{uuid.uuid4().hex[:8]}_"
     docs = [("vpc-overlap", "VPC subnet bind fails with 409 Conflict",
@@ -137,8 +140,7 @@ def services():
         Ingestion(Index(client, DIMENSIONS, namespace), embed, conn).run_batch("public", "kb", [
             Document(doc_id=d, source_system="kb", source_kind="curated", title=title,
                      markdown=f"# {title}\n\n{text}") for d, title, text in docs])
-    with postgres_checkpointer(DSN) as saver:
-        yield client, namespace, saver
+    yield client, namespace, PostgresStore(lambda: psycopg.connect(DSN, autocommit=True))
     for item in client.get_collections().collections:
         if item.name.startswith(namespace):
             client.delete_collection(item.name)
@@ -183,7 +185,7 @@ def agent(services, stack):
 
     graph = build({"triage": triage_hook(engine), "react_step": react_step, "collect": unexpected,
                    "execute_sop": unexpected, "revalidate": lambda state: True},
-                  checkpointer=saver, read_only_tools=frozenset(READ_ONLY_TOOLS))
+                  store=saver, read_only_tools=frozenset(READ_ONLY_TOOLS))
 
     def turn(case_id, text):
         verdict = screener.screen("user_message", text)
@@ -242,7 +244,7 @@ def test_scenario_2_panicked_user_gets_a_clarifying_question_not_a_guess(service
     assert reply["text"] == QUESTION and reply["text"].count("?") == 1
     prompt = stack.model[-1][-1]["content"]
     assert "Store #104" in prompt and "Do not guess" in prompt  # the question uses the profile
-    saved = services[2].get_tuple(thread(TENANT, "case-panicked")).checkpoint["channel_values"]
+    saved, _ = services[2].load(TENANT, "case-panicked")
     assert saved["stage"] == "AWAITING_CUSTOMER"  # the case waits in Postgres for the answer
     assert log.why(TENANT, "case-panicked")[0]["decision"] == "ask_customer"
 
@@ -253,7 +255,7 @@ def test_scenario_5_injection_is_blocked_at_the_edge(services):
     reply, state = turn("case-attack", ATTACK)
     assert reply["text"] == BLOCKED and state is None
     assert stack.jev == [] and stack.model == [] and stack.tools == [] and stack.sops == []  # nothing spent
-    assert services[2].get_tuple(thread(TENANT, "case-attack")) is None  # never reached the orchestrator
+    assert services[2].load(TENANT, "case-attack") == ({}, 0)  # never reached the orchestrator
     (record,) = log.audit(TENANT, "case-attack")
     assert record["decision"] == "block" and record["trace"]["screening"]["categories"] == ["override"]
 

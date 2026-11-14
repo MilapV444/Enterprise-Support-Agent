@@ -6,11 +6,14 @@ import subprocess
 import uuid
 from pathlib import Path
 
+import psycopg
 import pytest
 from temporalio.client import Client, WorkflowFailureError
 from temporalio.exceptions import ApplicationError, WorkflowAlreadyStartedError
 
-from data.migrate import psql
+from core.orchestrator import case_state
+from core.orchestrator.case_state import PostgresStore
+from data.migrate import migrate, psql
 from tests.orchestrator.test_statechart import SOP, Hooks
 from workflows.activities import TurnActivities, worker
 from workflows.ticket import TicketStart, TurnRequest, start_ticket
@@ -20,6 +23,7 @@ DB = "test_workflows"
 DSN = f"postgresql://agent:change-me@127.0.0.1:5432/{DB}"  # credentials from .env.example
 AMBIGUOUS = {"intent": "?", "acuity": 3, "confidence": 0.6}
 REFUND = {"parameters": {"amount": 1500}, "missing": []}
+STORE = PostgresStore(lambda: psycopg.connect(DSN, autocommit=True))
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -28,6 +32,9 @@ def stack():
                     "up", "-d", "--wait", "postgres", "temporal"], cwd=ROOT, check=True, capture_output=True)
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
+    migrate("main", DB)
+    case_state.apply_schema(DB)
+    psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US')")
 
     async def connected():
         for _ in range(60):
@@ -49,7 +56,7 @@ def ticket(hooks, start_input, actions=None):
     async def go():
         client = await Client.connect("127.0.0.1:7233")
         queue = f"test-{uuid.uuid4().hex}"
-        async with worker(client, TurnActivities(hooks, DSN), queue):
+        async with worker(client, TurnActivities(hooks, STORE), queue):
             handle = await start_ticket(client, start_input, queue)
             if actions:
                 await actions(handle)
@@ -130,7 +137,7 @@ def test_a_ticket_has_one_workflow_at_a_time():
     async def twice():
         client = await Client.connect("127.0.0.1:7233")
         queue, first = f"test-{uuid.uuid4().hex}", start("dup", reply_timeout_seconds=30)
-        async with worker(client, TurnActivities(Hooks(triage=AMBIGUOUS), DSN), queue):
+        async with worker(client, TurnActivities(Hooks(triage=AMBIGUOUS), STORE), queue):
             handle = await start_ticket(client, first, queue)
             with pytest.raises(WorkflowAlreadyStartedError):
                 await start_ticket(client, first, queue)
@@ -141,7 +148,7 @@ def test_a_ticket_has_one_workflow_at_a_time():
 
 def test_a_repeated_turn_applies_its_event_once():
     hooks = Hooks()
-    activities = TurnActivities(hooks, DSN)
+    activities = TurnActivities(hooks, STORE)
     request = TurnRequest("t_us", f"repeat-{uuid.uuid4().hex[:6]}", "s1", "wf/run/1",
                           {"type": "USER_MESSAGE", "text": "hi"})
     first, again = activities.run_turn(request), activities.run_turn(request)
@@ -153,7 +160,7 @@ def test_an_unfinished_turn_from_another_run_is_not_mixed_with_a_new_one():
     def crash(state):
         raise RuntimeError("worker died")
 
-    activities = TurnActivities(Hooks(sop=crash), DSN)
+    activities = TurnActivities(Hooks(sop=crash), STORE)
     case = f"orphan-{uuid.uuid4().hex[:6]}"
     with pytest.raises(RuntimeError):
         activities.run_turn(TurnRequest("t_us", case, "s1", "old/run/1", {"type": "USER_MESSAGE"}))
