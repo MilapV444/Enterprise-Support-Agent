@@ -4,7 +4,7 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: LG-02 — Statechart without LangGraph: statechart.build keeps every node function and TRANSITIONS, replaces StateGraph with a loop (run node, merge with append semantics, save to the case store, follow next_stage), keeps the invoke/get_state shape; invoke(None) resumes a crashed turn from its last saved stage; runtime Services and production wire the case store instead of PostgresSaver; tests drop InMemorySaver
+- active task: LG-02.2 — Statechart and its data on the case state store (replaces LG-02): statechart.build keeps every node function and TRANSITIONS but runs them in a loop (run node, thread_state.merge, save to the store, follow next_stage); invoke(None) resumes a crashed turn from its last saved stage; thread() keeps its config shape (plus tenant_id, case_id) so the LangGraph coordinator works until LG-03.2; runtime and production use the store; workflows.activities gets the minimal interim change LG-04.2 later rewrites; erasure, retention and backup purge case_state in the same change (a deployed build must not leave case state erasure cannot reach), with DELETE granted to their role; tests drop InMemorySaver and postgres_checkpointer; no VM rollout until LG-05.2
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: 6dd1ecc7af0f7e2a89bebb5df78b01fb4cce31472b87ec6b646fdfe384ced59b. Use --since only after receiving that full packet; kickoff is not the packet.
-- KNOWLEDGE-3853dc49: LangGraph removal: drafted tasks LG-00..LG-05 (not yet in the plan)
+Context fingerprint: 141f1c40484ecfb17fb02e4ed6316eaa584e0ca1fccff4e83b2af379f79d496d. Use --since only after receiving that full packet; kickoff is not the packet.
 - KNOWLEDGE-f0010a0b: Open issues register (single source; update by superseding)
+- KNOWLEDGE-3853dc49: LangGraph removal: drafted tasks LG-00..LG-05 (not yet in the plan)
 - KNOWLEDGE-8e930ef2: M5-05.7 mocked-model harness, invariants, injection set, contracts, checkpoints, load and chaos
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

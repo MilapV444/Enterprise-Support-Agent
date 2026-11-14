@@ -4,7 +4,7 @@
 
 - workflow: new-product
 - phase: build
-- plan approval: Intelligent_developer_123 at 2026-11-14T17:22:04.182Z
+- plan approval: Intelligent_developer_123 at 2026-11-14T17:34:29.037Z
 
 ## Tasks
 
@@ -2098,7 +2098,7 @@
 
 ### LG-02 — Statechart without LangGraph: statechart.build keeps every node function and TRANSITIONS, replaces StateGraph with a loop (run node, merge with append semantics, save to the case store, follow next_stage), keeps the invoke/get_state shape; invoke(None) resumes a crashed turn from its last saved stage; runtime Services and production wire the case store instead of PostgresSaver; tests drop InMemorySaver
 
-- state/risk: active / medium
+- state/risk: rejected / medium
 - requirements: FR-1, FR-18
 - scope: src/core/orchestrator/statechart.py, src/runtime/, tests/orchestrator/, tests/contracts/, tests/invariants/, tests/decisions/, tests/runtime/, tests/load/, tests/e2e/
 - gates: tests: python -m pytest tests/orchestrator tests/contracts tests/invariants tests/decisions tests/runtime tests/load/test_chaos.py tests/e2e -q, independent-review: pending
@@ -2106,7 +2106,7 @@
 
 ### LG-03 — Coordinator without LangGraph: agents.topology specialist_graph becomes a bounded step loop; coordinator becomes plan, first (thread-pool fan-out replacing Send), between, then, join as plain calls; merge_results order, ledger budgets and the per-turn run_tool are kept; no checkpointer parameter (it runs inside a statechart stage)
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: FR-25, FR-26
 - scope: src/agents/topology/, src/runtime/, tests/agents/, tests/e2e/, tests/runtime/
 - gates: tests: python -m pytest tests/agents tests/e2e tests/runtime -q, independent-review: pending
@@ -2114,7 +2114,7 @@
 
 ### LG-04 — Turns on Temporal: TicketWorkflow takes each customer turn by signal-with-start from a TemporalDispatcher that replaces runtime.Dispatcher's thread pool; the run_turn activity calls TurnLoop.run; the turn id is the event id so a retried activity applies nothing twice and republishes no events; the worker runs in the API process; closes register L36/W34
 
-- state/risk: queued / high
+- state/risk: rejected / high
 - requirements: FR-2, FR-18
 - scope: src/workflows/, src/runtime/, src/channels/api/, tests/workflows/, tests/runtime/, tests/load/, tests/e2e/
 - gates: tests: python -m pytest tests/workflows tests/runtime tests/load/test_chaos.py tests/e2e -q, independent-review: pending
@@ -2122,9 +2122,41 @@
 
 ### LG-05 — Cut-over: erasure inventory, retention and backup use case_state instead of checkpoint, checkpoint_blobs, checkpoint_writes; a one-off script copies the latest checkpoint per thread on Neon into case_state, then the three tables are dropped; langgraph and langgraph-checkpoint-postgres leave pyproject.toml and tests/test_dependencies.py asserts neither is declared or imported under src/; README and ADP-01, ADP-02, MS-ADP-04 amendment notes; VM rollout
 
-- state/risk: queued / medium
+- state/risk: rejected / medium
 - requirements: FR-19, NFR-5
 - scope: src/memory/lifecycle/, deploy/, scripts/, pyproject.toml, README.md, docs/decisions/adp/, tests/erasure/, tests/memory/, tests/reliability/backup/, tests/test_dependencies.py
 - gates: tests: python -m pytest tests/erasure tests/memory tests/reliability/backup tests/test_dependencies.py -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### LG-02.2 — Statechart and its data on the case state store (replaces LG-02): statechart.build keeps every node function and TRANSITIONS but runs them in a loop (run node, thread_state.merge, save to the store, follow next_stage); invoke(None) resumes a crashed turn from its last saved stage; thread() keeps its config shape (plus tenant_id, case_id) so the LangGraph coordinator works until LG-03.2; runtime and production use the store; workflows.activities gets the minimal interim change LG-04.2 later rewrites; erasure, retention and backup purge case_state in the same change (a deployed build must not leave case state erasure cannot reach), with DELETE granted to their role; tests drop InMemorySaver and postgres_checkpointer; no VM rollout until LG-05.2
+
+- state/risk: active / high
+- requirements: FR-1, FR-18, FR-19, NFR-5
+- scope: src/core/orchestrator/, src/runtime/, src/workflows/activities.py, src/memory/lifecycle/, deploy/backup/, tests/orchestrator/, tests/contracts/, tests/invariants/, tests/decisions/, tests/runtime/, tests/load/, tests/e2e/, tests/erasure/, tests/memory/, tests/reliability/backup/, tests/agents/topology/, tests/workflows/, tests/deploy/vm/
+- gates: tests: python -m pytest tests/orchestrator tests/contracts tests/invariants tests/decisions tests/runtime tests/load/test_chaos.py tests/e2e tests/erasure tests/memory tests/reliability/backup tests/agents tests/workflows tests/deploy/vm -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### LG-03.2 — Coordinator without LangGraph (replaces LG-03): agents.topology specialist_graph becomes a bounded step loop; coordinator becomes plan, first (thread-pool fan-out replacing Send), between, then, join as plain calls; merge_results order, ledger budgets and the per-turn run_tool are kept; no checkpointer parameter (it runs inside a statechart stage)
+
+- state/risk: queued / medium
+- requirements: FR-25, FR-26
+- scope: src/agents/topology/, src/runtime/, tests/agents/, tests/e2e/, tests/runtime/, tests/invariants/, tests/channels/
+- gates: tests: python -m pytest tests/agents tests/e2e tests/runtime tests/invariants tests/channels/test_trace.py -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### LG-04.2 — Turns on Temporal (replaces LG-04): TicketWorkflow takes each customer turn by signal-with-start from a TemporalDispatcher that replaces runtime.Dispatcher's thread pool; the run_turn activity calls TurnLoop.run; the turn id is the event id so a retried activity applies nothing twice and republishes no events; the worker runs in the API process; closes register L36/W34
+
+- state/risk: queued / high
+- requirements: FR-2, FR-18
+- scope: src/workflows/, src/runtime/, src/channels/api/, deploy/, tests/workflows/, tests/runtime/, tests/load/, tests/e2e/, tests/channels/, tests/web/, tests/deploy/vm/
+- gates: tests: python -m pytest tests/workflows tests/runtime tests/load/test_chaos.py tests/e2e tests/channels tests/deploy/vm -q, independent-review: pending
+- next: Run the task pre-flight.
+
+### LG-05.2 — Cut-over (replaces LG-05): a one-off script copies the latest LangGraph checkpoint per thread on Neon into case_state, then the checkpoints, checkpoint_blobs, checkpoint_writes and checkpoint_migrations tables are dropped and any leftover references removed; langgraph and langgraph-checkpoint-postgres leave pyproject.toml and tests/test_dependencies.py asserts neither is declared or imported under src/; README and ADP-01, ADP-02, MS-ADP-04 amendment notes; VM rollout of LG-02.2..LG-04.2
+
+- state/risk: queued / medium
+- requirements: FR-2, NFR-5
+- scope: scripts/, deploy/, pyproject.toml, README.md, docs/, src/core/orchestrator/, src/memory/lifecycle/, tests/test_dependencies.py, tests/deploy/, tests/erasure/, tests/memory/, tests/reliability/backup/
+- gates: tests: python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q, independent-review: pending
 - next: Run the task pre-flight.
 
