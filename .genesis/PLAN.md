@@ -2138,15 +2138,15 @@
 
 ### LG-03.2 — Coordinator without LangGraph (replaces LG-03): agents.topology specialist_graph becomes a bounded step loop; coordinator becomes plan, first (thread-pool fan-out replacing Send), between, then, join as plain calls; merge_results order, ledger budgets and the per-turn run_tool are kept; no checkpointer parameter (it runs inside a statechart stage)
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-25, FR-26
 - scope: src/agents/topology/, src/runtime/, tests/agents/, tests/e2e/, tests/runtime/, tests/invariants/, tests/channels/
-- gates: tests: python -m pytest tests/agents tests/e2e tests/runtime tests/invariants tests/channels/test_trace.py -q, independent-review: pending
+- gates: tests: python -m pytest tests/agents tests/e2e tests/runtime tests/invariants tests/channels/test_trace.py -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### LG-04.2 — Turns on Temporal (replaces LG-04): TicketWorkflow takes each customer turn by signal-with-start from a TemporalDispatcher that replaces runtime.Dispatcher's thread pool; the run_turn activity calls TurnLoop.run; the turn id is the event id so a retried activity applies nothing twice and republishes no events; the worker runs in the API process; closes register L36/W34
 
-- state/risk: queued / high
+- state/risk: active / high
 - requirements: FR-2, FR-18
 - scope: src/workflows/, src/runtime/, src/channels/api/, deploy/, tests/workflows/, tests/runtime/, tests/load/, tests/e2e/, tests/channels/, tests/web/, tests/deploy/vm/
 - gates: tests: python -m pytest tests/workflows tests/runtime tests/load/test_chaos.py tests/e2e tests/channels tests/deploy/vm -q, independent-review: pending

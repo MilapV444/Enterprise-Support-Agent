@@ -13,7 +13,6 @@ from decimal import Decimal
 from itertools import pairwise
 
 import pytest
-from langgraph.checkpoint.memory import InMemorySaver
 
 from agents.merge import TOLERANCE, merge
 from agents.topology import (
@@ -188,7 +187,7 @@ def test_delegation_never_exceeds_its_limits_or_reaches_a_tool_off_the_allow_lis
     jev, tools = ScriptedJev(rng), RecordingTools(rng)
     specs = registry([Specialist(role, DESCRIPTIONS[role], frozenset(TOOLS[role]), wandering(role, rng))
                       for role in TOOLS], TOOL_REGISTRY)
-    graph = coordinator(engine(jev), specs, tools, InMemorySaver())
+    graph = coordinator(engine(jev), specs, tools)
     state = start_turn(graph, **{**TURN, "case_id": f"case-{seed}"}, message=Masked("Audit our EU uptime"))
     results, plan = state.get("results", []), state["plan"]
     per, total = ledger(results, plan)          # raises if anything ran outside its assignment

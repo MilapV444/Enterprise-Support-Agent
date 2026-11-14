@@ -11,13 +11,11 @@ in process; LangGraph's scheduling and checkpointing are real.
 import json
 
 import pytest
-from langgraph.checkpoint.memory import InMemorySaver
 from pydantic import BaseModel
 
 from agents.merge import merge
 from agents.topology import Role, Specialist, coordinator, registry, start_turn
 from core.orchestrator.decisions import Answer, DecisionEngine, Masked
-from core.orchestrator.statechart import thread
 from tools.registry import Registry
 from tools.schemas import arg
 
@@ -103,15 +101,15 @@ def draft(claims):
 
 
 def episode(claims, jev=None):
-    jev, sources, saver = jev or Jev(), Sources(), InMemorySaver()
-    graph = coordinator(DecisionEngine(jev), team(claims), sources, saver)
+    jev, sources = jev or Jev(), Sources()
+    graph = coordinator(DecisionEngine(jev), team(claims), sources)
     state = start_turn(graph, **TURN, message=Masked(AUDIT))
     outcome = merge(DecisionEngine(jev), state["results"], OUTPUTS, draft)
-    return state, outcome, sources, saver
+    return state, outcome, sources
 
 
 def test_scenario_7_the_specialists_run_in_parallel_and_the_customer_gets_one_merged_reply():
-    state, outcome, sources, saver = episode(CLAIMS)
+    state, outcome, sources = episode(CLAIMS)
     assert state["plan"]["assignments"] == [{"role": "technical", "steps": 2, "after_lead": False},
                                             {"role": "billing", "steps": 2, "after_lead": False}]
     assert sorted(sources.calls) == [("billing", "billing.credit_memos"), ("technical", "ops.uptime")]
@@ -119,8 +117,7 @@ def test_scenario_7_the_specialists_run_in_parallel_and_the_customer_gets_one_me
     assert "| eu_uptime_q2 | 99.98 percent | technical |" in outcome.text
     assert "| credits_q2 | 1200.00 USD | billing |" in outcome.text
     assert all(r["status"] == "completed" for r in state["results"])
-    saved = saver.get_tuple(thread("t_us", "case-audit")).checkpoint["channel_values"]
-    assert saved["outcome"] == "delegated" and len(saved["results"]) == 2
+    assert state["outcome"] == "delegated" and len(state["results"]) == 2
 
 
 def test_scenario_7_a_numeric_disagreement_between_specialists_goes_to_a_person():
@@ -128,7 +125,7 @@ def test_scenario_7_a_numeric_disagreement_between_specialists_goes_to_a_person(
                                     "value": "99.90", "unit": "percent",
                                     "evidence": ["billing.credit_memos"]}]
     jev = Jev()
-    _, outcome, _, _ = episode({**CLAIMS, "billing": billing}, jev)
+    _, outcome, _ = episode({**CLAIMS, "billing": billing}, jev)
     assert (outcome.kind, outcome.text, outcome.reason) == ("human", None, "NUMERIC_DISCREPANCY")
     assert outcome.detail["values"]["eu_uptime_q2"] == {"technical": "99.98 percent",
                                                         "billing": "99.90 percent"}
@@ -137,12 +134,12 @@ def test_scenario_7_a_numeric_disagreement_between_specialists_goes_to_a_person(
 
 @pytest.mark.parametrize("redirect", [("hand_off", 0.95), ("both", 0.6)])
 def test_scenario_7_a_reply_that_sends_the_auditor_to_another_team_is_held(redirect):
-    _, outcome, _, _ = episode(CLAIMS, Jev(redirect=redirect))
+    _, outcome, _ = episode(CLAIMS, Jev(redirect=redirect))
     assert outcome.kind == "human" and outcome.reason == "REDIRECT"
 
 
 def test_scenario_7_the_specialists_never_write_to_the_customer():
-    state, outcome, _, _ = episode(CLAIMS)
+    state, outcome, _ = episode(CLAIMS)
     assert {r["role"] for r in state["results"]} == {Role.TECHNICAL.value, Role.BILLING.value}
     assert all("I reviewed" not in r["findings"] for r in state["results"])  # only the coordinator speaks
     assert outcome.text.startswith("I reviewed")

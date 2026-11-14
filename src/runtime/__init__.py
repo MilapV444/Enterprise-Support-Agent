@@ -203,8 +203,8 @@ class TurnLoop:
         self.catalog = services.tools if tooled else Registry().freeze()
         self.team = registry([Specialist(role, about, self.allowed(TOOLS[role]), self.specialist(role))
                               for role, about in TEAM.items()], self.catalog)
-        # no checkpointer of its own: run inside a statechart node, it is checkpointed with the case; each
-        # turn passes its run_tool in the config (consult)
+        # runs inside a statechart stage, saved with the case; each turn passes its run_tool in the config
+        # (consult)
         self.coordinator = coordinator(self.decide, self.team, run_tool=None)
         everything = self.allowed(self.catalog.tools)
         self.generalist = specialist_graph(Specialist(Role.GENERALIST, "every topic", everything,
@@ -388,7 +388,7 @@ class TurnLoop:
             if isinstance(getattr(self.s.engine, "jev", None), NoJev):
                 outcome = self.alone(brief, query, draft, config)
             else:
-                turn = self.coordinator.invoke({**brief, "message": query}, config)
+                turn = self.coordinator({**brief, "message": query}, config)
                 if turn["plan"]["handoff"]:
                     outcome = human("NO_DELEGATION")
                 elif self.unanswered(key, turn["plan"]["lead"]):
@@ -417,8 +417,8 @@ class TurnLoop:
         """Without Jev nothing delegates or adjudicates: the generalist reads for every domain, with every
         tool; agents.merge's code-only check still applies (topics are unique per specialist: nothing to
         adjudicate)."""
-        done = self.generalist.invoke({"brief": {**brief, "role": Role.GENERALIST.value, "objective": query,
-                                                 "steps": STEPS_PER_SPECIALIST}, "history": []}, config)
+        done = self.generalist({"brief": {**brief, "role": Role.GENERALIST.value, "objective": query,
+                                          "steps": STEPS_PER_SPECIALIST}, "history": []}, config)
         if self.unanswered((brief["tenant_id"], brief["case_id"]), Role.GENERALIST.value):
             return human("LEAD_UNAVAILABLE")
         claims = tuple(claims_from(done["result"]))

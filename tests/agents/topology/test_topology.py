@@ -2,12 +2,10 @@
 (FR-25, FR-26 / MA-ADP-01, MA-ADP-02), with the security review's fixes: trusted turn context for tools,
 dependency and budget checks, sanitised failures, masked input only."""
 
-import subprocess
 import threading
 from pathlib import Path
 
 import pytest
-from langgraph.checkpoint.memory import InMemorySaver
 from pydantic import BaseModel
 
 from agents.topology import (
@@ -26,8 +24,6 @@ from agents.topology import (
     start_turn,
 )
 from core.orchestrator.decisions import Answer, DecisionEngine, JevUnavailable, Masked, SecurityViolation
-from core.orchestrator.statechart import thread
-from data.migrate import psql
 from tests.tools.execution.test_execution import Fake, build_registry, executor
 from tools.registry import Registry
 from tools.schemas import arg
@@ -121,9 +117,9 @@ class Tools:
         return f"{request.tool_id} {self.output}"
 
 
-def turn(jev, tools=None, checkpointer=None, **acts):
+def turn(jev, tools=None, **acts):
     tools = tools or Tools()
-    graph = coordinator(DecisionEngine(jev), specialists(**acts), tools, checkpointer)
+    graph = coordinator(DecisionEngine(jev), specialists(**acts), tools)
     return start_turn(graph, **TURN, message=Masked(AUDIT)), tools
 
 
@@ -239,15 +235,15 @@ def test_a_malformed_or_inflated_plan_is_refused(change):
         checked_plan({**GOOD, **change})
 
 
-def test_a_plan_changed_in_the_checkpoint_before_resuming_is_refused_before_any_tool_runs():
-    saver, tools = InMemorySaver(), Tools()
-    graph = coordinator(DecisionEngine(Jev()), specialists(), tools, saver)
-    config = thread("t_us", "case-7")
-    graph.invoke({**TURN, "message": AUDIT}, config, interrupt_before=["first"])
+def test_an_inflated_plan_in_the_turn_is_refused_before_any_tool_runs(monkeypatch):
+    """The plan is checked again where it is read, not only where it is made."""
     inflated = {**GOOD, "assignments": [{"role": "technical", "steps": 9, "after_lead": False}]}
-    with pytest.raises(ValueError, match="one or two steps"):  # refused when the next step is planned
-        graph.update_state(config, {"plan": inflated}, as_node="plan")
-        graph.invoke(None, config)
+    planned = type("Planned", (), {"as_state": lambda self: inflated})()
+    monkeypatch.setattr("agents.topology.delegate", lambda *args: planned)
+    tools = Tools()
+    graph = coordinator(DecisionEngine(Jev()), specialists(), tools)
+    with pytest.raises(ValueError, match="one or two steps"):
+        graph({**TURN, "message": AUDIT})
     assert tools.calls == []
 
 
@@ -256,7 +252,7 @@ def test_a_specialist_given_a_bad_budget_directly_does_nothing(steps):
     tools = Tools()
     graph = specialist_graph(specialists()[Role.TECHNICAL], tools)
     brief = {**TURN, "turn_id": "turn-1", "role": "technical", "steps": steps, "objective": "x"}
-    result = graph.invoke({"brief": brief, "history": []})["result"]
+    result = graph({"brief": brief, "history": []})["result"]
     assert result["status"] == "blocked" and result["findings"] == "invalid step budget" and tools.calls == []
 
 
@@ -359,11 +355,10 @@ def test_depth_one_a_specialist_only_reaches_its_own_tools_with_object_arguments
 
 
 def test_a_tool_failure_reaches_the_specialist_as_a_code_never_its_message():
-    saver, seen = InMemorySaver(), []
-    state, _ = turn(Jev(), Tools(raise_with=RuntimeError(SECRET)), saver, technical=looks_then_reports(seen))
+    seen = []
+    state, _ = turn(Jev(), Tools(raise_with=RuntimeError(SECRET)), technical=looks_then_reports(seen))
     assert seen == [{"error": "RuntimeError"}]
-    stored = str(list(saver.list(None)))
-    assert "hunter2" not in stored and "sk_live" not in stored and "hunter2" not in str(state)
+    assert "hunter2" not in str(state) and "sk_live" not in str(state)
 
 
 def test_only_screened_text_from_a_tool_reaches_a_specialist():
@@ -391,7 +386,7 @@ def test_a_turn_brings_its_own_run_tool_in_the_config_and_every_specialist_uses_
     """AGENT-02 (DECISION-ea5b8887 C): the graph is built once; each turn's tools reach it per call."""
     built_with, this_turn = Tools(), Tools(output="for this turn")
     graph = coordinator(DecisionEngine(Jev(needs={"billing": 0.9})), specialists(), built_with)
-    state = graph.invoke({**TURN, "message": AUDIT}, {"configurable": {"run_tool": this_turn}})
+    state = graph({**TURN, "message": AUDIT}, {"configurable": {"run_tool": this_turn}})
     assert built_with.calls == [] and sorted(this_turn.calls) == [("billing", "billing.credit_memos"),
                                                                   ("technical", "ops.uptime")]
     assert all(r["status"] == "completed" for r in state["results"])
@@ -418,12 +413,12 @@ def test_findings_are_checked_before_the_coordinator_uses_them(findings, evidenc
 
 @pytest.mark.parametrize("message", ["Refund sarah@acme.com please", Masked("Call me on +1 415 555 0100"),
                                      Masked("card 4111 1111 1111 1111")])
-def test_unmasked_text_is_refused_before_jev_or_the_checkpoint_sees_it(message):
-    saver, jev = InMemorySaver(), Jev()
-    graph = coordinator(DecisionEngine(jev), specialists(), Tools(), saver)
+def test_unmasked_text_is_refused_before_jev_or_a_specialist_sees_it(message):
+    jev, tools = Jev(), Tools()
+    graph = coordinator(DecisionEngine(jev), specialists(), tools)
     with pytest.raises(SecurityViolation):
         start_turn(graph, **TURN, message=message)
-    assert jev.seen == [] and list(saver.list(None)) == []
+    assert jev.seen == [] and tools.calls == []
 
 
 def test_masked_tokens_are_accepted():
@@ -436,7 +431,7 @@ def test_a_turn_without_its_context_is_refused():
     graph = coordinator(DecisionEngine(Jev()), specialists(), Tools())
     for missing in TURN:
         with pytest.raises(ValueError, match="needs its tenant"):
-            graph.invoke({**{k: v for k, v in TURN.items() if k != missing}, "message": AUDIT})
+            graph({**{k: v for k, v in TURN.items() if k != missing}, "message": AUDIT})
 
 
 # Through the real executor: identity, tenant, schema and screening are enforced there -----------------------
@@ -473,40 +468,3 @@ def test_through_the_executor_a_specialist_reads_screened_output_on_the_customer
 def test_through_the_executor_identity_tenant_and_arguments_are_enforced_before_any_request(options, code):
     seen, fake = executor_turn(**options)
     assert seen == [{"error": code}] and fake.requests == []
-
-
-# Checkpoints ------------------------------------------------------------------------------------------------
-
-def test_the_turn_and_its_specialists_are_checkpointed_on_the_cases_thread():
-    saver = InMemorySaver()
-    turn(Jev(needs={"billing": 0.9}), checkpointer=saver)
-    saved = saver.get_tuple(thread("t_us", "case-7")).checkpoint["channel_values"]
-    assert saved["plan"]["lead"] == "technical" and len(saved["results"]) == 2
-    assert saver.get_tuple(thread("t_eu", "case-7")) is None
-
-
-def test_an_interrupted_turn_resumes_without_rerunning_finished_specialists():
-    saver, tools = InMemorySaver(), Tools()
-    graph = coordinator(DecisionEngine(Jev(needs={"billing": 0.9}, after={"billing": 0.9})), specialists(),
-                        tools, saver)
-    config = thread("t_us", "case-7")
-    graph.invoke({**TURN, "message": AUDIT}, config, interrupt_before=["between"])
-    assert tools.calls == [("technical", "ops.uptime")]
-    state = graph.invoke(None, config)
-    assert tools.calls == [("technical", "ops.uptime"), ("billing", "billing.credit_memos")]
-    assert roles(state) == ["billing", "technical"] and state["turn_id"] == tools.requests[0].turn_id
-
-
-def test_the_plan_and_results_survive_the_postgres_checkpointer():
-    subprocess.run(["docker", "compose", "-f", "deploy/compose.yaml", "--env-file", ".env.example",
-                    "up", "-d", "--wait", "postgres"], cwd=ROOT, check=True, capture_output=True)
-    database = "test_agents_topology"
-    psql("postgres", f'DROP DATABASE IF EXISTS "{database}" WITH (FORCE)')
-    psql("postgres", f'CREATE DATABASE "{database}"')
-    from langgraph.checkpoint.postgres import PostgresSaver  # the coordinator's own, until LG-03.2
-
-    with PostgresSaver.from_conn_string(f"postgresql://agent:change-me@127.0.0.1:5432/{database}") as saver:
-        saver.setup()
-        turn(Jev(needs={"billing": 0.9}), checkpointer=saver)
-        saved = saver.get_tuple(thread("t_us", "case-7")).checkpoint["channel_values"]
-    assert saved["outcome"] == "delegated" and roles(saved) == ["billing", "technical"]

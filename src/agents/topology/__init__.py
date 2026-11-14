@@ -12,13 +12,14 @@ MA-D3, MA-D6, MA-D8).
   Step budgets are handed out before anything runs, so parallel branches cannot overrun them: the
   coordinator's delegation is one step, the lead gets up to two, then the others in order while the turn's
   six last; a specialist with no budget left is not dispatched, so a turn has at most three specialists.
-- coordinator(): a LangGraph graph, started with start_turn() on the case's own thread. The plan is checked
-  again wherever it is read (roles, budgets, the turn total), so a malformed or inflated plan in state is
-  refused, not run. Independent specialists run in parallel (Send); dependent ones run after the lead, only
-  when the lead completed, with its findings in their brief; otherwise they are recorded as skipped. Each
-  specialist is its own compiled subgraph run inside the coordinator's node, so its state is checkpointed
-  with the case's. Depth is one: a specialist can only call tools on its allow-list, never another agent, and
-  returns validated findings to the coordinator, never text to the customer. Results are kept in role order.
+- coordinator(): one turn as plain calls (no LangGraph, DECISION-bc6301b4), started with start_turn(); it
+  runs inside a statechart stage, so a crashed turn is rerun from that stage and a retried tool call reuses
+  its idempotency key. The plan is checked again wherever it is read (roles, budgets, the turn total), so a
+  malformed or inflated plan is refused, not run. Independent specialists run in parallel (a thread pool);
+  dependent ones run after the lead, only when the lead completed, with its findings in their brief;
+  otherwise they are recorded as skipped. Each specialist is a bounded step loop. Depth is one: a specialist
+  can only call tools on its allow-list, never another agent, and returns validated findings to the
+  coordinator, never text to the customer. Results are kept in role order.
 - Tools run through run_tool(ToolRequest): the turn's tenant, case, session and principal come from the
   turn; executor_tool() runs it through tools.execution.Executor, which verifies the principal against the
   live session, mints the credential, validates the arguments and screens the output. The call id is
@@ -28,16 +29,13 @@ MA-D3, MA-D6, MA-D8).
 
 import hashlib
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field, replace
 from enum import Enum
 from types import MappingProxyType
-from typing import Annotated, Callable, TypedDict
-
-from langgraph.graph import END, START, StateGraph
-from langgraph.types import Send
+from typing import Callable
 
 from core.orchestrator.decisions import NUMBERS, JevUnavailable, Masked, SecurityViolation
-from core.orchestrator.statechart import thread
 from safety.pii.tokens import find as find_pii
 from tools.execution.calls import ToolCall
 from tools.registry import Risk
@@ -223,24 +221,6 @@ def merge_results(old, new):
     return sorted([*old, *new], key=lambda r: list(Role).index(Role(r["role"])))
 
 
-class SpecialistState(TypedDict, total=False):
-    brief: dict
-    history: list
-    result: dict
-
-
-class TurnState(TypedDict, total=False):
-    tenant_id: str
-    case_id: str
-    session_id: str
-    principal_id: str
-    turn_id: str
-    message: str        # masked
-    plan: dict          # Plan.as_state()
-    results: Annotated[list, merge_results]
-    outcome: str
-
-
 TURN_FIELDS = ("tenant_id", "case_id", "session_id", "principal_id", "message")
 
 
@@ -264,8 +244,9 @@ def valid_findings(move):
 
 
 def specialist_graph(spec, run_tool):
-    """One specialist: up to brief["steps"] ReAct steps over its own tools, then a typed result. A turn may
-    bring its own run_tool in config["configurable"]["run_tool"] (DECISION-ea5b8887 C); else this one."""
+    """One specialist as run(state, config) -> state with its "result": up to brief["steps"] ReAct steps over
+    its own tools, then a typed result. A turn may bring its own run_tool in
+    config["configurable"]["run_tool"] (DECISION-ea5b8887 C); else this one."""
     def step(state, config):
         brief, history = state["brief"], list(state.get("history", []))
         run = (config.get("configurable") or {}).get("run_tool") or run_tool
@@ -297,17 +278,18 @@ def specialist_graph(spec, run_tool):
                                                           history, last_observation=observation)}
         return {"history": history}
 
-    graph = StateGraph(SpecialistState)
-    graph.add_node("step", step)
-    graph.add_edge(START, "step")
-    graph.add_conditional_edges("step", lambda state: END if state.get("result") else "step", ["step", END])
-    return graph.compile()
+    def run(state, config=None):
+        state = dict(state)
+        while not state.get("result"):  # every step either ends the work or uses budget, so this stops
+            state.update(step(state, config or {}))
+        return state
+    return run
 
 
-def coordinator(engine, specialists, run_tool, checkpointer=None):
-    """The coordinator graph; start a turn with start_turn(). run_tool is the default; a turn passes its own
-    as config["configurable"]["run_tool"], which reaches every specialist."""
-    subgraphs = {role: specialist_graph(spec, run_tool) for role, spec in specialists.items()}
+def coordinator(engine, specialists, run_tool):
+    """One turn as turn(state, config) -> state; start one with start_turn(). run_tool is the default; a turn
+    passes its own as config["configurable"]["run_tool"], which reaches every specialist."""
+    runs = {role: specialist_graph(spec, run_tool) for role, spec in specialists.items()}
 
     def plan(state):
         if any(not isinstance(state.get(name), str) or not state[name] for name in TURN_FIELDS):
@@ -316,57 +298,54 @@ def coordinator(engine, specialists, run_tool, checkpointer=None):
         return {"turn_id": state.get("turn_id") or str(uuid.uuid4()),
                 "plan": delegate(engine, specialists, Masked(message)).as_state()}
 
-    def run(task, config):
-        brief = task["brief"]
-        done = subgraphs[Role(brief["role"])].invoke({"brief": brief, "history": []}, config)
-        return {"results": [done["result"]]}
+    def run_all(ready, config):
+        """The specialists of these briefs, in parallel."""
+        def one(brief):
+            return runs[Role(brief["role"])]({"brief": brief, "history": []}, config)["result"]
+        with ThreadPoolExecutor(max_workers=max(len(ready), 1)) as pool:
+            return list(pool.map(one, ready))
 
     def briefs(state, after_lead):
         current = checked_plan(state["plan"])
         lead = next((r for r in state.get("results", []) if r["role"] == current["lead"]), None)
         context = {name: state[name] for name in (*TURN_FIELDS[:4], "turn_id")}
-        sends, skipped = [], []
+        ready, skipped = [], []
         for a in current["assignments"]:
             if a["after_lead"] != after_lead:
                 continue
             if after_lead and (lead is None or lead["status"] != "completed"):
                 skipped.append(a["role"])
                 continue
-            sends.append(Send("then" if after_lead else "first", {"brief": {
-                **context, "role": a["role"], "steps": a["steps"], "objective": state["message"],
-                "lead": current["lead"], "upstream": lead if after_lead else None}}))
-        return sends, skipped
-
-    def between(state):
-        _, skipped = briefs(state, True)
-        return {"results": [_result(role, "skipped", "the lead did not complete", []) for role in skipped]}
+            ready.append({**context, "role": a["role"], "steps": a["steps"], "objective": state["message"],
+                          "lead": current["lead"], "upstream": lead if after_lead else None})
+        return ready, skipped
 
     def join(state):
         current = checked_plan(state["plan"])
         ledger(state.get("results", []), current)
         return {"outcome": "handoff" if current["handoff"] else "delegated"}
 
-    graph = StateGraph(TurnState)
-    graph.add_node("plan", plan)
-    graph.add_node("first", run)
-    graph.add_node("between", between)
-    graph.add_node("then", run)
-    graph.add_node("join", join)
-    graph.add_edge(START, "plan")
-    graph.add_conditional_edges("plan", lambda s: briefs(s, False)[0] or "join", ["first", "join"])
-    graph.add_edge("first", "between")
-    graph.add_conditional_edges("between", lambda s: briefs(s, True)[0] or "join", ["then", "join"])
-    graph.add_edge("then", "join")
-    graph.add_edge("join", END)
-    return graph.compile(checkpointer=checkpointer)
+    def turn(state, config=None):
+        config = config or {}
+        state = {"results": [], **state, **plan(state)}
+        first, _ = briefs(state, False)
+        if first:  # no first wave (a hand-off plan): straight to join
+            state["results"] = merge_results([], run_all(first, config))
+            then, skipped = briefs(state, True)
+            state["results"] = merge_results(
+                state["results"],
+                [_result(role, "skipped", "the lead did not complete", []) for role in skipped]
+                + run_all(then, config))
+        return {**state, **join(state)}
+    return turn
 
 
-def start_turn(graph, *, tenant_id, case_id, session_id, principal_id, message):
-    """Run one coordinator turn on the case's own thread (tenant:case). message: masked text (Masked); text
-    that still holds personal data is refused before anything is checkpointed."""
+def start_turn(turn, *, tenant_id, case_id, session_id, principal_id, message):
+    """Run one coordinator turn. message: masked text (Masked); text that still holds personal data is
+    refused before Jev or a specialist sees it."""
     text = masked_text(message)
-    return graph.invoke({"tenant_id": tenant_id, "case_id": case_id, "session_id": session_id,
-                         "principal_id": principal_id, "message": text}, thread(tenant_id, case_id))
+    return turn({"tenant_id": tenant_id, "case_id": case_id, "session_id": session_id,
+                 "principal_id": principal_id, "message": text})
 
 
 def ledger(results, plan):
