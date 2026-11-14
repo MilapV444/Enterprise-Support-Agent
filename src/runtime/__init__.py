@@ -105,7 +105,12 @@ or records answers it."""
 TOOL_STEP = """Before answering you may read one of the customer's own records, if it would help:
 {tools}
 To read one, reply with JSON only: {{"action": "<record id>"}}. Otherwise reply with the findings as asked."""
-DRAFT = "Answer the customer from the specialist findings only."
+DRAFT = ("Answer the customer from the specialist findings only. Do not tell them to contact another team, "
+         "department, person or specialist, and do not end with offers of further help: if a person is "
+         "needed, the conversation is handed over without being asked.")
+# B25: one redraft, then a person
+REDRAFT = ("Your previous draft pointed the customer to another team or person. Rewrite it with only the "
+           "facts and steps from the findings that the customer can use themselves.")
 FENCE = re.compile(r"^```(?:json)?\s*|\s*```$")
 
 
@@ -345,17 +350,29 @@ class TurnLoop:
                 outcome = self.alone(brief, query, draft, config)
             else:
                 turn = self.coordinator.invoke({**brief, "message": query}, config)
-                outcome = human("NO_DELEGATION") if turn["plan"]["handoff"] else merge(
-                    self.decide, turn["results"], {**evidence, **self.records.get(key, {})}, draft)
+                if turn["plan"]["handoff"]:
+                    outcome = human("NO_DELEGATION")
+                elif self.unanswered(key, turn["plan"]["lead"]):
+                    outcome = human("LEAD_UNAVAILABLE")
+                else:
+                    outcome = merge(self.decide, turn["results"], {**evidence, **self.records.get(key, {})},
+                                    draft, redraft=self.draft(state, instruction + REDRAFT + "\n"))
         except NoDraft as error:
             outcome = human(str(error))
         used = {e for claim in outcome.accepted for e in claim.evidence}
         self.evidence[key] = [s for s in sections if s.parent_id in used and s.audience in CUSTOMER]
         steps = self.steps.setdefault(key, {})
         steps["retrieval"]["sources"] = [{"doc_id": s.doc_id, "title": s.title} for s in self.evidence[key]]
-        steps.setdefault("answer", {"retried": False})["outcome"] = (
-            "answered" if outcome.kind == "reply" else outcome.reason)
+        answer = steps.setdefault("answer", {"retried": False})
+        answer["outcome"] = "answered" if outcome.kind == "reply" else outcome.reason
+        answer.update({k: outcome.detail[k] for k in ("p_redirect", "redrafted") if k in outcome.detail})
         return (outcome.text, "answered") if outcome.kind == "reply" else (None, outcome.reason)
+
+    def unanswered(self, key, role):
+        """The lead specialist got no model answer (degraded or escalated, register B23): its domain was not
+        read, so a reply from the others alone would mislead."""
+        return any(s["role"] == role and s["outcome"] != "answered"
+                   for s in self.steps.get(key, {}).get("specialists", []))
 
     def alone(self, brief, query, draft, config):
         """Without Jev nothing delegates or adjudicates: the generalist reads for every domain, with every
@@ -363,6 +380,8 @@ class TurnLoop:
         adjudicate)."""
         done = self.generalist.invoke({"brief": {**brief, "role": Role.GENERALIST.value, "objective": query,
                                                  "steps": STEPS_PER_SPECIALIST}, "history": []}, config)
+        if self.unanswered((brief["tenant_id"], brief["case_id"]), Role.GENERALIST.value):
+            return human("LEAD_UNAVAILABLE")
         claims = tuple(claims_from(done["result"]))
         if not claims:
             return human("NOTHING_TO_SAY")

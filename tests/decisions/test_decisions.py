@@ -232,3 +232,19 @@ def test_triage_sees_the_whole_thread_not_only_the_last_line():
     ]})
     sent = jev.sent[-1][0]["message"]
     assert "forgot the password" in sent and "what is the process" in sent
+
+
+def test_what_can_be_looked_up_is_not_a_missing_detail():
+    """SWEEP-05 (register W42): 'Is the VPN gateway in eu-central having problems?' was asked 'which gateway?'
+    before any status lookup. Measured on Jev (KNOWLEDGE-d5cb415b): with this wording both status questions
+    and 12 more golden questions go straight to the specialists; vague messages still get asked."""
+    lookups = ("service, region or component is having problems", "tickets, subscriptions or invoices")
+    wording = TRIAGE_QUESTIONS["missing_details"]["instructions"]
+    assert all(phrase in wording for phrase in lookups) and "not missing details" in wording
+    prompts = []
+
+    def complete(prompt):
+        prompts.append(prompt)
+        return '{"intent": "TECHNICAL_OUTAGE", "severity": 1, "missing_details": false, "confidence": 0.9}'
+    answers = llm_fallback(complete)({"message": mask("is nimbus down right now?")})
+    assert answers["missing_details"].value is False and all(phrase in prompts[0] for phrase in lookups)

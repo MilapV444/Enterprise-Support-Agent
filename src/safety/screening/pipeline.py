@@ -9,7 +9,9 @@ scorer and an injection scorer (risk = the higher), and placed in a band whose c
     retrieved passage  < 0.40     admitted, marked quarantined   >= 0.85  dropped from context
     tool output        < 0.45     free text stripped             >= 0.85  replaced by an error
 
-A scorer that cannot answer puts the text in REVIEW: never a silent pass. Whatever reaches a prompt goes in
+A scorer that cannot answer puts the text in REVIEW: never a silent pass. A customer message the hazard
+scorer alone would block gets a second opinion when one is configured (jev_confirm): a confident "ordinary
+support question" lowers it to REVIEW; anything else keeps the block. Whatever reaches a prompt goes in
 spotlighting delimiters; SPOTLIGHT_RULE is the system-prompt line that tells the model what they mean.
 Hostility is not screened (SG-D7): the persona de-escalates and a human is always one click away.
 """
@@ -49,26 +51,56 @@ class Verdict:
     unavailable: list[str] = field(default_factory=list)  # scorers that could not answer
 
 
+CONFIRMED = ("user_message", "history")   # sources a second opinion may look at
+ORDINARY_AT = 0.75
+ORDINARY = {"type": "noul", "instructions": (
+    "This message was sent to the customer support desk of a cloud software company. Is it an ordinary "
+    "support, billing, account, security or technical question, rather than a request for help to hurt "
+    "people, commit a crime, harm oneself, or produce sexual content involving minors?")}
+
+
+def jev_confirm(engine, min_confidence=ORDINARY_AT):
+    """confirm(text) for Screener: Jev's second opinion on a customer message the hazard scorer blocked
+    (register B24: llama-guard3:1b flagged 8 of the 40 golden questions). True only for a confident "ordinary
+    question"; Jev down, or anything it will not take, keeps the block."""
+    from core.orchestrator.decisions import mask
+
+    def confirm(text):
+        try:
+            answer = engine.ask({"message": mask(text)}, {"ordinary": ORDINARY})["ordinary"]
+        except Exception:  # noqa: BLE001 - no second opinion: the block stands
+            return False
+        return answer.value is True and answer.confidence >= min_confidence
+    return confirm
+
+
 class Screener:
-    def __init__(self, hazard, injection):
-        """hazard / injection: text -> (score 0..1, categories); see safety.screening.scorers."""
-        self.scorers = {"hazard": hazard, "injection": injection}
+    def __init__(self, hazard, injection, confirm=None):
+        """hazard / injection: text -> (score 0..1, categories); see safety.screening.scorers.
+        confirm(text) -> True when a second opinion (jev_confirm) finds a customer message the hazard scorer
+        blocked to be an ordinary question: it lowers that hazard score to REVIEW (a read-only turn), never
+        the injection score."""
+        self.scorers, self.confirm = {"hazard": hazard, "injection": injection}, confirm
 
     def risk(self, text):
-        score, categories, unavailable = 0.0, [], []
+        scores, categories, unavailable = {}, [], []
         for name, scorer in self.scorers.items():
             try:
                 value, found = scorer(text)
             except ScorerUnavailable:
                 unavailable.append(name)
                 continue
-            score, categories = max(score, float(value)), categories + list(found)
-        return score, categories, unavailable
+            scores[name], categories = float(value), categories + list(found)
+        return scores, categories, unavailable
 
     def screen(self, source, text, label=""):
         review_at, block_at = BANDS[source]
         clean = normalise(text if isinstance(text, str) else json.dumps(text, ensure_ascii=False))
-        score, categories, unavailable = self.risk(clean)
+        scores, categories, unavailable = self.risk(clean)
+        if (source in CONFIRMED and self.confirm is not None and scores.get("hazard", 0.0) >= block_at
+                and scores.get("injection", 0.0) < block_at and self.confirm(clean)):
+            scores["hazard"], categories = review_at, categories + ["confirmed_ordinary"]
+        score = max(scores.values(), default=0.0)
         band = "block" if score >= block_at else "review" if score >= review_at or unavailable else "pass"
         tag = label or source.replace("_", " ")
         if band == "block":

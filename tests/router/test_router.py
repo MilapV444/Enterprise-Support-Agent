@@ -129,6 +129,23 @@ def test_free_tiers_never_fall_back_to_claude():
     assert reply.outcome == "degraded" and fakes["claude"].calls == 0
 
 
+def test_a_mid_tier_turn_no_free_provider_answers_goes_one_tier_up_to_claude(caplog):
+    """SWEEP-05 (register B23): a tier-one turn where every free provider fails cascades to Claude, and each
+    provider failure is logged by its code."""
+    router, fakes = setup(small=[transient("small")] * 2, mid=[transient("mid")] * 2)
+    with caplog.at_level("WARNING", logger="cost.router"):
+        reply = router.answer(MESSAGES, engine(2.0), STATE, verify=lambda text: True)
+    assert (reply.outcome, reply.provider, reply.cascaded) == ("answered", "claude", True)
+    assert "tier 1: no provider answered" in caplog.text and "mid: HTTP 503" in caplog.text
+
+
+def test_when_claude_cannot_answer_either_the_turn_reads_as_degraded():
+    router, fakes = setup(small=[transient("small")] * 4, mid=[transient("mid")] * 4,
+                          frontier=[transient("claude")] * 2)
+    reply = router.answer(MESSAGES, engine(2.0), STATE, verify=lambda text: True)
+    assert reply.outcome == "degraded" and fakes["claude"].calls >= 1
+
+
 def test_a_refusal_goes_to_a_human_and_is_not_asked_elsewhere():
     router, fakes = setup(frontier=[ProviderError("claude", "refused", refused=True)])
     reply = router.answer(MESSAGES, engine(4.0), STATE, verify=lambda text: True)
@@ -203,6 +220,22 @@ def test_claude_adapter_request_and_reply():
         "claude-opus-5-5", 512, "You are support.", "default")
     assert body["messages"] == [{"role": "user", "content": "VPN drops"}]
     assert body["output_config"] == {"effort": "high"}
+
+
+def test_claude_haiku_is_sent_without_server_side_fallbacks():
+    """SWEEP-05: Claude Haiku 5.5 takes no server-side fallbacks, so the request leaves them out."""
+    seen = []
+
+    def handler(request):
+        seen.append((request.headers.get("anthropic-beta") or "", json.loads(request.content)))
+        return httpx2.Response(200, json={**MESSAGE, "model": "claude-haiku-5-5"})
+
+    haiku = claude(api_key="k", model="claude-haiku-5-5", base_url="https://api.anthropic.test",
+                   http_client=httpx2.Client(transport=httpx2.MockTransport(handler)))
+    assert haiku.complete(MESSAGES, 512).text == "Renew the certificate."
+    beta, body = seen[0]
+    assert "server-side-fallback" not in beta and "fallbacks" not in body
+    assert (body["model"], body["output_config"]) == ("claude-haiku-5-5", {"effort": "high"})
 
 
 def test_claude_adapter_makes_one_request_and_classifies_failures():

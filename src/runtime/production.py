@@ -8,7 +8,8 @@ that runs it: used by deploy/vm/serve.py on the VM and by `python -m runtime ser
 - Retrieval: Qdrant (QDRANT_URL, e.g. Qdrant Cloud; the compose service QDRANT_SERVICE_URL when it is unset or
   a loopback address) with the pinned Ollama embedder (OLLAMA_URL); query rewrite and reranking on
   the small model. Screening: Llama Guard on Ollama plus the injection patterns (an unavailable scorer gives
-  the review band: reads only). PII tokens with PII_TOKEN_KEY (environment, then OpenBao). The statechart's
+  the review band: reads only; a Llama Guard block on a customer message gets Jev's second opinion). PII
+  tokens with PII_TOKEN_KEY (environment, then OpenBao). The statechart's
   checkpointer holds session state, so it uses the database's direct endpoint through a checked pool, as the
   owner (DATABASE_URL); the event log and the rest use APP_DATABASE_URL (app_login, no BYPASSRLS) when set.
 - Tools: the specialists' read-only tools.nimbus catalog through tools.execution.Executor, audited (S11),
@@ -43,7 +44,7 @@ from reliability.fallbacks import (
 from runtime import Dispatcher, NoJev, Services, TurnLoop, connector
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
-from safety.screening.pipeline import Screener
+from safety.screening.pipeline import Screener, jev_confirm
 from safety.screening.scorers import llama_guard, pattern_injection
 from tools import nimbus
 from tools.audit import AuditLog
@@ -132,14 +133,17 @@ def services(environ, checkpointer, lock=None):
     qdrant = QdrantClient(url=qdrant_url(environ),
                           api_key=environ.get("QDRANT_API_KEY") or None)
     connect = connector(database_url())
-    screener = Screener(llama_guard(ollama, lock["screening"]["model"]), pattern_injection)
+    engine = DecisionEngine(jev)
+    # B24: a Llama Guard block on a customer message gets Jev's second opinion (none without Jev)
+    screener = Screener(llama_guard(ollama, lock["screening"]["model"]), pattern_injection,
+                        confirm=jev_confirm(engine))
     identity = Identity(connect)  # sessions and on-behalf-of tokens; its key never leaves this process
     tools = nimbus.catalog(connect, identity)
     # ponytail: no key store; every catalog tool is argument-free, so an audit record has nothing to seal (a
     # tool with arguments fails closed, AUDIT_UNAVAILABLE, until data.keys.KeyStore is wired here)
     executor = Executor(tools, nimbus.SYSTEMS, screener, identity=identity, audit=AuditLog(connect, None))
     return Services(
-        engine=DecisionEngine(jev), router=Router(provider_tiers),
+        engine=engine, router=Router(provider_tiers),
         retriever=Retriever(qdrant, ollama_embed(ollama, lock["embedding"]["model"]), complete),
         screener=screener, tokens=Tokenizer(load_secret("PII_TOKEN_KEY")), complete=complete,
         connect=connect, checkpointer=checkpointer, decisions=DecisionLog(connect), executor=executor,

@@ -176,6 +176,44 @@ def test_a_reply_that_sends_the_customer_elsewhere_is_held(p, kind):
         assert outcome.reason == "REDIRECT" and "billing department" in outcome.detail["draft"]
 
 
+class RedirectByDraft(Jev):
+    """P(redirect) per draft text."""
+
+    def __init__(self, scores):
+        super().__init__()
+        self.scores = scores
+
+    def evaluate(self, state, questions):
+        self.redirect = self.scores[state["draft"]]
+        return super().evaluate(state, questions)
+
+
+ELSEWHERE = "Please contact the billing department about CM-7."
+SELF_SERVE = "CM-7 was applied to your invoice."
+
+
+@pytest.mark.parametrize("second, kind", [(0.05, "reply"), (0.6, "human")])
+def test_a_redirecting_draft_is_redrafted_once_and_checked_again(second, kind):
+    """SWEEP-05 (register B25): one redraft when the first draft points elsewhere; the score is kept."""
+    redrafts = Drafts(SELF_SERVE)
+    outcome = merge(DecisionEngine(RedirectByDraft({ELSEWHERE: 0.7, SELF_SERVE: second})),
+                    [result("billing", CREDITS)], EVIDENCE, Drafts(ELSEWHERE), redraft=redrafts)
+    assert outcome.kind == kind and len(redrafts.calls) == 1
+    assert outcome.detail["redrafted"] is True and outcome.detail["p_redirect"] == second
+    if kind == "reply":
+        assert outcome.text == SELF_SERVE
+    else:
+        assert outcome.reason == "REDIRECT"
+
+
+def test_a_draft_that_passes_is_not_redrafted_and_records_its_score():
+    redrafts = Drafts(SELF_SERVE)
+    outcome = merge(DecisionEngine(Jev(redirect=0.05)), [result("billing", CREDITS)], EVIDENCE,
+                    Drafts(SELF_SERVE), redraft=redrafts)
+    assert outcome.kind == "reply" and redrafts.calls == []
+    assert outcome.detail == {"p_redirect": 0.05, "redrafted": False}
+
+
 def test_jev_down_at_the_redirect_check_holds_the_reply():
     class DownLater(Jev):
         def evaluate(self, state, questions):

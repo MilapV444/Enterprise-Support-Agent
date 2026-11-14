@@ -63,6 +63,7 @@ def triage_answers(intent, confidence, severity, missing):
 
 
 ANSWER = "Choose \"Forgot password\" on the sign-in page; the reset link works for 30 minutes."
+REDIRECTING = "Please contact the identity team, who can reset it for you."
 PASSAGE_ID = re.compile(r"<<<DATA (?:internal )?knowledge (\S+?)>>>")
 RECORD_ID = re.compile(r"<<<DATA (nimbus_\w+\.\w+)>>>")
 
@@ -71,10 +72,13 @@ class World:
     """The scripted outside world, with a log of everything that reached it. claims: what every specialist
     reports (None: one claim citing every passage it was shown)."""
 
-    def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None):
+    def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None,
+                 specialists_down=False, redirecting=False):
         self.triage = triage or triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.05)
         self.model_down, self.jev, self.model = model_down, [], []
         self.lead, self.claims, self.read = lead, claims, read   # read: the record a specialist asks for
+        self.specialists_down = specialists_down   # every specialist's model call fails (B23)
+        self.redirecting = redirecting             # the first draft points the customer elsewhere (B25)
 
     def jev_reply(self, request):
         body = json.loads(request.content)
@@ -85,7 +89,8 @@ class World:
             answers = {qid: {"type": "noul", "noul": 0.05} for qid in body["questions"]}
             answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": 0.9}
         elif "redirect" in body["questions"]:
-            answers = {"redirect": {"type": "noul", "noul": 0.05}}
+            elsewhere = REDIRECTING in json.dumps(body["state"])
+            answers = {"redirect": {"type": "noul", "noul": 0.9 if elsewhere else 0.05}}
         else:
             answers = {"difficulty": {"type": "score", "score": 1.0, "confidence": 0.9,
                                       "probabilities": {"0": 0.05, "1": 0.85, "2": 0.1, "3": 0, "4": 0}}}
@@ -94,9 +99,9 @@ class World:
     def model_reply(self, request):
         messages = json.loads(request.content)["messages"]
         self.model.append(messages)
-        if self.model_down:
-            return httpx.Response(503, json={"error": "overloaded"})
         prompt = messages[-1]["content"]
+        if self.model_down or (self.specialists_down and "specialist of the support team" in prompt):
+            return httpx.Response(503, json={"error": "overloaded"})
         if "standalone search query" in prompt:
             latest = prompt.split("Latest message:\n", 1)[1].strip()
             text = json.dumps({"standalone_query": latest, "exact_identifiers": []})
@@ -115,7 +120,7 @@ class World:
             text = json.dumps(self.claims if self.claims is not None else
                               [{"topic": "answer", "text": ANSWER, "evidence": ids}] if ids else [])
         elif "specialist findings" in prompt:
-            text = ANSWER
+            text = REDIRECTING if self.redirecting and "previous draft pointed" not in prompt else ANSWER
         else:
             text = "not a ranking"
         return httpx.Response(200, json={"choices": [{"message": {"content": text}}],
@@ -205,7 +210,8 @@ def test_without_jev_the_llm_classifier_triages_and_the_turn_is_still_answered(s
     world = World()
     turn = inbound("How do I reset my password?")
     assert loop(stack, world, jev=False).run(turn) == "answered"
-    assert world.jev == [] and any("Classify the customer conversation" in m[-1]["content"] for m in world.model)
+    assert world.jev == []
+    assert any("Classify the customer conversation" in m[-1]["content"] for m in world.model)
 
 
 def test_a_password_reset_follow_up_is_answered_instead_of_asked_again(stack):
@@ -401,7 +407,7 @@ def test_tiers_come_from_the_lock_and_only_the_keys_that_are_set():
     names = [[p.name for p in tier] for tier in production.tiers(LOCK, keys)]
     assert names == [["groq"], [], ["claude"]]
     paid = production.tiers(LOCK, {"ANTHROPIC_API_KEY": "a"})[2][0]
-    assert paid.paid and paid.cost(1_000_000, 0) == 4.0
+    assert paid.paid and paid.cost(1_000_000, 0) == LOCK["tiers"]["2"]["usd_per_mtok"][0]  # from the lock
     assert production.tiers(LOCK, {}) == [[], [], []]
 
 
@@ -485,7 +491,8 @@ def trace_steps(turn):
 
 def test_a_signed_in_customer_is_answered_from_their_own_record_read_through_the_audited_executor(stack):
     world = World(lead="billing", read="nimbus_account.my_invoices")
-    turn = inbound("Is my latest invoice paid?", tier="T2_SSO", principal="sarah", session=signed_in("T2_SSO"))
+    turn = inbound("Is my latest invoice paid?", tier="T2_SSO", principal="sarah",
+                   session=signed_in("T2_SSO"))
     assert loop(stack, world, tools=True).run(turn) == "answered"
     offered, read = specialist_prompts(world)
     assert "- nimbus_account.my_invoices:" in offered and "- nimbus_account.my_account:" not in offered
@@ -523,7 +530,8 @@ def test_a_turn_from_a_session_that_has_ended_reads_nothing(stack):
         sessions.end(conn, "t_us", session)
     turn = inbound("Is my latest invoice paid?", tier="T2_SSO", principal="sarah", session=session)
     loop(stack, world, tools=True).run(turn)
-    assert tool_audit_of(turn) == [("nimbus_account.my_invoices", "failed", "sarah", "AUTHENTICATION_EXPIRED")]
+    expired = ("nimbus_account.my_invoices", "failed", "sarah", "AUTHENTICATION_EXPIRED")
+    assert tool_audit_of(turn) == [expired]
     assert not any("<<<DATA nimbus_" in prompt for prompt in specialist_prompts(world))
 
 
@@ -537,3 +545,31 @@ def test_the_api_hands_the_turn_the_session_its_token_names(stack, monkeypatch):
     assert reply.status_code == 202
     (turn,) = dispatched
     assert turn.session_id and identity.session_principal("t_us", turn.session_id)[0] == turn.principal_id
+
+
+# SWEEP-05 ---------------------------------------------------------------------------------------------------
+
+def test_when_the_lead_specialist_gets_no_model_answer_the_case_goes_to_a_person(stack):
+    """Register B23: the lead's domain was not read, so the others' claims alone would mislead."""
+    world = World(specialists_down=True)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "handed_off"
+    assert trace_steps(turn)["answer"]["outcome"] == "LEAD_UNAVAILABLE"
+
+
+def test_without_jev_a_generalist_that_gets_no_model_answer_hands_off_rather_than_saying_no_docs(stack):
+    world = World(specialists_down=True)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world, jev=False).run(turn) == "handed_off"
+    assert trace_steps(turn)["answer"]["outcome"] == "LEAD_UNAVAILABLE"
+
+
+def test_a_draft_that_points_elsewhere_is_redrafted_once_and_the_score_is_in_the_trace(stack):
+    """Register B25: golden question 16 went to a person over one drafter-added sentence."""
+    world = World(redirecting=True)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "answered"
+    final = [data for kind, data in published(turn) if kind == "final"][-1]
+    assert final["text"] == ANSWER
+    answer = trace_steps(turn)["answer"]
+    assert (answer["outcome"], answer["redrafted"], answer["p_redirect"]) == ("answered", True, 0.05)

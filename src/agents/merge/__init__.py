@@ -120,9 +120,16 @@ def adjudicate(engine, topic, group, evidence):
     return None, levels
 
 
-def merge(engine, results, evidence, draft, verified_actions=()):
+def p_redirect(engine, text):
+    redirect = engine.ask({"draft": masked(text)}, {"redirect": REDIRECT})["redirect"]
+    # rounded: P(yes) = 1 - 0.8 must count as 0.20, not just under it
+    return round(redirect.confidence if redirect.value is True else 1 - redirect.confidence, 9)
+
+
+def merge(engine, results, evidence, draft, verified_actions=(), redraft=None):
     """evidence: {evidence id: masked text}; draft(claims) -> the coordinator's reply text; verified_actions:
-    executed writes their read-back confirmed (agents.contracts.ExecutedAction)."""
+    executed writes their read-back confirmed (agents.contracts.ExecutedAction); redraft(claims): one more
+    draft when the first points the customer elsewhere (register B25), checked again before it is used."""
     claims = [claim for result in results for claim in claims_from(result)]
     if not claims:
         return human("NOTHING_TO_SAY")
@@ -145,13 +152,15 @@ def merge(engine, results, evidence, draft, verified_actions=()):
                                      for c, level in zip(distinct, levels, strict=True)})
             accepted.append(winner)
         text = draft(tuple(accepted))
-        redirect = engine.ask({"draft": masked(text)}, {"redirect": REDIRECT})["redirect"]
+        score, redrafted = p_redirect(engine, text), False
+        if score >= REDIRECT_AT and redraft is not None:
+            text, redrafted = redraft(tuple(accepted)), True
+            score = p_redirect(engine, text)
     except JevUnavailable:
         return human("JEV_UNAVAILABLE")
-    # rounded: P(yes) = 1 - 0.8 must count as 0.20, not just under it
-    p_redirect = round(redirect.confidence if redirect.value is True else 1 - redirect.confidence, 9)
-    if p_redirect >= REDIRECT_AT:
-        return human("REDIRECT", draft=text)
+    checked = {"p_redirect": round(score, 2), "redrafted": redrafted}
+    if score >= REDIRECT_AT:
+        return human("REDIRECT", draft=text, **checked)
     if COMPLETED.search(text) and not verified_actions:
-        return human("UNVERIFIED_COMPLETION", draft=text)
-    return Outcome("reply", text=text, accepted=tuple(accepted))
+        return human("UNVERIFIED_COMPLETION", draft=text, **checked)
+    return Outcome("reply", text=text, detail=checked, accepted=tuple(accepted))

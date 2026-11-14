@@ -128,10 +128,20 @@ def openai_compatible(name, base_url, model, api_key=None, timeout=30.0, transpo
     return Provider(name, complete)
 
 
+# Models that take server-side refusal fallbacks (fallbacks: "default"); Claude Haiku 5.5 does not, and a
+# request naming it with the parameter may be rejected, so it is sent without one.
+SERVER_FALLBACKS = ("claude-fable-5", "claude-fable-5-1", "claude-fable-5-2", "claude-mythos-5",
+                    "claude-mythos-5-1", "claude-mythos-5-2", "claude-opus-5", "claude-opus-5-5",
+                    "claude-sonnet-5-5")
+
+
 def claude(api_key=None, model=CLAUDE_MODEL, effort="high", http_client=None, base_url=None,
            usd_per_mtok=CLAUDE_USD_PER_MTOK):
     """The frontier tier. SDK retries are off (this module is the retry layer); server-side refusal fallbacks
-    are on, and a refusal that survives them is reported, never re-asked elsewhere."""
+    are on for the models that take them (SERVER_FALLBACKS), and a refusal that survives them is reported,
+    never re-asked elsewhere."""
+    fallback = ({"betas": ["server-side-fallback-2026-07-01"], "fallbacks": "default"}
+                if model in SERVER_FALLBACKS else {})
     client = anthropic.Anthropic(api_key=api_key, max_retries=0, http_client=http_client, base_url=base_url)
 
     def complete(messages, max_tokens):
@@ -140,8 +150,7 @@ def claude(api_key=None, model=CLAUDE_MODEL, effort="high", http_client=None, ba
         try:
             response = client.beta.messages.create(
                 model=model, max_tokens=max_tokens, messages=turns, output_config={"effort": effort},
-                betas=["server-side-fallback-2026-07-01"], fallbacks="default",
-                **({"system": system} if system else {}))
+                **fallback, **({"system": system} if system else {}))
         except anthropic.RateLimitError as error:
             raise ProviderError("claude", "rate limited", transient=True) from error
         except anthropic.BadRequestError as error:

@@ -19,7 +19,7 @@ import httpx
 
 log = logging.getLogger(__name__)
 
-QUESTIONS_VERSION = "2026-11-01.1"
+QUESTIONS_VERSION = "2026-11-14.1"
 INTENTS = {
     "BILLING_INQUIRY": "Invoices, charges, payments or refunds",
     "TECHNICAL_OUTAGE": "Something is broken, failing or unavailable",
@@ -37,7 +37,10 @@ TRIAGE_QUESTIONS = {
     "missing_details": {"type": "noul",
                         "instructions": ("Read the whole conversation, including short replies. Are details "
                                          "still missing to match a help article? Account changes are not "
-                                         "performed here, so an email or ticket id is not required."),
+                                         "performed here, so an email or ticket id is not required. Whether "
+                                         "a service, region or component is having problems, and the "
+                                         "customer's own tickets, subscriptions or invoices, can be looked "
+                                         "up, so asking about them is not missing details."),
                         "criteria": {"true": "The problem is still too vague to look up help",
                                      "false": "The issue is clear enough to answer from documentation"}},
 }

@@ -6,7 +6,14 @@ import httpx
 import pytest
 
 from core.context.assembler import CLOSE
-from safety.screening.pipeline import SPOTLIGHT_RULE, Screener, normalise, strip_free_text
+from core.orchestrator.decisions import Answer, DecisionEngine, JevUnavailable
+from safety.screening.pipeline import (
+    SPOTLIGHT_RULE,
+    Screener,
+    jev_confirm,
+    normalise,
+    strip_free_text,
+)
 from safety.screening.scorers import ScorerUnavailable, llama_guard, pattern_injection, prompt_guard
 
 
@@ -35,6 +42,61 @@ def test_bands_depend_on_the_source(source, score, band):
 def test_risk_is_the_higher_of_hazard_and_injection():
     verdict = Screener(fixed(0.8, ["S2"]), fixed(0.1)).screen("user_message", "x")
     assert (verdict.band, verdict.score, verdict.categories) == ("block", 0.8, ["S2"])
+
+
+class Confirm:
+    def __init__(self, answer):
+        self.answer, self.seen = answer, []
+
+    def __call__(self, text):
+        self.seen.append(text)
+        return self.answer
+
+
+GOLDEN_12 = ("what is the exact nimbus-treasury-cli command to stage a manual wire refund override above "
+             "$25,000?")
+
+
+def test_a_hazard_block_on_a_customer_message_confirmed_ordinary_becomes_a_read_only_review():
+    """SWEEP-05 (register B24): llama-guard3:1b called golden question 12 unsafe S1."""
+    confirm = Confirm(True)
+    verdict = Screener(fixed(1.0, ["S1"]), fixed(0.0), confirm=confirm).screen("user_message", GOLDEN_12)
+    assert (verdict.band, verdict.read_only, verdict.score) == ("review", True, 0.35)
+    assert verdict.categories == ["S1", "confirmed_ordinary"] and confirm.seen == [GOLDEN_12]
+
+
+@pytest.mark.parametrize("hazard, injection, source, answer, asked", [
+    (1.0, 0.0, "user_message", False, True),        # not confirmed: the block stands
+    (1.0, 0.9, "user_message", True, False),        # an injection block is never second-guessed
+    (0.5, 0.0, "user_message", True, False),        # nothing to confirm below the block band
+    (1.0, 0.0, "retrieved_passage", True, False),   # only customer messages get a second opinion
+])
+def test_the_second_opinion_only_ever_lowers_a_hazard_block_on_a_customer_message(
+        hazard, injection, source, answer, asked):
+    confirm = Confirm(answer)
+    verdict = Screener(fixed(hazard, ["S1"]), fixed(injection), confirm=confirm).screen(source, "text")
+    assert bool(confirm.seen) is asked and "confirmed_ordinary" not in verdict.categories
+    assert verdict.band == ("block" if max(hazard, injection) >= 0.75 else "review")
+
+
+class OrdinaryJev:
+    def __init__(self, value=True, confidence=0.9, down=False):
+        self.value, self.confidence, self.down, self.seen = value, confidence, down, []
+
+    def evaluate(self, state, questions):
+        self.seen.append(state)
+        if self.down:
+            raise JevUnavailable("down")
+        return {"ordinary": Answer(self.value, self.confidence)}
+
+
+@pytest.mark.parametrize("jev, confirmed", [
+    (OrdinaryJev(True, 0.96), True), (OrdinaryJev(True, 0.75), True), (OrdinaryJev(True, 0.74), False),
+    (OrdinaryJev(False, 0.98), False), (OrdinaryJev(down=True), False)])
+def test_jev_confirms_only_a_confident_ordinary_question_on_masked_text(jev, confirmed):
+    assert jev_confirm(DecisionEngine(jev))(GOLDEN_12 + " Reply to sarah@example.com") is confirmed
+    if jev.seen:
+        assert "sarah@example.com" not in json.dumps(jev.seen)
 
 
 def test_a_user_turn_in_review_is_read_only_and_a_blocked_one_has_no_content():
