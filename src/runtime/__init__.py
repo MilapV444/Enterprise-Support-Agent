@@ -93,6 +93,9 @@ TOOLS = {  # each specialist's read-only tools (tools.nimbus, W41); without Jev 
     Role.TECHNICAL: ("nimbus_status.service_status", "nimbus_support.my_tickets"),
     Role.ACCOUNT_OPS: ("nimbus_account.my_account", "nimbus_support.my_subscriptions"),
 }
+# B26: the team that owns a restricted article (its acl_groups) and its hitl.queues queue
+TEAMS = {"billing-team": ("billing", "queue_billing"), "security-team": ("security", "queue_account")}
+DEFAULT_TEAM = ("support", "queue_senior")
 FINDINGS = """You are the {role} specialist of the support team ({about}).
 From the knowledge passages and customer records above, list the facts and steps that answer the customer's
 message within your domain. Passages labelled internal are staff runbooks: keep only what the customer can do
@@ -108,6 +111,8 @@ To read one, reply with JSON only: {{"action": "<record id>"}}. Otherwise reply 
 DRAFT = ("Answer the customer from the specialist findings only. Do not tell them to contact another team, "
          "department, person or specialist, and do not end with offers of further help: if a person is "
          "needed, the conversation is handed over without being asked.")
+# internal trace only (the customer view shows none of these): what agents.merge's redirect check saw
+REDIRECT_TRACE = ("redirect", "redirect_confidence", "redrafted", "rejected_draft")
 # B25: one redraft, then a person
 REDRAFT = ("Your previous draft pointed the customer to another team or person. Rewrite it with only the "
            "facts and steps from the findings that the customer can use themselves.")
@@ -192,6 +197,7 @@ class TurnLoop:
         self.steps = {}                # (tenant, conversation) -> retrieval and answer steps, for the trace
         self.turns = {}                # (tenant, conversation) -> this turn's session, principal, tier, id
         self.records = {}              # (tenant, conversation) -> {tool id: masked output} read this turn
+        self.restricted = {}           # (tenant, conversation) -> this turn's RestrictedMatch (B26), if any
         self.decide = Remasked(services.engine)
         tooled = services.executor is not None and services.tools is not None
         self.catalog = services.tools if tooled else Registry().freeze()
@@ -203,7 +209,8 @@ class TurnLoop:
         everything = self.allowed(self.catalog.tools)
         self.generalist = specialist_graph(Specialist(Role.GENERALIST, "every topic", everything,
                                                       self.specialist(Role.GENERALIST, "every topic")), None)
-        self.graph = build({"triage": triage_hook(services.engine, llm_fallback(services.complete)),
+        triage = self.triage(triage_hook(services.engine, llm_fallback(services.complete)))
+        self.graph = build({"triage": triage,
                             "collect": lambda state: {"parameters": state.get("parameters") or {},
                                                       "missing": []},
                             "execute_sop": self.procedure, "react_step": self.diagnose,
@@ -333,10 +340,42 @@ class TurnLoop:
             return reply.text
         return write
 
+    # Staff-only answers (register B26) -------------------------------------------------------------------
+
+    def probe_restricted(self, turn, masked):
+        """Before triage: does the message's best match sit in a restricted article the customer cannot see?
+        Only its id and groups are read; a probe that fails is no match."""
+        key = (turn.tenant_id, turn.conversation_id)
+        try:
+            match = self.s.retriever.restricted_match(turn.assurance_tier, turn.tenant_id, masked,
+                                                      audiences=CUSTOMER, sources=UNCITED)
+        except Exception:  # noqa: BLE001 - the probe is a router, not a gate: no match, answer as usual
+            log.warning("restricted-match probe failed", exc_info=True)
+            match = None
+        if match is not None:
+            team, queue = TEAMS.get(next(iter(match.groups), ""), DEFAULT_TEAM)
+            self.restricted[key] = (match, team, queue)
+            self.steps.setdefault(key, {})["restricted"] = {"doc_id": match.doc_id, "team": team,
+                                                            "queue": queue, "score": match.score,
+                                                            "margin": match.margin}
+
+    def triage(self, hook):
+        """Triage, except that more detail cannot open a staff-only article: no clarifying question then."""
+        def run(state):
+            result = hook(state)
+            if (state["tenant_id"], state["case_id"]) in self.restricted:
+                result = {**result, "missing_params": False}
+            return result
+        return run
+
     def consult(self, state, instruction=""):
         """Retrieval, the specialists and the merge: (reply text, "answered"), or (None, why a person takes
-        it: NOTHING_TO_SAY when no passage answers it, or an agents.merge / delegation code)."""
+        it: NOTHING_TO_SAY when no passage answers it, RESTRICTED_ANSWER when the answer is staff-only, or an
+        agents.merge / delegation code)."""
         key, query = (state["tenant_id"], state["case_id"]), self.customer_query(state["messages"])
+        if key in self.restricted:
+            self.steps.setdefault(key, {})["answer"] = {"outcome": "RESTRICTED_ANSWER", "retried": False}
+            return None, "RESTRICTED_ANSWER"
         sections, draft = self.retrieve(state, query), self.draft(state, instruction)
         evidence = {s.parent_id: f"{s.title}\n{s.text}" for s in sections}
         who = self.turns.get(key) or {}
@@ -365,7 +404,7 @@ class TurnLoop:
         steps["retrieval"]["sources"] = [{"doc_id": s.doc_id, "title": s.title} for s in self.evidence[key]]
         answer = steps.setdefault("answer", {"retried": False})
         answer["outcome"] = "answered" if outcome.kind == "reply" else outcome.reason
-        answer.update({k: outcome.detail[k] for k in ("p_redirect", "redrafted") if k in outcome.detail})
+        answer.update({k: outcome.detail[k] for k in REDIRECT_TRACE if k in outcome.detail})
         return (outcome.text, "answered") if outcome.kind == "reply" else (None, outcome.reason)
 
     def unanswered(self, key, role):
@@ -431,6 +470,7 @@ class TurnLoop:
                 self.publish(turn, "final", disclose({"role": "assistant", "text": BLOCKED}))
                 return "blocked"
             masked, found = self.s.tokens.mask(turn.content)
+            self.probe_restricted(turn, masked)
             config = thread(turn.tenant_id, turn.conversation_id)
             seen = len(self.graph.get_state(config).values.get("path") or [])  # path spans the whole case
             state = self.graph.invoke(
@@ -461,9 +501,13 @@ class TurnLoop:
                     self.publish(turn, "final", disclose({"role": "assistant", "text": question}))
                     return "asked"
             uncovered = steps.get("answer", {}).get("outcome") == "NOTHING_TO_SAY"
-            self.record(turn, "escalate",
-                        NO_EVIDENCE if uncovered else "A specialist will look at this with you.", [], trace)
-            self.publish(turn, "handoff", {"text": HANDOFF})
+            reason = NO_EVIDENCE if uncovered else "A specialist will look at this with you."
+            notice = HANDOFF
+            if key in self.restricted:  # ponytail: queue only in the trace until hand-offs reach queues (W11)
+                reason = f"This is handled by our {self.restricted[key][1]} team."
+                notice = f"{reason} {HANDOFF}"
+            self.record(turn, "escalate", reason, [], trace)
+            self.publish(turn, "handoff", {"text": notice})
             return "handed_off"
         except Exception:  # noqa: BLE001 - the customer gets an answer whatever broke
             log.exception("turn %s failed", turn.turn_id)
@@ -473,7 +517,8 @@ class TurnLoop:
                 log.exception("could not publish the error for turn %s", turn.turn_id)
             return "failed"
         finally:
-            for per_turn in (self.evidence, self.passages, self.steps, self.turns, self.records):
+            for per_turn in (self.evidence, self.passages, self.steps, self.turns, self.records,
+                             self.restricted):
                 per_turn.pop(key, None)
 
 

@@ -14,7 +14,16 @@ from data.migrate import migrate, psql
 from knowledge.index.store import Index
 from knowledge.ingest import pipeline as ingest
 from knowledge.ingest.pipeline import Document, Ingestion
-from knowledge.retrieval.pipeline import TOP_K, Query, Retriever, rerank, rewrite, rrf, screen
+from knowledge.retrieval.pipeline import (
+    TOP_K,
+    Query,
+    RestrictedMatch,
+    Retriever,
+    rerank,
+    rewrite,
+    rrf,
+    screen,
+)
 from tests.knowledge.ingest.test_ingest import DIMENSIONS, embed
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -198,3 +207,16 @@ def test_a_customer_facing_search_returns_only_customer_visible_passages(loaded)
         for item in client.get_collections().collections:
             if item.name.startswith(namespace):
                 client.delete_collection(item.name)
+
+
+def test_a_message_whose_best_match_is_a_restricted_article_names_it_without_reading_it(loaded):
+    """SWEEP-07 (register B26): the answer exists but is staff-only, so more detail from the customer cannot
+    help. Only the article's id, groups and scores come back."""
+    probe = retriever(loaded).restricted_match
+    match = probe("T1_VERIFIED", "t_us", "Acme VPN certificate legal hold memo", min_score=0.5)
+    assert isinstance(match, RestrictedMatch) and match.doc_id == "us-legal" and match.margin > 0
+    assert {f for f in RestrictedMatch.__dataclass_fields__} == {"doc_id", "groups", "score", "margin"}
+    assert probe("T1_VERIFIED", "t_us", "Acme VPN certificate renewal runbook for the Berlin office",
+                 min_score=0.5) is None                                      # a readable article wins
+    assert probe("T0_ANON", "t_us", "Acme VPN certificate legal hold memo", min_score=0.5) is None  # public
+    assert probe("T1_VERIFIED", "t_us", "Acme VPN certificate legal hold memo", min_score=1.01) is None

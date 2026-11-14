@@ -32,7 +32,7 @@ from cost.router import Router
 from data import events
 from data.migrate import migrate, psql
 from knowledge.ingest import pipeline as ingest
-from knowledge.retrieval.pipeline import Retriever
+from knowledge.retrieval.pipeline import RestrictedMatch, Retriever
 from reliability.fallbacks import openai_compatible
 from runtime import FAILED, HANDOFF, Dispatcher, NoJev, Services, TurnLoop, connector, production
 from safety.governance import records
@@ -90,7 +90,8 @@ class World:
             answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": 0.9}
         elif "redirect" in body["questions"]:
             elsewhere = REDIRECTING in json.dumps(body["state"])
-            answers = {"redirect": {"type": "noul", "noul": 0.9 if elsewhere else 0.05}}
+            answers = {"redirect": {"type": "choice", "choice": "hand_off" if elsewhere else "self_service",
+                                    "confidence": 0.9}}
         else:
             answers = {"difficulty": {"type": "score", "score": 1.0, "confidence": 0.9,
                                       "probabilities": {"0": 0.05, "1": 0.85, "2": 0.1, "3": 0, "4": 0}}}
@@ -572,4 +573,37 @@ def test_a_draft_that_points_elsewhere_is_redrafted_once_and_the_score_is_in_the
     final = [data for kind, data in published(turn) if kind == "final"][-1]
     assert final["text"] == ANSWER
     answer = trace_steps(turn)["answer"]
-    assert (answer["outcome"], answer["redrafted"], answer["p_redirect"]) == ("answered", True, 0.05)
+    assert (answer["outcome"], answer["redrafted"]) == ("answered", True)
+    assert answer["redirect"] == "self_service"
+    assert answer["rejected_draft"] == REDIRECTING   # internal trace only
+
+
+# SWEEP-07 ---------------------------------------------------------------------------------------------------
+
+WIRE = RestrictedMatch("kb-policy-internal-billing-high-value-wire-overrides", ("billing-team",), 0.754,
+                       0.042)
+
+
+def test_a_question_only_a_restricted_article_answers_goes_to_its_team_without_a_clarifying_question(stack):
+    """Register B26 (golden question 12's shape): the answer exists but is staff-only, so asking the customer
+    for more detail cannot help; no model reads anything for it and nothing restricted reaches the reply."""
+    world = World(triage=triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.9))     # Jev: details missing
+    runner = loop(stack, world)
+    runner.s.retriever.restricted_match = lambda *args, **kwargs: WIRE
+    turn = inbound("what is the exact command to stage a manual wire refund override?")
+    assert runner.run(turn) == "handed_off"
+    (handoff,) = [data for kind, data in published(turn) if kind == "handoff"]
+    assert handoff["text"].startswith("This is handled by our billing team.")
+    steps = trace_steps(turn)
+    assert steps["restricted"]["queue"] == "queue_billing"
+    assert steps["answer"]["outcome"] == "RESTRICTED_ANSWER"
+    assert "AWAITING_CUSTOMER" not in steps["stages"] and specialist_prompts(world) == []
+
+
+def test_a_probe_that_fails_leaves_the_turn_to_be_answered_as_usual(stack):
+    def broken(*args, **kwargs):
+        raise ConnectionError("qdrant unreachable")
+    runner = loop(stack, World())
+    runner.s.retriever.restricted_match = broken
+    turn = inbound("How do I reset my password?")
+    assert runner.run(turn) == "answered" and "restricted" not in trace_steps(turn)

@@ -42,7 +42,7 @@ def tools():
 
 
 class Jev:
-    def __init__(self, redirect=0.05):
+    def __init__(self, redirect=("self_service", 0.95)):   # redirect: what the reply asks the customer to do
         self.redirect, self.questions = redirect, []
 
     def evaluate(self, state, questions):
@@ -55,7 +55,7 @@ class Jev:
                     answers[qid] = Answer(joins, 0.9)
             return answers
         if "redirect" in questions:
-            return {"redirect": Answer(self.redirect >= 0.5, max(self.redirect, 1 - self.redirect))}
+            return {"redirect": Answer(*self.redirect)}
         return {qid: Answer(4.0, 0.9, 4) for qid in questions}
 
 
@@ -135,7 +135,7 @@ def test_scenario_7_a_numeric_disagreement_between_specialists_goes_to_a_person(
     assert all("lead" in q for q in jev.questions)  # Jev delegated; it never saw the numbers to judge them
 
 
-@pytest.mark.parametrize("redirect", [0.2, 0.95])
+@pytest.mark.parametrize("redirect", [("hand_off", 0.95), ("both", 0.6)])
 def test_scenario_7_a_reply_that_sends_the_auditor_to_another_team_is_held(redirect):
     _, outcome, _, _ = episode(CLAIMS, Jev(redirect=redirect))
     assert outcome.kind == "human" and outcome.reason == "REDIRECT"
