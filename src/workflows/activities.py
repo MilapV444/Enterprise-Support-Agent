@@ -1,8 +1,14 @@
-"""The `run_turn` activity: one statechart turn of a case, safe to retry (ADP-02, MS-ADP-04).
+"""The `run_turn` activity, safe to retry (ADP-02, MS-ADP-04), in two forms:
 
-A retry after a crash carries on from the case's last saved stage instead of starting the turn again, and a
-retry of a turn that already finished (its result was lost) applies nothing twice: each turn's event id is
-stored in the case state. The outcome's checkpoint_id is the case state's version.
+- LoopActivities(loop): the live one. A customer turn (the workflow's `turn` signal) runs through the whole
+  turn loop, runtime.TurnLoop.run: screening, the statechart, the answer and its events. TurnLoop.run is
+  itself safe to retry (a turn that ended returns at once; an interrupted statechart run resumes).
+- TurnActivities(hooks, store): the statechart alone with its decision hooks, for the workflow's own tests.
+  A retry after a crash carries on from the case's last saved stage instead of starting the turn again, and
+  a retry of a turn that already finished (its result was lost) applies nothing twice: each turn's event id
+  is stored in the case state.
+
+The outcome's checkpoint_id is the case state's version.
 """
 
 from concurrent.futures import ThreadPoolExecutor
@@ -11,8 +17,20 @@ from temporalio import activity
 from temporalio.exceptions import ApplicationError
 from temporalio.worker import Worker
 
+from channels.api.envelope import InboundTurn
 from core.orchestrator.statechart import build, thread
 from workflows.ticket import TASK_QUEUE, TicketWorkflow, TurnOutcome, TurnRequest
+
+
+class LoopActivities:
+    def __init__(self, loop):
+        self.loop = loop  # runtime.TurnLoop
+
+    @activity.defn(name="run_turn")
+    def run_turn(self, request: TurnRequest) -> TurnOutcome:
+        self.loop.run(InboundTurn.model_validate(request.event["turn"]))
+        state, version = self.loop.graph.store.load(request.tenant_id, request.case_id)
+        return TurnOutcome(stage=state.get("stage"), checkpoint_id=str(version))
 
 
 class TurnActivities:

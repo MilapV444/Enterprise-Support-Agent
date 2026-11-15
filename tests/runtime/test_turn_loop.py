@@ -29,13 +29,14 @@ from channels.identity.service import Identity
 from core.orchestrator import case_state
 from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.decisions import DecisionEngine, JevClient
+from core.orchestrator.statechart import thread
 from cost.router import Router
 from data import events
 from data.migrate import migrate, psql
 from knowledge.ingest import pipeline as ingest
 from knowledge.retrieval.pipeline import RestrictedMatch, Retriever
 from reliability.fallbacks import openai_compatible
-from runtime import FAILED, HANDOFF, Dispatcher, NoJev, Services, TurnLoop, connector, production
+from runtime import FAILED, HANDOFF, NoJev, Services, TurnLoop, connector, production
 from safety.governance import records
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
@@ -46,6 +47,7 @@ from tools import audit as tool_audit
 from tools import nimbus
 from tools.audit import AuditLog
 from tools.execution import Executor
+from workflows.dispatch import TemporalDispatcher
 
 ROOT = Path(__file__).resolve().parents[2]
 DB = "test_runtime"
@@ -132,7 +134,8 @@ class World:
 @pytest.fixture(scope="module")
 def stack():
     subprocess.run(["docker", "compose", "-f", "deploy/compose.yaml", "--env-file", ".env.example", "up",
-                    "-d", "--wait", "postgres", "qdrant"], cwd=ROOT, check=True, capture_output=True)
+                    "-d", "--wait", "postgres", "qdrant", "temporal"], cwd=ROOT, check=True,
+                   capture_output=True)
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
@@ -172,6 +175,10 @@ def loop(stack, world, jev=True, tools=False):
     return TurnLoop(Services(engine=engine, router=router, retriever=retriever, screener=screener,
                              tokens=Tokenizer(b"runtime-test-key"), complete=complete, connect=connect,
                              store=MemoryStore(), decisions=DecisionLog(connect), **extra))
+
+
+def queue():
+    return f"test-{uuid.uuid4().hex}"
 
 
 def inbound(text, conversation=None, tier="T0_ANON", principal="anon:1", tenant="t_us", session=None):
@@ -325,7 +332,7 @@ def test_personal_data_reaches_no_model_and_no_jev_request(stack):
 
 def test_a_turn_posted_to_the_api_is_answered_on_its_event_stream(stack, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", DSN)
-    dispatcher = Dispatcher(loop(stack, World()), workers=2)
+    dispatcher = TemporalDispatcher("127.0.0.1:7233", loop(stack, World()), task_queue=queue())
     identity = Identity(connector(DSN), idp=None)
     api = TestClient(build_app(None, identity, dispatch=dispatcher))
     token = api.post("/v1/identity/anonymous", json={"tenant_id": "t_us"}).json()["access_token"]
@@ -343,6 +350,7 @@ def test_a_turn_posted_to_the_api_is_answered_on_its_event_stream(stack, monkeyp
         if "final" in kinds:
             break
         time.sleep(0.2)
+    dispatcher.close()
     assert kinds[0] == "status" and kinds[-1] == "final"                     # queued, working, ..., final
     assert kinds.count("status") == 2
 
@@ -392,11 +400,56 @@ def test_turns_of_one_conversation_run_one_at_a_time(stack):
         order.append(("end", turn.turn_id))
         return result
     runner.run = run
-    dispatcher, conversation = Dispatcher(runner, workers=4), f"c-{uuid.uuid4().hex[:8]}"
+    dispatcher = TemporalDispatcher("127.0.0.1:7233", runner, task_queue=queue())
+    conversation = f"c-{uuid.uuid4().hex[:8]}"
     first, second = inbound("How do I reset my password?", conversation), inbound("Thanks!", conversation)
-    futures = [dispatcher(first), dispatcher(second)]
-    assert [f.result(timeout=60) for f in futures]
-    assert [step for step, _ in order] == ["start", "end", "start", "end"]
+    dispatcher(first)
+    dispatcher(second)                                    # while the first runs: queued on its workflow
+    deadline = time.monotonic() + 60
+    while len(order) < 4 and time.monotonic() < deadline:
+        time.sleep(0.2)
+    dispatcher.close()
+    assert order == [("start", first.turn_id), ("end", first.turn_id), ("start", second.turn_id),
+                     ("end", second.turn_id)]
+
+
+class Killed(BaseException):
+    """The worker process dies: not an error the turn loop answers, the activity is retried elsewhere."""
+
+
+def test_a_retried_turn_that_already_ended_publishes_nothing_more(stack):
+    world = World()
+    runner, turn = loop(stack, world), inbound("How do I reset my password?")
+    assert runner.run(turn) == "answered"
+    events, calls = published(turn), (len(world.jev), len(world.model))
+    assert runner.run(turn) == "already_answered"
+    assert published(turn) == events and (len(world.jev), len(world.model)) == calls
+
+
+def test_a_turn_whose_worker_died_mid_statechart_resumes_there_and_ends_once(stack):
+    """LG-04.2 scenario lg-04-crash: the retry carries on from the saved stage; nothing is applied twice."""
+    world = World()
+    runner, turn = loop(stack, world), inbound("How do I reset my password?")
+    retrieve, died = runner.s.retriever.retrieve, []
+
+    def dies_once(*args, **kwargs):
+        if not died:
+            died.append(True)
+            raise Killed()
+        return retrieve(*args, **kwargs)
+    runner.s.retriever.retrieve = dies_once
+    with pytest.raises(Killed):
+        runner.run(turn)
+    saved = runner.graph.get_state(thread("t_us", turn.conversation_id))
+    assert saved["pending"] and saved["event"]["id"] == turn.turn_id
+    triaged = sum(1 for body in world.jev if "intent" in body["questions"])
+    assert runner.run(turn) == "answered"                         # the retry
+    kinds = [kind for kind, _ in published(turn)]
+    assert kinds.count("final") == 1 and kinds.count("status") == 1 and "error" not in kinds
+    state = runner.graph.get_state(thread("t_us", turn.conversation_id))
+    assert len(state["path"]) == len(set(state["path"])) and state["path"][-1] == "RESOLVED"
+    assert sum(1 for body in world.jev if "intent" in body["questions"]) == triaged  # not triaged again
+    assert len([m for m in state["messages"] if m["role"] == "user"]) == 1
 
 
 # The production wiring ------------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: LG-04.2 — Turns on Temporal (replaces LG-04): TicketWorkflow takes each customer turn by signal-with-start from a TemporalDispatcher that replaces runtime.Dispatcher's thread pool; the run_turn activity calls TurnLoop.run; the turn id is the event id so a retried activity applies nothing twice and republishes no events; the worker runs in the API process; closes register L36/W34
+- active task: LG-05.2 — Cut-over (replaces LG-05): a one-off script copies the latest LangGraph checkpoint per thread on Neon into case_state, then the checkpoints, checkpoint_blobs, checkpoint_writes and checkpoint_migrations tables are dropped and any leftover references removed; langgraph and langgraph-checkpoint-postgres leave pyproject.toml and tests/test_dependencies.py asserts neither is declared or imported under src/; README and ADP-01, ADP-02, MS-ADP-04 amendment notes; VM rollout of LG-02.2..LG-04.2
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: 4d283c0dbb95f5149bfb3837979d0f5db3de58eb6710f0d14695b34030411425. Use --since only after receiving that full packet; kickoff is not the packet.
-- KNOWLEDGE-f0010a0b: Open issues register (single source; update by superseding)
+Context fingerprint: d2e7ff43ccf7978518fd1e34c2c860f4ae48a69941e80ba4812258bce6dd2d19. Use --since only after receiving that full packet; kickoff is not the packet.
 - KNOWLEDGE-3853dc49: LangGraph removal: drafted tasks LG-00..LG-05 (not yet in the plan)
-- DECISION-bc6301b4: Remove LangGraph; Temporal runs case turns, one activity per turn
+- KNOWLEDGE-f0010a0b: Open issues register (single source; update by superseding)
+- KNOWLEDGE-99fd90e9: LG-02.2 statechart on case_state: behaviour, wiring and what changed for erasure
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

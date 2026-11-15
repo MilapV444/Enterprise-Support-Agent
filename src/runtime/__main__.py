@@ -2,7 +2,8 @@
 
 For a laptop: settings come from the environment, then from the repository's .env (QDRANT_URL, OLLAMA_URL and
 DATABASE_URL default to the local compose stack). Needs PII_TOKEN_KEY and at least one model key (GROQ_API_KEY
-or GEMINI_API_KEY) for answers; without a model key every turn is handed to a person.
+or GEMINI_API_KEY) for answers; without a model key every turn is handed to a person. Turns run on Temporal:
+the compose `temporal` service (TEMPORAL_ADDRESS, default 127.0.0.1:7233) must be up.
 
 TLS is verified against the operating system's certificate store (truststore), as a browser does: on a laptop
 whose antivirus or proxy inspects HTTPS, Python's bundled list rejects every provider (register B4).

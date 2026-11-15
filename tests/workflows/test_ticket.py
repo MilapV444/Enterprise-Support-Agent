@@ -1,8 +1,10 @@
-"""M1-05: the Temporal ticket workflow around LangGraph turns, with reply / approval / cancel signals (FR-2).
+"""M1-05: the Temporal ticket workflow around statechart turns, with turn, reply, approval and cancel signals
+(FR-2).
 Runs against the compose Temporal dev server and Postgres; timeouts are shortened through the start input."""
 
 import asyncio
 import subprocess
+import time
 import uuid
 from pathlib import Path
 
@@ -16,7 +18,7 @@ from core.orchestrator.case_state import PostgresStore
 from data.migrate import migrate, psql
 from tests.orchestrator.test_statechart import SOP, Hooks
 from workflows.activities import TurnActivities, worker
-from workflows.ticket import TicketStart, TurnRequest, start_ticket
+from workflows.ticket import TicketStart, TicketWorkflow, TurnRequest, start_ticket, workflow_id
 
 ROOT = Path(__file__).resolve().parents[2]
 DB = "test_workflows"
@@ -131,6 +133,24 @@ def test_a_crashed_turn_is_retried_from_its_checkpoint():
     result, _ = ticket(hooks, start("crash"))
     assert result == "RESOLVED"
     assert (hooks.calls["triage"], hooks.calls["collect"], hooks.calls["execute_sop"]) == (1, 1, 2)
+
+
+def test_a_ticket_started_by_a_signal_also_answers_a_message_sent_while_its_turn_ran():
+    """LG-04.2: the API signal-with-starts the workflow with no text; nothing the customer writes is lost."""
+    hooks = Hooks(sop=lambda state: time.sleep(1) or {"response": "Done."})  # the first turn takes a second
+    case = f"signalled-{uuid.uuid4().hex[:6]}"
+
+    async def go():
+        client = await Client.connect("127.0.0.1:7233")
+        queue = f"test-{uuid.uuid4().hex}"
+        async with worker(client, TurnActivities(hooks, STORE), queue):
+            handle = await client.start_workflow(
+                TicketWorkflow.run, TicketStart("t_us", case, "s1"), id=workflow_id("t_us", case),
+                task_queue=queue, start_signal="reply", start_signal_args=["My invoice is wrong"])
+            await handle.signal("reply", "And the one before it")
+            return await handle.result(), await handle.query("state")
+    result, state = asyncio.run(go())
+    assert result == "RESOLVED" and state["turns"] == 2 and hooks.calls["execute_sop"] == 2
 
 
 def test_a_ticket_has_one_workflow_at_a_time():

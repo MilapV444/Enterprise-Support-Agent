@@ -148,6 +148,7 @@ digraph genesis {
   "file:src/tools/validation/approvals.py" [label="src/tools/validation/approvals.py",class="file"];
   "file:src/workflows/__init__.py" [label="src/workflows/__init__.py",class="file"];
   "file:src/workflows/activities.py" [label="src/workflows/activities.py",class="file"];
+  "file:src/workflows/dispatch.py" [label="src/workflows/dispatch.py",class="file"];
   "file:src/workflows/ticket.py" [label="src/workflows/ticket.py",class="file"];
   "file:tests/agents/contracts/test_contracts.py" [label="tests/agents/contracts/test_contracts.py",class="file"];
   "file:tests/agents/merge/test_merge.py" [label="tests/agents/merge/test_merge.py",class="file"];

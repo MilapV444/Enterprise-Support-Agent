@@ -1,7 +1,9 @@
 """The turn loop: what happens to an accepted turn (M7-01; FR-1, FR-6, FR-9, FR-13, FR-30, FR-32, FR-40).
 
-channels.api accepts a turn (202) and hands it to dispatch(); Dispatcher runs it on a small worker pool, one
-turn at a time per conversation, and TurnLoop.run() takes it from there:
+channels.api accepts a turn (202) and hands it to dispatch(); workflows.dispatch.TemporalDispatcher signals
+the case's ticket workflow, which runs its turns one at a time as retried activities, and TurnLoop.run() takes
+it from there. A retry applies nothing twice: a turn that already ended returns at once, the status is not
+republished, and a statechart run the crash interrupted resumes at its pending stage:
 
 1. a status event ("Looking into it");
 2. input screening (safety.screening): a blocked message is answered at once and nothing else sees it;
@@ -25,17 +27,13 @@ turn at a time per conversation, and TurnLoop.run() takes it from there:
 
 Any failure publishes an error event: a customer never waits on silence. The case is the conversation for
 now (case linking is not wired); procedures (SOPs) have no tools yet, so a procedure turn answers from the
-knowledge base and changes nothing. Turns run in the API process, not yet on Temporal: a crash loses the turn
-in flight (its case state survives). See the open-issues register.
+knowledge base and changes nothing. See the open-issues register.
 """
 
 import json
 import logging
 import re
-import threading
 import uuid
-from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 
 import psycopg
@@ -68,6 +66,7 @@ log = logging.getLogger(__name__)
 SYSTEM = ("You are the customer support assistant. Answer only from the knowledge given (passages or "
           "specialist findings); if it does not answer the question, say so plainly and offer to bring in a "
           "person. Be direct and concrete, and never promise refunds, credits or changes. " + SPOTLIGHT_RULE)
+ENDS_A_TURN = {"final", "handoff", "error"}  # the event types a turn ends with
 BLOCKED = "Your message was stopped by our safety checks. A person can help if you need it."
 HANDOFF = "A specialist will take it from here. You can keep writing here in the meantime."
 FAILED = ("Something went wrong on our side while answering. A person will follow up, or try again in a "
@@ -222,6 +221,13 @@ class TurnLoop:
         with self.s.connect() as conn:
             turn_events.publish(EventLog(conn), turn.tenant_id, turn.conversation_id, event_type,
                                 {"turn_id": turn.turn_id, **data})
+
+    def published(self, turn):
+        """(type, data) of the events this turn has published so far."""
+        # ponytail: reads the whole conversation's log; filter by turn in SQL if conversations grow long
+        with self.s.connect() as conn:
+            rows = turn_events.events_after(conn, turn.tenant_id, turn.conversation_id, 0)
+        return [(kind, data) for _, kind, data in rows if data.get("turn_id") == turn.turn_id]
 
     def record(self, turn, decision, reason, checks, trace):
         if self.s.decisions is None:
@@ -459,7 +465,11 @@ class TurnLoop:
         self.turns[key] = {"session_id": turn.session_id, "principal_id": turn.principal_id,
                            "tier": turn.assurance_tier, "turn_id": turn.turn_id}
         try:
-            self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
+            done = self.published(turn)
+            if any(kind in ENDS_A_TURN for kind, _ in done):  # a retry of a turn that was already answered
+                return "already_answered"
+            if not any(kind == "status" and data.get("state") == "working" for kind, data in done):
+                self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
             verdict = self.s.screener.screen("user_message", turn.content)
             steps = {"screening": verdict.band}
             if verdict.band == "block":
@@ -472,12 +482,18 @@ class TurnLoop:
             masked, found = self.s.tokens.mask(turn.content)
             self.probe_restricted(turn, masked)
             config = thread(turn.tenant_id, turn.conversation_id)
-            seen = len(self.graph.get_state(config).get("path") or [])  # path spans the whole case
-            state = self.graph.invoke(
-                {"tenant_id": turn.tenant_id, "case_id": turn.conversation_id,
-                 # the statechart only checks one is there; tools take the live one from self.turns (B22)
-                 "session_id": turn.session_id or turn.principal_id,
-                 "event": {"type": "USER_MESSAGE", "text": masked, "tier": turn.assurance_tier}}, config)
+            saved = self.graph.get_state(config)
+            if (saved.get("event") or {}).get("id") == turn.turn_id:  # a retry: the event is applied once
+                seen = saved["event"].get("seen", 0)
+                state = self.graph.invoke(None, config) if saved.get("pending") else saved
+            else:
+                seen = len(saved.get("path") or [])  # path spans the whole case
+                state = self.graph.invoke(
+                    {"tenant_id": turn.tenant_id, "case_id": turn.conversation_id,
+                     # the statechart only checks one is there; tools take the live one from self.turns (B22)
+                     "session_id": turn.session_id or turn.principal_id,
+                     "event": {"type": "USER_MESSAGE", "text": masked, "tier": turn.assurance_tier,
+                               "id": turn.turn_id, "seen": seen}}, config)
             triage = state.get("triage") or {}
             steps.update(self.steps.get(key, {}), masked=bool(found), stages=(state.get("path") or [])[seen:],
                          intent=triage.get("intent"),
@@ -520,23 +536,6 @@ class TurnLoop:
             for per_turn in (self.evidence, self.passages, self.steps, self.turns, self.records,
                              self.restricted):
                 per_turn.pop(key, None)
-
-
-class Dispatcher:
-    """channels.api's dispatch hook: runs accepted turns on a worker pool, one at a time per conversation."""
-
-    def __init__(self, loop, workers=4):
-        self.loop, self.pool = loop, ThreadPoolExecutor(max_workers=workers, thread_name_prefix="turn")
-        self.locks, self.guard = defaultdict(threading.Lock), threading.Lock()
-
-    def _run(self, turn):
-        with self.guard:
-            lock = self.locks[(turn.tenant_id, turn.conversation_id)]
-        with lock:
-            return self.loop.run(turn)
-
-    def __call__(self, turn):
-        return self.pool.submit(self._run, turn)
 
 
 def connector(dsn):

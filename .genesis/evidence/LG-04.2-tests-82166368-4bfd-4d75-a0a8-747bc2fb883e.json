@@ -1,0 +1,30 @@
+{
+  "task": "LG-04.2",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "82166368-4bfd-4d75-a0a8-747bc2fb883e",
+  "command": "python -m pytest tests/workflows tests/runtime tests/load/test_chaos.py tests/e2e tests/channels tests/deploy/vm -q",
+  "started_at": "2026-11-15T11:15:19.397Z",
+  "observed_at": "2026-11-15T11:21:14.338Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 15%]\r\n........................................................................ [ 31%]\r\n........................................................................ [ 47%]\r\n........................................................................ [ 62%]\r\n........................................................................ [ 78%]\r\n........................................................................ [ 94%]\r\n...........................                                              [100%]\r\n459 passed in 348.71s (0:05:48)\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "4418aa205bb2fa15fa7ae58891708d22c944d86a",
+    "dirty": true
+  },
+  "source_hash": "0e0d6dfbfbc6d50fe57153c7a8edb7070affb403910302291384f6aa6dc03d2f",
+  "before_hash": "0e0d6dfbfbc6d50fe57153c7a8edb7070affb403910302291384f6aa6dc03d2f",
+  "config_hash": "6736c77c837384816724911e732c70ef8512df9be66e5fb0682b4923486c3b30",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "2c87ee79537f2025a95d7f057613e2f24e8f1ef2944848580a3eba9e43d715a4"
+}

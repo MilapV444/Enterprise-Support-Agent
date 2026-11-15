@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "dde09a4d4a9449785a163fd39e75a28b9661cd0f",
-  "sourceHash": "f3a7f124c03b948b014fcc75e5ccd6ef79789820a596c15820c1895c60980879",
+  "revision": "4418aa205bb2fa15fa7ae58891708d22c944d86a",
+  "sourceHash": "065d24afcc28ccb73a74959e5d18ab611c97c9c798543e61e9b6b138f44f13cf",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -1147,7 +1147,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "88e6b81f2d5cc84fd864243aed1589cb41490dd814df97434014912721844574"
+      "contentHash": "0c722ce15ff0b3583e8f03b30dd28a87e94562f5edaf9d5b6337c4de6da378e4"
     },
     {
       "id": "file:src/runtime/__main__.py",
@@ -1157,7 +1157,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2dc7ece6224d0ed759e705bdef0278b97d753e1a745a8f1fc46b9bbb4b1a47b5"
+      "contentHash": "4a282479e0455fe8f82886629cf5b0350c69ad30421c0205e99f4e06396b0560"
     },
     {
       "id": "file:src/runtime/production.py",
@@ -1167,7 +1167,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c937304e847d9b44aeb5ca5f54929e778533a0865ee386087eb02f4f30ef864e"
+      "contentHash": "95f8ad87d4979b30a4d662c05fd91bbab3e827965e6c72d14844e0177b82a0d6"
     },
     {
       "id": "file:src/safety/authz/__init__.py",
@@ -1477,7 +1477,17 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "367cd07008f2e8eae0832b7b3608b661a355445e0ab47a606dca1150587529ff"
+      "contentHash": "975a7d37e0cf31fd78e70f28725114173191637f22db2d0f1597fc9e9c282f70"
+    },
+    {
+      "id": "file:src/workflows/dispatch.py",
+      "type": "file",
+      "label": "src/workflows/dispatch.py",
+      "path": "src/workflows/dispatch.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "16eb58be45ad2d51ea740f15e1ba3543f53b3e2782e6b76c0933ce887889beb4"
     },
     {
       "id": "file:src/workflows/ticket.py",
@@ -1487,7 +1497,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "bbe48b605e50e11d7dce41f86b4dbb021533b36c93b6a005c46f0333561128c5"
+      "contentHash": "88f006c7d53daec5effa74413236ff212b4c4e32fc242fea382c0db651e45cfb"
     },
     {
       "id": "file:tests/agents/contracts/test_contracts.py",
@@ -1657,7 +1667,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "3cfa5662ca2a41bcf399b88de6527a9f9eca73e6ab5760e4fe6cd21dde8de93f"
+      "contentHash": "3a349240b27c8c2add5556889d32de4ebfdc3033ec435e4db2d457b50ee0ba50"
     },
     {
       "id": "file:tests/deploy/vm/test_vm_tools.py",
@@ -1667,7 +1677,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "77edf14ce0237db4c09e79eae3536adafb491607f4bf24602d1595d0f2ae1ed5"
+      "contentHash": "16b5c8b52873a16a508be3954d417c3f3852edfb3050479d07b4d4250058b78e"
     },
     {
       "id": "file:tests/e2e/test_scenario_degradation.py",
@@ -2077,7 +2087,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2e342089810ff66091d76f465ba920603e5286f6a9334be891a7e031c90bafbb"
+      "contentHash": "a211bdf8adb154f5786f6acfddfd7f14667cfd69fe0d9026e7dceac21c1ebd6f"
     },
     {
       "id": "file:tests/safety/authz/test_cedar.py",
@@ -2267,7 +2277,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "d3e7d88a4900d36fa3e843aeb9f99ccc1ef59e601dc7de1d5e0001b2d75566e8"
+      "contentHash": "f2426b01808173cbffaa51effdfa2e7b08d06f2c21528148ed6800230c9a137f"
     },
     {
       "id": "file:web/app/layout.tsx",

@@ -2146,15 +2146,15 @@
 
 ### LG-04.2 — Turns on Temporal (replaces LG-04): TicketWorkflow takes each customer turn by signal-with-start from a TemporalDispatcher that replaces runtime.Dispatcher's thread pool; the run_turn activity calls TurnLoop.run; the turn id is the event id so a retried activity applies nothing twice and republishes no events; the worker runs in the API process; closes register L36/W34
 
-- state/risk: active / high
+- state/risk: done / high
 - requirements: FR-2, FR-18
 - scope: src/workflows/, src/runtime/, src/channels/api/, deploy/, tests/workflows/, tests/runtime/, tests/load/, tests/e2e/, tests/channels/, tests/web/, tests/deploy/vm/
-- gates: tests: python -m pytest tests/workflows tests/runtime tests/load/test_chaos.py tests/e2e tests/channels tests/deploy/vm -q, independent-review: pending
+- gates: tests: python -m pytest tests/workflows tests/runtime tests/load/test_chaos.py tests/e2e tests/channels tests/deploy/vm -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### LG-05.2 — Cut-over (replaces LG-05): a one-off script copies the latest LangGraph checkpoint per thread on Neon into case_state, then the checkpoints, checkpoint_blobs, checkpoint_writes and checkpoint_migrations tables are dropped and any leftover references removed; langgraph and langgraph-checkpoint-postgres leave pyproject.toml and tests/test_dependencies.py asserts neither is declared or imported under src/; README and ADP-01, ADP-02, MS-ADP-04 amendment notes; VM rollout of LG-02.2..LG-04.2
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-2, NFR-5
 - scope: scripts/, deploy/, pyproject.toml, README.md, docs/, src/core/orchestrator/, src/memory/lifecycle/, tests/test_dependencies.py, tests/deploy/, tests/erasure/, tests/memory/, tests/reliability/backup/
 - gates: tests: python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q, independent-review: pending

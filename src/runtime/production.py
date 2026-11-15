@@ -40,7 +40,7 @@ from reliability.fallbacks import (
     claude,
     openai_compatible,
 )
-from runtime import Dispatcher, NoJev, Services, TurnLoop, connector
+from runtime import NoJev, Services, TurnLoop, connector
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
 from safety.screening.pipeline import Screener, jev_confirm
@@ -48,6 +48,7 @@ from safety.screening.scorers import llama_guard, pattern_injection
 from tools import nimbus
 from tools.audit import AuditLog
 from tools.execution import Executor
+from workflows.dispatch import TemporalDispatcher
 
 ROOT = Path(__file__).resolve().parents[2]
 MODELS = ROOT / "deploy" / "vm" / "models.json"
@@ -144,15 +145,17 @@ def log_code(tenant_id, user_id, code):
     print(f"[one-time code] {tenant_id}/{user_id}: {code}", flush=True)
 
 
-def app(environ=os.environ, workers=4):
-    """The API with sign-in (anonymous and one-time code; no mock SSO, no header sign-in) and the turn
-    loop."""
+def app(environ=os.environ):
+    """The API with sign-in (anonymous and one-time code; no mock SSO, no header sign-in) and the turn loop,
+    whose turns run on Temporal (TEMPORAL_ADDRESS) with the worker in this process."""
+
     if environ.get("SUPPORT_AGENT_DEV_AUTH") == "1":
         raise SystemExit("refusing to serve with SUPPORT_AGENT_DEV_AUTH=1: anyone could sign in with a "
                          "header")
     loop = TurnLoop(services(environ, store(database_url())))
     connect = connector(database_url())
-    api = build_app(None, Identity(connect, idp=None, send_otp=log_code), dispatch=Dispatcher(loop, workers))
+    dispatch = TemporalDispatcher(environ.get("TEMPORAL_ADDRESS", "127.0.0.1:7233"), loop)
+    api = build_app(None, Identity(connect, idp=None, send_otp=log_code), dispatch=dispatch)
     api.state.turn_loop = loop
 
     @api.get("/healthz")

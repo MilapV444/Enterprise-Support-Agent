@@ -1,0 +1,13 @@
+{
+  "task": "LG-04.2",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "07315fe5-a1d7-4822-bfa8-51f36ef70e28",
+  "human": "Intelligent_developer_123",
+  "reason": "Pre-authorized by the user for the LG sweep (chat 2026-11-14/15). Self-review by Claude: diff read, gate passed incl. crash-mid-statechart retry (one final event, no stage twice, no second triage), image test posts a turn through Temporal",
+  "observed_at": "2026-11-15T11:21:40.320Z",
+  "source_hash": "0e0d6dfbfbc6d50fe57153c7a8edb7070affb403910302291384f6aa6dc03d2f",
+  "config_hash": "6736c77c837384816724911e732c70ef8512df9be66e5fb0682b4923486c3b30",
+  "reviewed_proofs": "75e74e217497caa41fddb4959cc936e981311247adf34ef361f7ee5ca862fd08",
+  "hash": "6fc06370c355d213cf224b3c5b298b752a4249a90a24426e0fb24bb81a845fda"
+}

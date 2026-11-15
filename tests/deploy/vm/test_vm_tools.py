@@ -113,7 +113,7 @@ def test_the_ledger_is_priced_with_the_deployed_models_and_an_unpriced_model_is_
 @pytest.fixture(scope="module")
 def ledger_db():
     subprocess.run(["docker", "compose", "-f", "deploy/compose.yaml", "--env-file", ".env.example", "up",
-                    "-d", "--wait", "postgres"], cwd=ROOT, check=True, capture_output=True)
+                    "-d", "--wait", "postgres", "temporal"], cwd=ROOT, check=True, capture_output=True)
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
