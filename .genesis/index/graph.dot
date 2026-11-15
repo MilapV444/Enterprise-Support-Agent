@@ -16,6 +16,7 @@ digraph genesis {
   "file:evals/suites/__init__.py" [label="evals/suites/__init__.py",class="file"];
   "file:scripts/adp_registry.py" [label="scripts/adp_registry.py",class="file"];
   "file:scripts/check_neon_roles.py" [label="scripts/check_neon_roles.py",class="file"];
+  "file:scripts/copy_langgraph_state.py" [label="scripts/copy_langgraph_state.py",class="file"];
   "file:scripts/generate_adp_index.py" [label="scripts/generate_adp_index.py",class="file"];
   "file:scripts/generate_architecture_tldr.py" [label="scripts/generate_architecture_tldr.py",class="file"];
   "file:scripts/generate_lld_cost.py" [label="scripts/generate_lld_cost.py",class="file"];
@@ -165,6 +166,7 @@ digraph genesis {
   "file:tests/decisions/test_decisions.py" [label="tests/decisions/test_decisions.py",class="file"];
   "file:tests/deploy/test_backbone.py" [label="tests/deploy/test_backbone.py",class="file"];
   "file:tests/deploy/test_compose.py" [label="tests/deploy/test_compose.py",class="file"];
+  "file:tests/deploy/test_copy_langgraph_state.py" [label="tests/deploy/test_copy_langgraph_state.py",class="file"];
   "file:tests/deploy/vm/test_release.py" [label="tests/deploy/vm/test_release.py",class="file"];
   "file:tests/deploy/vm/test_vm_image.py" [label="tests/deploy/vm/test_vm_image.py",class="file"];
   "file:tests/deploy/vm/test_vm_tools.py" [label="tests/deploy/vm/test_vm_tools.py",class="file"];

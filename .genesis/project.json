@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-15T11:21:46.208Z"
+    "updated_at": "2026-11-15T12:19:31.492Z"
   },
   "policy": {
     "ponytail": "full",
@@ -27,7 +27,7 @@
     "status": "active",
     "active_task": "LG-05.2",
     "blocker": null,
-    "next_action": "Run the task pre-flight."
+    "next_action": "Waiting for the user: 1) VM rollout of main (migrate creates case_state), 2) copy against Neon from the laptop .venv, 3) --drop after checking; then complete"
   },
   "commands": {},
   "workflow": {
@@ -1502,6 +1502,24 @@
       "source": "LG-04.2",
       "tags": [],
       "recorded_at": "2026-11-15T11:15:07.470Z",
+      "paths": []
+    },
+    {
+      "id": "KNOWLEDGE-7ffca497",
+      "title": "LG-05.2 cut-over: code done; VM rollout, Neon copy and table drop wait for the user",
+      "text": "Code side done: langgraph and langgraph-checkpoint-postgres removed from pyproject.toml; tests/test_dependencies.py test_langgraph_is_gone asserts neither is declared and nothing under src/ imports langgraph. memory.lifecycle.inventory erases ticket workflows for plan.case_ids AND plan.conversation_ids (live turns' workflows are keyed by conversation and hold the raw message), tested in tests/erasure. scripts/copy_langgraph_state.py: copy(dsn) reads each thread's latest LangGraph checkpoint (PostgresSaver, needs the package installed: the dev .venv still has it) and saves the ThreadState fields through PostgresStore(save version 0) so cases that already have case_state are kept ({copied, kept}); drop(dsn) drops checkpoint_writes, checkpoint_blobs, checkpoints, checkpoint_migrations; CLI: DATABASE_URL=<owner> python scripts/copy_langgraph_state.py [--drop]; tested in tests/deploy/test_copy_langgraph_state.py (importorskip), including a copied AWAITING_CUSTOMER case resuming in the new statechart. Amendment notes added under the titles of ADP-01, ADP-02, MS-ADP-04, MA-ADP-01; README stack lines updated. Order on the VM (each step needs the user): 1) release.py rollout of main (its migrate creates case_state; the image no longer has langgraph), 2) from the laptop .venv: copy against Neon (insert-only), 3) after checking: --drop. Until step 2 runs, a conversation that started before the rollout begins with empty state. Open check: the copy's SET LOCAL ROLE app_runtime must work for the Neon owner login (membership); the script fails loudly if not.",
+      "source": "LG-05.2",
+      "tags": [],
+      "recorded_at": "2026-11-15T11:40:50.040Z",
+      "paths": []
+    },
+    {
+      "id": "KNOWLEDGE-e89294d8",
+      "title": "LG-05.2: psycopg_pool came only through langgraph-checkpoint-postgres",
+      "text": "Removing langgraph-checkpoint-postgres removed psycopg_pool from the image (the served container failed at import: runtime.production and channels.api.app use it). Now declared as psycopg[binary,pool]>=3.2. Checked by importing every module under src/ inside the rebuilt image: none missing. Also fixed in tests/deploy/test_compose.py: APP_DATABASE_URL (in .env.example since 074a625, S17) was missing from ALLOWED_ENV, a failure that predates LG-05.2.",
+      "source": "LG-05.2",
+      "tags": [],
+      "recorded_at": "2026-11-15T12:16:09.468Z",
       "paths": []
     }
   ],
@@ -40106,8 +40124,14 @@
           "kind": "command",
           "command": "python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q",
           "mandatory": true,
-          "status": "pending",
-          "evidence": null
+          "status": "pass",
+          "evidence": {
+            "path": ".genesis/evidence/LG-05.2-tests-be46b3d5-e1bf-4d6e-8796-9f69c6f12fdb.json",
+            "hash": "9e5faeb92e27d82e06ef803d4c7aa75bf65b8f08c28ec8c9353f6d604b700f36",
+            "source_hash": "08696990045772e77453936722a87ed0e794981a7e9824f9dbeb9400a435a5aa",
+            "config_hash": "63a18b9e9258ef4257e14dddbfb217b4b3a6d5e5084a15badab7219276b83aa0",
+            "observed_at": "2026-11-15T12:19:13.980Z"
+          }
         },
         {
           "id": "independent-review",
@@ -40118,13 +40142,13 @@
           "evidence": null
         }
       ],
-      "next_action": "Run the task pre-flight.",
+      "next_action": "Waiting for the user: 1) VM rollout of main (migrate creates case_state), 2) copy against Neon from the laptop .venv, 3) --drop after checking; then complete",
       "blocker": null,
       "notes": [],
       "failures": [],
       "limitations": [],
       "created_at": "2026-11-14T17:31:53.306Z",
-      "updated_at": "2026-11-14T17:31:53.312Z",
+      "updated_at": "2026-11-15T12:19:30.408Z",
       "base_manifest": {
         ".env.example": "b29825a0670254a3e95845781c7370c40cde46c10e347adf177ae3871ac2cbbf",
         ".github/workflows/ci.yml": "356172f3ce1637a5d2b5a579592ac77af3835abf63f5ce7deacb492258df1ea4",
@@ -46075,6 +46099,78 @@
       "cost": null,
       "stop_reason": null,
       "ended_at": "2026-11-15T11:21:14.338Z"
+    },
+    {
+      "id": "5262b76b-75ea-41ac-972a-ad314976762f",
+      "task": "LG-05.2",
+      "kind": "gate",
+      "command": "python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q",
+      "timeout": 590000,
+      "authorization": null,
+      "pid": 22372,
+      "child_pid": 2036,
+      "started_at": "2026-11-15T11:40:59.854Z",
+      "status": "failed",
+      "before_hash": "ef3c984a01bd587b0e7062f49e9471b71cd77779c9bcba4d255707044e11312e",
+      "config_hash": "63a18b9e9258ef4257e14dddbfb217b4b3a6d5e5084a15badab7219276b83aa0",
+      "environment": {
+        "node": "v24.21.0",
+        "platform": "win32",
+        "arch": "x64",
+        "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+        "variables": {}
+      },
+      "cost": null,
+      "stop_reason": "timeout",
+      "ended_at": "2026-11-15T11:54:39.139Z"
+    },
+    {
+      "id": "f1731ff8-b3a6-449f-9931-599e5df87d32",
+      "task": "LG-05.2",
+      "kind": "gate",
+      "command": "python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q",
+      "timeout": 1500000,
+      "authorization": null,
+      "pid": 27644,
+      "child_pid": 22652,
+      "started_at": "2026-11-15T11:54:53.038Z",
+      "status": "failed",
+      "before_hash": "ef3c984a01bd587b0e7062f49e9471b71cd77779c9bcba4d255707044e11312e",
+      "config_hash": "63a18b9e9258ef4257e14dddbfb217b4b3a6d5e5084a15badab7219276b83aa0",
+      "environment": {
+        "node": "v24.21.0",
+        "platform": "win32",
+        "arch": "x64",
+        "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+        "variables": {}
+      },
+      "cost": null,
+      "stop_reason": "command-failed",
+      "ended_at": "2026-11-15T12:01:01.552Z"
+    },
+    {
+      "id": "be46b3d5-e1bf-4d6e-8796-9f69c6f12fdb",
+      "task": "LG-05.2",
+      "kind": "gate",
+      "command": "python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q",
+      "timeout": 1500000,
+      "authorization": null,
+      "pid": 26556,
+      "child_pid": 24068,
+      "started_at": "2026-11-15T12:16:23.345Z",
+      "status": "passed",
+      "before_hash": "08696990045772e77453936722a87ed0e794981a7e9824f9dbeb9400a435a5aa",
+      "config_hash": "63a18b9e9258ef4257e14dddbfb217b4b3a6d5e5084a15badab7219276b83aa0",
+      "environment": {
+        "node": "v24.21.0",
+        "platform": "win32",
+        "arch": "x64",
+        "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+        "variables": {}
+      },
+      "cost": null,
+      "stop_reason": null,
+      "ended_at": "2026-11-15T12:19:13.980Z"
     }
   ],
   "authorizations": [],
@@ -46101,14 +46197,14 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-15T11:21:45.004Z",
+    "at": "2026-11-15T12:19:30.979Z",
     "revision": {
-      "commit": "4418aa205bb2fa15fa7ae58891708d22c944d86a",
+      "commit": "655ae3fc3ac638e07de9db96837156a6b2d6b876",
       "dirty": true,
-      "source_hash": "0e0d6dfbfbc6d50fe57153c7a8edb7070affb403910302291384f6aa6dc03d2f"
+      "source_hash": "08696990045772e77453936722a87ed0e794981a7e9824f9dbeb9400a435a5aa"
     },
     "active_task": "LG-05.2",
-    "next_action": "Run the task pre-flight."
+    "next_action": "Waiting for the user: 1) VM rollout of main (migrate creates case_state), 2) copy against Neon from the laptop .venv, 3) --drop after checking; then complete"
   },
   "legacy": null
 }

@@ -1,0 +1,30 @@
+{
+  "task": "LG-05.2",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "be46b3d5-e1bf-4d6e-8796-9f69c6f12fdb",
+  "command": "python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q",
+  "started_at": "2026-11-15T12:16:23.345Z",
+  "observed_at": "2026-11-15T12:19:13.980Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 50%]\r\n......................................................................   [100%]\r\n142 passed in 167.59s (0:02:47)\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "655ae3fc3ac638e07de9db96837156a6b2d6b876",
+    "dirty": true
+  },
+  "source_hash": "08696990045772e77453936722a87ed0e794981a7e9824f9dbeb9400a435a5aa",
+  "before_hash": "08696990045772e77453936722a87ed0e794981a7e9824f9dbeb9400a435a5aa",
+  "config_hash": "63a18b9e9258ef4257e14dddbfb217b4b3a6d5e5084a15badab7219276b83aa0",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "9e5faeb92e27d82e06ef803d4c7aa75bf65b8f08c28ec8c9353f6d604b700f36"
+}

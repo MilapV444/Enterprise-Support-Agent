@@ -2,7 +2,8 @@
 (FR-19 / MS-D14; NFR-5 / DP-D13, DP-D14, DP-D15). The workflow that drives it is data.erasure.
 
 Erased, keyed on (tenant_id, principal_id):
-    temporal      ticket workflow histories of the user's cases
+    temporal      ticket workflow histories of the user's cases and conversations (a live turn's workflow is
+                  keyed by its conversation, and its history holds the raw message)
     postgres      the case state of the user's own cases and conversations (the turn loop keys a case by its
                   conversation), facts, dialogue turns / summaries / pins, the event log, submitted turns,
                   one-time codes, conversations, the user's own cases and sessions
@@ -224,7 +225,9 @@ class ErasureActivities:
         return await asyncio.to_thread(getattr(self, f"_purge_{store}"), request, plan)
 
     def _ticket_ids(self, request, plan):
-        return [f"ticket:{request.tenant_id}:{case}" for case in plan.case_ids]
+        """Linked cases' workflows and the conversation-keyed ones the live turns run on (their histories hold
+        the customer's raw messages)."""
+        return [f"ticket:{request.tenant_id}:{key}" for key in (*plan.case_ids, *plan.conversation_ids)]
 
     async def _purge_temporal(self, request, plan):
         """Delete the ticket workflows (running ones are terminated) and wait until Temporal has done it;

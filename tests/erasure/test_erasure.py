@@ -140,8 +140,9 @@ def seed(stack, principal, tenant="t_us"):
 
     async def ticket():
         client = await Client.connect("127.0.0.1:7233")
-        await client.start_workflow("TicketWorkflow", id=f"ticket:{tenant}:{case}",
-                                    task_queue="no-worker-here")
+        for key in (case, conversation):  # a linked case's ticket, and the live turns' conversation one
+            await client.start_workflow("TicketWorkflow", id=f"ticket:{tenant}:{key}",
+                                        task_queue="no-worker-here")
     asyncio.run(ticket())
     return {"conversation": conversation, "case": case, "tokens": TOKEN.findall(masked)}
 
@@ -210,6 +211,7 @@ def test_erasure_completes_and_no_store_returns_readable_personal_data(stack):
                                      "tool_audit_records", "vault", "keys"}
     assert counts("sarah", sarah) == {"postgres": 0, "case_state": 0, "vault": 0, "keys": 0}
     assert not temporal_has(f"ticket:t_us:{sarah['case']}")
+    assert not temporal_has(f"ticket:t_us:{sarah['conversation']}")
     with pytest.raises(KeyShredded):  # the audit payload (and any backup copy) can no longer be opened
         decrypt_field(keys, "t_us", "sarah", "tool_audit:1", bytes.fromhex(sealed[0][0]))
     retained = psql(MAIN, "SELECT trace::text FROM decision_records "
@@ -217,6 +219,7 @@ def test_erasure_completes_and_no_store_returns_readable_personal_data(stack):
     assert retained and "sarah@" not in retained[0][0]  # the audit row stays, tokens only
 
     assert all(counts("bob", bob).values()) and temporal_has(f"ticket:t_us:{bob['case']}")
+    assert temporal_has(f"ticket:t_us:{bob['conversation']}")
     with connect(MAIN) as conn:
         assert [f.statement for f in FactStore(conn, keys).as_of("t_us", "bob")] == [
             f"Prefers e-mail at {bob['tokens'][0]}"]

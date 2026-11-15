@@ -6,9 +6,9 @@
 - phase/status: build/active
 - active task: LG-05.2 — Cut-over (replaces LG-05): a one-off script copies the latest LangGraph checkpoint per thread on Neon into case_state, then the checkpoints, checkpoint_blobs, checkpoint_writes and checkpoint_migrations tables are dropped and any leftover references removed; langgraph and langgraph-checkpoint-postgres leave pyproject.toml and tests/test_dependencies.py asserts neither is declared or imported under src/; README and ADP-01, ADP-02, MS-ADP-04 amendment notes; VM rollout of LG-02.2..LG-04.2
 - blocker: none
-- next action: Run the task pre-flight.
+- next action: Waiting for the user: 1) VM rollout of main (migrate creates case_state), 2) copy against Neon from the laptop .venv, 3) --drop after checking; then complete
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
-- gates: tests:pending, independent-review:pending
+- gates: tests:pass, independent-review:pending
 - recent failures: none
 
 ## Resume
@@ -17,9 +17,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: d2e7ff43ccf7978518fd1e34c2c860f4ae48a69941e80ba4812258bce6dd2d19. Use --since only after receiving that full packet; kickoff is not the packet.
+Context fingerprint: 11017bdd2fd07563d2d1ddae51680d5ec0b568c9a8c6ddf86d8ff425bb0a01ea. Use --since only after receiving that full packet; kickoff is not the packet.
+- KNOWLEDGE-7ffca497: LG-05.2 cut-over: code done; VM rollout, Neon copy and table drop wait for the user
 - KNOWLEDGE-3853dc49: LangGraph removal: drafted tasks LG-00..LG-05 (not yet in the plan)
 - KNOWLEDGE-f0010a0b: Open issues register (single source; update by superseding)
-- KNOWLEDGE-99fd90e9: LG-02.2 statechart on case_state: behaviour, wiring and what changed for erasure
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.

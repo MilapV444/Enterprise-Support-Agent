@@ -1,5 +1,7 @@
 # ADP-02: Workflow Durability Substrate (Two-Tier Hybrid: Temporal.io Outer Saga + LangGraph Inner Cognitive Loop)
 
+> **Amended 2026-11-15 (DECISION-bc6301b4, LG-01..LG-05.2):** LangGraph is removed. Temporal runs every case: one ticket workflow per case (`ticket:<tenant>:<conversation>`, started by signal-with-start from the API) and one retried `run_turn` activity per customer turn over the whole turn loop; the inner loop is plain Python, and case state lives in the Postgres `case_state` table. The decision text below is kept as it was decided.
+
 - **Status**: Accepted & Confirmed
 - **Date**: 2026-09-11 *(Updated: 2026-09-25 with LangGraph State Truth Realignment)*
 - **Deciders**: Architecture Team, Lead Distributed Systems Engineer, Operations Core

@@ -2158,5 +2158,5 @@
 - requirements: FR-2, NFR-5
 - scope: scripts/, deploy/, pyproject.toml, README.md, docs/, src/core/orchestrator/, src/memory/lifecycle/, tests/test_dependencies.py, tests/deploy/, tests/erasure/, tests/memory/, tests/reliability/backup/
 - gates: tests: python -m pytest tests/test_dependencies.py tests/deploy tests/erasure tests/memory tests/reliability/backup -q, independent-review: pending
-- next: Run the task pre-flight.
+- next: Waiting for the user: 1) VM rollout of main (migrate creates case_state), 2) copy against Neon from the laptop .venv, 3) --drop after checking; then complete
 
