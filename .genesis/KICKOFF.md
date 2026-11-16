@@ -4,7 +4,7 @@
 
 - objective: Build the Enterprise AI Customer Support Agent as designed in docs/: the orchestration core and all 15 components, implementing the 79 ADPs in docs/decisions/adp/.
 - phase/status: build/active
-- active task: TK-03 — Refund and billing requests become ticket proposals: the collect hook finds the invoice number by pattern and checks it is the signed-in customer's with the read tool, parses amount and currency in code, takes the reason; missing details give one clarifying question naming exactly what is missing; complete details make the procedure propose a refund ticket (the amount is not the approval-gate parameter), ask to confirm and publish an action_card of kind ticket_proposal; a guest gets a sign-in card instead; Jev picks the ticket category and guards wants-a-ticket, numbers never in Jev questions
+- active task: TK-04 — Every hand-off becomes a ticket proposal: each escalate outcome (low triage confidence, RESTRICTED_ANSWER, NOTHING_TO_SAY, REDIRECT, LEAD_UNAVAILABLE, a message to a terminal case) publishes a proposal card with the reason and team queue; in a conversation with an open ticket, later customer messages are added to it as notes and acknowledged with its number instead of the repeated hand-off notice; feeding hitl.queues (register W11) stays out of scope
 - blocker: none
 - next action: Run the task pre-flight.
 - phase instruction: Implement only the active task and prove it against current sources. Check `genesis query . impact PATH` before editing shared code.
@@ -17,7 +17,7 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: 73783713e31d7753c870156254abc0c0dcdcfb5f3215efbe2a15efd37408f70b. Use --since only after receiving that full packet; kickoff is not the packet.
+Context fingerprint: 59e688ed70a736ca5199be28693f585eda1d54b5af85f5fb0fd532eebfac5740. Use --since only after receiving that full packet; kickoff is not the packet.
 - KNOWLEDGE-047bec46: Support tickets: drafted tasks TK-01..TK-05 (not yet in the plan)
 - KNOWLEDGE-b3c800b1: Open issues register (single source; update by superseding)
 - DECISION-368069f5: Support tickets: signed-in only, own table, confirm first, every hand-off becomes a ticket

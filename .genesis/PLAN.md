@@ -2178,15 +2178,15 @@
 
 ### TK-03 — Refund and billing requests become ticket proposals: the collect hook finds the invoice number by pattern and checks it is the signed-in customer's with the read tool, parses amount and currency in code, takes the reason; missing details give one clarifying question naming exactly what is missing; complete details make the procedure propose a refund ticket (the amount is not the approval-gate parameter), ask to confirm and publish an action_card of kind ticket_proposal; a guest gets a sign-in card instead; Jev picks the ticket category and guards wants-a-ticket, numbers never in Jev questions
 
-- state/risk: active / high
+- state/risk: done / high
 - requirements: FR-45, FR-5, FR-21, FR-35
 - scope: src/runtime/, src/core/orchestrator/, src/hitl/, src/channels/api/, tests/runtime/, tests/orchestrator/, tests/decisions/, tests/e2e/, tests/invariants/, tests/contracts/, tests/load/
-- gates: tests: python -m pytest tests/runtime tests/orchestrator tests/decisions tests/e2e tests/invariants tests/contracts tests/load/test_chaos.py -q, independent-review: pending
+- gates: tests: python -m pytest tests/runtime tests/orchestrator tests/decisions tests/e2e tests/invariants tests/contracts tests/load/test_chaos.py -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### TK-04 — Every hand-off becomes a ticket proposal: each escalate outcome (low triage confidence, RESTRICTED_ANSWER, NOTHING_TO_SAY, REDIRECT, LEAD_UNAVAILABLE, a message to a terminal case) publishes a proposal card with the reason and team queue; in a conversation with an open ticket, later customer messages are added to it as notes and acknowledged with its number instead of the repeated hand-off notice; feeding hitl.queues (register W11) stays out of scope
 
-- state/risk: queued / high
+- state/risk: active / high
 - requirements: FR-46, FR-36, FR-38
 - scope: src/runtime/, src/hitl/, src/channels/api/, tests/runtime/, tests/e2e/, tests/channels/, tests/hitl/, tests/load/, tests/contracts/
 - gates: tests: python -m pytest tests/runtime tests/e2e tests/channels tests/hitl tests/contracts tests/load/test_chaos.py -q, independent-review: pending

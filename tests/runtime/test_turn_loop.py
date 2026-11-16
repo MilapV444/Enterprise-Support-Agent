@@ -33,6 +33,8 @@ from core.orchestrator.statechart import thread
 from cost.router import Router
 from data import events
 from data.migrate import migrate, psql
+from hitl import tickets as hitl_tickets
+from hitl.tickets import Tickets
 from knowledge.ingest import pipeline as ingest
 from knowledge.retrieval.pipeline import RestrictedMatch, Retriever
 from reliability.fallbacks import openai_compatible
@@ -76,18 +78,22 @@ class World:
     reports (None: one claim citing every passage it was shown)."""
 
     def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None,
-                 specialists_down=False, redirecting=False):
+                 specialists_down=False, redirecting=False, wants_ticket=False):
         self.triage = triage or triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.05)
         self.model_down, self.jev, self.model = model_down, [], []
         self.lead, self.claims, self.read = lead, claims, read   # read: the record a specialist asks for
         self.specialists_down = specialists_down   # every specialist's model call fails (B23)
         self.redirecting = redirecting             # the first draft points the customer elsewhere (B25)
+        self.wants_ticket = wants_ticket           # the customer asks the billing team to act (TK-03)
 
     def jev_reply(self, request):
         body = json.loads(request.content)
         self.jev.append(body)
         if "intent" in body["questions"]:
             answers = self.triage
+        elif "wants_ticket" in body["questions"]:
+            answers = {"wants_ticket": {"type": "noul", "noul": 0.95 if self.wants_ticket else 0.05},
+                       "category": {"type": "choice", "choice": "refund", "confidence": 0.9}}
         elif "lead" in body["questions"]:               # delegation: one lead, nobody joins
             answers = {qid: {"type": "noul", "noul": 0.05} for qid in body["questions"]}
             answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": 0.9}
@@ -139,7 +145,8 @@ def stack():
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
-    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus, case_state):
+    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus, case_state,
+                   hitl_tickets):
         module.apply_schema(DB)
     psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'G', 'EU')")
     for tenant, principal, company in (("t_us", "sarah", "Acme"), ("t_us", "bob", "Bobco"),
@@ -656,3 +663,79 @@ def test_a_probe_that_fails_leaves_the_turn_to_be_answered_as_usual(stack):
     runner.s.retriever.restricted_match = broken
     turn = inbound("How do I reset my password?")
     assert runner.run(turn) == "answered" and "restricted" not in trace_steps(turn)
+
+
+# Ticket proposals (TK-03, FR-45; DECISION-368069f5) ---------------------------------------------------------
+
+BILLING = triage_answers("BILLING_INQUIRY", 0.95, 1, 0.05)
+
+
+def proposals(conversation, tenant="t_us"):
+    return psql(DB, f"SELECT proposal_key, status, invoice_id, amount_cents FROM support_tickets "
+                    f"WHERE tenant_id = '{tenant}' AND conversation_id = '{conversation}' ORDER BY id")
+
+
+def test_a_signed_in_customers_duplicate_charge_becomes_a_proposal_and_nothing_is_raised(stack):
+    world, session = World(triage=BILLING, wants_ticket=True), signed_in("T1_VERIFIED")
+    turn = inbound("I was charged twice on invoice inv-sarah-1, I want my refund of $500.",
+                   tier="T1_VERIFIED", principal="sarah", session=session)
+    runner = loop(stack, world)
+    assert runner.run(turn) == "answered"
+    (card,) = [data for kind, data in published(turn) if kind == "action_card"]
+    assert card["kind"] == "ticket_proposal" and card["invoice_id"] == "inv-sarah-1"
+    assert card["amount_cents"] == 50000 and card["status"] == "proposed"
+    assert card["actions"] == [{"type": "confirm_ticket", "proposal": card["ticket_id"],
+                                "label": "Raise ticket"}]
+    final = next(data for kind, data in published(turn) if kind == "final")
+    assert "USD 500.00" in final["text"] and "Nothing has been raised" in final["text"]
+    assert not re.search(r"\brefunded\b", final["text"])
+    assert proposals(turn.conversation_id) == [["refund:inv-sarah-1", "proposed", "inv-sarah-1", "50000"]]
+    assert Tickets(connector(DSN)).list_for("t_us", "sarah") == []          # an offer, not a ticket
+    assert runner.run(turn) == "already_answered" and len(proposals(turn.conversation_id)) == 1  # a retry
+
+
+def test_without_an_amount_the_invoices_own_amount_is_proposed(stack):
+    session = signed_in("T1_VERIFIED")
+    turn = inbound("Please refund invoice inv-sarah-1, it was a duplicate payment.", tier="T1_VERIFIED",
+                   principal="sarah", session=session)
+    assert loop(stack, World(triage=BILLING, wants_ticket=True)).run(turn) == "answered"
+    assert proposals(turn.conversation_id)[0][3] == "184000"
+
+
+def test_a_missing_invoice_is_asked_for_by_name_and_the_reply_completes_the_proposal(stack):
+    world, session = World(triage=BILLING, wants_ticket=True), signed_in("T1_VERIFIED")
+    runner, conversation = loop(stack, world), f"c-{uuid.uuid4().hex[:8]}"
+    first = inbound("I was double charged last month and want a refund.", conversation, tier="T1_VERIFIED",
+                    principal="sarah", session=session)
+    assert runner.run(first) == "asked"
+    question = next(data for kind, data in published(first) if kind == "final")["text"]
+    assert "invoice number" in question and proposals(conversation) == []
+    second = inbound("It is inv-sarah-2", conversation, tier="T1_VERIFIED", principal="sarah",
+                     session=session)
+    assert runner.run(second) == "answered"
+    assert [row[2] for row in proposals(conversation)] == ["inv-sarah-2"]
+
+
+def test_someone_elses_invoice_is_never_proposed(stack):
+    session = signed_in("T1_VERIFIED")
+    turn = inbound("Refund the duplicate charge on inv-bob-1 please.", tier="T1_VERIFIED", principal="sarah",
+                   session=session)
+    assert loop(stack, World(triage=BILLING, wants_ticket=True)).run(turn) == "asked"
+    question = next(data for kind, data in published(turn) if kind == "final")["text"]
+    assert "could not find that one on your account" in question and proposals(turn.conversation_id) == []
+
+
+def test_a_guest_is_asked_to_sign_in_before_any_proposal(stack):
+    turn = inbound("I got a duplicate charge on inv-sarah-1 and want my $500 back.")      # T0, no session
+    assert loop(stack, World(triage=BILLING, wants_ticket=True)).run(turn) == "answered"
+    (card,) = [data for kind, data in published(turn) if kind == "action_card"]
+    assert card["kind"] == "sign_in" and proposals(turn.conversation_id) == []
+    assert "sign in" in next(data for kind, data in published(turn) if kind == "final")["text"]
+
+
+def test_a_question_about_how_billing_works_is_answered_as_before(stack):
+    turn = inbound("How do refunds work for annual plans?", tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+    assert loop(stack, World(triage=BILLING, wants_ticket=False)).run(turn) == "answered"
+    assert not [kind for kind, _ in published(turn) if kind == "action_card"]
+    assert proposals(turn.conversation_id) == []

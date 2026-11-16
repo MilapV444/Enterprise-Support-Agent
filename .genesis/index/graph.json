@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "3600db58c40b813cc8c9d3ffca08d91401025492",
-  "sourceHash": "f9157bf6658d3dc59474e84f828d0eb15b48326946110b558d82d0a10daa9863",
+  "revision": "c704ebb37727c7ac2ae076e997b562e099531cd5",
+  "sourceHash": "f22f1b15cd0f4a5d0928ab459c42b2538de0d426228e6a6f053a0b18747d6a1a",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -647,7 +647,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "b84fa7ff6cf7c419bb697dc64f0d3adf74778fa6aa8c562f85f93f00180a7a81"
+      "contentHash": "d3aa555c9d5eda0b1a447dc82661b291a5f519dc53869f1467169801434c9ae1"
     },
     {
       "id": "file:src/core/orchestrator/triage.py",
@@ -1167,7 +1167,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "0c722ce15ff0b3583e8f03b30dd28a87e94562f5edaf9d5b6337c4de6da378e4"
+      "contentHash": "e9ba8b95a1df56719e6fe1c3aada8059a8fd21d311d2e1e9378f8860ef8667f8"
     },
     {
       "id": "file:src/runtime/__main__.py",
@@ -1188,6 +1188,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "95f8ad87d4979b30a4d662c05fd91bbab3e827965e6c72d14844e0177b82a0d6"
+    },
+    {
+      "id": "file:src/runtime/tickets.py",
+      "type": "file",
+      "label": "src/runtime/tickets.py",
+      "path": "src/runtime/tickets.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "630ebc18cf505dcbae7d6c2d1ba3f002d77e414b8154918a26da524cce52a89e"
     },
     {
       "id": "file:src/safety/authz/__init__.py",
@@ -2137,7 +2147,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "a211bdf8adb154f5786f6acfddfd7f14667cfd69fe0d9026e7dceac21c1ebd6f"
+      "contentHash": "67493dd4b9ed9ed3f299ad0b64e506436ae7f3a8975c2d603e3c71dd8ba80291"
     },
     {
       "id": "file:tests/safety/authz/test_cedar.py",

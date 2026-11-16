@@ -1,0 +1,13 @@
+{
+  "task": "TK-03",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "f4ba5497-33c5-44f0-8318-46bc42196011",
+  "human": "Intelligent_developer_123",
+  "reason": "Pre-authorized by the user for the TK sweep (chat 2026-11-16). Self-review by Claude: proposals only for signed-in owners of the invoice, numbers parsed in code, no approval-gate trigger, card before final for retry safety; gate passed",
+  "observed_at": "2026-11-16T18:10:12.534Z",
+  "source_hash": "84f3eddb888208b1702dfc1305429121308c4ac5d11edfc4343c28e9b415e158",
+  "config_hash": "6e71dcf75e720bc0d82d17a4ce22625985adb970591e1357100b3b16d6f1bb9b",
+  "reviewed_proofs": "d66a9f5f37be870e67742a17f6cbe8ca5e1880a5616e11b0cbfd46fbeb99743a",
+  "hash": "91ae604d133ba09a974be4a78fad339bcfa7855c5432dff95538f88b311b73a2"
+}
