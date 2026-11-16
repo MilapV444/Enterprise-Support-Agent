@@ -32,6 +32,7 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 - FR-7: **UA-ADP-02 Identity & downstream tokens** — Tiered identity (anonymous → OTP → SSO, step-up on demand) + RFC 8693 on-behalf-of tokens valid 24 h. Covers UA-D3, UA-D4, UA-D9. Detail: [`UA-ADP-02`](docs/decisions/adp/01-user-application/UA-ADP-02-identity-downstream-tokens.md).
 - FR-8: **UA-ADP-03 Sessions & conversation scope** — Session → conversation → case; sessions end at 30 min idle / 12 h; any authenticated request keeps them alive. Covers UA-D5, UA-D6, UA-Q3. Detail: [`UA-ADP-03`](docs/decisions/adp/01-user-application/UA-ADP-03-sessions-conversation-scope.md).
 - FR-9: **UA-ADP-04 Response contract & delivery** — Typed event envelope; replies buffered until checks pass with status events meanwhile; deferred answers go to the inbox. Covers UA-D7, UA-D8, UA-Q2. Detail: [`UA-ADP-04`](docs/decisions/adp/01-user-application/UA-ADP-04-response-contract-delivery.md).
+- FR-47: **Tickets in the portal** — A proposed or raised ticket appears in the chat as a card (`action_card` event: number, category, amount and invoice when set, status, created); a proposal's card carries Raise ticket, a guest's asks to sign in first. Signed-in customers list their own tickets (`GET /v1/tickets`) and open one with its history (`GET /v1/tickets/{id}`); the portal shows them under My tickets, below History, and the card opens the ticket there (portal built outside the Genesis task flow). DECISION-368069f5.
 
 ### [2] Knowledge & Retrieval
 
@@ -56,6 +57,7 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 - FR-22: **TA-ADP-03 Action validation & approval tiers** — Reads and low-risk writes automatic; financial ≥ tenant threshold (default $1,000), destructive or irreversible → approval; Jev gate can only tighten. Covers TA-D5, TA-D6, TA-D7, TA-D14. Detail: [`TA-ADP-03`](docs/decisions/adp/04-tools-actions/TA-ADP-03-action-validation-approval.md).
 - FR-23: **TA-ADP-04 Execution, credentials & isolation** — On-behalf-of tokens or a scoped service account + user check; worker pool per system; output screened; safe retries + breakers. Covers TA-D4, TA-D9, TA-D10, TA-D11. Detail: [`TA-ADP-04`](docs/decisions/adp/04-tools-actions/TA-ADP-04-execution-credentials-isolation.md).
 - FR-24: **TA-ADP-05 Transactional integrity & audit** — Temporal sagas with idempotent compensations; no-undo steps last and approved; append-only audit with crypto-shredding. Covers TA-D8, TA-D17, TA-D18, TA-D12, TA-D15. Detail: [`TA-ADP-05`](docs/decisions/adp/04-tools-actions/TA-ADP-05-transactional-integrity-audit.md).
+- FR-45: **Support tickets** — Signed-in customers only (T1 / T2). The agent keeps tickets in its own `support_tickets` table with a `ticket_events` history (tenant RLS; a customer sees only their own; personal data tokenized; erased and retained with the customer's data). For a refund or billing request it collects the invoice, amount and reason, checks in code that the invoice is the customer's, and proposes a ticket; nothing is raised until the customer confirms. Raising is an audited, idempotent write tool: one ticket per proposal, retries included. Proposing a refund ticket moves no money and never says money was refunded. DECISION-368069f5.
 
 ### [5] Multi-Agent & Communication
 
@@ -80,6 +82,7 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 - FR-37: **HL-ADP-03 Approval** — Rights by role and amount (senior ≥ tenant amount, default $5,000), approver ≠ handler; card with evidence, dry-run and field-by-field confirmation. Covers HL-D4, HL-D5. Detail: [`HL-ADP-03`](docs/decisions/adp/12-human-in-the-loop/HL-ADP-03-approval-workflows.md).
 - FR-38: **HL-ADP-04 Handoff & waiting** — Immediate handoff on request; cold handoff once a human picks up; wait estimate and cancel option; human replies checked as warnings. Covers HL-D6, HL-D7, HL-D8, HL-D14. Detail: [`HL-ADP-04`](docs/decisions/adp/12-human-in-the-loop/HL-ADP-04-handoff-waiting-experience.md).
 - FR-39: **HL-ADP-05 Feedback & console** — Approve / reject with reason codes; self-hosted Retool in each region. Covers HL-D10, HL-D11. Detail: [`HL-ADP-05`](docs/decisions/adp/12-human-in-the-loop/HL-ADP-05-feedback-console.md).
+- FR-46: **Every hand-off becomes a ticket** — Whatever sends a case to a person (low triage confidence, staff-only routing, nothing to say, a redirect, an unavailable lead specialist) proposes a ticket that carries the case, the reason and the team queue; once the customer confirms, the ticket is the hand-off. Later messages in a conversation with a ticket are added to it as notes and acknowledged with its number, instead of repeating the hand-off notice. DECISION-368069f5.
 
 ### [11] Cost & Resource Management
 
@@ -209,6 +212,7 @@ Enterprise customers (B2B tenants) need support that resolves technical incident
 - AC-13: Under the release load test on the VM, the first status event arrives within 1 s and final-reply p95 is within 5 s (FAQ), 20 s (diagnostics) and 45 s (multi-specialist) for turns without human approval, served by API-hosted model tiers.
 - AC-14: A test conversation seeded with PII shows no raw PII in any model, Jev or provider request, or in any stored trace or log.
 - AC-15: The whole stack starts on a fresh Oracle Always Free VM from the repository (setup script + `docker compose up`) with no paid service, and the month's bills across all providers total ≤ USD 10.
+- AC-16: A signed-in customer who reports a duplicate charge and names one of their invoices gets a ticket proposal card, confirms it, and sees the raised ticket in the card and under My tickets with its details; a guest is asked to sign in first; a second message in the same conversation is added to the ticket; a retried turn raises no second ticket. DECISION-368069f5.
 
 ## Risks
 
