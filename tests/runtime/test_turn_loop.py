@@ -38,7 +38,7 @@ from hitl.tickets import Tickets
 from knowledge.ingest import pipeline as ingest
 from knowledge.retrieval.pipeline import RestrictedMatch, Retriever
 from reliability.fallbacks import openai_compatible
-from runtime import FAILED, HANDOFF, NoJev, Services, TurnLoop, connector, production
+from runtime import FAILED, HANDOFF, NoJev, Services, TurnLoop, connector, production, tickets
 from safety.governance import records
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
@@ -268,7 +268,9 @@ def test_with_every_model_down_the_customer_is_handed_to_a_person(stack):
     world = World(model_down=True)
     turn = inbound("How do I reset my password?")
     assert loop(stack, world).run(turn) == "handed_off"
-    assert published(turn)[-1] == ("handoff", {"turn_id": turn.turn_id, "text": HANDOFF})
+    assert published(turn)[-1] == ("handoff", {"turn_id": turn.turn_id,
+                                               "text": f"{HANDOFF} {tickets.SIGN_IN_OFFER}"})
+    assert published(turn)[-2][1]["kind"] == "sign_in"                  # a guest is asked to sign in (TK-04)
 
 
 def test_with_jev_and_every_model_down_triage_asks_and_the_turn_still_ends_in_a_hand_off(stack):
@@ -739,3 +741,61 @@ def test_a_question_about_how_billing_works_is_answered_as_before(stack):
     assert loop(stack, World(triage=BILLING, wants_ticket=False)).run(turn) == "answered"
     assert not [kind for kind, _ in published(turn) if kind == "action_card"]
     assert proposals(turn.conversation_id) == []
+
+
+# Every hand-off becomes a ticket proposal (TK-04, FR-46) ----------------------------------------------------
+
+UNSURE = triage_answers("TECHNICAL_OUTAGE", 0.3, 1, 0.05)   # below the 0.50 confidence: straight to a person
+
+
+def test_a_signed_in_customers_hand_off_offers_a_ticket_for_the_right_queue(stack):
+    turn = inbound("The dashboard does something odd since this morning.", tier="T1_VERIFIED",
+                   principal="sarah", session=signed_in("T1_VERIFIED"))
+    runner = loop(stack, World(triage=UNSURE))
+    assert runner.run(turn) == "handed_off"
+    *_, (card_kind, card), (last, handoff) = published(turn)
+    assert (card_kind, card["kind"], last) == ("action_card", "ticket_proposal", "handoff")
+    assert (card["category"], card["queue"], card["status"]) == ("technical", "queue_technical", "proposed")
+    assert card["actions"][0] == {"type": "confirm_ticket", "proposal": card["ticket_id"],
+                                  "label": "Raise ticket"}
+    assert handoff["text"].endswith(tickets.OFFER)
+    assert [row[1] for row in proposals(turn.conversation_id)] == ["proposed"]
+    assert runner.run(turn) == "already_answered" and len(proposals(turn.conversation_id)) == 1   # a retry
+
+
+def test_a_staff_only_hand_off_offers_a_ticket_to_that_team(stack):
+    turn = inbound("What is the exact treasury CLI command to stage a wire override?", tier="T1_VERIFIED",
+                   principal="sarah", session=signed_in("T1_VERIFIED"))
+    runner = loop(stack, World(triage=UNSURE))
+    runner.s.retriever.restricted_match = lambda *args, **kwargs: RestrictedMatch(
+        "kb-policy-internal-billing-high-value-wire-overrides", ("billing-team",), 0.75, 0.05)
+    assert runner.run(turn) == "handed_off"
+    card = next(data for kind, data in published(turn) if kind == "action_card")
+    assert (card["category"], card["queue"]) == ("billing", "queue_billing")
+
+
+def test_a_guests_hand_off_asks_them_to_sign_in_and_proposes_nothing(stack):
+    turn = inbound("The dashboard does something odd since this morning.")
+    assert loop(stack, World(triage=UNSURE)).run(turn) == "handed_off"
+    card = next(data for kind, data in published(turn) if kind == "action_card")
+    assert card["kind"] == "sign_in" and proposals(turn.conversation_id) == []
+
+
+def test_once_a_ticket_is_raised_later_messages_are_added_to_it_instead_of_handing_off_again(stack):
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+    runner = loop(stack, World(triage=UNSURE))
+    first = inbound("The dashboard does something odd.", conversation, tier="T1_VERIFIED", principal="sarah",
+                    session=session)
+    assert runner.run(first) == "handed_off"
+    card = next(data for kind, data in published(first) if kind == "action_card")
+    desk = Tickets(connector(DSN))
+    ticket = desk.confirm("t_us", "sarah", int(card["ticket_id"].removeprefix("TKT-")))  # the button: TK-05
+    second = inbound("It also logs me out every few minutes.", conversation, tier="T1_VERIFIED",
+                     principal="sarah", session=session)
+    assert runner.run(second) == "noted"
+    kinds = [kind for kind, _ in published(second)]
+    assert "handoff" not in kinds and kinds[-2:] == ["action_card", "final"]
+    final = next(data for kind, data in published(second) if kind == "final")
+    assert ticket.number in final["text"]
+    notes = [e["text"] for e in desk.get("t_us", "sarah", ticket.id).events if e["kind"] == "note"]
+    assert notes == ["It also logs me out every few minutes."]

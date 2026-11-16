@@ -56,6 +56,7 @@ from core.orchestrator.decisions import JevUnavailable, Masked, mask
 from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import llm_fallback, triage_hook
 from data.events import EventLog
+from hitl.tickets import Tickets
 from runtime import tickets
 from safety.governance.disclosure import disclose
 from safety.output.checks import finalise
@@ -474,6 +475,32 @@ class TurnLoop:
                                                     "category": proposal.category}
         return {"response": tickets.proposal_reply(proposal)}
 
+    def hand_off(self, turn, masked, reason, notice, triage, trace):
+        """FR-46: a hand-off offers a ticket (a guest is asked to sign in first); in a conversation with a
+        raised ticket, the message is added to it as a note instead of handing off again. Cards go before the
+        event that ends the turn, so a retried turn republishes nothing."""
+        key, desk = (turn.tenant_id, turn.conversation_id), Tickets(self.s.connect)
+        raised = desk.raised_in(turn.tenant_id, turn.conversation_id)
+        if raised is not None and raised.principal_id == turn.principal_id:
+            desk.add_note(turn.tenant_id, turn.principal_id, raised.id, "customer", masked)
+            self.publish(turn, "action_card", tickets.ticket_card(raised))
+            self.record(turn, "escalate", f"Added to ticket {raised.number}.", [], trace)
+            self.publish(turn, "final", disclose({"role": "assistant", "text": tickets.noted_reply(raised)}))
+            return "noted"
+        if Tier[turn.assurance_tier] >= Tier.T1_VERIFIED:
+            team = self.restricted[key][1] if key in self.restricted else None
+            category = tickets.handoff_category((triage or {}).get("intent"), team)
+            proposal = tickets.propose_handoff(self.s.connect, turn.tenant_id, turn.principal_id,
+                                               turn.conversation_id, turn.turn_id, category, reason, masked)
+            self.publish(turn, "action_card", tickets.handoff_card(proposal))
+            notice = f"{notice} {tickets.OFFER}"
+        else:
+            self.publish(turn, "action_card", tickets.SIGN_IN_CARD)
+            notice = f"{notice} {tickets.SIGN_IN_OFFER}"
+        self.record(turn, "escalate", reason, [], trace)
+        self.publish(turn, "handoff", {"text": notice})
+        return "handed_off"
+
     def procedure(self, state):
         ticket = (state.get("parameters") or {}).get("ticket")
         if ticket:
@@ -566,9 +593,7 @@ class TurnLoop:
             if key in self.restricted:  # ponytail: queue only in the trace until hand-offs reach queues (W11)
                 reason = f"This is handled by our {self.restricted[key][1]} team."
                 notice = f"{reason} {HANDOFF}"
-            self.record(turn, "escalate", reason, [], trace)
-            self.publish(turn, "handoff", {"text": notice})
-            return "handed_off"
+            return self.hand_off(turn, masked, reason, notice, triage, trace)
         except Exception:  # noqa: BLE001 - the customer gets an answer whatever broke
             log.exception("turn %s failed", turn.turn_id)
             try:

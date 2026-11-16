@@ -11,6 +11,10 @@ wrong charge, a dispute) becomes a ticket proposal instead of a recited procedur
 - only a signed-in customer (T1 and up) gets a proposal; a guest gets a card asking to sign in first.
 - the proposal is hitl.tickets.Tickets.propose(): nothing is raised until the customer confirms, and the
   reply never says money was refunded.
+
+Every hand-off offers a ticket too (FR-46): the category comes from the staff-only team or the triage intent,
+the queue from the category, the reason is the hand-off's own. In a conversation that already has a raised
+ticket, a message that would be handed off again is added to that ticket as a note and acknowledged.
 """
 
 import re
@@ -113,3 +117,42 @@ def proposal_card(proposal):
 
 SIGN_IN_CARD = {"kind": "sign_in", "title": "Sign in to raise a ticket",
                 "actions": [{"type": "sign_in", "label": "Sign in with your email"}]}
+
+
+# Hand-offs (TK-04, FR-46): every route to a person offers a ticket; once one is raised, later messages are
+# added to it as notes
+
+INTENT_CATEGORY = {"BILLING_INQUIRY": "billing", "TECHNICAL_OUTAGE": "technical", "PASSWORD_RESET": "account",
+                   "SUBSCRIPTION_UPDATE": "account"}
+TEAM_CATEGORY = {"billing": "billing", "security": "security"}  # runtime.TEAMS team names (B26)
+QUEUE = {"refund": "queue_billing", "billing": "queue_billing", "technical": "queue_technical",
+         "account": "queue_account", "security": "queue_account", "general": "queue_senior"}  # hitl.queues
+TITLES = {"refund": "Refund request", "billing": "Billing", "technical": "Technical problem",
+          "account": "Account", "security": "Security", "general": "Support request"}
+OFFER = "Raise a ticket below and the team will follow up on it."
+SIGN_IN_OFFER = "Sign in with your email code to raise a ticket the team will follow up on."
+
+
+def handoff_category(intent, team=None):
+    return TEAM_CATEGORY.get(team) or INTENT_CATEGORY.get(intent, "general")
+
+
+def propose_handoff(connect, tenant_id, principal_id, conversation_id, turn_id, category, reason, masked):
+    """A proposal for this hand-off turn (the same one again when the turn is retried)."""
+    subject = f"{TITLES[category]}: {' '.join(masked.split())[:80]}"
+    return Tickets(connect).propose(tenant_id, principal_id, conversation_id, f"handoff:{turn_id}",
+                                    category=category, subject=subject, queue=QUEUE[category], reason=reason,
+                                    description=masked, turn_id=turn_id)
+
+
+def handoff_card(proposal):
+    return {**proposal_card(proposal), "title": f"Raise ticket {proposal.number} so the team follows up?"}
+
+
+def ticket_card(ticket):
+    return {"kind": "ticket", "title": f"Ticket {ticket.number}", **ticket.card()}
+
+
+def noted_reply(ticket):
+    return (f"I've added this to your ticket {ticket.number}. The team working on it will see it; you can "
+            "follow the ticket under My tickets.")

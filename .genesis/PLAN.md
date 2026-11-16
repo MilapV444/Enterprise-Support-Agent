@@ -2186,15 +2186,15 @@
 
 ### TK-04 — Every hand-off becomes a ticket proposal: each escalate outcome (low triage confidence, RESTRICTED_ANSWER, NOTHING_TO_SAY, REDIRECT, LEAD_UNAVAILABLE, a message to a terminal case) publishes a proposal card with the reason and team queue; in a conversation with an open ticket, later customer messages are added to it as notes and acknowledged with its number instead of the repeated hand-off notice; feeding hitl.queues (register W11) stays out of scope
 
-- state/risk: active / high
+- state/risk: done / high
 - requirements: FR-46, FR-36, FR-38
 - scope: src/runtime/, src/hitl/, src/channels/api/, tests/runtime/, tests/e2e/, tests/channels/, tests/hitl/, tests/load/, tests/contracts/
-- gates: tests: python -m pytest tests/runtime tests/e2e tests/channels tests/hitl tests/contracts tests/load/test_chaos.py -q, independent-review: pending
+- gates: tests: python -m pytest tests/runtime tests/e2e tests/channels tests/hitl tests/contracts tests/load/test_chaos.py -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### TK-05 — Confirm action, tickets API and the Temporal path: InboundTurn gains an optional action (confirm_ticket with the proposal); POST /v1/conversations/{id}/tickets/{proposal}/confirm submits it with an idempotency key through the TemporalDispatcher, and the turn loop runs create_ticket and publishes the raised ticket card; GET /v1/tickets and GET /v1/tickets/{id} for the signed-in customer (T1 and up); event and envelope contract snapshots updated additively
 
-- state/risk: queued / high
+- state/risk: active / high
 - requirements: FR-47, FR-6, FR-7, FR-9, AC-16
 - scope: src/channels/, src/workflows/, src/runtime/, src/hitl/, tests/channels/, tests/workflows/, tests/runtime/, tests/contracts/, tests/web/, tests/deploy/vm/, tests/e2e/
 - gates: tests: python -m pytest tests/channels tests/workflows tests/runtime tests/contracts tests/web tests/e2e tests/deploy/vm -q, independent-review: pending
