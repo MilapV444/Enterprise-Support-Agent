@@ -158,6 +158,7 @@ digraph genesis {
   "file:tests/agents/merge/test_merge.py" [label="tests/agents/merge/test_merge.py",class="file"];
   "file:tests/agents/topology/test_topology.py" [label="tests/agents/topology/test_topology.py",class="file"];
   "file:tests/channels/test_api.py" [label="tests/channels/test_api.py",class="file"];
+  "file:tests/channels/test_tickets_api.py" [label="tests/channels/test_tickets_api.py",class="file"];
   "file:tests/channels/test_trace.py" [label="tests/channels/test_trace.py",class="file"];
   "file:tests/context/test_assembler.py" [label="tests/context/test_assembler.py",class="file"];
   "file:tests/contracts/test_case_state.py" [label="tests/contracts/test_case_state.py",class="file"];

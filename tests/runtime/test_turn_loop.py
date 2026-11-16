@@ -22,7 +22,7 @@ from qdrant_client import QdrantClient
 
 from channels import sessions
 from channels.api import turns
-from channels.api.envelope import InboundTurn
+from channels.api.envelope import InboundTurn, TurnAction
 from channels.identity import otp
 from channels.identity.server import build_app
 from channels.identity.service import Identity
@@ -46,9 +46,10 @@ from safety.screening.pipeline import Screener
 from safety.screening.scorers import pattern_injection
 from tests.knowledge.ingest.test_ingest import DIMENSIONS, embed
 from tools import audit as tool_audit
-from tools import nimbus
+from tools import desk, nimbus
 from tools.audit import AuditLog
 from tools.execution import Executor
+from tools.registry import Registry
 from workflows.dispatch import TemporalDispatcher
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -188,10 +189,11 @@ def queue():
     return f"test-{uuid.uuid4().hex}"
 
 
-def inbound(text, conversation=None, tier="T0_ANON", principal="anon:1", tenant="t_us", session=None):
+def inbound(text, conversation=None, tier="T0_ANON", principal="anon:1", tenant="t_us", session=None,
+            action=None):
     return InboundTurn(tenant_id=tenant, principal_id=principal, assurance_tier=tier, session_id=session,
                        conversation_id=conversation or f"c-{uuid.uuid4().hex[:8]}", turn_id=str(uuid.uuid4()),
-                       content=text, attachment_refs=[])
+                       content=text, attachment_refs=[], action=action)
 
 
 def signed_in(tier, principal="sarah", tenant="t_us"):
@@ -799,3 +801,92 @@ def test_once_a_ticket_is_raised_later_messages_are_added_to_it_instead_of_handi
     assert ticket.number in final["text"]
     notes = [e["text"] for e in desk.get("t_us", "sarah", ticket.id).events if e["kind"] == "note"]
     assert notes == ["It also logs me out every few minutes."]
+    assert trace_steps(second) is not None                                # its decision record was saved
+
+
+# Raising a proposal (TK-05, FR-47, AC-16) -------------------------------------------------------------------
+
+def with_desk(runner):
+    """The desk executor production composes beside the specialists' one (runtime.production.services)."""
+    identity = Identity(connector(DSN))
+    runner.s.desk = Executor(desk.register(Registry(), connector(DSN), identity).freeze(), desk.SYSTEMS,
+                             Screener(lambda text: (0.0, []), pattern_injection), identity=identity,
+                             audit=AuditLog(connector(DSN), lambda: None))
+    return runner
+
+
+def raise_turn(number, conversation, session, principal="sarah", tier="T1_VERIFIED"):
+    return inbound(f"Raise ticket {number}", conversation, tier=tier, principal=principal, session=session,
+                   action=TurnAction(type="confirm_ticket", proposal=number))
+
+
+def test_raise_ticket_raises_the_customers_proposal_once(stack):
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+    runner = with_desk(loop(stack, World(triage=BILLING, wants_ticket=True)))
+    report = inbound("I was charged twice on inv-sarah-3, please refund it.", conversation,
+                     tier="T1_VERIFIED", principal="sarah", session=session)
+    assert runner.run(report) == "answered"
+    number = next(data for kind, data in published(report) if kind == "action_card")["ticket_id"]
+    click = raise_turn(number, conversation, session)
+    assert runner.run(click) == "raised"
+    card = next(data for kind, data in published(click) if kind == "action_card")
+    assert (card["kind"], card["ticket_id"], card["status"]) == ("ticket", number, "open")
+    final = next(data for kind, data in published(click) if kind == "final")["text"]
+    assert number in final and "billing team" in final
+    assert trace_steps(click) == {"ticket": {"raised": number}}
+    assert runner.run(click) == "already_answered"                           # the same turn retried
+    assert runner.run(raise_turn(number, conversation, session)) == "raised"  # a second click
+    assert [t.number for t in Tickets(connector(DSN)).list_for("t_us", "sarah")].count(number) == 1
+
+
+def test_someone_elses_proposal_is_not_raised_and_a_guest_is_asked_to_sign_in(stack):
+    bob = Tickets(connector(DSN)).propose("t_us", "bob", "c-bob-raise", "k", category="billing",
+                                          subject="Wrong charge", queue="queue_billing",
+                                          reason="billing request")
+    runner = with_desk(loop(stack, World()))
+    theirs = raise_turn(bob.number, "c-sarah-raise", signed_in("T1_VERIFIED"))
+    assert runner.run(theirs) == "not_raised"
+    assert next(data for kind, data in published(theirs) if kind == "final")["text"] == tickets.NOT_RAISED
+    guest = raise_turn(bob.number, "c-guest-raise", signed_in("T0_ANON", principal="bob"), principal="bob",
+                       tier="T0_ANON")
+    assert runner.run(guest) == "not_raised"
+    assert next(data for kind, data in published(guest) if kind == "action_card")["kind"] == "sign_in"
+    assert Tickets(connector(DSN)).get("t_us", "bob", bob.id).status == "proposed"
+
+
+def test_ac16_report_raise_and_follow_up_through_temporal(stack):
+    """AC-16 on the Temporal path: a proposal card, the raised ticket's card, one ticket however often it is
+    raised, and a follow-up that is added to it."""
+    world = World(triage=BILLING, wants_ticket=True)
+    dispatcher = TemporalDispatcher("127.0.0.1:7233", with_desk(loop(stack, world)), task_queue=queue())
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+
+    def until(turn, kinds=("final", "handoff", "error")):
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            done = published(turn)
+            if any(kind in kinds for kind, _ in done):
+                return done
+            time.sleep(0.2)
+        raise AssertionError(f"turn {turn.turn_id} did not end")
+
+    try:
+        report = inbound("Duplicate charge on inv-sarah-2, I want my $500 back.", conversation,
+                         tier="T1_VERIFIED", principal="sarah", session=session)
+        dispatcher(report)
+        number = next(data for kind, data in until(report) if kind == "action_card")["ticket_id"]
+        for _ in range(2):                                                   # two clicks
+            click = raise_turn(number, conversation, session)
+            dispatcher(click)
+            assert next(data for kind, data in until(click) if kind == "action_card")["status"] == "open"
+        world.triage = UNSURE                                                # the follow-up goes to a person
+        follow_up = inbound("Any news on this?", conversation, tier="T1_VERIFIED", principal="sarah",
+                            session=session)
+        dispatcher(follow_up)
+        assert number in next(data for kind, data in until(follow_up) if kind == "final")["text"]
+    finally:
+        dispatcher.close()
+    desk_view = Tickets(connector(DSN))
+    (ticket,) = [t for t in desk_view.list_for("t_us", "sarah") if t.number == number]
+    events_ = desk_view.get("t_us", "sarah", ticket.id).events
+    assert [e["kind"] for e in events_] == ["proposed", "confirmed", "note"]

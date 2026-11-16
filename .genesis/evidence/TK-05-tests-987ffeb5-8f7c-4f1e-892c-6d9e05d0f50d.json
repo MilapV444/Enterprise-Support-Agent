@@ -1,0 +1,30 @@
+{
+  "task": "TK-05",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "987ffeb5-8f7c-4f1e-892c-6d9e05d0f50d",
+  "command": "python -m pytest tests/channels tests/workflows tests/runtime tests/contracts tests/web tests/e2e tests/deploy/vm -q",
+  "started_at": "2026-11-16T18:32:27.048Z",
+  "observed_at": "2026-11-16T18:35:57.876Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 21%]\r\n........................................................................ [ 43%]\r\n........................................................................ [ 65%]\r\n........................................................................ [ 87%]\r\n.........................................                                [100%]\r\n329 passed in 207.46s (0:03:27)\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "721d85da9cb80701f0d0761a479d359e687d3a3f",
+    "dirty": true
+  },
+  "source_hash": "fec7c9b236d59d8137df6e40a3f8709708d1b7946d3035e7a56d061a3e5519da",
+  "before_hash": "fec7c9b236d59d8137df6e40a3f8709708d1b7946d3035e7a56d061a3e5519da",
+  "config_hash": "d4a7ee91f1fd7b55b69b952a4f257f077c5b8bf943dea199ac2554adaf5701f7",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "f3c319d4f80b4b9a1e7fca3c2eaba10796218c7204b4a198588b15a6f5019007"
+}

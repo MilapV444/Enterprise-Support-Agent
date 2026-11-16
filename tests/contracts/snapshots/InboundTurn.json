@@ -1,6 +1,40 @@
 {
+ "$defs": {
+  "TurnAction": {
+   "description": "A customer action from a card instead of a typed message (FR-47): raise a proposed ticket.",
+   "properties": {
+    "proposal": {
+     "pattern": "^TKT-[0-9]{5,}$",
+     "title": "Proposal",
+     "type": "string"
+    },
+    "type": {
+     "const": "confirm_ticket",
+     "title": "Type",
+     "type": "string"
+    }
+   },
+   "required": [
+    "type",
+    "proposal"
+   ],
+   "title": "TurnAction",
+   "type": "object"
+  }
+ },
  "description": "What the orchestrator receives for one accepted turn.",
  "properties": {
+  "action": {
+   "anyOf": [
+    {
+     "$ref": "#/$defs/TurnAction"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null
+  },
   "assurance_tier": {
    "title": "Assurance Tier",
    "type": "string"

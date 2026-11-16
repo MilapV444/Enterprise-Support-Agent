@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-16T18:19:24.921Z"
+    "updated_at": "2026-11-16T18:36:11.577Z"
   },
   "policy": {
     "ponytail": "full",
@@ -23,11 +23,11 @@
     }
   },
   "lifecycle": {
-    "phase": "build",
-    "status": "active",
-    "active_task": "TK-05",
+    "phase": "verify",
+    "status": "ready",
+    "active_task": null,
     "blocker": null,
-    "next_action": "Run the task pre-flight."
+    "next_action": "Review completed work and choose the next bounded outcome."
   },
   "commands": {},
   "workflow": {
@@ -1604,6 +1604,15 @@
       "source": "TK-04",
       "tags": [],
       "recorded_at": "2026-11-16T18:16:27.864Z",
+      "paths": []
+    },
+    {
+      "id": "KNOWLEDGE-c71cc896",
+      "title": "TK-05 Raise ticket action, tickets API, Temporal path",
+      "text": "channels.api.envelope.TurnAction {type: confirm_ticket, proposal: TKT-n} and InboundTurn.action (optional; snapshot InboundTurn.json changed additively). channels.api.turns.submit_turn(..., action=None). API (create_app): POST /v1/conversations/{id}/tickets/{TKT-n}/confirm (signed-in only: T0 403; Idempotency-Key; bad number 422) submits a turn with content 'Raise ticket TKT-n' and the action through the same dispatch (TemporalDispatcher signal-with-start in production); GET /v1/tickets -> {tickets: [card]} (raised only), GET /v1/tickets/{TKT-n} -> card + description, reason, conversation_id, opened_at, updated_at, events; another customer's or a malformed number is 404; guests 403. TurnLoop.run: a turn with an action skips screening and the statechart and calls raise_ticket: Services.desk (an Executor over tools.desk only, composed in runtime.production.services beside the specialists' executor, so specialists never see the tool) runs support_desk.raise_ticket on the customer's live session (tool_call_id <turn_id>:raise); success -> action_card {kind ticket, title 'Ticket TKT-n raised'} then final 'Your ticket TKT-n is raised with our <team> team ...' (team from the queue), returns 'raised'; REJECTED -> NOT_RAISED text; STEP_UP_REQUIRED / AUTHENTICATION_EXPIRED -> sign-in card + SIGN_IN_AGAIN; no desk -> NOT_RAISED. A second click raises nothing new (confirm is idempotent). Decision reasons must not contain digits (safety.governance.records LEAK): 'We raised your ticket at your request.' and TK-04's note reason became 'We added your message to your ticket.' (the TK-04 version 'Added to ticket TKT-n.' was silently refused by the leak guard, so those decision records were lost: fixed here); the ticket number goes in trace.steps.ticket. AC-16 is tested end to end through the real TemporalDispatcher (report -> proposal card -> two clicks -> one open ticket -> follow-up becomes a note). Docker Desktop's network sometimes times out on Docker Hub (TLS handshake); 'docker desktop restart' fixed it.",
+      "source": "TK-05",
+      "tags": [],
+      "recorded_at": "2026-11-16T18:32:26.238Z",
       "paths": []
     }
   ],
@@ -42765,7 +42774,7 @@
     {
       "id": "TK-05",
       "outcome": "Confirm action, tickets API and the Temporal path: InboundTurn gains an optional action (confirm_ticket with the proposal); POST /v1/conversations/{id}/tickets/{proposal}/confirm submits it with an idempotency key through the TemporalDispatcher, and the turn loop runs create_ticket and publishes the raised ticket card; GET /v1/tickets and GET /v1/tickets/{id} for the signed-in customer (T1 and up); event and envelope contract snapshots updated additively",
-      "state": "active",
+      "state": "done",
       "risk": "high",
       "owner": null,
       "scope": [
@@ -42810,16 +42819,28 @@
           "kind": "command",
           "command": "python -m pytest tests/channels tests/workflows tests/runtime tests/contracts tests/web tests/e2e tests/deploy/vm -q",
           "mandatory": true,
-          "status": "pending",
-          "evidence": null
+          "status": "pass",
+          "evidence": {
+            "path": ".genesis/evidence/TK-05-tests-987ffeb5-8f7c-4f1e-892c-6d9e05d0f50d.json",
+            "hash": "f3c319d4f80b4b9a1e7fca3c2eaba10796218c7204b4a198588b15a6f5019007",
+            "source_hash": "fec7c9b236d59d8137df6e40a3f8709708d1b7946d3035e7a56d061a3e5519da",
+            "config_hash": "d4a7ee91f1fd7b55b69b952a4f257f077c5b8bf943dea199ac2554adaf5701f7",
+            "observed_at": "2026-11-16T18:35:57.876Z"
+          }
         },
         {
           "id": "independent-review",
           "kind": "review",
           "command": "",
           "mandatory": true,
-          "status": "pending",
-          "evidence": null
+          "status": "pass",
+          "evidence": {
+            "path": ".genesis/evidence/TK-05-independent-review-18ce8d88-4793-4dc5-b3c3-46fb77a902b2.json",
+            "hash": "84204f876342d599b179c6eecdf5dabe99e9d20a430aa0a95cff5ed6c621190b",
+            "source_hash": "fec7c9b236d59d8137df6e40a3f8709708d1b7946d3035e7a56d061a3e5519da",
+            "config_hash": "d4a7ee91f1fd7b55b69b952a4f257f077c5b8bf943dea199ac2554adaf5701f7",
+            "observed_at": "2026-11-16T18:36:09.406Z"
+          }
         }
       ],
       "next_action": "Run the task pre-flight.",
@@ -42828,7 +42849,7 @@
       "failures": [],
       "limitations": [],
       "created_at": "2026-11-16T17:22:33.735Z",
-      "updated_at": "2026-11-16T17:22:33.737Z",
+      "updated_at": "2026-11-16T18:36:10.274Z",
       "base_manifest": {
         ".env.example": "b29825a0670254a3e95845781c7370c40cde46c10e347adf177ae3871ac2cbbf",
         ".github/workflows/ci.yml": "356172f3ce1637a5d2b5a579592ac77af3835abf63f5ce7deacb492258df1ea4",
@@ -45852,6 +45873,15 @@
       "task": "TK-04",
       "human": "Intelligent_developer_123",
       "reason": "Pre-authorized by the user for the TK sweep (chat 2026-11-16). Self-review by Claude: every hand-off branch goes through hand_off, notes only on the owner's raised ticket, guests never get a proposal, retry-safe ordering; gate passed",
+      "revision": null
+    },
+    {
+      "id": "18ce8d88-4793-4dc5-b3c3-46fb77a902b2",
+      "at": "2026-11-16T18:36:09.406Z",
+      "action": "approve",
+      "task": "TK-05",
+      "human": "Intelligent_developer_123",
+      "reason": "Pre-authorized by the user for the TK sweep (chat 2026-11-16). Self-review by Claude: action turns go through the same idempotent submit and Temporal path, the tool runs only through the desk executor on the live session, API is principal-scoped; AC-16 tested through Temporal; gate passed",
       "revision": null
     }
   ],
@@ -48999,6 +49029,30 @@
       "cost": null,
       "stop_reason": null,
       "ended_at": "2026-11-16T18:19:11.944Z"
+    },
+    {
+      "id": "987ffeb5-8f7c-4f1e-892c-6d9e05d0f50d",
+      "task": "TK-05",
+      "kind": "gate",
+      "command": "python -m pytest tests/channels tests/workflows tests/runtime tests/contracts tests/web tests/e2e tests/deploy/vm -q",
+      "timeout": 585000,
+      "authorization": null,
+      "pid": 1468,
+      "child_pid": 12188,
+      "started_at": "2026-11-16T18:32:27.048Z",
+      "status": "passed",
+      "before_hash": "fec7c9b236d59d8137df6e40a3f8709708d1b7946d3035e7a56d061a3e5519da",
+      "config_hash": "d4a7ee91f1fd7b55b69b952a4f257f077c5b8bf943dea199ac2554adaf5701f7",
+      "environment": {
+        "node": "v24.21.0",
+        "platform": "win32",
+        "arch": "x64",
+        "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+        "variables": {}
+      },
+      "cost": null,
+      "stop_reason": null,
+      "ended_at": "2026-11-16T18:35:57.876Z"
     }
   ],
   "authorizations": [],
@@ -49025,14 +49079,14 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-16T18:19:24.601Z",
+    "at": "2026-11-16T18:36:11.260Z",
     "revision": {
-      "commit": "8e2491afa4ce86968d766c34caf303ac374be092",
+      "commit": "721d85da9cb80701f0d0761a479d359e687d3a3f",
       "dirty": true,
-      "source_hash": "bdbb183ccd2c043d2684fddcb3f9f0b6b030997d7d1ae37ca835076216ec83a4"
+      "source_hash": "fec7c9b236d59d8137df6e40a3f8709708d1b7946d3035e7a56d061a3e5519da"
     },
-    "active_task": "TK-05",
-    "next_action": "Run the task pre-flight."
+    "active_task": null,
+    "next_action": "Review completed work and choose the next bounded outcome."
   },
   "legacy": null
 }

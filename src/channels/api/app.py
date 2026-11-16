@@ -4,6 +4,8 @@
     GET  /v1/conversations/{id}/events   text/event-stream; Last-Event-ID replays what the client missed
     GET  /v1/conversations/{id}/decisions[?turn_id=]   the customer's "why" view (FR-34)
     GET  /v1/conversations/{id}/turns/{turn_id}/trace  "how this was answered", filtered by assurance tier
+    POST /v1/conversations/{id}/tickets/{TKT-n}/confirm   the Raise ticket button: a turn carrying the action
+    GET  /v1/tickets, GET /v1/tickets/{TKT-n}           the signed-in customer's own tickets (FR-47)
 
 Sign-in, the orchestrator hand-off and transcript loading are passed to create_app() so later tasks plug in
 without editing this module. Until sign-in exists (M1-02), dev_header_auth trusts X-Tenant-ID / X-User-ID
@@ -22,13 +24,15 @@ from fastapi.responses import StreamingResponse
 from psycopg_pool import ConnectionPool
 
 from channels.api import trace
-from channels.api.envelope import EventType, Principal, TurnRequest
+from channels.api.envelope import EventType, Principal, TurnAction, TurnRequest
 from channels.api.turns import events_after, last_event_id, submit_turn
 from data.events import EventLog, rebuild_from_transcript
 from data.keys.envelope import TENANT_ID
+from hitl.tickets import Tickets, number_id
 from safety.governance.records import DecisionLog
 
 SAFE_ID = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
+TICKET = re.compile(r"^TKT-[0-9]{5,}$")
 WORK = ThreadPoolExecutor(max_workers=256)  # polls and posts; streams themselves stay on the event loop (B12)
 
 
@@ -93,6 +97,49 @@ def create_app(dsn=None, authenticate=dev_header_auth, dispatch=no_orchestrator,
 
         turn_id, created = await in_pool(go)
         return {"turn_id": turn_id, "status": "QUEUED" if created else "ALREADY_QUEUED"}
+
+    def signed_in(request):
+        principal = authenticate(request)
+        if principal.assurance_tier == "T0_ANON":
+            raise HTTPException(403, "sign in to raise and see tickets")
+        return principal
+
+    @app.post("/v1/conversations/{conversation_id}/tickets/{proposal}/confirm", status_code=202)
+    async def confirm(conversation_id: str, proposal: str, request: Request,
+                      idempotency_key: str | None = Header(default=None)):
+        principal = signed_in(request)
+        if not idempotency_key or not SAFE_ID.match(idempotency_key):
+            raise HTTPException(400, "an Idempotency-Key header (1-128 safe characters) is required")
+        conversation_id = checked(conversation_id)
+        if not TICKET.match(proposal):
+            raise HTTPException(422, "invalid ticket number")
+        body, action = TurnRequest(content=f"Raise ticket {proposal}"), TurnAction(type="confirm_ticket",
+                                                                                  proposal=proposal)
+
+        def go():
+            with connect() as conn:
+                return submit_turn(conn, principal, conversation_id, idempotency_key, body, dispatch, action)
+
+        turn_id, created = await in_pool(go)
+        return {"turn_id": turn_id, "status": "QUEUED" if created else "ALREADY_QUEUED"}
+
+    @app.get("/v1/tickets")
+    async def my_tickets(request: Request):
+        principal = signed_in(request)
+        rows = await in_pool(Tickets(connect).list_for, principal.tenant_id, principal.principal_id)
+        return {"tickets": [ticket.card() for ticket in rows]}
+
+    @app.get("/v1/tickets/{number}")
+    async def my_ticket(number: str, request: Request):
+        principal = signed_in(request)
+        ticket_id = number_id(number) if TICKET.match(number) else None
+        ticket = ticket_id and await in_pool(Tickets(connect).get, principal.tenant_id,
+                                             principal.principal_id, ticket_id)
+        if not ticket:
+            raise HTTPException(404, "no such ticket")
+        return {**ticket.card(), "description": ticket.description, "reason": ticket.reason,
+                "conversation_id": ticket.conversation_id, "updated_at": ticket.updated_at.isoformat(),
+                "opened_at": ticket.opened_at and ticket.opened_at.isoformat(), "events": list(ticket.events)}
 
     @app.get("/v1/conversations/{conversation_id}/decisions")
     async def decisions(conversation_id: str, request: Request, turn_id: str | None = None):

@@ -156,3 +156,22 @@ def ticket_card(ticket):
 def noted_reply(ticket):
     return (f"I've added this to your ticket {ticket.number}. The team working on it will see it; you can "
             "follow the ticket under My tickets.")
+
+
+# Raising (TK-05, FR-47): the customer's Raise ticket runs support_desk.raise_ticket
+
+TEAMS = {"queue_billing": "billing", "queue_technical": "technical", "queue_account": "account",
+         "queue_senior": "support"}
+NOT_RAISED = ("I could not raise that ticket: the offer has expired or is not yours. Tell me what you need "
+              "and I will set up a new one.")
+SIGN_IN_AGAIN = "Please sign in with your email code again to raise the ticket; your offer is kept for a day."
+
+
+def raised_card(card):
+    return {"kind": "ticket", "title": f"Ticket {card['ticket_id']} raised", **card}
+
+
+def raised_reply(card):
+    team = TEAMS.get(card["queue"], "support")
+    return (f"Your ticket {card['ticket_id']} is raised with our {team} team. They will follow up on it, and "
+            "you can see it under My tickets.")

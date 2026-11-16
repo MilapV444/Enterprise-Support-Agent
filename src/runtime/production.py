@@ -45,9 +45,10 @@ from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
 from safety.screening.pipeline import Screener, jev_confirm
 from safety.screening.scorers import llama_guard, pattern_injection
-from tools import nimbus
+from tools import desk, nimbus
 from tools.audit import AuditLog
 from tools.execution import Executor
+from tools.registry import Registry
 from workflows.dispatch import TemporalDispatcher
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -138,7 +139,8 @@ def services(environ, store, lock=None):
         retriever=Retriever(qdrant, ollama_embed(ollama, lock["embedding"]["model"]), complete),
         screener=screener, tokens=Tokenizer(load_secret("PII_TOKEN_KEY")), complete=complete,
         connect=connect, store=store, decisions=DecisionLog(connect), executor=executor,
-        tools=tools)
+        tools=tools, desk=Executor(desk.register(Registry(), connect, identity).freeze(), desk.SYSTEMS,
+                                   screener, identity=identity, audit=AuditLog(connect, None)))
 
 
 def log_code(tenant_id, user_id, code):

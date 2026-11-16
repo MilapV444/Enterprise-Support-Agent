@@ -56,11 +56,14 @@ from core.orchestrator.decisions import JevUnavailable, Masked, mask
 from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import llm_fallback, triage_hook
 from data.events import EventLog
-from hitl.tickets import Tickets
+from hitl.tickets import Tickets, number_id
 from runtime import tickets
 from safety.governance.disclosure import disclose
 from safety.output.checks import finalise
 from safety.screening.pipeline import SPOTLIGHT_RULE
+from tools import desk
+from tools.execution import ToolFailure
+from tools.execution.calls import ToolCall
 from tools.registry import Registry
 
 log = logging.getLogger(__name__)
@@ -188,6 +191,7 @@ class Services:
     decisions: object = None       # safety.governance.records.DecisionLog
     executor: object = None        # tools.execution.Executor over `tools`, audited; None: no tools
     tools: object = None           # the frozen tool registry (tools.nimbus.catalog)
+    desk: object = None            # tools.execution.Executor over tools.desk only: raises confirmed tickets
 
 
 class TurnLoop:
@@ -475,6 +479,37 @@ class TurnLoop:
                                                     "category": proposal.category}
         return {"response": tickets.proposal_reply(proposal)}
 
+    def raise_ticket(self, turn):
+        """FR-47: the customer confirmed a proposal. support_desk.raise_ticket runs through the audited desk
+        executor on the customer's live session (the token decides whose ticket it is); a repeat returns the
+        same ticket, so a retried turn raises nothing more."""
+        proposal = turn.action.proposal
+        call = ToolCall(tool_call_id=f"{turn.turn_id}:raise", tool_id=desk.RAISE,
+                        arguments={"proposal": proposal}, tenant_id=turn.tenant_id,
+                        principal_id=turn.principal_id, case_id=turn.conversation_id,
+                        checkpoint_id=turn.turn_id, session_id=turn.session_id)
+        try:
+            if self.s.desk is None:
+                raise ToolFailure("SYSTEM_UNAVAILABLE", "no desk executor is configured")
+            self.s.desk.run(call)
+        except ToolFailure as failure:
+            if failure.code in ("STEP_UP_REQUIRED", "AUTHENTICATION_EXPIRED"):
+                self.publish(turn, "action_card", tickets.SIGN_IN_CARD)
+                text = tickets.SIGN_IN_AGAIN
+            else:
+                text = tickets.NOT_RAISED
+            self.record(turn, "escalate", "The ticket could not be raised.", [],
+                        {"steps": {"ticket": {"proposal": proposal, "failure": failure.code}}})
+            self.publish(turn, "final", disclose({"role": "assistant", "text": text}))
+            return "not_raised"
+        ticket = Tickets(self.s.connect).get(turn.tenant_id, turn.principal_id, number_id(proposal))
+        card = ticket.card()
+        self.publish(turn, "action_card", tickets.raised_card(card))
+        self.record(turn, "answer", "We raised your ticket at your request.", [],  # no digits: the why view
+                    {"steps": {"ticket": {"raised": card["ticket_id"]}}})
+        self.publish(turn, "final", disclose({"role": "assistant", "text": tickets.raised_reply(card)}))
+        return "raised"
+
     def hand_off(self, turn, masked, reason, notice, triage, trace):
         """FR-46: a hand-off offers a ticket (a guest is asked to sign in first); in a conversation with a
         raised ticket, the message is added to it as a note instead of handing off again. Cards go before the
@@ -484,7 +519,8 @@ class TurnLoop:
         if raised is not None and raised.principal_id == turn.principal_id:
             desk.add_note(turn.tenant_id, turn.principal_id, raised.id, "customer", masked)
             self.publish(turn, "action_card", tickets.ticket_card(raised))
-            self.record(turn, "escalate", f"Added to ticket {raised.number}.", [], trace)
+            self.record(turn, "escalate", "We added your message to your ticket.", [],
+                        {**trace, "ticket": raised.number})
             self.publish(turn, "final", disclose({"role": "assistant", "text": tickets.noted_reply(raised)}))
             return "noted"
         if Tier[turn.assurance_tier] >= Tier.T1_VERIFIED:
@@ -535,6 +571,8 @@ class TurnLoop:
                 return "already_answered"
             if not any(kind == "status" and data.get("state") == "working" for kind, data in done):
                 self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
+            if turn.action is not None:  # the Raise ticket button, not a message: no screening, no statechart
+                return self.raise_ticket(turn)
             verdict = self.s.screener.screen("user_message", turn.content)
             steps = {"screening": verdict.band}
             if verdict.band == "block":

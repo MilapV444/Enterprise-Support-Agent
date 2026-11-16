@@ -39,7 +39,7 @@ def apply_schema(database):
                        "COMMIT;\n")
 
 
-def submit_turn(conn, principal, conversation_id, idempotency_key, request, dispatch):
+def submit_turn(conn, principal, conversation_id, idempotency_key, request, dispatch, action=None):
     """Return (turn_id, created). A new turn gets a 'status' event and goes to dispatch, all or nothing."""
     with conn.transaction():
         _context(conn, principal.tenant_id)
@@ -59,7 +59,7 @@ def submit_turn(conn, principal, conversation_id, idempotency_key, request, disp
             tenant_id=principal.tenant_id, principal_id=principal.principal_id,
             assurance_tier=principal.assurance_tier, session_id=principal.session_id,
             conversation_id=conversation_id, turn_id=turn_id,
-            content=request.content, attachment_refs=request.attachment_refs))
+            content=request.content, attachment_refs=request.attachment_refs, action=action))
     return turn_id, True
 
 

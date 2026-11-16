@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "8e2491afa4ce86968d766c34caf303ac374be092",
-  "sourceHash": "93c6cb67e119f50f7bdbb2400cdbc770d638fec0d8323e0d81bff53d417277d0",
+  "revision": "721d85da9cb80701f0d0761a479d359e687d3a3f",
+  "sourceHash": "2eba9fdaec94380a7e3d8580c8455deb748b4bf276e98c0276db232a66399dd4",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -447,7 +447,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "f21573dc0b2479e86f409b2c7fd91525aa35f76725872fe481b741a28280c850"
+      "contentHash": "8d954afb3b55d90e5774a025c3f8e8938597ebf02b9c7e1c5db857d4c6cde57a"
     },
     {
       "id": "file:src/channels/api/envelope.py",
@@ -457,7 +457,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "103777946bd3aeff55aa30ca0ff17fa8b5eb8533f1f59cf244faca0a13243014"
+      "contentHash": "ec83131fa2c307d1e980cef2afefffd6099408b0cac81edb58b58f2ea449b23d"
     },
     {
       "id": "file:src/channels/api/trace.py",
@@ -477,7 +477,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "edd21a6c3d896bb66b207bae5f80ebd4a9ab99ca941b5420d3020ed7cda7fb63"
+      "contentHash": "bc7b3e10691c33d68fe973361147f6e8484c3aca4c784aa6231c53cd21d46d94"
     },
     {
       "id": "file:src/channels/identity/__init__.py",
@@ -1167,7 +1167,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "d8ed6bbca20e4469700827339b2ad8b61d997801fd4bac76cd8e75f23ddcbb10"
+      "contentHash": "287d11678e17164b1e8296792ab873f698db95937a7a4dd2a76fc02967cbbd3a"
     },
     {
       "id": "file:src/runtime/__main__.py",
@@ -1187,7 +1187,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "95f8ad87d4979b30a4d662c05fd91bbab3e827965e6c72d14844e0177b82a0d6"
+      "contentHash": "3754696d63471340f5426edff1d7f630014752d45077dbcb4dc83ba171e18083"
     },
     {
       "id": "file:src/runtime/tickets.py",
@@ -1197,7 +1197,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "9d5cfedd16c35ee1069f068844d52f44f029847881ccd9ef91b67f75d3b6737f"
+      "contentHash": "f5988f7f9bb81cd19a4b4b3656c2a65f2793f8fbc3e5dff3b40e5f5b463d19d1"
     },
     {
       "id": "file:src/safety/authz/__init__.py",
@@ -1578,6 +1578,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "f3956af3d4ad1116eeab6c2ec2d90aedf958519282815c0764a4e192b25f5b13"
+    },
+    {
+      "id": "file:tests/channels/test_tickets_api.py",
+      "type": "file",
+      "label": "tests/channels/test_tickets_api.py",
+      "path": "tests/channels/test_tickets_api.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "16da080eed676f3d7fea28964c2de56cec72d85f3e5fc6cf605d56fa887969cd"
     },
     {
       "id": "file:tests/channels/test_trace.py",
@@ -2147,7 +2157,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "182cf12750df16eb3dbe61d459ef0861e636a0ef8e71ef151c1f34a4041ca1ea"
+      "contentHash": "fe49b653af947a22eaa883d9a0aa46d146cb43f10dbe9a449862a68fb69ba213"
     },
     {
       "id": "file:tests/safety/authz/test_cedar.py",
