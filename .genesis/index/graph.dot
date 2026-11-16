@@ -137,6 +137,7 @@ digraph genesis {
   "file:src/schemas/diagnostic.py" [label="src/schemas/diagnostic.py",class="file"];
   "file:src/schemas/thread_state.py" [label="src/schemas/thread_state.py",class="file"];
   "file:src/tools/audit.py" [label="src/tools/audit.py",class="file"];
+  "file:src/tools/desk.py" [label="src/tools/desk.py",class="file"];
   "file:src/tools/execution/__init__.py" [label="src/tools/execution/__init__.py",class="file"];
   "file:src/tools/execution/calls.py" [label="src/tools/execution/calls.py",class="file"];
   "file:src/tools/nimbus.py" [label="src/tools/nimbus.py",class="file"];
@@ -223,6 +224,7 @@ digraph genesis {
   "file:tests/storage/test_objects.py" [label="tests/storage/test_objects.py",class="file"];
   "file:tests/test_dependencies.py" [label="tests/test_dependencies.py",class="file"];
   "file:tests/test_skeleton.py" [label="tests/test_skeleton.py",class="file"];
+  "file:tests/tools/desk/test_desk.py" [label="tests/tools/desk/test_desk.py",class="file"];
   "file:tests/tools/execution/test_execution.py" [label="tests/tools/execution/test_execution.py",class="file"];
   "file:tests/tools/nimbus/test_nimbus.py" [label="tests/tools/nimbus/test_nimbus.py",class="file"];
   "file:tests/tools/registry/test_registry.py" [label="tests/tools/registry/test_registry.py",class="file"];

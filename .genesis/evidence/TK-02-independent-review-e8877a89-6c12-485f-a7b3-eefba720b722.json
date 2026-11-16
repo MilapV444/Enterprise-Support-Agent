@@ -1,0 +1,13 @@
+{
+  "task": "TK-02",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "e8877a89-6c12-485f-a7b3-eefba720b722",
+  "human": "Intelligent_developer_123",
+  "reason": "Pre-authorized by the user for the TK sweep (chat 2026-11-16). Self-review by Claude: OBO decides the owner, one non-personal id argument, REJECTED/STEP_UP paths tested, audit sealing default unchanged; gate passed (493)",
+  "observed_at": "2026-11-16T18:01:43.809Z",
+  "source_hash": "79bd3e71f529305f4782aa61126f86f969dcd2ebae7e65b1ba86e7781d49c5d2",
+  "config_hash": "a90c9ca48eeead67cc06954123effc1f195012dc0fd3f14603a26b5a4342483c",
+  "reviewed_proofs": "5020c0eea3dd0966d93d12d01397a225ef68bcb87a32ec3bb140ca990621167b",
+  "hash": "af847a11bb9a70f7f41df4d32d2d34bab71b012d2a7843af3667a82f3f8971d5"
+}

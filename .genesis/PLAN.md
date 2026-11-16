@@ -2170,15 +2170,15 @@
 
 ### TK-02 — create_ticket write tool: registry entry (low-risk write, tier T1 and up, callable only by the procedure step, never by specialists), run through tools.execution.Executor (audit record, idempotency key = tool call id), arguments taken only from the proposal row, confirms the proposal through hitl.tickets; a repeated call returns the same ticket
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-45, FR-20, FR-21, FR-22, FR-24
 - scope: src/tools/, src/hitl/, tests/tools/, tests/hitl/, tests/contracts/
-- gates: tests: python -m pytest tests/tools tests/hitl tests/contracts -q, independent-review: pending
+- gates: tests: python -m pytest tests/tools tests/hitl tests/contracts -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### TK-03 — Refund and billing requests become ticket proposals: the collect hook finds the invoice number by pattern and checks it is the signed-in customer's with the read tool, parses amount and currency in code, takes the reason; missing details give one clarifying question naming exactly what is missing; complete details make the procedure propose a refund ticket (the amount is not the approval-gate parameter), ask to confirm and publish an action_card of kind ticket_proposal; a guest gets a sign-in card instead; Jev picks the ticket category and guards wants-a-ticket, numbers never in Jev questions
 
-- state/risk: queued / high
+- state/risk: active / high
 - requirements: FR-45, FR-5, FR-21, FR-35
 - scope: src/runtime/, src/core/orchestrator/, src/hitl/, src/channels/api/, tests/runtime/, tests/orchestrator/, tests/decisions/, tests/e2e/, tests/invariants/, tests/contracts/, tests/load/
 - gates: tests: python -m pytest tests/runtime tests/orchestrator tests/decisions tests/e2e tests/invariants tests/contracts tests/load/test_chaos.py -q, independent-review: pending

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "b4eb06e639f55abceb012bb22ce7ac279623ff8d",
-  "sourceHash": "1ca23cea29986c01624fc2b377af9d05c002bb7ec6084afc6a02384f64a8714a",
+  "revision": "3600db58c40b813cc8c9d3ffca08d91401025492",
+  "sourceHash": "f9157bf6658d3dc59474e84f828d0eb15b48326946110b558d82d0a10daa9863",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -1370,6 +1370,16 @@
       "contentHash": "4f399f693912a2ba556f9f1ee32bbfee75c7b737beaadde76eae1b75e1304b72"
     },
     {
+      "id": "file:src/tools/desk.py",
+      "type": "file",
+      "label": "src/tools/desk.py",
+      "path": "src/tools/desk.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "801484ade400f645d065278db2f48431ed6831457a3d6ad28346742591b9886a"
+    },
+    {
       "id": "file:src/tools/execution/__init__.py",
       "type": "file",
       "label": "src/tools/execution/__init__.py",
@@ -1377,7 +1387,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "1bf846dce66e03fc1ae3be753ed4dbaacc34798c5cd7e9b5d487d732aed1bee2"
+      "contentHash": "e82a68675b9f6cfae5170bfaa49daae3c360c2b2ca78b852287412123eb14fd8"
     },
     {
       "id": "file:src/tools/execution/calls.py",
@@ -1457,7 +1467,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "44b0c0de2eaec5a7e9d75e40a5721733fe312bb99a17f94a9552ba5f1a1f0ecd"
+      "contentHash": "0c619179f84a022df2dbb75da57f3c41ef1da9db3a6f15c9b9063da0c2b1142d"
     },
     {
       "id": "file:src/tools/validation/__init__.py",
@@ -2228,6 +2238,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "27b35deb3df7696393f99c665810b1c1443f3ca015931ddc5a2c4c4e959ebcba"
+    },
+    {
+      "id": "file:tests/tools/desk/test_desk.py",
+      "type": "file",
+      "label": "tests/tools/desk/test_desk.py",
+      "path": "tests/tools/desk/test_desk.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "ebca0c57c4539d369abd1fd4047bd34e69cba11f9e901420ed6895c87279beee"
     },
     {
       "id": "file:tests/tools/execution/test_execution.py",
