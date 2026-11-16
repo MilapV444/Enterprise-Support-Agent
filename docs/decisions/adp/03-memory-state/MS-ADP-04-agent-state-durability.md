@@ -1,5 +1,7 @@
 # MS-ADP-04: Agent State & Durability (Postgres LangGraph Checkpointer, Two-Phase Side-Effect Idempotency & Stale-State Revalidation)
 
+> **Amended 2026-11-15 (DECISION-bc6301b4, LG-01..LG-05.2):** LangGraph is removed. The case's row in `case_state` (`core.orchestrator.case_state`, tenant RLS, optimistic version) replaces the LangGraph Postgres checkpointer as the single source of truth (MS-D8); it is saved after every stage, and a crashed run resumes at its pending stage. The decision text below is kept as it was decided.
+
 - **Status**: Accepted & Confirmed
 - **Date**: 2026-09-26 *(Amended: 2026-09-26 per MS-D8 State Separation, MS-D9 Two-Phase Checkpoints, MS-D13 Schema Migrations & MS-D18 Stale Revalidation)*
 - **Deciders**: Architecture Team, Lead Distributed Systems Engineer, AI Orchestration Core

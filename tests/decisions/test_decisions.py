@@ -18,7 +18,7 @@ from core.orchestrator.decisions import (
     mask,
     parse_answer,
 )
-from core.orchestrator.statechart import build
+from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import ASK_CUSTOMER, FALLBACK_MAX_CONFIDENCE, llm_fallback, triage, triage_hook
 
 MESSAGE = {"message": Masked("My last invoice charged me twice")}
@@ -208,7 +208,8 @@ def run_case(jev, fallback=None):
              "execute_sop": lambda s: {"response": "ok"},
              "react_step": lambda s: {"thought": "kb", "outcome": "answer", "answer": "ok"}}
     return build(hooks).invoke({"tenant_id": "t_us", "case_id": "c1", "session_id": "s1",
-                                "event": {"type": "USER_MESSAGE", "text": "I was charged twice, a@b.com"}})
+                                "event": {"type": "USER_MESSAGE", "text": "I was charged twice, a@b.com"}},
+                               thread("t_us", "c1"))
 
 
 def test_typed_answers_drive_statechart_routing():
@@ -232,3 +233,19 @@ def test_triage_sees_the_whole_thread_not_only_the_last_line():
     ]})
     sent = jev.sent[-1][0]["message"]
     assert "forgot the password" in sent and "what is the process" in sent
+
+
+def test_what_can_be_looked_up_is_not_a_missing_detail():
+    """SWEEP-05 (register W42): 'Is the VPN gateway in eu-central having problems?' was asked 'which gateway?'
+    before any status lookup. Measured on Jev (KNOWLEDGE-d5cb415b): with this wording both status questions
+    and 12 more golden questions go straight to the specialists; vague messages still get asked."""
+    lookups = ("service, region or component is having problems", "tickets, subscriptions or invoices")
+    wording = TRIAGE_QUESTIONS["missing_details"]["instructions"]
+    assert all(phrase in wording for phrase in lookups) and "not missing details" in wording
+    prompts = []
+
+    def complete(prompt):
+        prompts.append(prompt)
+        return '{"intent": "TECHNICAL_OUTAGE", "severity": 1, "missing_details": false, "confidence": 0.9}'
+    answers = llm_fallback(complete)({"message": mask("is nimbus down right now?")})
+    assert answers["missing_details"].value is False and all(phrase in prompts[0] for phrase in lookups)

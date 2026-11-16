@@ -23,7 +23,9 @@ from temporalio.service import RPCError, RPCStatusCode
 from channels import sessions
 from channels.api import turns
 from channels.identity import otp
-from core.orchestrator.statechart import build, postgres_checkpointer, thread
+from core.orchestrator import case_state
+from core.orchestrator.case_state import PostgresStore
+from core.orchestrator.statechart import build, thread
 from core.secrets import OpenBao
 from data import events
 from data.erasure import ErasureRequest, start_erasure, subject_hash
@@ -66,7 +68,8 @@ def stack():
         psql("postgres", f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
         psql("postgres", f'CREATE DATABASE "{name}"')
         migrate(kind, name)
-    for module in (sessions, turns, otp, events, dialogue, fact_store, records, inventory, retention):
+    for module in (sessions, turns, otp, events, dialogue, fact_store, records, case_state, inventory,
+                   retention):
         module.apply_schema(MAIN)
     psql(MAIN, "INSERT INTO tenants (id, name, region) "
                "VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'Globex', 'EU')")
@@ -78,8 +81,7 @@ def stack():
             break
         except httpx.HTTPError:
             time.sleep(1)
-    with postgres_checkpointer(DSN.format(MAIN)) as saver:
-        yield {"bao": bao, "saver": saver}
+    yield {"bao": bao, "saver": PostgresStore(lambda: connect(MAIN))}
 
 
 async def stop_leftover_erasures():
@@ -131,14 +133,16 @@ def seed(stack, principal, tenant="t_us"):
           VALUES ('{tenant}', '{conversation}', '{principal}', 'crm', 'update', 'ok', '\\x{payload.hex()}');
     """)
     graph = build({"triage": lambda state: {"intent": "UNKNOWN", "acuity": 3, "confidence": 0.0}},
-                  checkpointer=stack["saver"])
-    graph.invoke({"tenant_id": tenant, "case_id": case, "session_id": session,
-                  "event": {"type": "USER_MESSAGE", "text": masked}}, thread(tenant, case))
+                  stack["saver"])
+    for key in (case, conversation):  # a linked case, and a case the turn loop keys by its conversation
+        graph.invoke({"tenant_id": tenant, "case_id": key, "session_id": session,
+                      "event": {"type": "USER_MESSAGE", "text": masked}}, thread(tenant, key))
 
     async def ticket():
         client = await Client.connect("127.0.0.1:7233")
-        await client.start_workflow("TicketWorkflow", id=f"ticket:{tenant}:{case}",
-                                    task_queue="no-worker-here")
+        for key in (case, conversation):  # a linked case's ticket, and the live turns' conversation one
+            await client.start_workflow("TicketWorkflow", id=f"ticket:{tenant}:{key}",
+                                        task_queue="no-worker-here")
     asyncio.run(ticket())
     return {"conversation": conversation, "case": case, "tokens": TOKEN.findall(masked)}
 
@@ -169,12 +173,13 @@ def counts(principal, seeded, tenant="t_us"):
              + (SELECT count(*) FROM turns WHERE principal_id = '{principal}')
              + (SELECT count(*) FROM otp_challenges WHERE principal_id = '{principal}')
              + (SELECT count(*) FROM user_facts WHERE principal_id = '{principal}'),
-               (SELECT count(*) FROM checkpoints WHERE thread_id = '{tenant}:{case}')
+               (SELECT count(*) FROM case_state
+                 WHERE tenant_id = '{tenant}' AND case_id IN ('{case}', '{conversation}'))
     """)
     tokens = "', '".join(seeded["tokens"])
     vault = psql(VAULT, f"SELECT count(*) FROM pii_tokens WHERE token IN ('{tokens}')")
     keys = psql(KEYS, f"SELECT count(*) FROM user_keys WHERE user_id = '{principal}'")
-    return {"postgres": int(rows[0][0]), "checkpoints": int(rows[0][1]), "vault": int(vault[0][0]),
+    return {"postgres": int(rows[0][0]), "case_state": int(rows[0][1]), "vault": int(vault[0][0]),
             "keys": int(keys[0][0])}
 
 
@@ -202,10 +207,11 @@ def test_erasure_completes_and_no_store_returns_readable_personal_data(stack):
     outcome = erase(stack, "sarah")
 
     assert outcome.status == "COMPLETED" and not any(outcome.residual.values())
-    assert set(outcome.residual) == {"temporal", "checkpoints", "postgres", "decision_records",
+    assert set(outcome.residual) == {"temporal", "postgres", "decision_records",
                                      "tool_audit_records", "vault", "keys"}
-    assert counts("sarah", sarah) == {"postgres": 0, "checkpoints": 0, "vault": 0, "keys": 0}
+    assert counts("sarah", sarah) == {"postgres": 0, "case_state": 0, "vault": 0, "keys": 0}
     assert not temporal_has(f"ticket:t_us:{sarah['case']}")
+    assert not temporal_has(f"ticket:t_us:{sarah['conversation']}")
     with pytest.raises(KeyShredded):  # the audit payload (and any backup copy) can no longer be opened
         decrypt_field(keys, "t_us", "sarah", "tool_audit:1", bytes.fromhex(sealed[0][0]))
     retained = psql(MAIN, "SELECT trace::text FROM decision_records "
@@ -213,6 +219,7 @@ def test_erasure_completes_and_no_store_returns_readable_personal_data(stack):
     assert retained and "sarah@" not in retained[0][0]  # the audit row stays, tokens only
 
     assert all(counts("bob", bob).values()) and temporal_has(f"ticket:t_us:{bob['case']}")
+    assert temporal_has(f"ticket:t_us:{bob['conversation']}")
     with connect(MAIN) as conn:
         assert [f.statement for f in FactStore(conn, keys).as_of("t_us", "bob")] == [
             f"Prefers e-mail at {bob['tokens'][0]}"]
@@ -275,10 +282,10 @@ def test_raw_personal_data_left_in_a_kept_audit_row_fails_the_erasure(stack):
 def test_erasure_stays_inside_the_tenant(stack):
     us, eu = seed(stack, "frank"), seed(stack, "frank", tenant="t_eu")
     erase(stack, "frank", tenant="t_eu")
-    assert counts("frank", eu, tenant="t_eu")["checkpoints"] == 0
+    assert counts("frank", eu, tenant="t_eu")["case_state"] == 0
     kept = psql(MAIN, "SELECT count(*) FROM user_facts WHERE principal_id = 'frank' AND tenant_id = 't_us'")
     assert kept == [["1"]]
-    assert counts("frank", us)["checkpoints"] > 0 and temporal_has(f"ticket:t_us:{us['case']}")
+    assert counts("frank", us)["case_state"] == 2 and temporal_has(f"ticket:t_us:{us['case']}")
 
 
 def test_back_office_sees_corrects_and_forgets_facts(stack):
@@ -315,17 +322,18 @@ def test_retention_expires_each_memory_type_on_its_own_clock(stack):
         old = facts.add("t_us", "hank", "Uses Jenkins", "technical_env", 4, [1.0, 0.0])
         facts.add("t_us", "hank", "Uses GitHub Actions", "technical_env", 4, [1.0, 0.1], replaces=old)
         now = datetime.now(timezone.utc)
-        assert retention.sweep(conn, "t_us", now) == {"facts": 0, "conversations": 0, "checkpoints": 0}
+        assert retention.sweep(conn, "t_us", now) == {"facts": 0, "case_state": 0, "conversations": 0}
         psql(MAIN, f"UPDATE cases SET status = 'resolved' WHERE id = '{hank['case']}'")
-        assert retention.sweep(conn, "t_us", now + timedelta(days=29))["checkpoints"] == 0
-        assert retention.sweep(conn, "t_us", now + timedelta(days=31))["checkpoints"] > 0
+        assert retention.sweep(conn, "t_us", now + timedelta(days=29))["case_state"] == 0
+        assert retention.sweep(conn, "t_us", now + timedelta(days=31))["case_state"] > 0
+        assert counts("hank", hank)["case_state"] == 1  # the conversation's state lives as long as it does
         swept = retention.sweep(conn, "t_us", now + timedelta(days=366))
         assert swept["facts"] >= 3  # hank's two-version lineage and his other fact (and other users' facts)
         assert psql(MAIN, "SELECT count(*) FROM user_facts WHERE principal_id = 'hank'") == [["0"]]
         turns_left = f"SELECT count(*) FROM dialogue_turns WHERE conversation_id = '{hank['conversation']}'"
         assert psql(MAIN, turns_left) != [["0"]]
         assert retention.sweep(conn, "t_us", now + timedelta(days=731))["conversations"] > 0
-        assert psql(MAIN, turns_left) == [["0"]]
+        assert psql(MAIN, turns_left) == [["0"]] and counts("hank", hank)["case_state"] == 0
 
 
 def test_a_closed_case_gets_its_close_time_and_loses_it_on_reopen(stack):

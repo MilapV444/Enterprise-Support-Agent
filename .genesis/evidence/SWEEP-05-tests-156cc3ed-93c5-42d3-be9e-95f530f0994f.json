@@ -1,0 +1,30 @@
+{
+  "task": "SWEEP-05",
+  "gate": "tests",
+  "kind": "command",
+  "attempt": "156cc3ed-93c5-42d3-be9e-95f530f0994f",
+  "command": "python -m pytest tests/router tests/safety/screening tests/agents tests/decisions tests/orchestrator tests/runtime tests/contracts -q",
+  "started_at": "2026-11-14T15:58:05.666Z",
+  "observed_at": "2026-11-14T15:58:51.419Z",
+  "exit_code": 0,
+  "signal": null,
+  "stdout": "........................................................................ [ 18%]\r\n........................................................................ [ 36%]\r\n........................................................................ [ 54%]\r\n........................................................................ [ 72%]\r\n........................................................................ [ 91%]\r\n...................................                                      [100%]\r\n395 passed in 42.61s\r\n",
+  "stderr": "",
+  "failure": null,
+  "receipt": null,
+  "revision": {
+    "commit": "a1cb6728fbcd7f53c71bdc26ea5b351931104dc9",
+    "dirty": true
+  },
+  "source_hash": "667b7a27d4133a565cc55b2290b507cb6a0e31518dd1b42fd19d1a81a27b35d0",
+  "before_hash": "667b7a27d4133a565cc55b2290b507cb6a0e31518dd1b42fd19d1a81a27b35d0",
+  "config_hash": "b132a2a2053fe6ac53197ff78a0f0be1998c861a52ba3ebc29f3f3cdbea2fdcf",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "verifier": "5020061451b269b889dfd3fa48831a4d90fee8c850b493b153ba89af49d1bd9e",
+    "variables": {}
+  },
+  "hash": "a1d2647a6870aa927de6a8350b6251bef2f68b1c5a79612d924322381d888887"
+}

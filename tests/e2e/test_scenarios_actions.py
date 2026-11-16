@@ -2,7 +2,7 @@
 
 A customer turn runs through the M1 and M2 components the way the dispatch hook will chain them:
 
-    PII tokens (M1-13) -> statechart on the Postgres checkpointer (M1-04) with Jev triage (M1-06) -> an SOP
+    PII tokens (M1-13) -> statechart on the Postgres case state (M1-04) with Jev triage (M1-06) -> an SOP
     that needs approval waits in AWAITING_APPROVAL -> action validation and a sealed approval request
     (M2-05) with its card (dry run or current state) -> the escalation packet in a skills queue (M2-09) ->
     a specialist signed in through SSO takes it, confirms every field and approves (M2-09) -> the case
@@ -29,8 +29,10 @@ from channels import sessions
 from channels.api.envelope import Principal
 from channels.identity.oidc import MockIdP
 from channels.identity.service import AGENT
+from core.orchestrator import case_state
+from core.orchestrator.case_state import PostgresStore
 from core.orchestrator.decisions import Answer, DecisionEngine, Masked
-from core.orchestrator.statechart import build, postgres_checkpointer, thread
+from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import triage_hook
 from data import events
 from data.migrate import migrate, psql
@@ -174,7 +176,7 @@ def saver():
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
-    for module in (sessions, events, approvals, queues, handoff):
+    for module in (sessions, events, approvals, queues, handoff, case_state):
         module.apply_schema(DB)
     psql(DB, f"INSERT INTO tenants (id, name, region) VALUES ('{TENANT}', 'Globex', 'US');"
              f"INSERT INTO tenant_settings (tenant_id) VALUES ('{TENANT}');"
@@ -182,8 +184,7 @@ def saver():
              f"('{TENANT}', 'sam', '{{specialist}}', '{{queue_billing}}'),"
              f"('{TENANT}', 'sue', '{{senior_specialist}}', '{{queue_billing,queue_senior}}'),"
              f"('{TENANT}', 'tess', '{{specialist}}', '{{queue_technical}}')")
-    with postgres_checkpointer(DSN) as checkpointer:
-        yield checkpointer
+    return PostgresStore(lambda: psycopg.connect(DSN, autocommit=True))
 
 
 def cred(user, item):
@@ -212,7 +213,7 @@ class Agent:
         self.graph = build({"triage": triage_hook(self.engine), "collect": self.collect,
                             "execute_sop": self.execute, "revalidate": self.revalidate,
                             "react_step": lambda state: {"thought": "unused", "outcome": "critique"}},
-                           checkpointer=saver, now=lambda: self.clock[0])
+                           store=saver, now=lambda: self.clock[0])
 
     # statechart hooks --------------------------------------------------------------------------------------
 

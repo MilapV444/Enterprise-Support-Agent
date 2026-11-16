@@ -8,7 +8,7 @@ from decimal import Decimal
 import pytest
 
 from agents.contracts import ExecutedAction
-from agents.merge import Claim, claims_from, merge
+from agents.merge import REDIRECT, Claim, claims_from, merge
 from core.orchestrator.decisions import Answer, DecisionEngine, JevUnavailable, SecurityViolation
 
 EVIDENCE = {"ops.uptime": "EU primary cluster uptime for the quarter: 99.98 percent",
@@ -17,9 +17,9 @@ EVIDENCE = {"ops.uptime": "EU primary cluster uptime for the quarter: 99.98 perc
 
 
 class Jev:
-    """support: {claim text: level 1..5}; redirect: P(redirect)."""
+    """support: {claim text: level 1..5}; redirect: (what the reply asks the customer to do, confidence)."""
 
-    def __init__(self, support=None, redirect=0.05, down=False):
+    def __init__(self, support=None, redirect=("self_service", 0.95), down=False):
         self.support, self.redirect, self.down, self.seen = support or {}, redirect, down, []
 
     def evaluate(self, state, questions):
@@ -32,7 +32,7 @@ class Jev:
                 level = self.support[state[f"claim_{qid.removeprefix('support_')}"]]
                 answers[qid] = Answer(float(level - 1), 0.9, level - 1)
             elif qid == "redirect":
-                answers[qid] = Answer(self.redirect >= 0.5, max(self.redirect, 1 - self.redirect))
+                answers[qid] = Answer(*self.redirect)
         return answers
 
 
@@ -167,13 +167,63 @@ def test_one_reply_from_the_coordinator_built_from_the_accepted_claims():
     assert {c.topic for c in draft.calls[0]} == {"eu_uptime_q2", "credits_q2"}
 
 
-@pytest.mark.parametrize("p, kind", [(0.19, "reply"), (0.20, "human"), (0.9, "human")])
-def test_a_reply_that_sends_the_customer_elsewhere_is_held(p, kind):
-    outcome, _, _ = run([result("billing", CREDITS)], Jev(redirect=p),
+@pytest.mark.parametrize("asks, kind", [
+    (("hand_off", 0.9), "human"), (("both", 0.6), "human"), (("hand_off", 0.5), "human"),
+    (("hand_off", 0.45), "reply"),       # Jev not more sure than not
+    (("self_service", 0.95), "reply"),   # e.g. "ask another Tenant Owner": the customer's own people
+])
+def test_a_reply_that_hands_the_customer_to_someone_at_the_provider_is_held(asks, kind):
+    """SWEEP-07 (register B25): a choice, not a yes / no, so self-service through the customer's own people
+    or forms is not mistaken for a redirect."""
+    outcome, _, _ = run([result("billing", CREDITS)], Jev(redirect=asks),
                         Drafts("Please contact the billing department about CM-7."))
-    assert outcome.kind == kind
+    assert outcome.kind == kind and outcome.detail["redirect"] == asks[0]
     if kind == "human":
         assert outcome.reason == "REDIRECT" and "billing department" in outcome.detail["draft"]
+
+
+def test_the_redirect_question_names_the_three_choices_without_numbers():
+    assert REDIRECT["type"] == "choice" and set(REDIRECT["criteria"]) == {"self_service", "hand_off", "both"}
+
+
+class RedirectByDraft(Jev):
+    """What each draft asks the customer to do."""
+
+    def __init__(self, scores):
+        super().__init__()
+        self.scores = scores
+
+    def evaluate(self, state, questions):
+        self.redirect = self.scores[state["draft"]]
+        return super().evaluate(state, questions)
+
+
+ELSEWHERE = "Please contact the billing department about CM-7."
+SELF_SERVE = "CM-7 was applied to your invoice."
+
+
+@pytest.mark.parametrize("second, kind", [(("self_service", 0.9), "reply"), (("hand_off", 0.8), "human")])
+def test_a_redirecting_draft_is_redrafted_once_and_checked_again(second, kind):
+    """SWEEP-05 / SWEEP-07 (register B25): one redraft when the first draft points elsewhere; the check and
+    an excerpt of the held draft are kept for the internal trace."""
+    redrafts = Drafts(SELF_SERVE)
+    outcome = merge(DecisionEngine(RedirectByDraft({ELSEWHERE: ("hand_off", 0.95), SELF_SERVE: second})),
+                    [result("billing", CREDITS)], EVIDENCE, Drafts(ELSEWHERE), redraft=redrafts)
+    assert outcome.kind == kind and len(redrafts.calls) == 1
+    assert (outcome.detail["redrafted"], outcome.detail["rejected_draft"]) == (True, ELSEWHERE)
+    assert (outcome.detail["redirect"], outcome.detail["redirect_confidence"]) == second
+    if kind == "reply":
+        assert outcome.text == SELF_SERVE
+    else:
+        assert outcome.reason == "REDIRECT"
+
+
+def test_a_draft_that_passes_is_not_redrafted_and_records_the_check():
+    redrafts = Drafts(SELF_SERVE)
+    outcome = merge(DecisionEngine(Jev()), [result("billing", CREDITS)], EVIDENCE, Drafts(SELF_SERVE),
+                    redraft=redrafts)
+    assert outcome.kind == "reply" and redrafts.calls == []
+    assert outcome.detail == {"redirect": "self_service", "redirect_confidence": 0.95, "redrafted": False}
 
 
 def test_jev_down_at_the_redirect_check_holds_the_reply():

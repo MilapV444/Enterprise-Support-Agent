@@ -12,8 +12,8 @@ import os
 from pathlib import Path
 
 import pytest
-from langgraph.checkpoint.memory import InMemorySaver
 
+from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.statechart import build, thread
 from schemas import thread_state
 from schemas.thread_state import SCHEMA_VERSION, Stage
@@ -65,11 +65,11 @@ CASES = {
 def capture(name):
     """Run the graph to the case's waiting state and return the checkpointed values as plain JSON."""
     steps, _, _, _ = CASES[name]
-    saver, config = InMemorySaver(), thread("t_us", name)
+    saver, config = MemoryStore(), thread("t_us", name)
     for triage, event in steps:
         graph = build(Hooks(triage), saver, now=lambda: NOW)
         graph.invoke({"tenant_id": "t_us", "case_id": name, "session_id": "s1", "event": event}, config)
-    return json.loads(json.dumps(graph.get_state(config).values))
+    return {k: v for k, v in graph.get_state(config).items() if k != "pending"}  # as LangGraph saved it
 
 
 if os.environ.get("UPDATE_CHECKPOINTS") == "1":
@@ -83,13 +83,13 @@ ARCHIVE = sorted(LIBRARY.glob("v*/*.json"))
 
 
 def resume(path, hooks):
-    """Load an archived checkpoint into a fresh checkpointer and resume it with the case's event."""
+    """Load an archived checkpoint into a fresh case state store and resume it with the case's event."""
     _, event, _, outcome = CASES[path.stem]
     values = json.loads(path.read_text(encoding="utf-8"))
-    saver, config = InMemorySaver(), thread("t_us", path.stem)
+    saver, config = MemoryStore(), thread("t_us", path.stem)
     clock = NOW + 3600 * outcome.get("after_hours", 0)
     graph = build(hooks, saver, now=lambda: clock)
-    graph.update_state(config, {**values, "next_stage": None}, as_node="resume")
+    saver.save("t_us", path.stem, {**values, "next_stage": None}, 0)
     return graph.invoke({"event": event}, config), values
 
 
@@ -128,8 +128,8 @@ def test_the_next_schema_version_would_load_the_whole_library_through_its_migrat
 
 def test_a_checkpoint_from_a_version_with_no_migration_goes_to_a_person():
     values = json.loads((LIBRARY / "v1" / "awaiting_customer.json").read_text(encoding="utf-8"))
-    saver, config = InMemorySaver(), thread("t_us", "orphan")
+    saver, config = MemoryStore(), thread("t_us", "orphan")
     graph = build(Hooks(), saver, now=lambda: NOW)
-    graph.update_state(config, {**values, "schema_version": 0, "next_stage": None}, as_node="resume")
+    saver.save("t_us", "orphan", {**values, "schema_version": 0, "next_stage": None}, 0)
     state = graph.invoke({"event": message("hello")}, config)
     assert state["stage"] == "ESCALATED_HITL" and "schema version 0" in state["error"]

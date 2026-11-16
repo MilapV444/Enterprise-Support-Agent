@@ -1,7 +1,7 @@
 # Enterprise AI Customer Support Agent__
 
 [![Architecture](https://img.shields.io/badge/Architecture-Enterprise%20Multi--Agent-blue.svg)](#system-architecture)
-[![Statechart](https://img.shields.io/badge/Orchestrator-LangGraph%20%2B%20Temporal-orange.svg)](#key-architectural-decisions)
+[![Statechart](https://img.shields.io/badge/Orchestrator-Temporal%20%2B%20Python%20statechart-orange.svg)](#key-architectural-decisions)
 [![Decisions](https://img.shields.io/badge/Decision%20Model-Jev%20(TypeSafe)-purple.svg)](#key-architectural-decisions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
@@ -48,7 +48,7 @@ flowchart LR
     end
 
     subgraph S3["3. Orchestration Core"]
-        Orchestrator["Agent Orchestration Core\n(LangGraph Statechart & FSM)"]:::brainStyle
+        Orchestrator["Agent Orchestration Core\n(Statechart & FSM on Temporal)"]:::brainStyle
     end
 
     subgraph S4["4. Context & Knowledge"]
@@ -90,11 +90,11 @@ flowchart LR
 
 | ID | Component | Title | Selected Architecture |
 | :--- | :--- | :--- | :--- |
-| **ADP-01** | Agent Runtime | Planning Paradigm | **Hybrid Dual-Process Statechart** (Deterministic LangGraph FSM for compliance/SOPs + scoped ReAct in edge nodes) |
-| **ADP-02** | Agent Runtime | Workflow Durability | **Two-Tier Hybrid** (Temporal.io outer saga for multi-day durability & HITL + LangGraph inner cognitive loop) |
+| **ADP-01** | Agent Runtime | Planning Paradigm | **Hybrid Dual-Process Statechart** (Deterministic FSM for compliance/SOPs as a plain Python loop + scoped ReAct in edge nodes) |
+| **ADP-02** | Agent Runtime | Workflow Durability | **Temporal runs every case** (one workflow per case for durability, timers & HITL; one activity per turn; case state in Postgres; LangGraph removed, DECISION-bc6301b4) |
 | **ADP-03** | Agent Runtime | Context Engineering | **Tripartite Structured Slot Allocator** (System 15%, Profile 15%, RAG 35%, Chat 25%, Scratchpad 10%) |
 | **ADP-04** | Agent Runtime | Error Recovery | **Dual-Process Circuit Breaker** (Max 2 Reflexion trials, immediate HITL tripwire on persistence) |
-| **ADP-05** | Agent Runtime | Decision Model | **Jev (TypeSafe) at decision points** (triage, FSM transition guards, tool selection; LangGraph stays the runner, code owns control flow) |
+| **ADP-05** | Agent Runtime | Decision Model | **Jev (TypeSafe) at decision points** (triage, FSM transition guards, tool selection; code runs and owns control flow) |
 
 All 79 ADPs (Orchestration + 15 components): [`docs/decisions/adp_index.md`](./docs/decisions/adp_index.md).
 
@@ -104,7 +104,7 @@ All 79 ADPs (Orchestration + 15 components): [`docs/decisions/adp_index.md`](./d
 
 This is a learning project. The ADPs describe the **target production design** (AWS in US + EU, Kubernetes, multi-AZ, GPUs), which would cost roughly USD 6,500–9,500/month. **v1 runs on a learning deployment profile instead, capped at USD 10/month:**
 
-* **One Oracle Cloud Always Free ARM VM** running Docker Compose: Temporal dev server + workers, LangGraph orchestrator, API, Jaeger, OpenBao, Ollama (and optionally Postgres / Qdrant).
+* **One Oracle Cloud Always Free ARM VM** running Docker Compose: Temporal dev server, the API with the turn worker in-process, Jaeger, OpenBao, Ollama (and optionally Postgres / Qdrant).
 * **Free managed services:** Vercel (frontend), Neon or Supabase (Postgres), Qdrant Cloud (vectors), Cloudflare R2 (objects / backups), Upstash Redis (counters), Langfuse or Grafana Cloud (traces), Hugging Face Spaces (Streamlit specialist console), GitHub Actions (CI).
 * **Models:** Groq / Gemini free tiers (or Ollama) for most turns, the judge and screening; Claude only for the hardest turns, under a USD 10 console spend limit.
 
@@ -116,7 +116,7 @@ The full mapping from each production component to its v1 form is in [`SPEC.md`]
 
 The repository includes an interactive [tldraw](https://www.tldraw.com) canvas [`architecture.tldr`](./diagrams/architecture.tldr):
 * **Page 1: System Architecture & Failure Modes:** High-level end-to-end data flow and 2×2 Knowns/Unknowns failure mode cards.
-* **Page 2: LLD - Agent Orchestration Core:** Low-level LangGraph statechart nodes, transitions, slot allocation diagrams, and circuit breaker tripwires.
+* **Page 2: LLD - Agent Orchestration Core:** Low-level statechart nodes, transitions, slot allocation diagrams, and circuit breaker tripwires.
 
 ### How to View the Canvas
 1. **In VS Code:** Install the [tldraw extension](https://marketplace.visualstudio.com/items?itemName=tldraw-org.tldraw-vscode) and open [`architecture.tldr`](./diagrams/architecture.tldr) directly.
@@ -174,7 +174,7 @@ When initialized for automated code generation, the system maps to the following
 src/
 ├── core/
 │   ├── orchestrator/
-│   │   ├── statechart.py        # LangGraph StateGraph, Node reducers, FSM edges
+│   │   ├── statechart.py        # Statechart loop, guarded transitions, case state
 │   │   ├── triage.py            # Acuity & Intent routing (Jev Choice/Score/Noul)
 │   │   ├── decisions.py         # Jev question sets: triage, transition guards, tool selection
 │   │   └── planner.py           # Layer 2 Deliberative ReAct engine
@@ -186,7 +186,7 @@ src/
 │       └── reflexion.py         # Verbal self-critique generator
 ├── workflows/
 │   ├── ticket_saga.py           # Temporal workflow for durable ticket lifecycle
-│   └── activities.py            # Activities invoking LangGraph cognitive turns
+│   └── activities.py            # The run_turn activity over the turn loop
 └── schemas/
     ├── state.py                 # Thread state schema S_t and Delta_t reducers
     └── diagnostic.py            # IncidentDiagnosticPacket for HITL escalation

@@ -16,6 +16,7 @@ digraph genesis {
   "file:evals/suites/__init__.py" [label="evals/suites/__init__.py",class="file"];
   "file:scripts/adp_registry.py" [label="scripts/adp_registry.py",class="file"];
   "file:scripts/check_neon_roles.py" [label="scripts/check_neon_roles.py",class="file"];
+  "file:scripts/copy_langgraph_state.py" [label="scripts/copy_langgraph_state.py",class="file"];
   "file:scripts/generate_adp_index.py" [label="scripts/generate_adp_index.py",class="file"];
   "file:scripts/generate_architecture_tldr.py" [label="scripts/generate_architecture_tldr.py",class="file"];
   "file:scripts/generate_lld_cost.py" [label="scripts/generate_lld_cost.py",class="file"];
@@ -60,6 +61,7 @@ digraph genesis {
   "file:src/core/context/__init__.py" [label="src/core/context/__init__.py",class="file"];
   "file:src/core/context/assembler.py" [label="src/core/context/assembler.py",class="file"];
   "file:src/core/context/budget.py" [label="src/core/context/budget.py",class="file"];
+  "file:src/core/orchestrator/case_state.py" [label="src/core/orchestrator/case_state.py",class="file"];
   "file:src/core/orchestrator/decisions.py" [label="src/core/orchestrator/decisions.py",class="file"];
   "file:src/core/orchestrator/planner.py" [label="src/core/orchestrator/planner.py",class="file"];
   "file:src/core/orchestrator/statechart.py" [label="src/core/orchestrator/statechart.py",class="file"];
@@ -147,6 +149,7 @@ digraph genesis {
   "file:src/tools/validation/approvals.py" [label="src/tools/validation/approvals.py",class="file"];
   "file:src/workflows/__init__.py" [label="src/workflows/__init__.py",class="file"];
   "file:src/workflows/activities.py" [label="src/workflows/activities.py",class="file"];
+  "file:src/workflows/dispatch.py" [label="src/workflows/dispatch.py",class="file"];
   "file:src/workflows/ticket.py" [label="src/workflows/ticket.py",class="file"];
   "file:tests/agents/contracts/test_contracts.py" [label="tests/agents/contracts/test_contracts.py",class="file"];
   "file:tests/agents/merge/test_merge.py" [label="tests/agents/merge/test_merge.py",class="file"];
@@ -154,6 +157,7 @@ digraph genesis {
   "file:tests/channels/test_api.py" [label="tests/channels/test_api.py",class="file"];
   "file:tests/channels/test_trace.py" [label="tests/channels/test_trace.py",class="file"];
   "file:tests/context/test_assembler.py" [label="tests/context/test_assembler.py",class="file"];
+  "file:tests/contracts/test_case_state.py" [label="tests/contracts/test_case_state.py",class="file"];
   "file:tests/contracts/test_checkpoints.py" [label="tests/contracts/test_checkpoints.py",class="file"];
   "file:tests/contracts/test_policy_lints.py" [label="tests/contracts/test_policy_lints.py",class="file"];
   "file:tests/contracts/test_schema_contracts.py" [label="tests/contracts/test_schema_contracts.py",class="file"];
@@ -162,6 +166,7 @@ digraph genesis {
   "file:tests/decisions/test_decisions.py" [label="tests/decisions/test_decisions.py",class="file"];
   "file:tests/deploy/test_backbone.py" [label="tests/deploy/test_backbone.py",class="file"];
   "file:tests/deploy/test_compose.py" [label="tests/deploy/test_compose.py",class="file"];
+  "file:tests/deploy/test_copy_langgraph_state.py" [label="tests/deploy/test_copy_langgraph_state.py",class="file"];
   "file:tests/deploy/vm/test_release.py" [label="tests/deploy/vm/test_release.py",class="file"];
   "file:tests/deploy/vm/test_vm_image.py" [label="tests/deploy/vm/test_vm_image.py",class="file"];
   "file:tests/deploy/vm/test_vm_tools.py" [label="tests/deploy/vm/test_vm_tools.py",class="file"];

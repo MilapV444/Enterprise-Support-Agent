@@ -1,5 +1,7 @@
 # ADP-01: Dual-Process Cognitive Planning Paradigm (Deterministic LangGraph Statecharts + Scoped ReAct Reasoning)
 
+> **Amended 2026-11-15 (DECISION-bc6301b4, LG-01..LG-05.2):** LangGraph is removed. The deterministic statechart keeps its stages and guarded transition table but runs as a plain Python loop (`core.orchestrator.statechart`), saving the case state after every stage. The decision text below is kept as it was decided.
+
 - **Status**: Accepted & Confirmed
 - **Date**: 2026-09-11 *(Updated: 2026-09-25 with Jev Decision Model Integration)*
 - **Deciders**: Architecture Team, Lead AI Systems Engineer, Reliability & Compliance Core

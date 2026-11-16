@@ -4,7 +4,8 @@
                                goes when its newest version is older than that, or was closed that long ago
     conversations              24 months since they began, with their turns, summary and pins (dialogue memory
                                lives as long as its conversation)
-    checkpoints                30 days after the case was resolved or closed
+    case state                 30 days after the case was resolved or closed, and with its conversation
+                               (the turn loop keys a case by its conversation)
 
 Cases get a closed_at stamp from a trigger, so "30 days after closing" is measurable. Runs as
 lifecycle_service.
@@ -16,9 +17,9 @@ retention, not here.
 """
 
 from data.migrate import psql
-from memory.lifecycle.inventory import CHECKPOINT_TABLES, context
+from memory.lifecycle.inventory import context
 
-FACTS_TTL, CONVERSATION_TTL, CHECKPOINT_TTL = "12 months", "24 months", "30 days"
+FACTS_TTL, CONVERSATION_TTL, CASE_STATE_TTL = "12 months", "24 months", "30 days"
 
 SCHEMA_NAME = "lifecycle_0002_retention.sql"
 SCHEMA = """
@@ -72,18 +73,17 @@ def sweep(conn, tenant_id, now=None):
         args["now"] = conn.execute("SELECT now()").fetchone()[0]
     with conn.transaction():
         context(conn, tenant_id, "")
-        threads = [f"{tenant_id}:{case}" for (case,) in conn.execute(
+        closed = [case for (case,) in conn.execute(
             "SELECT id FROM cases WHERE tenant_id = %(t)s AND status IN ('resolved', 'closed') "
-            f"AND closed_at < %(now)s - interval '{CHECKPOINT_TTL}'", args)]
+            f"AND closed_at < %(now)s - interval '{CASE_STATE_TTL}'", args)]
         deleted = {"facts": delete_lineage(conn, EXPIRED_FACTS, args)}
+        deleted["case_state"] = conn.execute(
+            "DELETE FROM case_state WHERE tenant_id = %(t)s AND (case_id = ANY(%(closed)s) "
+            f"OR case_id IN ({OLD_CONVERSATIONS}))", {**args, "closed": closed}).rowcount
         deleted["conversations"] = sum(
             conn.execute(f"DELETE FROM {table} WHERE tenant_id = %(t)s AND {column} IN ({OLD_CONVERSATIONS})",
                          args).rowcount
             for table, column in (("dialogue_pins", "conversation_id"),
                                   ("dialogue_summaries", "conversation_id"),
                                   ("dialogue_turns", "conversation_id"), ("conversations", "id")))
-    with conn.transaction():
-        present = [t for t in CHECKPOINT_TABLES if conn.execute("SELECT to_regclass(%s)", (t,)).fetchone()[0]]
-        deleted["checkpoints"] = sum(conn.execute(f"DELETE FROM {table} WHERE thread_id = ANY(%s)",
-                                                  (threads,)).rowcount for table in present)
     return deleted

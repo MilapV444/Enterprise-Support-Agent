@@ -42,13 +42,14 @@ def docker(*args, timeout=900, check=True):
 
 def container_env():
     return ["--add-host", "host.docker.internal:host-gateway", "-e", f"DATABASE_URL={URL}",
-            "-e", f"VAULT_DATABASE={VAULT}", "-e", f"KEYS_DATABASE={KEYS}", "-e", "PII_TOKEN_KEY=image-test"]
+            "-e", f"VAULT_DATABASE={VAULT}", "-e", f"KEYS_DATABASE={KEYS}", "-e", "PII_TOKEN_KEY=image-test",
+            "-e", "TEMPORAL_ADDRESS=host.docker.internal:7233"]       # turns run on Temporal (LG-04.2)
 
 
 @pytest.fixture(scope="module")
 def image():
     docker("compose", "-f", "deploy/compose.yaml", "--env-file", ".env.example", "up", "-d", "--wait",
-           "postgres", timeout=300)
+           "postgres", "temporal", timeout=300)
     for name in (DB, VAULT, KEYS):
         psql("postgres", f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')

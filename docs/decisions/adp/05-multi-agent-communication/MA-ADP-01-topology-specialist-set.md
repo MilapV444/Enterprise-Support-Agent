@@ -1,5 +1,7 @@
 # MA-ADP-01: Topology & Specialist Set (Hierarchical Unified Command, ITIL Domain Specialists & In-Graph LangGraph Subgraphs)
 
+> **Amended 2026-11-15 (DECISION-bc6301b4, LG-01..LG-05.2):** LangGraph is removed. The coordinator and each specialist run as bounded plain-Python loops inside a statechart stage (`agents.topology`), with independent specialists in parallel on a thread pool instead of LangGraph subgraphs and Send. The decision text below is kept as it was decided.
+
 - **Status**: Accepted & Confirmed
 - **Date**: 2026-09-29 *(Amended: 2026-09-29 per MA-D1 Hierarchical Command, MA-D2 Specialist Taxonomy, MA-D10 Static Registry & MA-D11 In-Graph Subgraph Execution)*
 - **Deciders**: Architecture Team, Lead Multi-Agent Systems Engineer, AI Orchestration Core

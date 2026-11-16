@@ -12,8 +12,12 @@ merge(engine, results, evidence, draft) -> Outcome, exactly one per turn:
    (five levels). One claim at four or five while every other is at one or two wins; anything closer goes
    to a person. Jev unavailable -> a person.
 4. the reply: draft(accepted claims) is called once, by the coordinator (the only author of customer text).
-   It is held for a person when Jev thinks it sends the customer to another team (P >= 0.20, or Jev cannot
-   answer), or when it claims a completed action no verified write backs.
+   Jev says what the reply asks the customer to do (REDIRECT, a choice): act themselves, including through
+   their own administrators, roles or forms (self_service), or hand the problem to someone at the support
+   provider (hand_off), or both. hand_off or both at HOLD_AT or more holds it: redraft once (redraft), then a
+   person (register B25: the old yes / no question also held self-service answers that name the customer's
+   own Tenant Owner or forms). Jev unavailable, or a claimed completed action no verified write backs, also
+   go to a person.
 """
 
 import json
@@ -26,15 +30,20 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 from core.orchestrator.decisions import JevUnavailable, Masked
 
-REDIRECT_AT = 0.20
+HOLD, HOLD_AT = ("hand_off", "both"), 0.5   # set on new example replies (KNOWLEDGE-a7bd69df), golden held out
+REJECTED_EXCERPT = 400                        # characters of a held draft kept in the internal trace
 WIN_AT, LOSE_AT = 4, 2            # support levels, one to five
 TOLERANCE = {"percent": Decimal("0.005")}  # per unit; exact otherwise
 SUPPORT = {"type": "score",
            "instructions": "How strongly does the cited evidence support this factual claim?",
            "criteria": ["Unsupported", "Weak", "Plausible", "Strong", "Definitive"]}
-REDIRECT = {"type": "noul",
-            "instructions": "Does this message instruct or advise the customer to reach out to another "
-                            "internal team, department, or specialist rather than resolving it here?"}
+REDIRECT = {"type": "choice", "instructions": "What does this reply ask the customer to do?", "criteria": {
+    "self_service": ("Act on steps or facts themselves, including through their own administrators, roles, "
+                     "settings or self-service forms"),
+    "hand_off": ("Contact, or wait for, another team, department, person or specialist at the support "
+                 "provider to resolve it"),
+    "both": ("Act on some steps themselves and also contact another team or specialist at the support "
+             "provider")}}
 COMPLETED = re.compile(r"\b(?:have|has|had)\s+(?:been\s+)?(?:processed|completed|issued|refunded|credited|"
                        r"applied|reset|cancelled|canceled|deleted|executed|sent)\b|\b(?:is|are)\s+now\s+"
                        r"(?:refunded|credited|reset|cancelled|canceled|deleted)\b", re.IGNORECASE)
@@ -120,9 +129,16 @@ def adjudicate(engine, topic, group, evidence):
     return None, levels
 
 
-def merge(engine, results, evidence, draft, verified_actions=()):
+def redirect_of(engine, text):
+    """(what the reply asks the customer to do, Jev's confidence in it, held?)."""
+    answer = engine.ask({"draft": masked(text)}, {"redirect": REDIRECT})["redirect"]
+    return answer.value, round(answer.confidence, 2), answer.value in HOLD and answer.confidence >= HOLD_AT
+
+
+def merge(engine, results, evidence, draft, verified_actions=(), redraft=None):
     """evidence: {evidence id: masked text}; draft(claims) -> the coordinator's reply text; verified_actions:
-    executed writes their read-back confirmed (agents.contracts.ExecutedAction)."""
+    executed writes their read-back confirmed (agents.contracts.ExecutedAction); redraft(claims): one more
+    draft when the first points the customer elsewhere (register B25), checked again before it is used."""
     claims = [claim for result in results for claim in claims_from(result)]
     if not claims:
         return human("NOTHING_TO_SAY")
@@ -145,13 +161,17 @@ def merge(engine, results, evidence, draft, verified_actions=()):
                                      for c, level in zip(distinct, levels, strict=True)})
             accepted.append(winner)
         text = draft(tuple(accepted))
-        redirect = engine.ask({"draft": masked(text)}, {"redirect": REDIRECT})["redirect"]
+        choice, confidence, held = redirect_of(engine, text)
+        checked = {"redirect": choice, "redirect_confidence": confidence, "redrafted": False}
+        if held and redraft is not None:
+            checked.update(redrafted=True, rejected_draft=text[:REJECTED_EXCERPT])
+            text = redraft(tuple(accepted))
+            choice, confidence, held = redirect_of(engine, text)
+            checked.update(redirect=choice, redirect_confidence=confidence)
     except JevUnavailable:
         return human("JEV_UNAVAILABLE")
-    # rounded: P(yes) = 1 - 0.8 must count as 0.20, not just under it
-    p_redirect = round(redirect.confidence if redirect.value is True else 1 - redirect.confidence, 9)
-    if p_redirect >= REDIRECT_AT:
-        return human("REDIRECT", draft=text)
+    if held:
+        return human("REDIRECT", draft=text, **checked)
     if COMPLETED.search(text) and not verified_actions:
-        return human("UNVERIFIED_COMPLETION", draft=text)
-    return Outcome("reply", text=text, accepted=tuple(accepted))
+        return human("UNVERIFIED_COMPLETION", draft=text, **checked)
+    return Outcome("reply", text=text, detail=checked, accepted=tuple(accepted))

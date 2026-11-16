@@ -26,6 +26,7 @@ from knowledge.index.store import collections_for, sparse
 RRF_K = 60
 CANDIDATES = 50
 TOP_K = 10
+RESTRICTED_AT = 0.65   # dense cosine with the pinned embedder; set on new examples (KNOWLEDGE-a7bd69df)
 IDENTIFIER = re.compile(r"\b(?:[A-Z][A-Z0-9]*[-_][A-Z0-9][A-Z0-9_-]*|v?\d+(?:\.\d+){1,3}|[A-Z]{2,}\d+)\b")
 INJECTION = re.compile(
     r"ignore (?:all |any )?(?:previous|prior|above) (?:instructions|prompts?)|disregard (?:the )?(?:above|"
@@ -69,6 +70,16 @@ class Section:
     provenance: str
     collection: str
     flagged: bool = False      # screening found injected instructions (sanitized)
+
+
+@dataclass
+class RestrictedMatch:
+    """The best match for a message sits in a restricted article the reader cannot see: its id and groups,
+    never its text."""
+    doc_id: str
+    groups: tuple[str, ...]
+    score: float
+    margin: float              # over the best passage the reader may see
 
 
 @dataclass
@@ -190,3 +201,27 @@ class Retriever:
             reason = "reranker output was not a valid ranking"
             return Result(query, candidates[:TOP_K], "rrf_fallback", reason)
         return Result(query, reranked[:TOP_K], "rerank")
+
+    def restricted_match(self, tier, tenant_id, text, audiences=None, sources=(), min_score=RESTRICTED_AT):
+        """Register B26: is the best match for `text` a restricted article this reader cannot see? A
+        RestrictedMatch (id and groups only) when its dense score is at least min_score and beats every
+        passage the reader may see (the same filter as retrieve()); else None. Nothing restricted is read."""
+        vector = self.embed([text])[0]
+        readable = access_filter((), False, audiences=audiences, sources=sources)
+        restricted = models.Filter(must=[models.FieldCondition(key="is_restricted",
+                                                               match=models.MatchValue(value=True))])
+        best, open_best = None, 0.0
+        for name in collections_for(tier, tenant_id, self.namespace):
+            if not self.client.collection_exists(name):
+                continue
+            hit = self.client.query_points(name, query=vector, using="dense", query_filter=restricted,
+                                           limit=1, with_payload=["doc_id", "acl_groups"]).points
+            if hit and (best is None or hit[0].score > best.score):
+                best = hit[0]
+            seen = self.client.query_points(name, query=vector, using="dense", query_filter=readable,
+                                            limit=1, with_payload=False).points
+            open_best = max([open_best, *(h.score for h in seen)])
+        if best is None or best.score < min_score or best.score <= open_best:
+            return None
+        return RestrictedMatch(best.payload["doc_id"], tuple(best.payload.get("acl_groups") or ()),
+                               round(best.score, 3), round(best.score - open_best, 3))

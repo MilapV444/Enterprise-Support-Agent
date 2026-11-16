@@ -1,0 +1,13 @@
+{
+  "task": "LG-03.2",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "e4213c8a-65ee-462f-a507-037bd03f2106",
+  "human": "Intelligent_developer_123",
+  "reason": "Pre-authorized by the user for the LG sweep (chat 2026-11-14). Self-review by Claude: coordinator flow matches the old graph (plan, first, between, then, join), gate passed, removed tests covered checkpoint behaviour production never used",
+  "observed_at": "2026-11-14T18:16:34.119Z",
+  "source_hash": "9da7a3896ae4887b8a8dba05ca5a8e22e04c72060a269748011bde53bad5cd2f",
+  "config_hash": "fa5c29aab4609a8bdb6152f4a33e03f4caf0feeaaf9b24db79e4dfce61a80332",
+  "reviewed_proofs": "d7e8adf8e35115b9101e232007610faf6aedaa6f145c906685de148f06a8134b",
+  "hash": "8e9a60677f3011992f4bfe9cd92fc56ffff221b58fa0115b0db26636059cb6ad"
+}

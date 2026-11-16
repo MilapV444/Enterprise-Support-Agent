@@ -58,7 +58,9 @@ def llm_fallback(complete):
         prompt = (
             "Classify the customer conversation. Short replies inherit earlier context. "
             "missing_details is false once the issue is clear enough to look up help "
-            "(a named product plus a password or login problem is enough). "
+            "(a named product plus a password or login problem is enough; whether a service, region or "
+            "component is having problems, and the customer's own tickets, subscriptions or invoices, can be "
+            "looked up). "
             "Reply with JSON only: "
             '{"intent": one of ' + json.dumps(list(INTENTS))
             + ', "severity": index into ' + json.dumps(SEVERITY)

@@ -1,11 +1,13 @@
 """The turn loop: what happens to an accepted turn (M7-01; FR-1, FR-6, FR-9, FR-13, FR-30, FR-32, FR-40).
 
-channels.api accepts a turn (202) and hands it to dispatch(); Dispatcher runs it on a small worker pool, one
-turn at a time per conversation, and TurnLoop.run() takes it from there:
+channels.api accepts a turn (202) and hands it to dispatch(); workflows.dispatch.TemporalDispatcher signals
+the case's ticket workflow, which runs its turns one at a time as retried activities, and TurnLoop.run() takes
+it from there. A retry applies nothing twice: a turn that already ended returns at once, the status is not
+republished, and a statechart run the crash interrupted resumes at its pending stage:
 
 1. a status event ("Looking into it");
 2. input screening (safety.screening): a blocked message is answered at once and nothing else sees it;
-3. PII tokens (safety.pii): from here on only tokenized text reaches Jev, the models or the checkpoint;
+3. PII tokens (safety.pii): from here on only tokenized text reaches Jev, the models or the case state;
 4. the statechart (core.orchestrator) on the case's thread, with Jev triage, or the LLM classifier when Jev is
    not configured (its confidence is capped below what an SOP needs);
 5. the answer: retrieval once per turn (knowledge.retrieval, the public collection for an anonymous customer,
@@ -25,17 +27,13 @@ turn at a time per conversation, and TurnLoop.run() takes it from there:
 
 Any failure publishes an error event: a customer never waits on silence. The case is the conversation for
 now (case linking is not wired); procedures (SOPs) have no tools yet, so a procedure turn answers from the
-knowledge base and changes nothing. Turns run in the API process, not yet on Temporal: a crash loses the turn
-in flight (its checkpoint survives). See the open-issues register.
+knowledge base and changes nothing. See the open-issues register.
 """
 
 import json
 import logging
 import re
-import threading
 import uuid
-from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 
 import psycopg
@@ -68,6 +66,7 @@ log = logging.getLogger(__name__)
 SYSTEM = ("You are the customer support assistant. Answer only from the knowledge given (passages or "
           "specialist findings); if it does not answer the question, say so plainly and offer to bring in a "
           "person. Be direct and concrete, and never promise refunds, credits or changes. " + SPOTLIGHT_RULE)
+ENDS_A_TURN = {"final", "handoff", "error"}  # the event types a turn ends with
 BLOCKED = "Your message was stopped by our safety checks. A person can help if you need it."
 HANDOFF = "A specialist will take it from here. You can keep writing here in the meantime."
 FAILED = ("Something went wrong on our side while answering. A person will follow up, or try again in a "
@@ -93,6 +92,9 @@ TOOLS = {  # each specialist's read-only tools (tools.nimbus, W41); without Jev 
     Role.TECHNICAL: ("nimbus_status.service_status", "nimbus_support.my_tickets"),
     Role.ACCOUNT_OPS: ("nimbus_account.my_account", "nimbus_support.my_subscriptions"),
 }
+# B26: the team that owns a restricted article (its acl_groups) and its hitl.queues queue
+TEAMS = {"billing-team": ("billing", "queue_billing"), "security-team": ("security", "queue_account")}
+DEFAULT_TEAM = ("support", "queue_senior")
 FINDINGS = """You are the {role} specialist of the support team ({about}).
 From the knowledge passages and customer records above, list the facts and steps that answer the customer's
 message within your domain. Passages labelled internal are staff runbooks: keep only what the customer can do
@@ -105,7 +107,14 @@ or records answers it."""
 TOOL_STEP = """Before answering you may read one of the customer's own records, if it would help:
 {tools}
 To read one, reply with JSON only: {{"action": "<record id>"}}. Otherwise reply with the findings as asked."""
-DRAFT = "Answer the customer from the specialist findings only."
+DRAFT = ("Answer the customer from the specialist findings only. Do not tell them to contact another team, "
+         "department, person or specialist, and do not end with offers of further help: if a person is "
+         "needed, the conversation is handed over without being asked.")
+# internal trace only (the customer view shows none of these): what agents.merge's redirect check saw
+REDIRECT_TRACE = ("redirect", "redirect_confidence", "redrafted", "rejected_draft")
+# B25: one redraft, then a person
+REDRAFT = ("Your previous draft pointed the customer to another team or person. Rewrite it with only the "
+           "facts and steps from the findings that the customer can use themselves.")
 FENCE = re.compile(r"^```(?:json)?\s*|\s*```$")
 
 
@@ -173,7 +182,7 @@ class Services:
     tokens: object                 # safety.pii.tokens.Tokenizer
     complete: object               # prompt -> text, a small model (triage fallback)
     connect: object                # () -> autocommit psycopg connection to the main database
-    checkpointer: object           # a LangGraph checkpointer
+    store: object                  # core.orchestrator.case_state store (PostgresStore; MemoryStore in tests)
     decisions: object = None       # safety.governance.records.DecisionLog
     executor: object = None        # tools.execution.Executor over `tools`, audited; None: no tools
     tools: object = None           # the frozen tool registry (tools.nimbus.catalog)
@@ -187,22 +196,24 @@ class TurnLoop:
         self.steps = {}                # (tenant, conversation) -> retrieval and answer steps, for the trace
         self.turns = {}                # (tenant, conversation) -> this turn's session, principal, tier, id
         self.records = {}              # (tenant, conversation) -> {tool id: masked output} read this turn
+        self.restricted = {}           # (tenant, conversation) -> this turn's RestrictedMatch (B26), if any
         self.decide = Remasked(services.engine)
         tooled = services.executor is not None and services.tools is not None
         self.catalog = services.tools if tooled else Registry().freeze()
         self.team = registry([Specialist(role, about, self.allowed(TOOLS[role]), self.specialist(role))
                               for role, about in TEAM.items()], self.catalog)
-        # no checkpointer of its own: run inside a statechart node, it is checkpointed with the case; each
-        # turn passes its run_tool in the config (consult)
+        # runs inside a statechart stage, saved with the case; each turn passes its run_tool in the config
+        # (consult)
         self.coordinator = coordinator(self.decide, self.team, run_tool=None)
         everything = self.allowed(self.catalog.tools)
         self.generalist = specialist_graph(Specialist(Role.GENERALIST, "every topic", everything,
                                                       self.specialist(Role.GENERALIST, "every topic")), None)
-        self.graph = build({"triage": triage_hook(services.engine, llm_fallback(services.complete)),
+        triage = self.triage(triage_hook(services.engine, llm_fallback(services.complete)))
+        self.graph = build({"triage": triage,
                             "collect": lambda state: {"parameters": state.get("parameters") or {},
                                                       "missing": []},
                             "execute_sop": self.procedure, "react_step": self.diagnose,
-                            "revalidate": lambda state: True}, checkpointer=services.checkpointer)
+                            "revalidate": lambda state: True}, store=services.store)
 
     # Publishing --------------------------------------------------------------------------------------------
 
@@ -210,6 +221,13 @@ class TurnLoop:
         with self.s.connect() as conn:
             turn_events.publish(EventLog(conn), turn.tenant_id, turn.conversation_id, event_type,
                                 {"turn_id": turn.turn_id, **data})
+
+    def published(self, turn):
+        """(type, data) of the events this turn has published so far."""
+        # ponytail: reads the whole conversation's log; filter by turn in SQL if conversations grow long
+        with self.s.connect() as conn:
+            rows = turn_events.events_after(conn, turn.tenant_id, turn.conversation_id, 0)
+        return [(kind, data) for _, kind, data in rows if data.get("turn_id") == turn.turn_id]
 
     def record(self, turn, decision, reason, checks, trace):
         if self.s.decisions is None:
@@ -328,10 +346,42 @@ class TurnLoop:
             return reply.text
         return write
 
+    # Staff-only answers (register B26) -------------------------------------------------------------------
+
+    def probe_restricted(self, turn, masked):
+        """Before triage: does the message's best match sit in a restricted article the customer cannot see?
+        Only its id and groups are read; a probe that fails is no match."""
+        key = (turn.tenant_id, turn.conversation_id)
+        try:
+            match = self.s.retriever.restricted_match(turn.assurance_tier, turn.tenant_id, masked,
+                                                      audiences=CUSTOMER, sources=UNCITED)
+        except Exception:  # noqa: BLE001 - the probe is a router, not a gate: no match, answer as usual
+            log.warning("restricted-match probe failed", exc_info=True)
+            match = None
+        if match is not None:
+            team, queue = TEAMS.get(next(iter(match.groups), ""), DEFAULT_TEAM)
+            self.restricted[key] = (match, team, queue)
+            self.steps.setdefault(key, {})["restricted"] = {"doc_id": match.doc_id, "team": team,
+                                                            "queue": queue, "score": match.score,
+                                                            "margin": match.margin}
+
+    def triage(self, hook):
+        """Triage, except that more detail cannot open a staff-only article: no clarifying question then."""
+        def run(state):
+            result = hook(state)
+            if (state["tenant_id"], state["case_id"]) in self.restricted:
+                result = {**result, "missing_params": False}
+            return result
+        return run
+
     def consult(self, state, instruction=""):
         """Retrieval, the specialists and the merge: (reply text, "answered"), or (None, why a person takes
-        it: NOTHING_TO_SAY when no passage answers it, or an agents.merge / delegation code)."""
+        it: NOTHING_TO_SAY when no passage answers it, RESTRICTED_ANSWER when the answer is staff-only, or an
+        agents.merge / delegation code)."""
         key, query = (state["tenant_id"], state["case_id"]), self.customer_query(state["messages"])
+        if key in self.restricted:
+            self.steps.setdefault(key, {})["answer"] = {"outcome": "RESTRICTED_ANSWER", "retried": False}
+            return None, "RESTRICTED_ANSWER"
         sections, draft = self.retrieve(state, query), self.draft(state, instruction)
         evidence = {s.parent_id: f"{s.title}\n{s.text}" for s in sections}
         who = self.turns.get(key) or {}
@@ -344,25 +394,39 @@ class TurnLoop:
             if isinstance(getattr(self.s.engine, "jev", None), NoJev):
                 outcome = self.alone(brief, query, draft, config)
             else:
-                turn = self.coordinator.invoke({**brief, "message": query}, config)
-                outcome = human("NO_DELEGATION") if turn["plan"]["handoff"] else merge(
-                    self.decide, turn["results"], {**evidence, **self.records.get(key, {})}, draft)
+                turn = self.coordinator({**brief, "message": query}, config)
+                if turn["plan"]["handoff"]:
+                    outcome = human("NO_DELEGATION")
+                elif self.unanswered(key, turn["plan"]["lead"]):
+                    outcome = human("LEAD_UNAVAILABLE")
+                else:
+                    outcome = merge(self.decide, turn["results"], {**evidence, **self.records.get(key, {})},
+                                    draft, redraft=self.draft(state, instruction + REDRAFT + "\n"))
         except NoDraft as error:
             outcome = human(str(error))
         used = {e for claim in outcome.accepted for e in claim.evidence}
         self.evidence[key] = [s for s in sections if s.parent_id in used and s.audience in CUSTOMER]
         steps = self.steps.setdefault(key, {})
         steps["retrieval"]["sources"] = [{"doc_id": s.doc_id, "title": s.title} for s in self.evidence[key]]
-        steps.setdefault("answer", {"retried": False})["outcome"] = (
-            "answered" if outcome.kind == "reply" else outcome.reason)
+        answer = steps.setdefault("answer", {"retried": False})
+        answer["outcome"] = "answered" if outcome.kind == "reply" else outcome.reason
+        answer.update({k: outcome.detail[k] for k in REDIRECT_TRACE if k in outcome.detail})
         return (outcome.text, "answered") if outcome.kind == "reply" else (None, outcome.reason)
+
+    def unanswered(self, key, role):
+        """The lead specialist got no model answer (degraded or escalated, register B23): its domain was not
+        read, so a reply from the others alone would mislead."""
+        return any(s["role"] == role and s["outcome"] != "answered"
+                   for s in self.steps.get(key, {}).get("specialists", []))
 
     def alone(self, brief, query, draft, config):
         """Without Jev nothing delegates or adjudicates: the generalist reads for every domain, with every
         tool; agents.merge's code-only check still applies (topics are unique per specialist: nothing to
         adjudicate)."""
-        done = self.generalist.invoke({"brief": {**brief, "role": Role.GENERALIST.value, "objective": query,
-                                                 "steps": STEPS_PER_SPECIALIST}, "history": []}, config)
+        done = self.generalist({"brief": {**brief, "role": Role.GENERALIST.value, "objective": query,
+                                          "steps": STEPS_PER_SPECIALIST}, "history": []}, config)
+        if self.unanswered((brief["tenant_id"], brief["case_id"]), Role.GENERALIST.value):
+            return human("LEAD_UNAVAILABLE")
         claims = tuple(claims_from(done["result"]))
         if not claims:
             return human("NOTHING_TO_SAY")
@@ -401,7 +465,11 @@ class TurnLoop:
         self.turns[key] = {"session_id": turn.session_id, "principal_id": turn.principal_id,
                            "tier": turn.assurance_tier, "turn_id": turn.turn_id}
         try:
-            self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
+            done = self.published(turn)
+            if any(kind in ENDS_A_TURN for kind, _ in done):  # a retry of a turn that was already answered
+                return "already_answered"
+            if not any(kind == "status" and data.get("state") == "working" for kind, data in done):
+                self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
             verdict = self.s.screener.screen("user_message", turn.content)
             steps = {"screening": verdict.band}
             if verdict.band == "block":
@@ -412,13 +480,20 @@ class TurnLoop:
                 self.publish(turn, "final", disclose({"role": "assistant", "text": BLOCKED}))
                 return "blocked"
             masked, found = self.s.tokens.mask(turn.content)
+            self.probe_restricted(turn, masked)
             config = thread(turn.tenant_id, turn.conversation_id)
-            seen = len(self.graph.get_state(config).values.get("path") or [])  # path spans the whole case
-            state = self.graph.invoke(
-                {"tenant_id": turn.tenant_id, "case_id": turn.conversation_id,
-                 # the statechart only checks one is there; tools take the live one from self.turns (B22)
-                 "session_id": turn.session_id or turn.principal_id,
-                 "event": {"type": "USER_MESSAGE", "text": masked, "tier": turn.assurance_tier}}, config)
+            saved = self.graph.get_state(config)
+            if (saved.get("event") or {}).get("id") == turn.turn_id:  # a retry: the event is applied once
+                seen = saved["event"].get("seen", 0)
+                state = self.graph.invoke(None, config) if saved.get("pending") else saved
+            else:
+                seen = len(saved.get("path") or [])  # path spans the whole case
+                state = self.graph.invoke(
+                    {"tenant_id": turn.tenant_id, "case_id": turn.conversation_id,
+                     # the statechart only checks one is there; tools take the live one from self.turns (B22)
+                     "session_id": turn.session_id or turn.principal_id,
+                     "event": {"type": "USER_MESSAGE", "text": masked, "tier": turn.assurance_tier,
+                               "id": turn.turn_id, "seen": seen}}, config)
             triage = state.get("triage") or {}
             steps.update(self.steps.get(key, {}), masked=bool(found), stages=(state.get("path") or [])[seen:],
                          intent=triage.get("intent"),
@@ -442,9 +517,13 @@ class TurnLoop:
                     self.publish(turn, "final", disclose({"role": "assistant", "text": question}))
                     return "asked"
             uncovered = steps.get("answer", {}).get("outcome") == "NOTHING_TO_SAY"
-            self.record(turn, "escalate",
-                        NO_EVIDENCE if uncovered else "A specialist will look at this with you.", [], trace)
-            self.publish(turn, "handoff", {"text": HANDOFF})
+            reason = NO_EVIDENCE if uncovered else "A specialist will look at this with you."
+            notice = HANDOFF
+            if key in self.restricted:  # ponytail: queue only in the trace until hand-offs reach queues (W11)
+                reason = f"This is handled by our {self.restricted[key][1]} team."
+                notice = f"{reason} {HANDOFF}"
+            self.record(turn, "escalate", reason, [], trace)
+            self.publish(turn, "handoff", {"text": notice})
             return "handed_off"
         except Exception:  # noqa: BLE001 - the customer gets an answer whatever broke
             log.exception("turn %s failed", turn.turn_id)
@@ -454,25 +533,9 @@ class TurnLoop:
                 log.exception("could not publish the error for turn %s", turn.turn_id)
             return "failed"
         finally:
-            for per_turn in (self.evidence, self.passages, self.steps, self.turns, self.records):
+            for per_turn in (self.evidence, self.passages, self.steps, self.turns, self.records,
+                             self.restricted):
                 per_turn.pop(key, None)
-
-
-class Dispatcher:
-    """channels.api's dispatch hook: runs accepted turns on a worker pool, one at a time per conversation."""
-
-    def __init__(self, loop, workers=4):
-        self.loop, self.pool = loop, ThreadPoolExecutor(max_workers=workers, thread_name_prefix="turn")
-        self.locks, self.guard = defaultdict(threading.Lock), threading.Lock()
-
-    def _run(self, turn):
-        with self.guard:
-            lock = self.locks[(turn.tenant_id, turn.conversation_id)]
-        with lock:
-            return self.loop.run(turn)
-
-    def __call__(self, turn):
-        return self.pool.submit(self._run, turn)
 
 
 def connector(dsn):

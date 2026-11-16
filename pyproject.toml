@@ -8,10 +8,8 @@ version = "0.1.0"
 description = "Enterprise AI Customer Support Agent (learning project; design in docs/, contract in SPEC.md)"
 requires-python = ">=3.11"
 dependencies = [
-    "psycopg[binary]>=3.2",
+    "psycopg[binary,pool]>=3.2",  # pool: the case state store (runtime.production.store)
     "cryptography>=43",
-    "langgraph>=0.2",
-    "langgraph-checkpoint-postgres>=2.0",
     "temporalio>=1.8",
     "qdrant-client>=1.12,<1.13",  # keep in step with the qdrant/qdrant:v1.12.4 image in deploy/compose.yaml
     "fastapi>=0.115",

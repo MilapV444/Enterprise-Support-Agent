@@ -8,9 +8,10 @@ that runs it: used by deploy/vm/serve.py on the VM and by `python -m runtime ser
 - Retrieval: Qdrant (QDRANT_URL, e.g. Qdrant Cloud; the compose service QDRANT_SERVICE_URL when it is unset or
   a loopback address) with the pinned Ollama embedder (OLLAMA_URL); query rewrite and reranking on
   the small model. Screening: Llama Guard on Ollama plus the injection patterns (an unavailable scorer gives
-  the review band: reads only). PII tokens with PII_TOKEN_KEY (environment, then OpenBao). The statechart's
-  checkpointer holds session state, so it uses the database's direct endpoint through a checked pool, as the
-  owner (DATABASE_URL); the event log and the rest use APP_DATABASE_URL (app_login, no BYPASSRLS) when set.
+  the review band: reads only; a Llama Guard block on a customer message gets Jev's second opinion). PII
+  tokens with PII_TOKEN_KEY (environment, then OpenBao). Everything uses APP_DATABASE_URL (app_login, no
+  BYPASSRLS) when set; the statechart's case state store, saved after every stage, goes through a small
+  checked pool on it (its role and tenant settings are transaction-local, so Neon's pooler is fine).
 - Tools: the specialists' read-only tools.nimbus catalog through tools.execution.Executor, audited (S11),
   with on-behalf-of tokens from the customer's live session (AGENT-02).
 """
@@ -20,14 +21,13 @@ import os
 from pathlib import Path
 
 import httpx
-from langgraph.checkpoint.postgres import PostgresSaver
-from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 from qdrant_client import QdrantClient
 
 from channels.api.app import database_url
 from channels.identity.server import build_app
 from channels.identity.service import Identity
+from core.orchestrator.case_state import PostgresStore
 from core.orchestrator.decisions import DecisionEngine, JevClient
 from core.secrets import load_secret
 from cost.router import Router
@@ -40,14 +40,15 @@ from reliability.fallbacks import (
     claude,
     openai_compatible,
 )
-from runtime import Dispatcher, NoJev, Services, TurnLoop, connector
+from runtime import NoJev, Services, TurnLoop, connector
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
-from safety.screening.pipeline import Screener
+from safety.screening.pipeline import Screener, jev_confirm
 from safety.screening.scorers import llama_guard, pattern_injection
 from tools import nimbus
 from tools.audit import AuditLog
 from tools.execution import Executor
+from workflows.dispatch import TemporalDispatcher
 
 ROOT = Path(__file__).resolve().parents[2]
 MODELS = ROOT / "deploy" / "vm" / "models.json"
@@ -104,24 +105,15 @@ def qdrant_url(environ):
     return url
 
 
-def direct(dsn):
-    """Neon's pooled endpoint is a transaction pooler: session state (the checkpointer) goes around it."""
-    return dsn.replace("-pooler.", ".", 1)
-
-
-def checkpointer(dsn, max_size=4):
-    """The statechart's Postgres checkpointer for a long-lived process: a small pool that checks each
-    connection before use (Neon closes idle connections when its compute suspends), shared by the worker
-    threads."""
-    settings = {"autocommit": True, "prepare_threshold": 0, "row_factory": dict_row}
+def store(dsn, max_size=4):
+    """The statechart's case state store for a long-lived process: a small pool that checks each connection
+    before use (Neon closes idle connections when its compute suspends), shared by the worker threads."""
     pool = ConnectionPool(dsn, min_size=1, max_size=max_size, check=ConnectionPool.check_connection,
-                          open=True, kwargs=settings)
-    saver = PostgresSaver(pool)
-    saver.setup()
-    return saver
+                          open=True, kwargs={"autocommit": True, "prepare_threshold": 0})
+    return PostgresStore(pool.connection)
 
 
-def services(environ, checkpointer, lock=None):
+def services(environ, store, lock=None):
     lock = lock or json.loads(Path(environ.get("MODELS_FILE", MODELS)).read_text(encoding="utf-8"))
     provider_tiers = tiers(lock, environ)
     complete = small_model(provider_tiers)
@@ -132,17 +124,20 @@ def services(environ, checkpointer, lock=None):
     qdrant = QdrantClient(url=qdrant_url(environ),
                           api_key=environ.get("QDRANT_API_KEY") or None)
     connect = connector(database_url())
-    screener = Screener(llama_guard(ollama, lock["screening"]["model"]), pattern_injection)
+    engine = DecisionEngine(jev)
+    # B24: a Llama Guard block on a customer message gets Jev's second opinion (none without Jev)
+    screener = Screener(llama_guard(ollama, lock["screening"]["model"]), pattern_injection,
+                        confirm=jev_confirm(engine))
     identity = Identity(connect)  # sessions and on-behalf-of tokens; its key never leaves this process
     tools = nimbus.catalog(connect, identity)
     # ponytail: no key store; every catalog tool is argument-free, so an audit record has nothing to seal (a
     # tool with arguments fails closed, AUDIT_UNAVAILABLE, until data.keys.KeyStore is wired here)
     executor = Executor(tools, nimbus.SYSTEMS, screener, identity=identity, audit=AuditLog(connect, None))
     return Services(
-        engine=DecisionEngine(jev), router=Router(provider_tiers),
+        engine=engine, router=Router(provider_tiers),
         retriever=Retriever(qdrant, ollama_embed(ollama, lock["embedding"]["model"]), complete),
         screener=screener, tokens=Tokenizer(load_secret("PII_TOKEN_KEY")), complete=complete,
-        connect=connect, checkpointer=checkpointer, decisions=DecisionLog(connect), executor=executor,
+        connect=connect, store=store, decisions=DecisionLog(connect), executor=executor,
         tools=tools)
 
 
@@ -150,18 +145,17 @@ def log_code(tenant_id, user_id, code):
     print(f"[one-time code] {tenant_id}/{user_id}: {code}", flush=True)
 
 
-def app(environ=os.environ, workers=4):
-    """The API with sign-in (anonymous and one-time code; no mock SSO, no header sign-in) and the turn
-    loop."""
+def app(environ=os.environ):
+    """The API with sign-in (anonymous and one-time code; no mock SSO, no header sign-in) and the turn loop,
+    whose turns run on Temporal (TEMPORAL_ADDRESS) with the worker in this process."""
+
     if environ.get("SUPPORT_AGENT_DEV_AUTH") == "1":
         raise SystemExit("refusing to serve with SUPPORT_AGENT_DEV_AUTH=1: anyone could sign in with a "
                          "header")
-    # The checkpointer creates its own tables, which app_login (APP_DATABASE_URL, S17) cannot, and they have
-    # no tenant RLS (S10): it keeps the owner login; every tenant query goes through database_url().
-    owner = os.environ.get("DATABASE_URL") or database_url()
-    loop = TurnLoop(services(environ, checkpointer(direct(owner))))
+    loop = TurnLoop(services(environ, store(database_url())))
     connect = connector(database_url())
-    api = build_app(None, Identity(connect, idp=None, send_otp=log_code), dispatch=Dispatcher(loop, workers))
+    dispatch = TemporalDispatcher(environ.get("TEMPORAL_ADDRESS", "127.0.0.1:7233"), loop)
+    api = build_app(None, Identity(connect, idp=None, send_otp=log_code), dispatch=dispatch)
     api.state.turn_loop = loop
 
     @api.get("/healthz")

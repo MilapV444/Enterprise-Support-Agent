@@ -18,7 +18,6 @@ import httpx
 import psycopg
 import pytest
 from fastapi.testclient import TestClient
-from langgraph.checkpoint.memory import InMemorySaver
 from qdrant_client import QdrantClient
 
 from channels import sessions
@@ -27,14 +26,17 @@ from channels.api.envelope import InboundTurn
 from channels.identity import otp
 from channels.identity.server import build_app
 from channels.identity.service import Identity
+from core.orchestrator import case_state
+from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.decisions import DecisionEngine, JevClient
+from core.orchestrator.statechart import thread
 from cost.router import Router
 from data import events
 from data.migrate import migrate, psql
 from knowledge.ingest import pipeline as ingest
-from knowledge.retrieval.pipeline import Retriever
+from knowledge.retrieval.pipeline import RestrictedMatch, Retriever
 from reliability.fallbacks import openai_compatible
-from runtime import FAILED, HANDOFF, Dispatcher, NoJev, Services, TurnLoop, connector, production
+from runtime import FAILED, HANDOFF, NoJev, Services, TurnLoop, connector, production
 from safety.governance import records
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
@@ -45,6 +47,7 @@ from tools import audit as tool_audit
 from tools import nimbus
 from tools.audit import AuditLog
 from tools.execution import Executor
+from workflows.dispatch import TemporalDispatcher
 
 ROOT = Path(__file__).resolve().parents[2]
 DB = "test_runtime"
@@ -63,6 +66,7 @@ def triage_answers(intent, confidence, severity, missing):
 
 
 ANSWER = "Choose \"Forgot password\" on the sign-in page; the reset link works for 30 minutes."
+REDIRECTING = "Please contact the identity team, who can reset it for you."
 PASSAGE_ID = re.compile(r"<<<DATA (?:internal )?knowledge (\S+?)>>>")
 RECORD_ID = re.compile(r"<<<DATA (nimbus_\w+\.\w+)>>>")
 
@@ -71,10 +75,13 @@ class World:
     """The scripted outside world, with a log of everything that reached it. claims: what every specialist
     reports (None: one claim citing every passage it was shown)."""
 
-    def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None):
+    def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None,
+                 specialists_down=False, redirecting=False):
         self.triage = triage or triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.05)
         self.model_down, self.jev, self.model = model_down, [], []
         self.lead, self.claims, self.read = lead, claims, read   # read: the record a specialist asks for
+        self.specialists_down = specialists_down   # every specialist's model call fails (B23)
+        self.redirecting = redirecting             # the first draft points the customer elsewhere (B25)
 
     def jev_reply(self, request):
         body = json.loads(request.content)
@@ -85,7 +92,9 @@ class World:
             answers = {qid: {"type": "noul", "noul": 0.05} for qid in body["questions"]}
             answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": 0.9}
         elif "redirect" in body["questions"]:
-            answers = {"redirect": {"type": "noul", "noul": 0.05}}
+            elsewhere = REDIRECTING in json.dumps(body["state"])
+            answers = {"redirect": {"type": "choice", "choice": "hand_off" if elsewhere else "self_service",
+                                    "confidence": 0.9}}
         else:
             answers = {"difficulty": {"type": "score", "score": 1.0, "confidence": 0.9,
                                       "probabilities": {"0": 0.05, "1": 0.85, "2": 0.1, "3": 0, "4": 0}}}
@@ -94,9 +103,9 @@ class World:
     def model_reply(self, request):
         messages = json.loads(request.content)["messages"]
         self.model.append(messages)
-        if self.model_down:
-            return httpx.Response(503, json={"error": "overloaded"})
         prompt = messages[-1]["content"]
+        if self.model_down or (self.specialists_down and "specialist of the support team" in prompt):
+            return httpx.Response(503, json={"error": "overloaded"})
         if "standalone search query" in prompt:
             latest = prompt.split("Latest message:\n", 1)[1].strip()
             text = json.dumps({"standalone_query": latest, "exact_identifiers": []})
@@ -115,7 +124,7 @@ class World:
             text = json.dumps(self.claims if self.claims is not None else
                               [{"topic": "answer", "text": ANSWER, "evidence": ids}] if ids else [])
         elif "specialist findings" in prompt:
-            text = ANSWER
+            text = REDIRECTING if self.redirecting and "previous draft pointed" not in prompt else ANSWER
         else:
             text = "not a ranking"
         return httpx.Response(200, json={"choices": [{"message": {"content": text}}],
@@ -125,11 +134,12 @@ class World:
 @pytest.fixture(scope="module")
 def stack():
     subprocess.run(["docker", "compose", "-f", "deploy/compose.yaml", "--env-file", ".env.example", "up",
-                    "-d", "--wait", "postgres", "qdrant"], cwd=ROOT, check=True, capture_output=True)
+                    "-d", "--wait", "postgres", "qdrant", "temporal"], cwd=ROOT, check=True,
+                   capture_output=True)
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
-    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus):
+    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus, case_state):
         module.apply_schema(DB)
     psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'G', 'EU')")
     for tenant, principal, company in (("t_us", "sarah", "Acme"), ("t_us", "bob", "Bobco"),
@@ -164,7 +174,11 @@ def loop(stack, world, jev=True, tools=False):
                                                         audit=AuditLog(connect, lambda: None))}
     return TurnLoop(Services(engine=engine, router=router, retriever=retriever, screener=screener,
                              tokens=Tokenizer(b"runtime-test-key"), complete=complete, connect=connect,
-                             checkpointer=InMemorySaver(), decisions=DecisionLog(connect), **extra))
+                             store=MemoryStore(), decisions=DecisionLog(connect), **extra))
+
+
+def queue():
+    return f"test-{uuid.uuid4().hex}"
 
 
 def inbound(text, conversation=None, tier="T0_ANON", principal="anon:1", tenant="t_us", session=None):
@@ -205,7 +219,8 @@ def test_without_jev_the_llm_classifier_triages_and_the_turn_is_still_answered(s
     world = World()
     turn = inbound("How do I reset my password?")
     assert loop(stack, world, jev=False).run(turn) == "answered"
-    assert world.jev == [] and any("Classify the customer conversation" in m[-1]["content"] for m in world.model)
+    assert world.jev == []
+    assert any("Classify the customer conversation" in m[-1]["content"] for m in world.model)
 
 
 def test_a_password_reset_follow_up_is_answered_instead_of_asked_again(stack):
@@ -317,7 +332,7 @@ def test_personal_data_reaches_no_model_and_no_jev_request(stack):
 
 def test_a_turn_posted_to_the_api_is_answered_on_its_event_stream(stack, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", DSN)
-    dispatcher = Dispatcher(loop(stack, World()), workers=2)
+    dispatcher = TemporalDispatcher("127.0.0.1:7233", loop(stack, World()), task_queue=queue())
     identity = Identity(connector(DSN), idp=None)
     api = TestClient(build_app(None, identity, dispatch=dispatcher))
     token = api.post("/v1/identity/anonymous", json={"tenant_id": "t_us"}).json()["access_token"]
@@ -335,6 +350,7 @@ def test_a_turn_posted_to_the_api_is_answered_on_its_event_stream(stack, monkeyp
         if "final" in kinds:
             break
         time.sleep(0.2)
+    dispatcher.close()
     assert kinds[0] == "status" and kinds[-1] == "final"                     # queued, working, ..., final
     assert kinds.count("status") == 2
 
@@ -384,11 +400,56 @@ def test_turns_of_one_conversation_run_one_at_a_time(stack):
         order.append(("end", turn.turn_id))
         return result
     runner.run = run
-    dispatcher, conversation = Dispatcher(runner, workers=4), f"c-{uuid.uuid4().hex[:8]}"
+    dispatcher = TemporalDispatcher("127.0.0.1:7233", runner, task_queue=queue())
+    conversation = f"c-{uuid.uuid4().hex[:8]}"
     first, second = inbound("How do I reset my password?", conversation), inbound("Thanks!", conversation)
-    futures = [dispatcher(first), dispatcher(second)]
-    assert [f.result(timeout=60) for f in futures]
-    assert [step for step, _ in order] == ["start", "end", "start", "end"]
+    dispatcher(first)
+    dispatcher(second)                                    # while the first runs: queued on its workflow
+    deadline = time.monotonic() + 60
+    while len(order) < 4 and time.monotonic() < deadline:
+        time.sleep(0.2)
+    dispatcher.close()
+    assert order == [("start", first.turn_id), ("end", first.turn_id), ("start", second.turn_id),
+                     ("end", second.turn_id)]
+
+
+class Killed(BaseException):
+    """The worker process dies: not an error the turn loop answers, the activity is retried elsewhere."""
+
+
+def test_a_retried_turn_that_already_ended_publishes_nothing_more(stack):
+    world = World()
+    runner, turn = loop(stack, world), inbound("How do I reset my password?")
+    assert runner.run(turn) == "answered"
+    events, calls = published(turn), (len(world.jev), len(world.model))
+    assert runner.run(turn) == "already_answered"
+    assert published(turn) == events and (len(world.jev), len(world.model)) == calls
+
+
+def test_a_turn_whose_worker_died_mid_statechart_resumes_there_and_ends_once(stack):
+    """LG-04.2 scenario lg-04-crash: the retry carries on from the saved stage; nothing is applied twice."""
+    world = World()
+    runner, turn = loop(stack, world), inbound("How do I reset my password?")
+    retrieve, died = runner.s.retriever.retrieve, []
+
+    def dies_once(*args, **kwargs):
+        if not died:
+            died.append(True)
+            raise Killed()
+        return retrieve(*args, **kwargs)
+    runner.s.retriever.retrieve = dies_once
+    with pytest.raises(Killed):
+        runner.run(turn)
+    saved = runner.graph.get_state(thread("t_us", turn.conversation_id))
+    assert saved["pending"] and saved["event"]["id"] == turn.turn_id
+    triaged = sum(1 for body in world.jev if "intent" in body["questions"])
+    assert runner.run(turn) == "answered"                         # the retry
+    kinds = [kind for kind, _ in published(turn)]
+    assert kinds.count("final") == 1 and kinds.count("status") == 1 and "error" not in kinds
+    state = runner.graph.get_state(thread("t_us", turn.conversation_id))
+    assert len(state["path"]) == len(set(state["path"])) and state["path"][-1] == "RESOLVED"
+    assert sum(1 for body in world.jev if "intent" in body["questions"]) == triaged  # not triaged again
+    assert len([m for m in state["messages"] if m["role"] == "user"]) == 1
 
 
 # The production wiring ------------------------------------------------------------------------------------
@@ -401,15 +462,13 @@ def test_tiers_come_from_the_lock_and_only_the_keys_that_are_set():
     names = [[p.name for p in tier] for tier in production.tiers(LOCK, keys)]
     assert names == [["groq"], [], ["claude"]]
     paid = production.tiers(LOCK, {"ANTHROPIC_API_KEY": "a"})[2][0]
-    assert paid.paid and paid.cost(1_000_000, 0) == 4.0
+    assert paid.paid and paid.cost(1_000_000, 0) == LOCK["tiers"]["2"]["usd_per_mtok"][0]  # from the lock
     assert production.tiers(LOCK, {}) == [[], [], []]
 
 
-def test_a_small_model_outage_reads_as_no_answer_and_the_session_store_skips_the_pooler():
+def test_a_small_model_outage_reads_as_no_answer():
     with pytest.raises(ValueError, match="no small model answered"):
         production.small_model([[], []])("hi")
-    assert production.direct("postgresql://u:p@ep-x-pooler.eu.aws.neon.tech/db") == \
-        "postgresql://u:p@ep-x.eu.aws.neon.tech/db"
 
 
 def test_the_app_refuses_header_sign_in():
@@ -417,17 +476,14 @@ def test_the_app_refuses_header_sign_in():
         production.app({"SUPPORT_AGENT_DEV_AUTH": "1"})
 
 
-def test_the_checkpointer_survives_its_connections_being_dropped(stack):
+def test_the_case_state_store_survives_its_connections_being_dropped(stack):
     """Neon closes idle connections when its compute suspends; the pool checks each one before use."""
-    from core.orchestrator.statechart import thread as case_thread
-
-    saver = production.checkpointer(DSN, max_size=2)
-    config = case_thread("t_us", "c-drop")
-    assert saver.get_tuple(config) is None
+    store = production.store(DSN, max_size=2)
+    assert store.save("t_us", "c-drop", {"stage": "TRIAGED"}, 0) == 1
     psql(DB, "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = current_database() "
              "AND pid <> pg_backend_pid()")
-    assert saver.get_tuple(config) is None                      # a fresh connection, no error
-    saver.conn.close()
+    assert store.load("t_us", "c-drop") == ({"stage": "TRIAGED"}, 1)  # a fresh connection, no error
+    store.connect.__self__.close()                                       # the pool
 
 
 @pytest.mark.parametrize("configured, expected", [
@@ -485,7 +541,8 @@ def trace_steps(turn):
 
 def test_a_signed_in_customer_is_answered_from_their_own_record_read_through_the_audited_executor(stack):
     world = World(lead="billing", read="nimbus_account.my_invoices")
-    turn = inbound("Is my latest invoice paid?", tier="T2_SSO", principal="sarah", session=signed_in("T2_SSO"))
+    turn = inbound("Is my latest invoice paid?", tier="T2_SSO", principal="sarah",
+                   session=signed_in("T2_SSO"))
     assert loop(stack, world, tools=True).run(turn) == "answered"
     offered, read = specialist_prompts(world)
     assert "- nimbus_account.my_invoices:" in offered and "- nimbus_account.my_account:" not in offered
@@ -523,7 +580,8 @@ def test_a_turn_from_a_session_that_has_ended_reads_nothing(stack):
         sessions.end(conn, "t_us", session)
     turn = inbound("Is my latest invoice paid?", tier="T2_SSO", principal="sarah", session=session)
     loop(stack, world, tools=True).run(turn)
-    assert tool_audit_of(turn) == [("nimbus_account.my_invoices", "failed", "sarah", "AUTHENTICATION_EXPIRED")]
+    expired = ("nimbus_account.my_invoices", "failed", "sarah", "AUTHENTICATION_EXPIRED")
+    assert tool_audit_of(turn) == [expired]
     assert not any("<<<DATA nimbus_" in prompt for prompt in specialist_prompts(world))
 
 
@@ -537,3 +595,64 @@ def test_the_api_hands_the_turn_the_session_its_token_names(stack, monkeypatch):
     assert reply.status_code == 202
     (turn,) = dispatched
     assert turn.session_id and identity.session_principal("t_us", turn.session_id)[0] == turn.principal_id
+
+
+# SWEEP-05 ---------------------------------------------------------------------------------------------------
+
+def test_when_the_lead_specialist_gets_no_model_answer_the_case_goes_to_a_person(stack):
+    """Register B23: the lead's domain was not read, so the others' claims alone would mislead."""
+    world = World(specialists_down=True)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "handed_off"
+    assert trace_steps(turn)["answer"]["outcome"] == "LEAD_UNAVAILABLE"
+
+
+def test_without_jev_a_generalist_that_gets_no_model_answer_hands_off_rather_than_saying_no_docs(stack):
+    world = World(specialists_down=True)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world, jev=False).run(turn) == "handed_off"
+    assert trace_steps(turn)["answer"]["outcome"] == "LEAD_UNAVAILABLE"
+
+
+def test_a_draft_that_points_elsewhere_is_redrafted_once_and_the_score_is_in_the_trace(stack):
+    """Register B25: golden question 16 went to a person over one drafter-added sentence."""
+    world = World(redirecting=True)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "answered"
+    final = [data for kind, data in published(turn) if kind == "final"][-1]
+    assert final["text"] == ANSWER
+    answer = trace_steps(turn)["answer"]
+    assert (answer["outcome"], answer["redrafted"]) == ("answered", True)
+    assert answer["redirect"] == "self_service"
+    assert answer["rejected_draft"] == REDIRECTING   # internal trace only
+
+
+# SWEEP-07 ---------------------------------------------------------------------------------------------------
+
+WIRE = RestrictedMatch("kb-policy-internal-billing-high-value-wire-overrides", ("billing-team",), 0.754,
+                       0.042)
+
+
+def test_a_question_only_a_restricted_article_answers_goes_to_its_team_without_a_clarifying_question(stack):
+    """Register B26 (golden question 12's shape): the answer exists but is staff-only, so asking the customer
+    for more detail cannot help; no model reads anything for it and nothing restricted reaches the reply."""
+    world = World(triage=triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.9))     # Jev: details missing
+    runner = loop(stack, world)
+    runner.s.retriever.restricted_match = lambda *args, **kwargs: WIRE
+    turn = inbound("what is the exact command to stage a manual wire refund override?")
+    assert runner.run(turn) == "handed_off"
+    (handoff,) = [data for kind, data in published(turn) if kind == "handoff"]
+    assert handoff["text"].startswith("This is handled by our billing team.")
+    steps = trace_steps(turn)
+    assert steps["restricted"]["queue"] == "queue_billing"
+    assert steps["answer"]["outcome"] == "RESTRICTED_ANSWER"
+    assert "AWAITING_CUSTOMER" not in steps["stages"] and specialist_prompts(world) == []
+
+
+def test_a_probe_that_fails_leaves_the_turn_to_be_answered_as_usual(stack):
+    def broken(*args, **kwargs):
+        raise ConnectionError("qdrant unreachable")
+    runner = loop(stack, World())
+    runner.s.retriever.restricted_match = broken
+    turn = inbound("How do I reset my password?")
+    assert runner.run(turn) == "answered" and "restricted" not in trace_steps(turn)

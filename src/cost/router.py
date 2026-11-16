@@ -2,16 +2,22 @@
 
 Tiers, cheapest first: 0 a small free model (Groq / Ollama), 1 a stronger free model (Gemini / Groq), 2 Claude
 under the USD 10 monthly cap. A Jev difficulty score picks the tier (below 0.35 -> 0, below 0.75 -> 1, else 2;
-mid when Jev cannot answer). A reply that fails its checks is re-run once, one tier up; failing again goes to
-a human. Within a tier, providers fall back to free ones (never to a paid one), and Claude is skipped when the
-cap cannot cover the turn, so the hardest turns land on the best free model.
+mid when Jev cannot answer). A reply that fails its checks is re-run once, one tier up; a tier where no
+provider answers is re-run one tier up when that tier adds a provider not yet tried (Claude, within the
+cap); failing again goes to a human (or reads as degraded when no provider answered at all).
+Each provider failure is logged with its code (register B23). Within a tier, providers fall back to free
+ones (never to a paid one), and Claude is skipped when the cap cannot cover the turn, so the hardest turns
+land on the best free model.
 """
 
+import logging
 from dataclasses import dataclass
 
 from core.context.assembler import approx_tokens
 from core.orchestrator.decisions import JevUnavailable
 from reliability.fallbacks import AllProvidersFailed, ProviderError, RetryBudget, call_chain
+
+log = logging.getLogger(__name__)
 
 THETA_LOW, THETA_HIGH = 0.35, 0.75
 MONTHLY_CAP_USD = 10.0
@@ -88,16 +94,24 @@ class Router:
 
     def answer(self, messages, engine, masked_state, verify, max_tokens=4096):
         """verify(text) -> bool runs the output checks (schema, safety, promises, Jev confidence)."""
-        tier, turn = pick_tier(difficulty(engine, masked_state)), {"retries": 0}
+        tier, turn, outcome = pick_tier(difficulty(engine, masked_state)), {"retries": 0}, "escalate"
+        tried = set()
         for step, current in enumerate((tier, tier + 1)):
             if current >= len(self.tiers):
                 break
+            chain = {p.name for p in self.chain(current, messages, max_tokens)}
+            if outcome == "degraded" and not chain - tried:
+                break  # one tier up offers nobody new (free tiers never fall back to Claude)
+            tried |= chain
             try:
                 completion = self.generate(messages, current, max_tokens, turn)
-            except AllProvidersFailed:
-                return Reply("degraded", tier=current)
+            except AllProvidersFailed as failed:
+                log.warning("tier %s: no provider answered: %s", current, str(failed)[:400])
+                outcome = "degraded"
+                continue
             except ProviderError as refusal:  # only refusals escape the chain
                 return Reply("escalate", tier=current, provider=refusal.provider)
+            outcome = "escalate"
             if verify(completion.text):
                 return Reply("answered", completion.text, current, completion.provider, cascaded=step == 1)
-        return Reply("escalate", tier=current)
+        return Reply(outcome, tier=current)
