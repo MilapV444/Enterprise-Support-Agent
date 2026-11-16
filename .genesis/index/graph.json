@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "4cf9bd2afe0588ae3103c9824be6a787aedb455f",
-  "sourceHash": "ddf4d8d7c40a6795192df0fe8527886b2593677d85afd0ef1b2c3dfa361b77c9",
+  "revision": "b4eb06e639f55abceb012bb22ce7ac279623ff8d",
+  "sourceHash": "1ca23cea29986c01624fc2b377af9d05c002bb7ec6084afc6a02384f64a8714a",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -860,6 +860,16 @@
       "contentHash": "d3b19684099f8c07cdfa77958c9eba08d491b31b5ef6483cb65eea701d19e73b"
     },
     {
+      "id": "file:src/hitl/tickets/__init__.py",
+      "type": "file",
+      "label": "src/hitl/tickets/__init__.py",
+      "path": "src/hitl/tickets/__init__.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "9cf1fdd073aace949c18e0a830739a3037ce9856d45b55cdad38fb28ab2311c5"
+    },
+    {
       "id": "file:src/improvement/evolution/__init__.py",
       "type": "file",
       "label": "src/improvement/evolution/__init__.py",
@@ -1067,7 +1077,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "1edc6312baf201b9196ee2aba6296e94eb1cf8c4e9b92aed711a09f616bd28bf"
+      "contentHash": "d1c03455067bc8fa9f52bc55dde346f665ec10e76c422fbdf61119b6fb87a2fc"
     },
     {
       "id": "file:src/memory/lifecycle/retention.py",
@@ -1077,7 +1087,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "b1a63fdc23487a30d2de2fcf8fbc6e730ed1be988f1c05718555c097213d1049"
+      "contentHash": "bf7063e48ae3cdedf93aa7e30965853604a526858b50eca3a767fd810dc193e0"
     },
     {
       "id": "file:src/observability/alerts/__init__.py",
@@ -1747,7 +1757,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "905c9f0f862aed2fc31a510f939c5656caac1270b336d2dd6ebc90d42c3311a5"
+      "contentHash": "58dad4ee3827329d13cc801160903714e302be736d525a087a91f96db2b09ba5"
     },
     {
       "id": "file:tests/evals/gate/test_release_gate.py",
@@ -1808,6 +1818,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "6c8277c550a51a71bcdcab37602c19d123872466bcb193114a55f3e7904fc21e"
+    },
+    {
+      "id": "file:tests/hitl/tickets/test_tickets.py",
+      "type": "file",
+      "label": "tests/hitl/tickets/test_tickets.py",
+      "path": "tests/hitl/tickets/test_tickets.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "dbfc25d237b33f7642de758ac38ed9e9504d0944e5461fbcde8f2d2f86ebc2da"
     },
     {
       "id": "file:tests/identity/conftest.py",

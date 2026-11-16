@@ -32,6 +32,8 @@ from data.erasure import ErasureRequest, start_erasure, subject_hash
 from data.keys import KeyShredded, KeyStore, OpenBaoTransit, decrypt_field, encrypt_field
 from data.migrate import migrate, psql
 from data.storage import LocalStore, read_snapshot
+from hitl import tickets
+from hitl.tickets import Tickets
 from knowledge.index.store import Index
 from knowledge.ingest import pipeline as ingest
 from knowledge.ingest.pipeline import Document, Ingestion
@@ -68,8 +70,8 @@ def stack():
         psql("postgres", f'DROP DATABASE IF EXISTS "{name}" WITH (FORCE)')
         psql("postgres", f'CREATE DATABASE "{name}"')
         migrate(kind, name)
-    for module in (sessions, turns, otp, events, dialogue, fact_store, records, case_state, inventory,
-                   retention):
+    for module in (sessions, turns, otp, events, dialogue, fact_store, records, case_state, tickets,
+                   inventory, retention):
         module.apply_schema(MAIN)
     psql(MAIN, "INSERT INTO tenants (id, name, region) "
                "VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'Globex', 'EU')")
@@ -120,6 +122,11 @@ def seed(stack, principal, tenant="t_us"):
         facts.add(tenant, principal, statement, "comm_style", 5, [1.0, 0.0])
         DecisionLog(lambda: connect(MAIN)).record(tenant, conversation, "answer", "We found the answer.",
                                                   ["Content safety"], {"message": masked})
+    desk = Tickets(lambda: connect(MAIN))  # a raised ticket with a note, both holding the masked message
+    ticket = desk.confirm(tenant, principal, desk.propose(
+        tenant, principal, conversation, "k1", category="refund", subject="Duplicate charge",
+        queue="queue_billing", reason="refund request", description=masked).id)
+    desk.add_note(tenant, principal, ticket.id, "customer", masked)
     payload = encrypt_field(keys, tenant, principal, "tool_audit:1", b'{"email": "x@acme.com"}')
     psql(MAIN, f"""
         INSERT INTO turns (tenant_id, principal_id, conversation_id, idempotency_key)
@@ -172,7 +179,10 @@ def counts(principal, seeded, tenant="t_us"):
              + (SELECT count(*) FROM outbound_event_log WHERE conversation_id = '{conversation}')
              + (SELECT count(*) FROM turns WHERE principal_id = '{principal}')
              + (SELECT count(*) FROM otp_challenges WHERE principal_id = '{principal}')
-             + (SELECT count(*) FROM user_facts WHERE principal_id = '{principal}'),
+             + (SELECT count(*) FROM user_facts WHERE principal_id = '{principal}')
+             + (SELECT count(*) FROM support_tickets WHERE principal_id = '{principal}')
+             + (SELECT count(*) FROM ticket_events WHERE ticket_id IN
+                 (SELECT id FROM support_tickets WHERE principal_id = '{principal}')),
                (SELECT count(*) FROM case_state
                  WHERE tenant_id = '{tenant}' AND case_id IN ('{case}', '{conversation}'))
     """)
@@ -322,7 +332,8 @@ def test_retention_expires_each_memory_type_on_its_own_clock(stack):
         old = facts.add("t_us", "hank", "Uses Jenkins", "technical_env", 4, [1.0, 0.0])
         facts.add("t_us", "hank", "Uses GitHub Actions", "technical_env", 4, [1.0, 0.1], replaces=old)
         now = datetime.now(timezone.utc)
-        assert retention.sweep(conn, "t_us", now) == {"facts": 0, "case_state": 0, "conversations": 0}
+        nothing = {"facts": 0, "case_state": 0, "tickets": 0, "conversations": 0}
+        assert retention.sweep(conn, "t_us", now) == nothing
         psql(MAIN, f"UPDATE cases SET status = 'resolved' WHERE id = '{hank['case']}'")
         assert retention.sweep(conn, "t_us", now + timedelta(days=29))["case_state"] == 0
         assert retention.sweep(conn, "t_us", now + timedelta(days=31))["case_state"] > 0
@@ -334,6 +345,8 @@ def test_retention_expires_each_memory_type_on_its_own_clock(stack):
         assert psql(MAIN, turns_left) != [["0"]]
         assert retention.sweep(conn, "t_us", now + timedelta(days=731))["conversations"] > 0
         assert psql(MAIN, turns_left) == [["0"]] and counts("hank", hank)["case_state"] == 0
+        hank_tickets = "SELECT count(*) FROM support_tickets WHERE principal_id = 'hank'"
+        assert psql(MAIN, hank_tickets) == [["0"]]
 
 
 def test_a_closed_case_gets_its_close_time_and_loses_it_on_reopen(stack):

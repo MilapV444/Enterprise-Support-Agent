@@ -2162,15 +2162,15 @@
 
 ### TK-01 — Ticket store (DECISION-368069f5): hitl.tickets owns support_tickets (TKT number, tenant, principal, conversation, case, creating turn, category, subject, tokenized description, invoice, amount in cents and currency, status proposed/open/in_review/resolved/closed/expired, queue, reason, proposal expiry, timestamps) and ticket_events (created, confirmed, note, status; actor; masked text); forced tenant RLS, a customer sees only their own; lifecycle_service grant in the module schema; one ticket per proposal key; store API propose, confirm once, add_note, list_for, get; erased with the customer, retained with the conversation, expired proposals swept; backup replay follows
 
-- state/risk: active / medium
+- state/risk: done / medium
 - requirements: FR-45, FR-19, NFR-5
 - scope: src/hitl/, src/memory/lifecycle/, deploy/backup/, tests/hitl/, tests/erasure/, tests/memory/, tests/reliability/backup/, tests/contracts/, tests/improvement/
-- gates: tests: python -m pytest tests/hitl tests/erasure tests/memory tests/reliability/backup tests/contracts tests/improvement -q, independent-review: pending
+- gates: tests: python -m pytest tests/hitl tests/erasure tests/memory tests/reliability/backup tests/contracts tests/improvement -q, independent-review: pass
 - next: Run the task pre-flight.
 
 ### TK-02 — create_ticket write tool: registry entry (low-risk write, tier T1 and up, callable only by the procedure step, never by specialists), run through tools.execution.Executor (audit record, idempotency key = tool call id), arguments taken only from the proposal row, confirms the proposal through hitl.tickets; a repeated call returns the same ticket
 
-- state/risk: queued / medium
+- state/risk: active / medium
 - requirements: FR-45, FR-20, FR-21, FR-22, FR-24
 - scope: src/tools/, src/hitl/, tests/tools/, tests/hitl/, tests/contracts/
 - gates: tests: python -m pytest tests/tools tests/hitl tests/contracts -q, independent-review: pending

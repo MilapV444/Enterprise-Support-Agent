@@ -5,8 +5,9 @@ Erased, keyed on (tenant_id, principal_id):
     temporal      ticket workflow histories of the user's cases and conversations (a live turn's workflow is
                   keyed by its conversation, and its history holds the raw message)
     postgres      the case state of the user's own cases and conversations (the turn loop keys a case by its
-                  conversation), facts, dialogue turns / summaries / pins, the event log, submitted turns,
-                  one-time codes, conversations, the user's own cases and sessions
+                  conversation), the user's support tickets with their history, facts, dialogue turns /
+                  summaries / pins, the event log, submitted turns, one-time codes, conversations, the user's
+                  own cases and sessions
     vault         the PII values behind every token found in the user's data
     keys          the user's data keys (crypto-shredding: tool audit payloads and any copy restored from a
                   backup become unreadable)
@@ -52,8 +53,11 @@ from safety.pii.tokens import TOKEN, find
 STORES = ["temporal", "postgres", "vault", "keys"]
 DELETE_WAIT = 30  # seconds to wait for Temporal's asynchronous deletion before retrying the activity
 OWN_CONVERSATIONS = "SELECT id FROM conversations WHERE tenant_id = %(t)s AND principal_id = %(p)s"
+OWN_TICKETS = "SELECT id FROM support_tickets WHERE tenant_id = %(t)s AND principal_id = %(p)s"
 POSTGRES = [  # (table, predicate), children before parents; every predicate names tenant and principal
     ("case_state", f"tenant_id = %(t)s AND (case_id = ANY(%(cases)s) OR case_id IN ({OWN_CONVERSATIONS}))"),
+    ("ticket_events", f"tenant_id = %(t)s AND ticket_id IN ({OWN_TICKETS})"),
+    ("support_tickets", "tenant_id = %(t)s AND principal_id = %(p)s"),
     ("user_facts", "tenant_id = %(t)s AND principal_id = %(p)s"),
     ("dialogue_pins", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
     ("dialogue_summaries", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
@@ -207,6 +211,9 @@ class ErasureActivities:
                 for table, column in (("dialogue_turns", "content"), ("dialogue_summaries", "summary"),
                                       ("dialogue_pins", "content"), ("outbound_event_log", "data::text"))),
                 args)]
+            texts += [r[0] for r in conn.execute(  # ticket texts are masked: their tokens' values go too
+                f"SELECT description FROM support_tickets WHERE tenant_id = %(t)s AND principal_id = %(p)s "
+                f"UNION ALL SELECT text FROM ticket_events WHERE ticket_id IN ({OWN_TICKETS})", args)]
             facts = conn.execute("SELECT id, statement_enc FROM user_facts WHERE principal_id = %(p)s",
                                  args).fetchall()
         store = self.keys()
