@@ -14,10 +14,14 @@ that runs it: used by deploy/vm/serve.py on the VM and by `python -m runtime ser
   checked pool on it (its role and tenant settings are transaction-local, so Neon's pooler is fine).
 - Tools: the specialists' read-only tools.nimbus catalog through tools.execution.Executor, audited (S11),
   with on-behalf-of tokens from the customer's live session (AGENT-02).
+- Sign-in codes: emailed over SMTP with STARTTLS (SMTP_HOST, SMTP_PORT default 587, SMTP_USER, SMTP_PASSWORD
+  from the environment then OpenBao, SMTP_FROM default SMTP_USER); without SMTP_HOST they go to the log.
 """
 
 import json
 import os
+import smtplib
+from email.message import EmailMessage
 from pathlib import Path
 
 import httpx
@@ -147,6 +151,29 @@ def log_code(tenant_id, user_id, code):
     print(f"[one-time code] {tenant_id}/{user_id}: {code}", flush=True)
 
 
+def code_sender(environ):
+    """Identity's send_otp: email the code when SMTP_HOST is set, else log it. A failed send raises, so the
+    challenge rolls back and the portal asks the customer to try again."""
+    host = environ.get("SMTP_HOST")
+    if not host:
+        return log_code
+    user = environ["SMTP_USER"]
+
+    def email_code(tenant_id, user_id, code):
+        message = EmailMessage()
+        message["From"], message["To"] = environ.get("SMTP_FROM") or user, user_id
+        message["Subject"] = f"Your sign-in code: {code}"
+        message.set_content(f"Your support sign-in code is {code}.\n\nIt works once and expires in 10 "
+                            "minutes. If you did not ask for it, ignore this email.\n")
+        # ponytail: one connection per code, no rate limit on who can be mailed (register); pool and limit
+        # per address when sign-in traffic is real
+        with smtplib.SMTP(host, int(environ.get("SMTP_PORT", "587")), timeout=15) as smtp:
+            smtp.starttls()
+            smtp.login(user, load_secret("SMTP_PASSWORD"))
+            smtp.send_message(message)
+    return email_code
+
+
 def app(environ=os.environ):
     """The API with sign-in (anonymous and one-time code; no mock SSO, no header sign-in) and the turn loop,
     whose turns run on Temporal (TEMPORAL_ADDRESS) with the worker in this process."""
@@ -157,7 +184,7 @@ def app(environ=os.environ):
     loop = TurnLoop(services(environ, store(database_url())))
     connect = connector(database_url())
     dispatch = TemporalDispatcher(environ.get("TEMPORAL_ADDRESS", "127.0.0.1:7233"), loop)
-    api = build_app(None, Identity(connect, idp=None, send_otp=log_code), dispatch=dispatch)
+    api = build_app(None, Identity(connect, idp=None, send_otp=code_sender(environ)), dispatch=dispatch)
     api.state.turn_loop = loop
 
     @api.get("/healthz")
