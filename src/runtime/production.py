@@ -50,6 +50,7 @@ from safety.pii.tokens import Tokenizer
 from safety.screening.pipeline import Screener, jev_confirm
 from safety.screening.scorers import llama_guard, pattern_injection
 from tools import desk, nimbus
+from tools import services as services_tools
 from tools.audit import AuditLog
 from tools.execution import Executor
 from tools.registry import Registry
@@ -143,8 +144,15 @@ def services(environ, store, lock=None):
         retriever=Retriever(qdrant, ollama_embed(ollama, lock["embedding"]["model"]), complete),
         screener=screener, tokens=Tokenizer(load_secret("PII_TOKEN_KEY")), complete=complete,
         connect=connect, store=store, decisions=DecisionLog(connect), executor=executor,
-        tools=tools, desk=Executor(desk.register(Registry(), connect, identity).freeze(), desk.SYSTEMS,
-                                   screener, identity=identity, audit=AuditLog(connect, None)))
+        tools=tools, desk=customer_actions(connect, identity, screener))
+
+
+def customer_actions(connect, identity, screener):
+    """The executor for what a customer confirms on a card (raise a ticket, carry out a service action): its
+    own registry, so no specialist is ever offered these tools."""
+    registry = services_tools.register(desk.register(Registry(), connect, identity), connect, identity)
+    return Executor(registry.freeze(), {**desk.SYSTEMS, **services_tools.SYSTEMS}, screener,
+                    identity=identity, audit=AuditLog(connect, None))
 
 
 def log_code(tenant_id, user_id, code):

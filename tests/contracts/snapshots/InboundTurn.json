@@ -1,15 +1,18 @@
 {
  "$defs": {
   "TurnAction": {
-   "description": "A customer action from a card instead of a typed message (FR-47): raise a proposed ticket.",
+   "description": "A customer action from a card instead of a typed message: raise a proposed ticket (FR-47), or carry out\nan offered service action (tools.services).",
    "properties": {
     "proposal": {
-     "pattern": "^TKT-[0-9]{5,}$",
+     "pattern": "^(TKT|ACT)-[0-9]{5,}$",
      "title": "Proposal",
      "type": "string"
     },
     "type": {
-     "const": "confirm_ticket",
+     "enum": [
+      "confirm_ticket",
+      "confirm_action"
+     ],
      "title": "Type",
      "type": "string"
     }

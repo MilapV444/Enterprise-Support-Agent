@@ -72,7 +72,8 @@ def run(stack, tool_id, principal="sarah", tier="T2_SSO", tenant="t_us", audit=N
 def test_every_catalog_tool_reads_only_and_takes_no_arguments(stack):
     tools = stack[1].tools
     assert set(tools) == {"nimbus_status.service_status", "nimbus_support.my_tickets",
-                          "nimbus_support.my_subscriptions", "nimbus_account.my_account",
+                          "nimbus_support.my_subscriptions", "nimbus_support.my_services",
+                          "nimbus_account.my_account",
                           "nimbus_account.my_invoices"}
     for tool in tools.values():
         assert tool.risk is Risk.READ_ONLY and not tool.args.model_fields, tool.tool_id

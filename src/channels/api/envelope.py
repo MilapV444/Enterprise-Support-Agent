@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class EventType(str, Enum):
@@ -30,10 +30,17 @@ class TurnRequest(BaseModel):
 
 
 class TurnAction(BaseModel):
-    """A customer action from a card instead of a typed message (FR-47): raise a proposed ticket."""
+    """A customer action from a card instead of a typed message: raise a proposed ticket (FR-47), or carry out
+    an offered service action (tools.services)."""
 
-    type: Literal["confirm_ticket"]
-    proposal: str = Field(pattern=r"^TKT-[0-9]{5,}$")
+    type: Literal["confirm_ticket", "confirm_action"]
+    proposal: str = Field(pattern=r"^(TKT|ACT)-[0-9]{5,}$")
+
+    @model_validator(mode="after")
+    def matches(self):
+        if self.proposal.startswith("TKT-") != (self.type == "confirm_ticket"):
+            raise ValueError("confirm_ticket confirms a ticket, confirm_action a service action")
+        return self
 
 
 class InboundTurn(BaseModel):

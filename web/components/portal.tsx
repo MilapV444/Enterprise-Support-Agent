@@ -6,10 +6,12 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type Keyboard
 
 import { ChatClient, HttpError, readClaims, type Claims } from "@/lib/chat-client.ts";
 import { addUserMessage, initialState, reduce, type ChatState, type Citation, type Message } from "@/lib/reduce.ts";
+import { SERVICE_CARDS, servicesPath, type ServiceCard } from "@/lib/services.ts";
 import { ticketsPath, type TicketCard } from "@/lib/tickets.ts";
 import type { Trace, Why } from "@/lib/trace.ts";
 import { Icon, Logo, type IconName } from "./icons.tsx";
 import { CitationView, Drawer, TraceView, WhyPanel, type Loadable } from "./panels.tsx";
+import { ServiceCardView, ServicesView } from "./services.tsx";
 import { TicketCardView, TicketDetailView, TicketsView } from "./tickets.tsx";
 
 const TICKET_CARDS = new Set(["ticket_proposal", "ticket", "sign_in"]);
@@ -38,10 +40,10 @@ const store = {
 
 const clock = (at?: number) => at ? new Date(at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
 
-// view: the chat, or My tickets (ticketId: one ticket's page). Each is its own route; the conversation is
-// restored from sessionStorage when the customer comes back to the chat.
+// view: Services, the chat, or My tickets (ticketId: one ticket's page). Each is its own route; the
+// conversation is restored from sessionStorage when the customer comes back to the chat.
 export default function Portal({ tenantId, view = "chat", ticketId }: {
-  tenantId: string; view?: "chat" | "tickets"; ticketId?: string;
+  tenantId: string; view?: "services" | "chat" | "tickets"; ticketId?: string;
 }) {
   const client = useRef<ChatClient | null>(null);
   const stream = useRef<AbortController | null>(null);
@@ -194,6 +196,10 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
     await client.current!.confirmTicket(conversationId!, proposal);
   }
 
+  async function confirmAction(offer: string) {
+    await client.current!.confirmAction(conversationId!, offer);
+  }
+
   function goSignIn() {
     setRailOpen(true); // the rail is a drawer on small screens
     setTimeout(() => document.getElementById("otp-email")?.focus(), 50);
@@ -220,6 +226,12 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
       </div>
       <p className="mb-2 px-1 text-[11px] font-semibold tracking-wider text-rail-muted">NAVIGATION</p>
       <ul className="space-y-1">
+        <li>
+          <Link href={servicesPath(tenantId)} aria-current={view === "services" ? "page" : undefined}
+            className={`${navItem} ${view === "services" ? current : "hover:bg-rail-raised"}`}>
+            <Icon name="server" /> Services
+          </Link>
+        </li>
         <li>
           {view === "chat" ? (
             <span aria-current="page" className={`${navItem} ${current}`}><Icon name="chat" /> Chat</span>
@@ -336,9 +348,12 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
             <Icon name="menu" />
           </button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-semibold">{view === "chat" ? "Chat" : ticketId ? `Ticket ${ticketId}` : "My tickets"}</h1>
+            <h1 className="text-xl font-semibold">
+              {view === "services" ? "Services" : view === "chat" ? "Chat" : ticketId ? `Ticket ${ticketId}` : "My tickets"}
+            </h1>
             <p className="hidden truncate text-sm text-muted sm:block">
-              {view === "chat" ? "Get answers from our documentation and knowledge base."
+              {view === "services" ? "Your servers and container apps, their status, and what the assistant changed."
+                : view === "chat" ? "Get answers from our documentation and knowledge base."
                 : "The tickets you raised with our teams, and everything that happened on them."}
             </p>
           </div>
@@ -358,6 +373,14 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
             </button>
           )}
         </header>
+
+        {view === "services" && (
+          <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6">
+            <div className="mx-auto max-w-3xl">
+              <ServicesView client={claims ? client.current : null} signedIn={!anonymous} />
+            </div>
+          </div>
+        )}
 
         {view === "tickets" && (
           <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6">
@@ -396,7 +419,10 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
               </div>
             )}
             {chat.messages.map((message, i) => (
-              message.role === "card" && TICKET_CARDS.has(message.card?.kind)
+              message.role === "card" && SERVICE_CARDS.has(message.card?.kind)
+                ? <ServiceCardView key={i} card={message.card as ServiceCard} servicesHref={servicesPath(tenantId)}
+                    onConfirm={confirmAction} />
+                : message.role === "card" && TICKET_CARDS.has(message.card?.kind)
                 ? <TicketCardView key={i} card={message.card as TicketCard} tenantId={tenantId} onRaise={raiseTicket}
                     onSignIn={goSignIn} />
                 : <Bubble key={i} message={message} why={message.turnId ? whys[message.turnId] : undefined}

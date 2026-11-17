@@ -1,6 +1,7 @@
 // API client for the portal: sign-in, idempotent turn submission, the resumable event stream, and the
 // customer's why view and execution trace. The stream is read with fetch (not EventSource) because it must
 // carry the Bearer token.
+import type { Services } from "./services.ts";
 import { createParser } from "./sse.ts";
 import type { Ticket, TicketDetail } from "./tickets.ts";
 import type { Trace, Why } from "./trace.ts";
@@ -93,13 +94,24 @@ export class ChatClient {
 
   // The Raise ticket button: a turn carrying the action, with one Idempotency-Key for every retry, so a
   // double click or a retry raises one ticket (the server answers on the conversation's event stream).
-  async confirmTicket(conversationId: string, proposal: string, { attempts = 3 } = {}) {
+  confirmTicket(conversationId: string, proposal: string, options = {}) {
+    return this.#confirm(`${conversation(conversationId)}/tickets/${encodeURIComponent(proposal)}/confirm`, options);
+  }
+
+  // A service action card's button (Stop server ...): the same, so a double click changes the service once.
+  confirmAction(conversationId: string, proposal: string, options = {}) {
+    return this.#confirm(`${conversation(conversationId)}/actions/${encodeURIComponent(proposal)}/confirm`, options);
+  }
+
+  async services(): Promise<Services> {
+    return this.#request("GET", "/v1/services");
+  }
+
+  async #confirm(path: string, { attempts = 3 } = {}) {
     const key = this.uuid();
     for (let attempt = 1; ; attempt += 1) {
       try {
-        return await this.#request("POST",
-          `${conversation(conversationId)}/tickets/${encodeURIComponent(proposal)}/confirm`, undefined,
-          { "Idempotency-Key": key });
+        return await this.#request("POST", path, undefined, { "Idempotency-Key": key });
       } catch (error) {
         const retryable = !(error instanceof HttpError) || error.status >= 500;
         if (!retryable || attempt >= attempts) throw error;

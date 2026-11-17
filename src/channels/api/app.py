@@ -6,6 +6,8 @@
     GET  /v1/conversations/{id}/turns/{turn_id}/trace  "how this was answered", filtered by assurance tier
     POST /v1/conversations/{id}/tickets/{TKT-n}/confirm   the Raise ticket button: a turn carrying the action
     GET  /v1/tickets, GET /v1/tickets/{TKT-n}           the signed-in customer's own tickets (FR-47)
+    POST /v1/conversations/{id}/actions/{ACT-n}/confirm   a service action card's button (tools.services)
+    GET  /v1/services                                     the Services tab: own servers, apps and activity
 
 Sign-in, the orchestrator hand-off and transcript loading are passed to create_app() so later tasks plug in
 without editing this module. Until sign-in exists (M1-02), dev_header_auth trusts X-Tenant-ID / X-User-ID
@@ -30,9 +32,11 @@ from data.events import EventLog, rebuild_from_transcript
 from data.keys.envelope import TENANT_ID
 from hitl.tickets import Tickets, number_id
 from safety.governance.records import DecisionLog
+from tools import services
 
 SAFE_ID = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 TICKET = re.compile(r"^TKT-[0-9]{5,}$")
+ACTION = re.compile(r"^ACT-[0-9]{5,}$")
 WORK = ThreadPoolExecutor(max_workers=256)  # polls and posts; streams themselves stay on the event loop (B12)
 
 
@@ -122,6 +126,34 @@ def create_app(dsn=None, authenticate=dev_header_auth, dispatch=no_orchestrator,
 
         turn_id, created = await in_pool(go)
         return {"turn_id": turn_id, "status": "QUEUED" if created else "ALREADY_QUEUED"}
+
+    @app.post("/v1/conversations/{conversation_id}/actions/{proposal}/confirm", status_code=202)
+    async def confirm_action(conversation_id: str, proposal: str, request: Request,
+                             idempotency_key: str | None = Header(default=None)):
+        principal = signed_in(request)
+        if not idempotency_key or not SAFE_ID.match(idempotency_key):
+            raise HTTPException(400, "an Idempotency-Key header (1-128 safe characters) is required")
+        conversation_id = checked(conversation_id)
+        if not ACTION.match(proposal):
+            raise HTTPException(422, "invalid action number")
+        body = TurnRequest(content=f"Confirm {proposal}")
+        action = TurnAction(type="confirm_action", proposal=proposal)
+
+        def go():
+            with connect() as conn:
+                return submit_turn(conn, principal, conversation_id, idempotency_key, body, dispatch, action)
+
+        turn_id, created = await in_pool(go)
+        return {"turn_id": turn_id, "status": "QUEUED" if created else "ALREADY_QUEUED"}
+
+    @app.get("/v1/services")
+    async def my_services(request: Request):
+        """The Services tab: the signed-in customer's servers and apps (settled status) and what the agent
+        did on them."""
+        principal = signed_in(request)
+        own = await in_pool(services.services, connect, principal.tenant_id, principal.principal_id)
+        done = await in_pool(services.activity, connect, principal.tenant_id, principal.principal_id)
+        return {"services": own, "activity": done}
 
     @app.get("/v1/tickets")
     async def my_tickets(request: Request):

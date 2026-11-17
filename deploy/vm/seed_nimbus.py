@@ -2,7 +2,8 @@
 `python deploy/vm/seed_nimbus.py TENANT PRINCIPAL [PRINCIPAL ...]` in the app image
 (`docker compose ... run --rm api python deploy/vm/seed_nimbus.py t_us sarah@example.com`) or on a laptop,
 where an unset DATABASE_URL comes from the repository's .env. PRINCIPAL is the user id the customer signs in
-with. Running it again changes nothing (tools.nimbus.seed). Run deploy/vm/migrate.py first.
+with. Running it again changes nothing (tools.nimbus.seed, and tools.services.seed for the servers and
+apps). Run deploy/vm/migrate.py first.
 """
 
 import os
@@ -24,6 +25,7 @@ def main(argv=sys.argv[1:]):
                 os.environ.setdefault(key.strip(), value.strip())
     import psycopg
 
+    from tools import services
     from tools.nimbus import seed
 
     tenant, principals = argv[0], argv[1:]
@@ -32,6 +34,7 @@ def main(argv=sys.argv[1:]):
         return psycopg.connect(os.environ["DATABASE_URL"], autocommit=True, prepare_threshold=0)
     for principal in principals:
         seed(connect, tenant, principal)
+        services.seed(connect, tenant, principal)
         print(f"seeded {tenant}/{principal}", flush=True)
 
 

@@ -46,10 +46,10 @@ from safety.screening.pipeline import Screener
 from safety.screening.scorers import pattern_injection
 from tests.knowledge.ingest.test_ingest import DIMENSIONS, embed
 from tools import audit as tool_audit
-from tools import desk, nimbus
+from tools import nimbus
+from tools import services as nimbus_services
 from tools.audit import AuditLog
 from tools.execution import Executor
-from tools.registry import Registry
 from workflows.dispatch import TemporalDispatcher
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -147,12 +147,13 @@ def stack():
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
     for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus, case_state,
-                   hitl_tickets):
+                   hitl_tickets, nimbus_services):
         module.apply_schema(DB)
     psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'G', 'EU')")
     for tenant, principal, company in (("t_us", "sarah", "Acme"), ("t_us", "bob", "Bobco"),
                                        ("t_eu", "sarah", "Globex")):
         nimbus.seed(connector(DSN), tenant, principal, company=company)
+        nimbus_services.seed(connector(DSN), tenant, principal)
     client, namespace = QdrantClient(url="http://127.0.0.1:6333"), f"rt{uuid.uuid4().hex[:8]}_"
     with psycopg.connect(DSN, autocommit=True) as conn:
         report = seed_kb.seed(client, embed, DIMENSIONS, conn, namespace=namespace)
@@ -808,10 +809,8 @@ def test_once_a_ticket_is_raised_later_messages_are_added_to_it_instead_of_handi
 
 def with_desk(runner):
     """The desk executor production composes beside the specialists' one (runtime.production.services)."""
-    identity = Identity(connector(DSN))
-    runner.s.desk = Executor(desk.register(Registry(), connector(DSN), identity).freeze(), desk.SYSTEMS,
-                             Screener(lambda text: (0.0, []), pattern_injection), identity=identity,
-                             audit=AuditLog(connector(DSN), lambda: None))
+    runner.s.desk = production.customer_actions(connector(DSN), Identity(connector(DSN)),
+                                                Screener(lambda text: (0.0, []), pattern_injection))
     return runner
 
 
@@ -890,3 +889,79 @@ def test_ac16_report_raise_and_follow_up_through_temporal(stack):
     (ticket,) = [t for t in desk_view.list_for("t_us", "sarah") if t.number == number]
     events_ = desk_view.get("t_us", "sarah", ticket.id).events
     assert [e["kind"] for e in events_] == ["proposed", "confirmed", "note"]
+
+
+# Service actions (tools.services, outside Genesis) --------------------------------------------------------
+
+def service_status(name, principal="sarah"):
+    return next(s for s in nimbus_services.services(connector(DSN), "t_us", principal)
+                if s["name"] == name)["status"]
+
+
+def confirm_turn(number, conversation, session, principal="sarah", tier="T1_VERIFIED"):
+    return inbound(f"Confirm {number}", conversation, tier=tier, principal=principal, session=session,
+                   action=TurnAction(type="confirm_action", proposal=number))
+
+
+def test_a_signed_in_customer_asking_to_stop_their_server_gets_an_offer_and_nothing_changes(stack):
+    world = World()
+    runner, conversation = with_desk(loop(stack, world)), f"c-{uuid.uuid4().hex[:8]}"
+    turn = inbound("Please close the payments server", conversation, tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+    assert runner.run(turn) == "offered"
+    card = next(data for kind, data in published(turn) if kind == "action_card")
+    assert (card["kind"], card["service"], card["action"]) == ("service_action_proposal", "payments-api-01",
+                                                               "stop")
+    assert card["actions"] == [{"type": "confirm_action", "proposal": card["action_id"],
+                                "label": "Stop server"}]
+    final = next(data for kind, data in published(turn) if kind == "final")["text"]
+    assert "Nothing has changed yet" in final
+    assert service_status("payments-api-01") == "running"
+    assert world.model == [] and world.jev == []          # decided in code: no model and no Jev request
+    assert trace_steps(turn) == {"service": {"offer": card["action_id"], "action": "stop"}}
+
+
+def test_confirming_the_offer_runs_the_tool_once_and_the_reply_is_the_read_back(stack):
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+    runner = with_desk(loop(stack, World()))
+    report = inbound("restart checkout-worker", conversation, tier="T1_VERIFIED", principal="sarah",
+                     session=session)
+    assert runner.run(report) == "offered"
+    number = next(data for kind, data in published(report) if kind == "action_card")["action_id"]
+    click = confirm_turn(number, conversation, session)
+    assert runner.run(click) == "done"
+    card = next(data for kind, data in published(click) if kind == "action_card")
+    assert (card["kind"], card["service"], card["status"]) == ("service", "checkout-worker", "restarting")
+    final = next(data for kind, data in published(click) if kind == "final")["text"]
+    assert final.startswith("checkout-worker is restarting now and will be running")
+    assert runner.run(click) == "already_answered"                              # the same turn retried
+    assert runner.run(confirm_turn(number, conversation, session)) == "done"    # a second click
+    done = nimbus_services.activity(connector(DSN), "t_us", "sarah")
+    assert [a["action_id"] for a in done].count(number) == 1
+
+
+def test_someone_elses_offer_is_not_carried_out_and_a_guest_is_asked_to_sign_in(stack):
+    bob = nimbus_services.services(connector(DSN), "t_us", "bob")[0]
+    number = nimbus_services.propose(connector(DSN), "t_us", "bob", "c-bob-act", "k", bob["service_id"],
+                                     "restart")
+    runner = with_desk(loop(stack, World()))
+    theirs = confirm_turn(number, "c-sarah-act", signed_in("T1_VERIFIED"))
+    assert runner.run(theirs) == "not_done"
+    final = next(data for kind, data in published(theirs) if kind == "final")["text"]
+    assert final == nimbus_services.NOT_DONE
+    guest = confirm_turn(number, "c-guest-act", signed_in("T0_ANON", principal="bob"), principal="bob",
+                         tier="T0_ANON")
+    assert runner.run(guest) == "not_done"
+    assert next(data for kind, data in published(guest) if kind == "action_card")["kind"] == "sign_in"
+    assert service_status(bob["name"], "bob") == "running"
+
+
+def test_an_unclear_service_request_gets_one_question_and_a_guest_gets_the_usual_answer(stack):
+    runner = with_desk(loop(stack, World()))
+    unclear = inbound("stop the worker", tier="T1_VERIFIED", principal="sarah",
+                      session=signed_in("T1_VERIFIED"))
+    assert runner.run(unclear) == "asked"
+    assert next(data for kind, data in published(unclear) if kind == "final")["text"] == (
+        "Which one do you mean: batch-worker-02, checkout-worker?")
+    guest = inbound("Please stop payments-api-01")
+    assert runner.run(guest) != "offered" and service_status("payments-api-01") == "running"

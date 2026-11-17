@@ -57,7 +57,7 @@ export function TicketCardView({ card, tenantId, onRaise, onSignIn }: {
     return (
       <div className="max-w-full rounded-2xl border border-brand/40 bg-brand-soft p-4 sm:max-w-[85%]">
         <p className="flex items-center gap-2 font-medium"><Icon name="mail" className="size-5 text-brand" /> {card.title}</p>
-        <p className="mt-1 text-sm text-muted">Tickets belong to your account, so we need to know who you are first.</p>
+        <p className="mt-1 text-sm text-muted">This belongs to your account, so we need to know who you are first.</p>
         <button onClick={onSignIn} className="mt-3 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-strong">
           {card.actions?.[0]?.label ?? "Sign in with your email"}
         </button>

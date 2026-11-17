@@ -62,6 +62,7 @@ from safety.governance.disclosure import disclose
 from safety.output.checks import finalise
 from safety.screening.pipeline import SPOTLIGHT_RULE
 from tools import desk
+from tools import services as nimbus_services
 from tools.execution import ToolFailure
 from tools.execution.calls import ToolCall
 from tools.registry import Registry
@@ -94,7 +95,8 @@ TEAM = {  # what Jev reads to pick the lead (no digits: the Jev rule)
 TOOLS = {  # each specialist's read-only tools (tools.nimbus, W41); without Jev the generalist has all
     Role.GENERALIST: ("nimbus_status.service_status",),
     Role.BILLING: ("nimbus_account.my_invoices", "nimbus_support.my_subscriptions"),
-    Role.TECHNICAL: ("nimbus_status.service_status", "nimbus_support.my_tickets"),
+    Role.TECHNICAL: ("nimbus_status.service_status", "nimbus_support.my_tickets",
+                     "nimbus_support.my_services"),
     Role.ACCOUNT_OPS: ("nimbus_account.my_account", "nimbus_support.my_subscriptions"),
 }
 # B26: the team that owns a restricted article (its acl_groups) and its hitl.queues queue
@@ -510,6 +512,63 @@ class TurnLoop:
         self.publish(turn, "final", disclose({"role": "assistant", "text": tickets.raised_reply(card)}))
         return "raised"
 
+    def service_request(self, turn):
+        """A signed-in customer asking to stop, start, restart or scale one of their own services
+        (tools.services.understand, in code) gets an offer card, or one question; nothing changes until they
+        confirm. None when the message is not such a request."""
+        own = nimbus_services.services(self.s.connect, turn.tenant_id, turn.principal_id)
+        wanted = nimbus_services.understand(turn.content, own)
+        if wanted is None:
+            return None
+        if "reply" in wanted:
+            self.record(turn, "ask_customer", "We need one more detail before we can help.",
+                        ["Content safety"], {"steps": {"service": {"asked": True}}})
+            self.publish(turn, "final", disclose({"role": "assistant", "text": wanted["reply"]}))
+            return "asked"
+        target, action, replicas = wanted["service"], wanted["action"], wanted["replicas"]
+        offer = nimbus_services.propose(self.s.connect, turn.tenant_id, turn.principal_id,
+                                        turn.conversation_id, turn.turn_id, target["service_id"], action,
+                                        replicas)
+        self.publish(turn, "action_card", nimbus_services.offer_card(offer, target, action, replicas))
+        self.record(turn, "answer", "We offered to change one of your services.", ["Content safety"],
+                    {"steps": {"service": {"offer": offer, "action": action}}})
+        self.publish(turn, "final", disclose({"role": "assistant",
+                                              "text": nimbus_services.offer_reply(target, action, replicas)}))
+        return "offered"
+
+    def run_service_action(self, turn):
+        """The customer confirmed an offer: nimbus_services.run_action runs through the audited desk executor
+        on their live session, then the service is read back apart from the tool (MA-D14) and the reply says
+        only what that read shows."""
+        offer = turn.action.proposal
+        call = ToolCall(tool_call_id=f"{turn.turn_id}:act", tool_id=nimbus_services.RUN,
+                        arguments={"proposal": offer}, tenant_id=turn.tenant_id,
+                        principal_id=turn.principal_id, case_id=turn.conversation_id,
+                        checkpoint_id=turn.turn_id, session_id=turn.session_id)
+        try:
+            if self.s.desk is None:
+                raise ToolFailure("SYSTEM_UNAVAILABLE", "no desk executor is configured")
+            done = self.s.desk.run(call).data
+        except ToolFailure as failure:
+            if failure.code in ("STEP_UP_REQUIRED", "AUTHENTICATION_EXPIRED"):
+                self.publish(turn, "action_card", nimbus_services.SIGN_IN_CARD)
+                text = nimbus_services.SIGN_IN_AGAIN
+            else:
+                text = nimbus_services.NOT_DONE
+            self.record(turn, "escalate", "The change could not be made.", [],
+                        {"steps": {"service": {"offer": offer, "failure": failure.code}}})
+            self.publish(turn, "final", disclose({"role": "assistant", "text": text}))
+            return "not_done"
+        after = nimbus_services.service(self.s.connect, turn.tenant_id, turn.principal_id,
+                                        done["service"]["service_id"])
+        self.publish(turn, "action_card", nimbus_services.done_card(done["action"], after))
+        self.record(turn, "answer", "We changed your service at your request.", [],  # no digits: the why view
+                    {"steps": {"service": {"done": offer, "action": done["action"],
+                                           "status": after["status"]}}})
+        self.publish(turn, "final", disclose({"role": "assistant",
+                                              "text": nimbus_services.done_reply(done["action"], after)}))
+        return "done"
+
     def hand_off(self, turn, masked, reason, notice, triage, trace):
         """FR-46: a hand-off offers a ticket (a guest is asked to sign in first); in a conversation with a
         raised ticket, the message is added to it as a note instead of handing off again. Cards go before the
@@ -571,7 +630,9 @@ class TurnLoop:
                 return "already_answered"
             if not any(kind == "status" and data.get("state") == "working" for kind, data in done):
                 self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
-            if turn.action is not None:  # the Raise ticket button, not a message: no screening, no statechart
+            if turn.action is not None:  # a card's button, not a message: no screening, no statechart
+                if turn.action.type == "confirm_action":
+                    return self.run_service_action(turn)
                 return self.raise_ticket(turn)
             verdict = self.s.screener.screen("user_message", turn.content)
             steps = {"screening": verdict.band}
@@ -582,6 +643,11 @@ class TurnLoop:
                              "steps": steps})
                 self.publish(turn, "final", disclose({"role": "assistant", "text": BLOCKED}))
                 return "blocked"
+            if Tier[turn.assurance_tier] >= Tier.T1_VERIFIED:
+                # ponytail: answered beside the statechart, so the case thread misses this message
+                offered = self.service_request(turn)
+                if offered:
+                    return offered
             masked, found = self.s.tokens.mask(turn.content)
             self.probe_restricted(turn, masked)
             config = thread(turn.tenant_id, turn.conversation_id)
