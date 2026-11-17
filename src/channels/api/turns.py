@@ -53,7 +53,10 @@ def submit_turn(conn, principal, conversation_id, idempotency_key, request, disp
                 "AND idempotency_key = %s", key).fetchone()
             return turn_id, False
         (turn_id,) = row
-        publish(EventLog(conn), principal.tenant_id, conversation_id, EventType.STATUS,
+        log = EventLog(conn)
+        if action is None:  # a button's confirm turn is not something the customer typed
+            log.keep(principal.tenant_id, conversation_id, "user", request.content)
+        publish(log, principal.tenant_id, conversation_id, EventType.STATUS,
                 {"turn_id": turn_id, "state": "queued", "text": "Message received"})
         dispatch(InboundTurn(
             tenant_id=principal.tenant_id, principal_id=principal.principal_id,

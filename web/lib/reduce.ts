@@ -31,9 +31,8 @@ export function reduce(state: ChatState, { event, data, at }: Pick<StreamEvent, 
   ChatState {
   switch (event) {
     case "status":
-      if (data.code === "stream_expired") {
-        return { ...initialState(), status: "Reconnected, showing the conversation so far" };
-      }
+      // The conversation so far follows (a reopened chat, or a reconnect past the replay window).
+      if (data.code === "stream_expired") return initialState();
       return { ...state, status: data.text ?? data.state ?? "Working on it" };
     case "text_delta":
       return { ...state, draft: state.draft + (data.text ?? "") };
@@ -43,7 +42,7 @@ export function reduce(state: ChatState, { event, data, at }: Pick<StreamEvent, 
       const reply: Message = {
         role: data.role ?? "assistant",
         text: data.text ?? data.content ?? "",
-        at,
+        at: data.history && data.at ? Date.parse(data.at) : at, // a reopened chat keeps its own times
         turnId: data.history ? undefined : data.turn_id,
         citations: state.citations,
         actions: data.actions ?? [],

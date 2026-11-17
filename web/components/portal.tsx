@@ -2,9 +2,10 @@
 // The support portal: identity rail, the conversation, and the trust panels (citations, why, trace).
 // Token and conversation live in sessionStorage: the server binds a conversation to the sign-in session.
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
-import { ChatClient, HttpError, readClaims, type Claims } from "@/lib/chat-client.ts";
+import { ChatClient, HttpError, readClaims, type Claims, type Conversation } from "@/lib/chat-client.ts";
 import { addUserMessage, initialState, reduce, type ChatState, type Citation, type Message } from "@/lib/reduce.ts";
 import { SERVICE_CARDS, servicesPath, type ServiceCard } from "@/lib/services.ts";
 import { ticketsPath, type TicketCard } from "@/lib/tickets.ts";
@@ -25,6 +26,8 @@ const TIERS: Record<string, { short: string; label: string }> = {
   T1_VERIFIED: { short: "T1", label: "Signed in" },
   T2_SSO: { short: "T2", label: "Signed in" },
 };
+
+const HISTORY_OPEN = "support-agent:history-open"; // the History drop-down stays as the customer left it
 
 type Panel = { kind: "trace"; turnId: string } | { kind: "citation"; citation: Citation } | null;
 type Otp = { stage: "email" | "code"; email: string; code: string; challengeId?: string; busy?: boolean; error?: string };
@@ -59,18 +62,22 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   const [whys, setWhys] = useState<Record<string, Loadable<Why[]> | undefined>>({});
   const [otp, setOtp] = useState<Otp>({ stage: "email", email: "", code: "" });
   const [railOpen, setRailOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [pastChats, setPastChats] = useState<Conversation[] | "error" | null>(null);
   const thread = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const remember = useCallback((conversation: string) => {
     store.write(storageKey, { token: client.current!.token, conversationId: conversation });
   }, [storageKey]);
 
-  const open = useCallback((conversation: string) => {
+  // resume: send the conversation so far (the server replays its transcript from Last-Event-ID 0).
+  const open = useCallback((conversation: string, resume = false) => {
     stream.current?.abort();
     const controller = new AbortController();
     stream.current = controller;
     const api = client.current!;
-    api.lastEventId = null;
+    api.lastEventId = resume ? "0" : null;
     setConversationId(conversation);
     setChat(initialState());
     setTraces({});
@@ -99,12 +106,37 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
     if (savedClaims && savedClaims.tid === tenantId && savedClaims.exp * 1000 > Date.now() + 60_000) {
       client.current.token = saved.token;
       setClaims(savedClaims);
-      open(saved.conversationId);
+      open(saved.conversationId, true);
     } else {
       fresh().catch(() => setLost(true));
     }
     return () => stream.current?.abort();
   }, [fresh, open, storageKey, tenantId]);
+
+  const loadHistory = useCallback(() => {
+    client.current?.conversations().then(setPastChats, () => setPastChats("error"));
+  }, []);
+
+  useEffect(() => setHistoryOpen(store.read(HISTORY_OPEN) === true), []);
+
+  useEffect(() => {
+    if (historyOpen && claims) loadHistory();
+  }, [historyOpen, claims, conversationId, loadHistory]);
+
+  function toggleHistory() {
+    store.write(HISTORY_OPEN, !historyOpen);
+    setHistoryOpen(!historyOpen);
+  }
+
+  function pick(conversation: string) {
+    setRailOpen(false);
+    if (view !== "chat") {
+      remember(conversation);
+      router.push(`/t/${encodeURIComponent(tenantId)}`);
+    } else if (conversation !== conversationId) {
+      open(conversation, true);
+    }
+  }
 
   useEffect(() => {
     thread.current?.scrollTo({ top: thread.current.scrollHeight, behavior: "smooth" });
@@ -118,6 +150,7 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
     setChat((state) => addUserMessage(state, content, Date.now()));
     try {
       await client.current!.send(conversationId, content);
+      if (historyOpen) loadHistory(); // a new conversation shows up, titled by its first message
     } catch (error) {
       setInput(content);
       setChat((state) => ({ ...state, error: `Not sent (${(error as Error).message}). Your text is back in the box.` }));
@@ -216,7 +249,7 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   const current = "border-l-[3px] border-brand bg-brand/20 font-medium";
 
   const rail = (
-    <nav aria-label="Portal" className="flex h-full w-[264px] flex-col bg-rail px-4 py-5 text-rail-ink">
+    <nav aria-label="Portal" className="flex h-full w-[264px] flex-col overflow-y-auto bg-rail px-4 py-5 text-rail-ink">
       <div className="mb-7 flex items-center gap-3 px-1">
         <Logo className="size-9 text-rail-ink" />
         <div>
@@ -242,10 +275,33 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
           )}
         </li>
         <li>
-          <span aria-disabled="true" className={`${navItem} text-rail-muted`}>
+          <button onClick={toggleHistory} aria-expanded={historyOpen} aria-controls="history-list"
+            className={`${navItem} w-full hover:bg-rail-raised`}>
             <Icon name="history" /> History
-            <span className="ml-auto rounded-md bg-rail-raised px-2 py-0.5 text-[11px]">Disabled</span>
-          </span>
+            <Icon name="chevron" className={`ml-auto size-4 transition-transform ${historyOpen ? "rotate-180" : ""}`} />
+          </button>
+          {historyOpen && (
+            <ul id="history-list" aria-label="Past conversations" className="mt-1 max-h-64 space-y-0.5 overflow-y-auto pl-4">
+              {pastChats === null || pastChats === "error" || pastChats.length === 0 ? (
+                <li className="px-3 py-1.5 text-xs text-rail-muted">
+                  {pastChats === null ? "Loading…" : pastChats === "error" ? "Could not load your conversations."
+                    : "No past conversations yet."}
+                </li>
+              ) : pastChats.map((chat) => {
+                const here = view === "chat" && chat.id === conversationId;
+                return (
+                  <li key={chat.id}>
+                    <button onClick={() => pick(chat.id)} title={chat.title ?? undefined}
+                      aria-current={here ? "true" : undefined}
+                      className={`block w-full truncate rounded-md px-3 py-1.5 text-left text-sm ${here
+                        ? "bg-brand/20 font-medium" : "text-rail-muted hover:bg-rail-raised hover:text-rail-ink"}`}>
+                      {chat.title ?? "Untitled conversation"}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </li>
         <li>
           <Link href={ticketsPath(tenantId)} aria-current={view === "tickets" && !ticketId ? "page" : undefined}

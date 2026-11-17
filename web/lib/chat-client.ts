@@ -17,6 +17,7 @@ export class HttpError extends Error {
 export type StreamEvent = { id: string | null; event: string; data: Record<string, any> };
 export type Tier = "T0_ANON" | "T1_VERIFIED" | "T2_SSO";
 export type Claims = { sub: string; tid: string; tier: Tier; exp: number };
+export type Conversation = { id: string; title: string | null; updated_at: string };
 
 type Options = {
   baseUrl?: string;
@@ -118,6 +119,11 @@ export class ChatClient {
         await this.sleep(250 * 2 ** attempt);
       }
     }
+  }
+
+  // The History list: the caller's own conversations, last active first, titled by their first message.
+  async conversations(): Promise<Conversation[]> {
+    return (await this.#request("GET", "/v1/conversations")).conversations ?? [];
   }
 
   async tickets(): Promise<Ticket[]> {

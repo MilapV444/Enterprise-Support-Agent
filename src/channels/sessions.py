@@ -113,6 +113,19 @@ def end(conn, tenant_id, session_id):
         conn.execute("UPDATE sessions SET ended_at = now() WHERE id = %s AND ended_at IS NULL", (session_id,))
 
 
+def history(conn, tenant_id, principal_id, limit=50):
+    """The principal's conversations that have messages, last active first: [{"id", "title", "updated_at"}].
+    The title is the start of the first thing the customer typed."""
+    with conn.transaction():
+        _context(conn, tenant_id)
+        rows = conn.execute(
+            "SELECT c.id, (SELECT left(f.text, 80) FROM conversation_messages f WHERE f.conversation_id = c.id "
+            "AND f.role = 'user' ORDER BY f.id LIMIT 1), max(m.created_at) AS updated_at FROM conversations c "
+            "JOIN conversation_messages m ON m.conversation_id = c.id WHERE c.principal_id = %s "
+            "GROUP BY c.id ORDER BY updated_at DESC LIMIT %s", (principal_id, limit)).fetchall()
+    return [{"id": id_, "title": title, "updated_at": at.isoformat()} for id_, title, at in rows]
+
+
 def open_conversation(conn, tenant_id, principal_id, session_id, conversation_id):
     """Create the conversation for this principal if new; False if it belongs to someone else."""
     with conn.transaction():

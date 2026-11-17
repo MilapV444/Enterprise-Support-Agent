@@ -8,6 +8,7 @@
     GET  /v1/tickets, GET /v1/tickets/{TKT-n}           the signed-in customer's own tickets (FR-47)
     POST /v1/conversations/{id}/actions/{ACT-n}/confirm   a service action card's button (tools.services)
     GET  /v1/services                                     the Services tab: own servers, apps and activity
+    GET  /v1/conversations                                the History list: own conversations, newest first
 
 Sign-in, the orchestrator hand-off and transcript loading are passed to create_app() so later tasks plug in
 without editing this module. Until sign-in exists (M1-02), dev_header_auth trusts X-Tenant-ID / X-User-ID
@@ -25,6 +26,7 @@ from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from psycopg_pool import ConnectionPool
 
+from channels import sessions
 from channels.api import trace
 from channels.api.envelope import EventType, Principal, TurnAction, TurnRequest
 from channels.api.turns import events_after, last_event_id, submit_turn
@@ -53,10 +55,6 @@ def no_orchestrator(turn):
     """Default hand-off until the orchestrator exists: the turn is accepted and recorded, nothing runs it."""
 
 
-def no_transcript(tenant_id, conversation_id):
-    return []
-
-
 def database_url():
     """APP_DATABASE_URL is the non-bypass login role (register S17); DATABASE_URL stays the owner for
     migrations. Local tests keep using DATABASE_URL (the compose superuser) when the app URL is unset."""
@@ -70,7 +68,7 @@ def sse(event_id, event_type, data):
     return f"{head}event: {event_type}\ndata: {json.dumps(data)}\n\n"
 
 
-def create_app(dsn=None, authenticate=dev_header_auth, dispatch=no_orchestrator, transcript=no_transcript,
+def create_app(dsn=None, authenticate=dev_header_auth, dispatch=no_orchestrator, transcript=None,
                poll_seconds=0.05, heartbeat_seconds=15.0, stream_seconds=None):
     app = FastAPI(title="Support Agent API")
     pool = ConnectionPool(dsn or database_url(), min_size=2, max_size=64, open=True,
@@ -155,6 +153,14 @@ def create_app(dsn=None, authenticate=dev_header_auth, dispatch=no_orchestrator,
         done = await in_pool(services.activity, connect, principal.tenant_id, principal.principal_id)
         return {"services": own, "activity": done}
 
+    @app.get("/v1/conversations")
+    async def history(request: Request):
+        principal = authenticate(request)
+        def find():
+            with connect() as conn:
+                return sessions.history(conn, principal.tenant_id, principal.principal_id)
+        return {"conversations": await in_pool(find)}
+
     @app.get("/v1/tickets")
     async def my_tickets(request: Request):
         principal = signed_in(request)
@@ -217,18 +223,21 @@ def create_app(dsn=None, authenticate=dev_header_auth, dispatch=no_orchestrator,
         """Async so an open stream does not occupy a worker thread (B12). DB work is short and sync."""
         def replay():
             with connect() as conn:
-                return EventLog(conn).replay(tenant_id, conversation_id, last_seen), last_event_id(
-                    conn, tenant_id, conversation_id)
+                log = EventLog(conn)
+                missed = log.replay(tenant_id, conversation_id, last_seen)
+                earlier = None if missed is not None else (
+                    transcript or log.transcript)(tenant_id, conversation_id)
+                return missed, earlier, last_event_id(conn, tenant_id, conversation_id)
 
         if last_seen is not None:
-            missed, latest = await in_pool(replay)
+            missed, earlier, latest = await in_pool(replay)
             if missed is not None:
                 for event in missed:
                     yield sse(*event)
                 cursor = int(missed[-1][0]) if missed else int(last_seen)
             else:
                 yield sse(None, EventType.STATUS.value, {"code": "stream_expired"})
-                for _, _, message in rebuild_from_transcript(transcript(tenant_id, conversation_id))[1:]:
+                for _, _, message in rebuild_from_transcript(earlier)[1:]:
                     yield sse(None, EventType.FINAL.value, {"history": True, **message})
                 cursor = latest
         def poll():

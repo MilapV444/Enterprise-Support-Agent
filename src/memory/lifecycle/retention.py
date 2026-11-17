@@ -3,7 +3,7 @@
     facts                      12 months since last confirmed: a lineage (a fact and the versions it replaced)
                                goes when its newest version is older than that, or was closed that long ago
     conversations              24 months since they began, with their turns, summary and pins (dialogue memory
-                               lives as long as its conversation)
+                               lives as long as its conversation) and their History transcript
     case state                 30 days after the case was resolved or closed, and with its conversation
                                (the turn loop keys a case by its conversation)
     tickets                    with their conversation; a proposal nobody confirmed a week after it expired
@@ -93,5 +93,6 @@ def sweep(conn, tenant_id, now=None):
                          args).rowcount
             for table, column in (("dialogue_pins", "conversation_id"),
                                   ("dialogue_summaries", "conversation_id"),
-                                  ("dialogue_turns", "conversation_id"), ("conversations", "id")))
+                                  ("dialogue_turns", "conversation_id"),
+                                  ("conversation_messages", "conversation_id"), ("conversations", "id")))
     return deleted

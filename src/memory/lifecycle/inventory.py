@@ -63,6 +63,7 @@ POSTGRES = [  # (table, predicate), children before parents; every predicate nam
     ("dialogue_summaries", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
     ("dialogue_turns", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
     ("outbound_event_log", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
+    ("conversation_messages", f"tenant_id = %(t)s AND conversation_id IN ({OWN_CONVERSATIONS})"),
     ("turns", "tenant_id = %(t)s AND principal_id = %(p)s"),
     ("otp_challenges", "tenant_id = %(t)s AND principal_id = %(p)s"),
     ("conversations", "tenant_id = %(t)s AND principal_id = %(p)s"),
@@ -105,7 +106,7 @@ GRANTS = """
 GRANT SELECT, INSERT, UPDATE ON erasure_ledger TO lifecycle_service;
 GRANT SELECT ON decision_records, tool_audit_records TO lifecycle_service;
 GRANT SELECT, DELETE ON user_facts, dialogue_pins, dialogue_summaries, dialogue_turns, outbound_event_log,
-  turns, otp_challenges, conversations, cases, sessions TO lifecycle_service;
+  conversation_messages, turns, otp_challenges, conversations, cases, sessions TO lifecycle_service;
 """
 
 
@@ -209,7 +210,8 @@ class ErasureActivities:
             texts = [r[0] for r in conn.execute(" UNION ALL ".join(
                 f"SELECT {column} FROM {table} WHERE conversation_id IN ({OWN_CONVERSATIONS})"
                 for table, column in (("dialogue_turns", "content"), ("dialogue_summaries", "summary"),
-                                      ("dialogue_pins", "content"), ("outbound_event_log", "data::text"))),
+                                      ("dialogue_pins", "content"), ("outbound_event_log", "data::text"),
+                                      ("conversation_messages", "text"))),
                 args)]
             texts += [r[0] for r in conn.execute(  # ticket texts are masked: their tokens' values go too
                 f"SELECT description FROM support_tickets WHERE tenant_id = %(t)s AND principal_id = %(p)s "

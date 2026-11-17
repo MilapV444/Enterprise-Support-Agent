@@ -4,7 +4,12 @@ Events are written directly (no event bus). A client reconnecting with Last-Even
 event of the conversation while that event is inside the window; otherwise replay() returns None and the
 caller rebuilds the conversation from its transcript with rebuild_from_transcript().
 
-The table's SQL lives here (module-owned schema, DECISION-d4b79fe1) and is applied with apply_schema().
+conversation_messages keeps every customer message and every reply (final, handoff) as raw text, so the
+portal's History list can reopen a past conversation: its stream, asked from Last-Event-ID 0, sends the
+transcript(). Built outside the spec at the user's request (2026-11-17): it reopens the rule that raw PII is
+not kept. It lives and dies with its conversation (retention 24 months, erasure).
+
+The tables' SQL lives here (module-owned schema, DECISION-d4b79fe1) and is applied with apply_schema().
 """
 
 import json
@@ -36,13 +41,34 @@ CREATE POLICY expired_only ON outbound_event_log FOR DELETE USING (created_at < 
 ALTER TABLE outbound_event_log OWNER TO app_owner;
 GRANT SELECT, INSERT, DELETE ON outbound_event_log TO app_runtime;
 """
+MESSAGES_NAME = "events_0002_conversation_messages.sql"
+SCHEMA_MESSAGES = """
+CREATE TABLE conversation_messages (
+  id              bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  tenant_id       text NOT NULL REFERENCES tenants (id),
+  conversation_id text NOT NULL,
+  role            text NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
+  text            text NOT NULL,
+  created_at      timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX conversation_messages_conversation ON conversation_messages (conversation_id, id);
+
+ALTER TABLE conversation_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE conversation_messages FORCE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON conversation_messages
+  USING (tenant_id = current_tenant()) WITH CHECK (tenant_id = current_tenant());
+
+ALTER TABLE conversation_messages OWNER TO app_owner;
+GRANT SELECT, INSERT ON conversation_messages TO app_runtime;
+"""
+KEPT = {"final": "assistant", "handoff": "system"}  # event type -> the role its text is kept under
 
 
 def apply_schema(database):
-    """Create the table once, recorded in the schema_migrations ledger like the files in migrations/."""
-    if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{SCHEMA_NAME}'"):
-        psql(database, f"BEGIN;\n{SCHEMA}\nINSERT INTO schema_migrations (name) VALUES ('{SCHEMA_NAME}');\n"
-                       "COMMIT;\n")
+    """Create each table once, recorded in the schema_migrations ledger like the files in migrations/."""
+    for name, sql in ((SCHEMA_NAME, SCHEMA), (MESSAGES_NAME, SCHEMA_MESSAGES)):
+        if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{name}'"):
+            psql(database, f"BEGIN;\n{sql}\nINSERT INTO schema_migrations (name) VALUES ('{name}');\nCOMMIT;\n")
 
 
 class EventLog:
@@ -61,8 +87,25 @@ class EventLog:
                 "INSERT INTO outbound_event_log (tenant_id, conversation_id, event_type, data) "
                 "VALUES (%s, %s, %s, %s::jsonb) RETURNING id",
                 (tenant_id, conversation_id, event_type, json.dumps(data))).fetchone()
+            if event_type in KEPT and data.get("text"):
+                self.keep(tenant_id, conversation_id, KEPT[event_type], str(data["text"]))
         self.conn.execute("SELECT pg_notify(%s, %s)", (CHANNEL, conversation_id))
         return str(event_id)
+
+    def keep(self, tenant_id, conversation_id, role, text):
+        """Add one message to the conversation's transcript (History)."""
+        with self.conn.transaction():
+            self._context(tenant_id)
+            self.conn.execute("INSERT INTO conversation_messages (tenant_id, conversation_id, role, text) "
+                              "VALUES (%s, %s, %s, %s)", (tenant_id, conversation_id, role, text))
+
+    def transcript(self, tenant_id, conversation_id):
+        """The conversation's messages, oldest first, as [{"role", "text", "at"}]."""
+        with self.conn.transaction():
+            self._context(tenant_id)
+            rows = self.conn.execute("SELECT role, text, created_at FROM conversation_messages "
+                                     "WHERE conversation_id = %s ORDER BY id", (conversation_id,)).fetchall()
+        return [{"role": role, "text": text, "at": at.isoformat()} for role, text, at in rows]
 
     def replay(self, tenant_id, conversation_id, last_event_id):
         """Events after last_event_id as (id, type, data), or None if that event is unknown or expired."""

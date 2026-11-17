@@ -135,6 +135,8 @@ def seed(stack, principal, tenant="t_us"):
           VALUES ('{tenant}', '{principal}', '\\x01', '\\x02', now() + interval '5 minutes');
         INSERT INTO outbound_event_log (tenant_id, conversation_id, event_type, data)
           VALUES ('{tenant}', '{conversation}', 'final', '{json.dumps({"text": masked}).replace("'", "''")}');
+        INSERT INTO conversation_messages (tenant_id, conversation_id, role, text)
+          VALUES ('{tenant}', '{conversation}', 'user', 'my email is x@acme.com');
         INSERT INTO tool_audit_records
             (tenant_id, conversation_id, user_id, tool, action, outcome, payload_enc)
           VALUES ('{tenant}', '{conversation}', '{principal}', 'crm', 'update', 'ok', '\\x{payload.hex()}');
@@ -177,6 +179,7 @@ def counts(principal, seeded, tenant="t_us"):
              + (SELECT count(*) FROM dialogue_summaries WHERE conversation_id = '{conversation}')
              + (SELECT count(*) FROM dialogue_pins WHERE conversation_id = '{conversation}')
              + (SELECT count(*) FROM outbound_event_log WHERE conversation_id = '{conversation}')
+             + (SELECT count(*) FROM conversation_messages WHERE conversation_id = '{conversation}')
              + (SELECT count(*) FROM turns WHERE principal_id = '{principal}')
              + (SELECT count(*) FROM otp_challenges WHERE principal_id = '{principal}')
              + (SELECT count(*) FROM user_facts WHERE principal_id = '{principal}')
