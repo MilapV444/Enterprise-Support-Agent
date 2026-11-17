@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-17T16:28:40.784Z"
+    "updated_at": "2026-11-17T16:43:37.963Z"
   },
   "policy": {
     "ponytail": "full",
@@ -1647,6 +1647,15 @@
       "recorded_at": "2026-11-17T16:26:28.132Z",
       "paths": [],
       "supersedes": "KNOWLEDGE-ba8c78ea"
+    },
+    {
+      "id": "KNOWLEDGE-f23c3c37",
+      "title": "Sign-in codes emailed from the VM (239ea02)",
+      "text": "2026-11-17: VM .env gained SMTP_HOST smtp.gmail.com, SMTP_USER (the user's sending Gmail) and SMTP_PASSWORD (Gmail app password, copied over ssh stdin; backup ~/.env.before-smtp-20261117T164119). Login checked from the VM on port 587 (235). Rolled out milap/main 239ea02 (log ~/rollout-20261117T164202.log; previous live fbeed70); healthz ok. POST /v1/identity/otp/start for the user's Gmail on t_us returned 200 in 0.9 s and nothing was logged, so the SMTP branch of runtime.production.code_sender ran. That address was seeded on t_us with seed_nimbus.py (demo account, invoices, tickets) for refund tests.",
+      "source": "VM 2026-11-17 sign-in email",
+      "tags": [],
+      "recorded_at": "2026-11-17T16:43:36.563Z",
+      "paths": []
     }
   ],
   "tasks": [
@@ -49112,11 +49121,11 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-17T16:28:40.395Z",
+    "at": "2026-11-17T16:43:37.390Z",
     "revision": {
-      "commit": "d6b85fbf6cfe4273f61b3d4bbce17adc8610f30f",
+      "commit": "239ea02f36a547a7e73392b450b9d09d52f5772b",
       "dirty": true,
-      "source_hash": "09372630760fb6a6693a99f640e1e1aced3e1fc5b3c3fba4b7f23f9ab5b0d026"
+      "source_hash": "20499ff330a23dbe1dcd717ed28f26573724598ea0e4e6a812d91823a10e97fa"
     },
     "active_task": null,
     "next_action": "Review completed work and choose the next bounded outcome."
