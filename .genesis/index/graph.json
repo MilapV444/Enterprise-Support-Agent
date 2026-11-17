@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "2e612c852272f2ef78bc53518d3cb280c7d45197",
-  "sourceHash": "2eba9fdaec94380a7e3d8580c8455deb748b4bf276e98c0276db232a66399dd4",
+  "revision": "fbeed7074da7085ae4b4d275fdf3e6a876c39aa6",
+  "sourceHash": "bded405c5a300218d087e72816f53f4b85379ed4e75bb24d2f6785ecdac86781",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -2390,6 +2390,26 @@
       "contentHash": "1500f60c90aa96fdf2694c9e52996fd15a94d3fd26fdced04a3c8a06439f3981"
     },
     {
+      "id": "file:web/app/t/[tenantId]/tickets/[ticketId]/page.tsx",
+      "type": "file",
+      "label": "web/app/t/[tenantId]/tickets/[ticketId]/page.tsx",
+      "path": "web/app/t/[tenantId]/tickets/[ticketId]/page.tsx",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "2733b3a456e7ceafb1978eb4adc90616377d15c1b446b0ee58720a2f5dd4b5b0"
+    },
+    {
+      "id": "file:web/app/t/[tenantId]/tickets/page.tsx",
+      "type": "file",
+      "label": "web/app/t/[tenantId]/tickets/page.tsx",
+      "path": "web/app/t/[tenantId]/tickets/page.tsx",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "d48330625bb4e3ffbc4d79ef28e3a0db41be42ab1d82a62582d77a48203861b5"
+    },
+    {
       "id": "file:web/components/icons.tsx",
       "type": "file",
       "label": "web/components/icons.tsx",
@@ -2397,7 +2417,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "5e9914bf4a098073f887dfa02cad2a3c6ec22bc73a00da452898ee654c7a51db"
+      "contentHash": "a5a5f1547e986cbc2b94ca4af57c43afd8142e798aa5d0b8d0c456295bd920fa"
     },
     {
       "id": "file:web/components/panels.tsx",
@@ -2417,7 +2437,17 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "044da393bf56fb1b50511e37fd977682bc135b4c10d4e75b13d8a84ef5cf3652"
+      "contentHash": "87dd63a436b406745c978de5bd4ed499e690b0f959a21b1b64b223b66ada8bac"
+    },
+    {
+      "id": "file:web/components/tickets.tsx",
+      "type": "file",
+      "label": "web/components/tickets.tsx",
+      "path": "web/components/tickets.tsx",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "e3626ba663a95133ad665851967a3b2cd7b64927442c1910be087245f4fc5eb2"
     },
     {
       "id": "file:web/e2e/portal.spec.ts",
@@ -2430,6 +2460,16 @@
       "contentHash": "207482a67a28cf2cb2cac562849128ecc38225c1419c9da81e60cfd66cb08831"
     },
     {
+      "id": "file:web/e2e/tickets.spec.ts",
+      "type": "file",
+      "label": "web/e2e/tickets.spec.ts",
+      "path": "web/e2e/tickets.spec.ts",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "98dead14525823ad8a42db7df7623f554858546a050ac4a3f813a1aecda319ff"
+    },
+    {
       "id": "file:web/lib/chat-client.ts",
       "type": "file",
       "label": "web/lib/chat-client.ts",
@@ -2437,7 +2477,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c7ca9d94fe651b4551fa2af6a0a6e42ce8c9e8f2fea85f2cbfbb583591a1f3bb"
+      "contentHash": "76cbf4de37edcc87e8e541efe67962f2b30cd1d551670edf7f377d953837d29a"
     },
     {
       "id": "file:web/lib/reduce.ts",
@@ -2447,7 +2487,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "87f721bc05316e1cf49a07ac084c5822bd92446c82425c5fe49cb7d757308d99"
+      "contentHash": "ad44f55a852f504b0aa330e57cecf1ca549c8f1467c17338fea12ce22620e63e"
     },
     {
       "id": "file:web/lib/sse.ts",
@@ -2458,6 +2498,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "db0b81cec21aaa9f1cae0b0d927fe4641e953655df7115f292e7926db9af168e"
+    },
+    {
+      "id": "file:web/lib/tickets.ts",
+      "type": "file",
+      "label": "web/lib/tickets.ts",
+      "path": "web/lib/tickets.ts",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c696e30584e8ca464a64f96de0b74f2a085143324cbac8cfae2c35cf17bcc513"
     },
     {
       "id": "file:web/lib/trace.ts",
@@ -2558,6 +2608,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "b0489574e00caaf7204dce6127c93effe2dbd5eb7019e1d1da5236efcda7e5fc"
+    },
+    {
+      "id": "file:web/test/tickets.test.ts",
+      "type": "file",
+      "label": "web/test/tickets.test.ts",
+      "path": "web/test/tickets.test.ts",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "62fb3a073ecac9523fd4ed6ca495dbf99f39435e06cc37c4a5fb778b4b53d656"
     },
     {
       "id": "file:web/vitest.config.ts",
@@ -2678,13 +2738,37 @@
       "contentHash": "f986c687dfb40dbd84f0eab644fe462e21b85dcc852c4fc3041fb0ececce1551"
     },
     {
+      "id": "symbol:web/app/t/[tenantId]/tickets/[ticketId]/page.tsx#function:TenantTicket",
+      "type": "symbol",
+      "kind": "function",
+      "name": "TenantTicket",
+      "label": "TenantTicket",
+      "path": "web/app/t/[tenantId]/tickets/[ticketId]/page.tsx",
+      "line": 4,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "2402550c67f48f1d1b3be97f037e0291520d2c2d1cf152872f501564da01a259"
+    },
+    {
+      "id": "symbol:web/app/t/[tenantId]/tickets/page.tsx#function:TenantTickets",
+      "type": "symbol",
+      "kind": "function",
+      "name": "TenantTickets",
+      "label": "TenantTickets",
+      "path": "web/app/t/[tenantId]/tickets/page.tsx",
+      "line": 4,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "6f7dc61996e8c551128f09838638eaefb3a154bb838f26c901e080e3c18138d7"
+    },
+    {
       "id": "symbol:web/components/icons.tsx#function:Icon",
       "type": "symbol",
       "kind": "function",
       "name": "Icon",
       "label": "Icon",
       "path": "web/components/icons.tsx",
-      "line": 32,
+      "line": 33,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "01c316765cfeb138e4ae3bf25d606feddda393204ce68e03b9fb736957bfc2b3"
@@ -2696,7 +2780,7 @@
       "name": "Logo",
       "label": "Logo",
       "path": "web/components/icons.tsx",
-      "line": 41,
+      "line": 42,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7e672d31f5f42cdb7d5ed6434dac2c400875dbb5fc5785d5aeebed6d4cbc538b"
@@ -2708,7 +2792,7 @@
       "name": "IconName",
       "label": "IconName",
       "path": "web/components/icons.tsx",
-      "line": 30,
+      "line": 31,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "d611458580f4c333e4f2c307ac06809cb1649c562f9b6e7a52f062d6e42d73b0"
@@ -2900,7 +2984,7 @@
       "name": "Bubble",
       "label": "Bubble",
       "path": "web/components/portal.tsx",
-      "line": 408,
+      "line": 458,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "0171b978a8038761424bc51aaf4c13b12e436151c8b4c9595d738845d90fad76"
@@ -2912,7 +2996,7 @@
       "name": "clock",
       "label": "clock",
       "path": "web/components/portal.tsx",
-      "line": 34,
+      "line": 39,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "c2398a61998e250d71affddc742bf54af551540fa0ebfb28a30ebeeca28f35c5"
@@ -2924,7 +3008,7 @@
       "name": "Portal",
       "label": "Portal",
       "path": "web/components/portal.tsx",
-      "line": 36,
+      "line": 43,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "3b6e5189cf59d96a9239c634c19bce7e5a4037de3a80cbde5c2685226f7d77d9"
@@ -2936,7 +3020,7 @@
       "name": "Otp",
       "label": "Otp",
       "path": "web/components/portal.tsx",
-      "line": 23,
+      "line": 28,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f375a27418861f085c52b2f4d52e59ce2ba584712c25ecb912cfefaadc72fa6d"
@@ -2948,7 +3032,7 @@
       "name": "Panel",
       "label": "Panel",
       "path": "web/components/portal.tsx",
-      "line": 22,
+      "line": 27,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f4f6b0bc8954ed327d9d2cda78133fd17899590671abbbed897194c99825aa0d"
@@ -2960,7 +3044,7 @@
       "name": "DISCLOSURE",
       "label": "DISCLOSURE",
       "path": "web/components/portal.tsx",
-      "line": 13,
+      "line": 18,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "1c9148003f3cc8c1123e2dad2db397270d2a46d1d67df770892bf3e2c16ee5bb"
@@ -2972,7 +3056,7 @@
       "name": "HELP_URL",
       "label": "HELP_URL",
       "path": "web/components/portal.tsx",
-      "line": 14,
+      "line": 19,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "62bb52be8a0cd03c3df55d3dfe13f32cf33ac9bad304d695b34fc25a0b99c9d4"
@@ -2984,7 +3068,7 @@
       "name": "LIMIT",
       "label": "LIMIT",
       "path": "web/components/portal.tsx",
-      "line": 12,
+      "line": 17,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "99898b7955d8f5de6a6ee78c87a4d0a7292c811b4af40a53f167e1bd72c1655b"
@@ -2996,7 +3080,7 @@
       "name": "store",
       "label": "store",
       "path": "web/components/portal.tsx",
-      "line": 25,
+      "line": 30,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "06aca960648e7be71f54f464d52f173f49664e78b7851ee844c69e3b0bceb170"
@@ -3008,10 +3092,22 @@
       "name": "SUGGESTIONS",
       "label": "SUGGESTIONS",
       "path": "web/components/portal.tsx",
-      "line": 15,
+      "line": 20,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "8b1e736811120a1d2e2a857a09ccadc4b4a8b662934c58e6769a751efe3d47ff"
+    },
+    {
+      "id": "symbol:web/components/portal.tsx#variable:TICKET_CARDS",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "TICKET_CARDS",
+      "label": "TICKET_CARDS",
+      "path": "web/components/portal.tsx",
+      "line": 15,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "ca99174472ebd92c7850d9dc8bcc03a40997a03aca89d7771c51ffa49d33753e"
     },
     {
       "id": "symbol:web/components/portal.tsx#variable:TIERS",
@@ -3020,10 +3116,118 @@
       "name": "TIERS",
       "label": "TIERS",
       "path": "web/components/portal.tsx",
-      "line": 16,
+      "line": 21,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7051c05c180491b650eb9c5777924cc700b164b368326fe7715b3e1e4e820240"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:Facts",
+      "type": "symbol",
+      "kind": "function",
+      "name": "Facts",
+      "label": "Facts",
+      "path": "web/components/tickets.tsx",
+      "line": 25,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "95be33be66b32344bb6847e53a44f5481f7560b404987a89ffedcd3c70cbab34"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:Loading",
+      "type": "symbol",
+      "kind": "function",
+      "name": "Loading",
+      "label": "Loading",
+      "path": "web/components/tickets.tsx",
+      "line": 144,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "a95320917f2edf50c2e103c9dbcb54b9bd74858b9e82702f2e7905d5e5bc1088"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:SignInFirst",
+      "type": "symbol",
+      "kind": "function",
+      "name": "SignInFirst",
+      "label": "SignInFirst",
+      "path": "web/components/tickets.tsx",
+      "line": 117,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "398af4e0c2402042d0ff35559a8ce24da7c5812401760cf895d46ca9ebddbb91"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:StatusChip",
+      "type": "symbol",
+      "kind": "function",
+      "name": "StatusChip",
+      "label": "StatusChip",
+      "path": "web/components/tickets.tsx",
+      "line": 18,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "aafe01edb8a33139c46654481899e392585cf3be13ca61f324cbeb7ea395f1a8"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:TicketCardView",
+      "type": "symbol",
+      "kind": "function",
+      "name": "TicketCardView",
+      "label": "TicketCardView",
+      "path": "web/components/tickets.tsx",
+      "line": 47,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "405a8d774a0d11312efa7570bb86ef6abdba5667bddf4d7d716e30d949961da9"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:TicketDetailView",
+      "type": "symbol",
+      "kind": "function",
+      "name": "TicketDetailView",
+      "label": "TicketDetailView",
+      "path": "web/components/tickets.tsx",
+      "line": 190,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "995771e07091505700b8d586c9ad82b3da525d04f55a733e72aedc90866d4213"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:TicketsView",
+      "type": "symbol",
+      "kind": "function",
+      "name": "TicketsView",
+      "label": "TicketsView",
+      "path": "web/components/tickets.tsx",
+      "line": 157,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "907ba5e5293b06a30fac7ef55413342bf55155df5e2107d5abee6b9fd99f4ef7"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:useLoad",
+      "type": "symbol",
+      "kind": "function",
+      "name": "useLoad",
+      "label": "useLoad",
+      "path": "web/components/tickets.tsx",
+      "line": 127,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "138609c1e9ed9449e9a4e06198e2c6a5b553cb083086073d894a409b6ef9b361"
+    },
+    {
+      "id": "symbol:web/components/tickets.tsx#function:when",
+      "type": "symbol",
+      "kind": "function",
+      "name": "when",
+      "label": "when",
+      "path": "web/components/tickets.tsx",
+      "line": 15,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "fb6f27aff28c7afcd961c271240ee8f8839a0f669412d3b4ee685d7235f71955"
     },
     {
       "id": "symbol:web/e2e/portal.spec.ts#function:shot",
@@ -3098,13 +3302,133 @@
       "contentHash": "aabf28a98469d7aa74d1c63123a5e5d9517a90843376c0704b551192f021768a"
     },
     {
+      "id": "symbol:web/e2e/tickets.spec.ts#function:shot",
+      "type": "symbol",
+      "kind": "function",
+      "name": "shot",
+      "label": "shot",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 69,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "199e09a6ef6244d54d58ba594bc9728a9371f66f68649b094bc5b0ef93871c5b"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#function:sse",
+      "type": "symbol",
+      "kind": "function",
+      "name": "sse",
+      "label": "sse",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 13,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d9c7fa24d39e0d695c3145f2a7fe05c9453704ec8ac6c9c7920401390205c298"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#function:stub",
+      "type": "symbol",
+      "kind": "function",
+      "name": "stub",
+      "label": "stub",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 41,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "c4a6fb285b734e143ca963f91aad7aa75b4fb66c362a3cb665988e0b811378e5"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#function:token",
+      "type": "symbol",
+      "kind": "function",
+      "name": "token",
+      "label": "token",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 6,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "694a788a21fbcdf418fc05b50731bc98acf4c56ed0ed389fd4307ccd0c281e34"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#function:watchErrors",
+      "type": "symbol",
+      "kind": "function",
+      "name": "watchErrors",
+      "label": "watchErrors",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 62,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "7c57da52d1402a1e267275a43128e57837a7cd040e3c4c4f045b010d30818533"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#variable:DETAIL",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "DETAIL",
+      "label": "DETAIL",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 31,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "24db49822a069ed581263443f44015ff93ac7f22bd212baf9ebd2f5980aeee70"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#variable:OFFER",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "OFFER",
+      "label": "OFFER",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 15,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "47da561caa744748e3328e789658818c6fa0ff7b5479a467826556e5b756a3a3"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#variable:RAISED",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "RAISED",
+      "label": "RAISED",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 21,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "7a053b437fb4ea78812480308a36b0ab00559455b38109e62c2b8f6dfdd0f901"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#variable:SIGN_IN",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "SIGN_IN",
+      "label": "SIGN_IN",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 26,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "17b49af7e18fcd3fa45087edf9dd508b1f5180caae475fb0a80d15c8eb6e201e"
+    },
+    {
+      "id": "symbol:web/e2e/tickets.spec.ts#variable:TICKET",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "TICKET",
+      "label": "TICKET",
+      "path": "web/e2e/tickets.spec.ts",
+      "line": 9,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "75826e2988d30d83fa3618c0c6aca23f062121fa05ad7f2a827df6b53645e2ce"
+    },
+    {
       "id": "symbol:web/lib/chat-client.ts#class:ChatClient",
       "type": "symbol",
       "kind": "class",
       "name": "ChatClient",
       "label": "ChatClient",
       "path": "web/lib/chat-client.ts",
-      "line": 36,
+      "line": 37,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "a60bdcbe900db6b227a86ff2e6d8d722a984d6a3e4d82d58c044bf018fa06a57"
@@ -3116,7 +3440,7 @@
       "name": "HttpError",
       "label": "HttpError",
       "path": "web/lib/chat-client.ts",
-      "line": 7,
+      "line": 8,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "9fbf64326b2e2098ff46e6cd4f65b847775bcf995cfa067b1636192ceefad7a3"
@@ -3128,7 +3452,7 @@
       "name": "conversation",
       "label": "conversation",
       "path": "web/lib/chat-client.ts",
-      "line": 146,
+      "line": 172,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f125081823fa91df4ddb5903d574ceb20288cc1f32407f2ddb6a5852c9db2aa8"
@@ -3140,7 +3464,7 @@
       "name": "readClaims",
       "label": "readClaims",
       "path": "web/lib/chat-client.ts",
-      "line": 27,
+      "line": 28,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "910a5c8d944e1000c725999c0311dee5eff73b5585ae7de4efbaaf2761d52175"
@@ -3152,7 +3476,7 @@
       "name": "Claims",
       "label": "Claims",
       "path": "web/lib/chat-client.ts",
-      "line": 17,
+      "line": 18,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7a9e17fffa42f0562a332a150ae0e4066788aeda2dd9238aa1ed6406a87bb43a"
@@ -3164,7 +3488,7 @@
       "name": "Options",
       "label": "Options",
       "path": "web/lib/chat-client.ts",
-      "line": 19,
+      "line": 20,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "ac1ca0b3b4944447a9ce0a2e793ec54dbf9c7b1620e071cd3edab8df7a5ffbf8"
@@ -3176,7 +3500,7 @@
       "name": "StreamEvent",
       "label": "StreamEvent",
       "path": "web/lib/chat-client.ts",
-      "line": 15,
+      "line": 16,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f4c8bb08959aaa4c5a561724618cb4a89fd2cec10713a4890b7f92f7040a2a23"
@@ -3188,7 +3512,7 @@
       "name": "Tier",
       "label": "Tier",
       "path": "web/lib/chat-client.ts",
-      "line": 16,
+      "line": 17,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7e09d5b320880c7c8e8a4caafb0e39470f2ab7a249e912c51d22c39a8d6e6046"
@@ -3300,6 +3624,198 @@
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "498ab521920369e99107da6343c70ac642b92f5e6e942e4c73a3951c7a2b4116"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:categoryLabel",
+      "type": "symbol",
+      "kind": "function",
+      "name": "categoryLabel",
+      "label": "categoryLabel",
+      "path": "web/lib/tickets.ts",
+      "line": 47,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "8fb0de6ad044e13782321a72d1c3137a8994ebb0b57a219c1efb9db7f59fb50f"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:eventLabel",
+      "type": "symbol",
+      "kind": "function",
+      "name": "eventLabel",
+      "label": "eventLabel",
+      "path": "web/lib/tickets.ts",
+      "line": 46,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "4736bcfb802f467bb6a7672da00fe15316225fde4b5838ba1915368eaa13af33"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:money",
+      "type": "symbol",
+      "kind": "function",
+      "name": "money",
+      "label": "money",
+      "path": "web/lib/tickets.ts",
+      "line": 49,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "c39570807df42b862541b0adcd72303009f8bc394c984aa2592260ef05d0e002"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:proposalOf",
+      "type": "symbol",
+      "kind": "function",
+      "name": "proposalOf",
+      "label": "proposalOf",
+      "path": "web/lib/tickets.ts",
+      "line": 59,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "4ca916740f2a999db7e3d7723d6ea704544e33c1fcde773cf8a7aa937bb696cb"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:statusLabel",
+      "type": "symbol",
+      "kind": "function",
+      "name": "statusLabel",
+      "label": "statusLabel",
+      "path": "web/lib/tickets.ts",
+      "line": 44,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "86f8f8d1e0dce29aa2f855402c0d1c09e1fc42581a482368ee5fe2eacc2f4810"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:teamLabel",
+      "type": "symbol",
+      "kind": "function",
+      "name": "teamLabel",
+      "label": "teamLabel",
+      "path": "web/lib/tickets.ts",
+      "line": 45,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "e2fc22a2b4d9799475be90ab06c31ea0b2385c76356a7ba1e20a0191103a14a5"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:ticketPath",
+      "type": "symbol",
+      "kind": "function",
+      "name": "ticketPath",
+      "label": "ticketPath",
+      "path": "web/lib/tickets.ts",
+      "line": 55,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "6afccd51ea52200751e5492934f1d77f921e10472a0e7aa77cd4f4339eb6f591"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#function:ticketsPath",
+      "type": "symbol",
+      "kind": "function",
+      "name": "ticketsPath",
+      "label": "ticketsPath",
+      "path": "web/lib/tickets.ts",
+      "line": 54,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "6af8f17a444258c47349e621ba1420cf5e42631bd16957f475be105b70f6179a"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#type:Ticket",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Ticket",
+      "label": "Ticket",
+      "path": "web/lib/tickets.ts",
+      "line": 5,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "a55c5606dba3b4bfa5202f027555d3dd27ddc46f7a3f94cd3d037908b03538a1"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#type:TicketCard",
+      "type": "symbol",
+      "kind": "type",
+      "name": "TicketCard",
+      "label": "TicketCard",
+      "path": "web/lib/tickets.ts",
+      "line": 26,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "44c1e6fbf9bce49bd08ffa9a62eeb93c676ceae3b21019ee62f0db686494565d"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#type:TicketDetail",
+      "type": "symbol",
+      "kind": "type",
+      "name": "TicketDetail",
+      "label": "TicketDetail",
+      "path": "web/lib/tickets.ts",
+      "line": 17,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "47c4d70b607b0ab5472c107aa51b0c1b8877854767de9997681b1340a593208e"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#type:TicketEvent",
+      "type": "symbol",
+      "kind": "type",
+      "name": "TicketEvent",
+      "label": "TicketEvent",
+      "path": "web/lib/tickets.ts",
+      "line": 16,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "f83421711a832fdb71d16780d5dc8160202ddd78e14a106ed95d1ec091b86ada"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#type:TicketStatus",
+      "type": "symbol",
+      "kind": "type",
+      "name": "TicketStatus",
+      "label": "TicketStatus",
+      "path": "web/lib/tickets.ts",
+      "line": 4,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "8476f708f631a270c546a76756d4aacc4d15412eb9fcc325b77da114b105ef94"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#variable:EVENTS",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "EVENTS",
+      "label": "EVENTS",
+      "path": "web/lib/tickets.ts",
+      "line": 40,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "e51ae5e2f7a45ba783093f9ad4ac5e4deaf500754fe35d6bd0e358384744cae6"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#variable:STATUS",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "STATUS",
+      "label": "STATUS",
+      "path": "web/lib/tickets.ts",
+      "line": 32,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d678389844058306b0a58913b8794063d7336483c9724dd16089e087dc7a6305"
+    },
+    {
+      "id": "symbol:web/lib/tickets.ts#variable:TEAMS",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "TEAMS",
+      "label": "TEAMS",
+      "path": "web/lib/tickets.ts",
+      "line": 36,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "c2855afdcdff6f56b38bd8b36dfd7c7238827403224fc69c5951425b80e25e50"
     },
     {
       "id": "symbol:web/lib/trace.ts#type:Agent",
@@ -3554,6 +4070,42 @@
       "contentHash": "4cbef7da9d203f858906801b075df792e2a48a4e7a05ce4448d7f39d7cdc3073"
     },
     {
+      "id": "symbol:web/test/tickets.test.ts#function:json",
+      "type": "symbol",
+      "kind": "function",
+      "name": "json",
+      "label": "json",
+      "path": "web/test/tickets.test.ts",
+      "line": 7,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "0fcaca43fbbfbac08b532b7064eca129622c05de70a186765cc4f3158d6d93e6"
+    },
+    {
+      "id": "symbol:web/test/tickets.test.ts#variable:PROPOSAL",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "PROPOSAL",
+      "label": "PROPOSAL",
+      "path": "web/test/tickets.test.ts",
+      "line": 9,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "bc181fc9178b8ca165ef915a59068f53d0910c493f59e7df8db30099d667e62f"
+    },
+    {
+      "id": "symbol:web/test/tickets.test.ts#variable:quick",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "quick",
+      "label": "quick",
+      "path": "web/test/tickets.test.ts",
+      "line": 8,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "2153f43b14c313a89311c78a175061138f7066b6cc836b679243236a18d9d186"
+    },
+    {
       "id": "unresolved:web/app/layout.tsx:./globals.css",
       "type": "unresolved",
       "label": "./globals.css",
@@ -3640,6 +4192,123 @@
     },
     {
       "type": "calls",
+      "source": "symbol:web/components/portal.tsx#function:Portal",
+      "target": "symbol:web/lib/tickets.ts#function:ticketsPath",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:Facts",
+      "target": "symbol:web/lib/tickets.ts#function:categoryLabel",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:Facts",
+      "target": "symbol:web/lib/tickets.ts#function:money",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:Facts",
+      "target": "symbol:web/lib/tickets.ts#function:teamLabel",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:StatusChip",
+      "target": "symbol:web/lib/tickets.ts#function:statusLabel",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketCardView",
+      "target": "symbol:web/lib/tickets.ts#function:proposalOf",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketCardView",
+      "target": "symbol:web/lib/tickets.ts#function:ticketPath",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketDetailView",
+      "target": "symbol:web/components/tickets.tsx#function:when",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketDetailView",
+      "target": "symbol:web/lib/tickets.ts#function:eventLabel",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketDetailView",
+      "target": "symbol:web/lib/tickets.ts#function:ticketsPath",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketsView",
+      "target": "symbol:web/components/tickets.tsx#function:when",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketsView",
+      "target": "symbol:web/lib/tickets.ts#function:teamLabel",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/tickets.tsx#function:TicketsView",
+      "target": "symbol:web/lib/tickets.ts#function:ticketPath",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
       "source": "symbol:web/e2e/portal.spec.ts#function:shot",
       "target": "symbol:web/e2e/portal.spec.ts#function:stub",
       "tier": "proven",
@@ -3679,6 +4348,60 @@
     },
     {
       "type": "calls",
+      "source": "symbol:web/e2e/tickets.spec.ts#function:shot",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:stub",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/e2e/tickets.spec.ts#function:shot",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:watchErrors",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/e2e/tickets.spec.ts#function:stub",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:token",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/e2e/tickets.spec.ts#variable:OFFER",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:sse",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/e2e/tickets.spec.ts#variable:RAISED",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:sse",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/e2e/tickets.spec.ts#variable:SIGN_IN",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:sse",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
       "source": "symbol:web/lib/chat-client.ts#class:ChatClient",
       "target": "symbol:web/lib/chat-client.ts#class:HttpError",
       "tier": "proven",
@@ -3702,6 +4425,15 @@
       "tier": "proven",
       "resolved": true,
       "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/lib/tickets.ts#function:ticketPath",
+      "target": "symbol:web/lib/tickets.ts#function:ticketsPath",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
       "extractor": "conservative-js-calls"
     },
     {
@@ -3795,6 +4527,33 @@
       "extractor": "conservative-js-calls"
     },
     {
+      "type": "calls",
+      "source": "symbol:web/test/tickets.test.ts#variable:PROPOSAL",
+      "target": "symbol:web/lib/chat-client.ts#class:ChatClient",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/tickets.test.ts#variable:PROPOSAL",
+      "target": "symbol:web/lib/reduce.ts#function:reduce",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/tickets.test.ts#variable:PROPOSAL",
+      "target": "symbol:web/test/tickets.test.ts#function:json",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
       "type": "defines",
       "source": "file:web/app/layout.tsx",
       "target": "symbol:web/app/layout.tsx#function:RootLayout",
@@ -3850,9 +4609,27 @@
     },
     {
       "type": "defines",
+      "source": "file:web/app/t/[tenantId]/tickets/[ticketId]/page.tsx",
+      "target": "symbol:web/app/t/[tenantId]/tickets/[ticketId]/page.tsx#function:TenantTicket",
+      "line": 4,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/app/t/[tenantId]/tickets/page.tsx",
+      "target": "symbol:web/app/t/[tenantId]/tickets/page.tsx#function:TenantTickets",
+      "line": 4,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#function:Icon",
-      "line": 32,
+      "line": 33,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -3861,7 +4638,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#function:Logo",
-      "line": 41,
+      "line": 42,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -3870,7 +4647,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#type:IconName",
-      "line": 30,
+      "line": 31,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4014,7 +4791,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#function:Bubble",
-      "line": 408,
+      "line": 458,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4023,7 +4800,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#function:clock",
-      "line": 34,
+      "line": 39,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4032,7 +4809,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#function:Portal",
-      "line": 36,
+      "line": 43,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4041,7 +4818,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#type:Otp",
-      "line": 23,
+      "line": 28,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4050,7 +4827,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#type:Panel",
-      "line": 22,
+      "line": 27,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4059,7 +4836,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:DISCLOSURE",
-      "line": 13,
+      "line": 18,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4068,7 +4845,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:HELP_URL",
-      "line": 14,
+      "line": 19,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4077,7 +4854,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:LIMIT",
-      "line": 12,
+      "line": 17,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4086,7 +4863,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:store",
-      "line": 25,
+      "line": 30,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4095,6 +4872,15 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:SUGGESTIONS",
+      "line": 20,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/portal.tsx",
+      "target": "symbol:web/components/portal.tsx#variable:TICKET_CARDS",
       "line": 15,
       "resolved": true,
       "confidence": 0.8,
@@ -4104,7 +4890,88 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:TIERS",
-      "line": 16,
+      "line": 21,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:Facts",
+      "line": 25,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:Loading",
+      "line": 144,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:SignInFirst",
+      "line": 117,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:StatusChip",
+      "line": 18,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:TicketCardView",
+      "line": 47,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:TicketDetailView",
+      "line": 190,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:TicketsView",
+      "line": 157,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:useLoad",
+      "line": 127,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/tickets.tsx",
+      "target": "symbol:web/components/tickets.tsx#function:when",
+      "line": 15,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4165,9 +5032,99 @@
     },
     {
       "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:shot",
+      "line": 69,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:sse",
+      "line": 13,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:stub",
+      "line": 41,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:token",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#function:watchErrors",
+      "line": 62,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#variable:DETAIL",
+      "line": 31,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#variable:OFFER",
+      "line": 15,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#variable:RAISED",
+      "line": 21,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#variable:SIGN_IN",
+      "line": 26,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "symbol:web/e2e/tickets.spec.ts#variable:TICKET",
+      "line": 9,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#class:ChatClient",
-      "line": 36,
+      "line": 37,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4176,7 +5133,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#class:HttpError",
-      "line": 7,
+      "line": 8,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4185,7 +5142,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#function:conversation",
-      "line": 146,
+      "line": 172,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4194,7 +5151,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#function:readClaims",
-      "line": 27,
+      "line": 28,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4203,7 +5160,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#type:Claims",
-      "line": 17,
+      "line": 18,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4212,7 +5169,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#type:Options",
-      "line": 19,
+      "line": 20,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4221,7 +5178,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#type:StreamEvent",
-      "line": 15,
+      "line": 16,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4230,7 +5187,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#type:Tier",
-      "line": 16,
+      "line": 17,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4312,6 +5269,150 @@
       "source": "file:web/lib/sse.ts",
       "target": "symbol:web/lib/sse.ts#type:RawEvent",
       "line": 3,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:categoryLabel",
+      "line": 47,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:eventLabel",
+      "line": 46,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:money",
+      "line": 49,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:proposalOf",
+      "line": 59,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:statusLabel",
+      "line": 44,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:teamLabel",
+      "line": 45,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:ticketPath",
+      "line": 55,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#function:ticketsPath",
+      "line": 54,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#type:Ticket",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#type:TicketCard",
+      "line": 26,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#type:TicketDetail",
+      "line": 17,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#type:TicketEvent",
+      "line": 16,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#type:TicketStatus",
+      "line": 4,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#variable:EVENTS",
+      "line": 40,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#variable:STATUS",
+      "line": 32,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/tickets.ts",
+      "target": "symbol:web/lib/tickets.ts#variable:TEAMS",
+      "line": 36,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -4506,6 +5607,33 @@
       "extractor": "conservative-js-symbols"
     },
     {
+      "type": "defines",
+      "source": "file:web/test/tickets.test.ts",
+      "target": "symbol:web/test/tickets.test.ts#function:json",
+      "line": 7,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/test/tickets.test.ts",
+      "target": "symbol:web/test/tickets.test.ts#variable:PROPOSAL",
+      "line": 9,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/test/tickets.test.ts",
+      "target": "symbol:web/test/tickets.test.ts#variable:quick",
+      "line": 8,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
       "type": "imports",
       "source": "file:web/app/layout.tsx",
       "target": "package:npm:next",
@@ -4557,6 +5685,26 @@
     },
     {
       "type": "imports",
+      "source": "file:web/app/t/[tenantId]/tickets/[ticketId]/page.tsx",
+      "target": "file:web/components/portal.tsx",
+      "specifier": "@/components/portal.tsx",
+      "line": 1,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/app/t/[tenantId]/tickets/page.tsx",
+      "target": "file:web/components/portal.tsx",
+      "specifier": "@/components/portal.tsx",
+      "line": 1,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
       "source": "file:web/components/panels.tsx",
       "target": "file:web/components/icons.tsx",
       "specifier": "./icons.tsx",
@@ -4600,7 +5748,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/components/icons.tsx",
       "specifier": "./icons.tsx",
-      "line": 9,
+      "line": 11,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -4610,7 +5758,17 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/components/panels.tsx",
       "specifier": "./panels.tsx",
-      "line": 10,
+      "line": 12,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/portal.tsx",
+      "target": "file:web/components/tickets.tsx",
+      "specifier": "./tickets.tsx",
+      "line": 13,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -4620,7 +5778,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/chat-client.ts",
       "specifier": "@/lib/chat-client.ts",
-      "line": 5,
+      "line": 6,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -4630,7 +5788,17 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/reduce.ts",
       "specifier": "@/lib/reduce.ts",
-      "line": 7,
+      "line": 8,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/portal.tsx",
+      "target": "file:web/lib/tickets.ts",
+      "specifier": "@/lib/tickets.ts",
+      "line": 9,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -4640,7 +5808,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/trace.ts",
       "specifier": "@/lib/trace.ts",
-      "line": 8,
+      "line": 10,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -4648,9 +5816,79 @@
     {
       "type": "imports",
       "source": "file:web/components/portal.tsx",
+      "target": "package:npm:next",
+      "specifier": "next/link",
+      "line": 4,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/portal.tsx",
       "target": "package:npm:react",
       "specifier": "react",
+      "line": 5,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/tickets.tsx",
+      "target": "file:web/components/icons.tsx",
+      "specifier": "./icons.tsx",
+      "line": 12,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/tickets.tsx",
+      "target": "file:web/components/panels.tsx",
+      "specifier": "./panels.tsx",
+      "line": 13,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/tickets.tsx",
+      "target": "file:web/lib/chat-client.ts",
+      "specifier": "@/lib/chat-client.ts",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/tickets.tsx",
+      "target": "file:web/lib/tickets.ts",
+      "specifier": "@/lib/tickets.ts",
+      "line": 8,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/tickets.tsx",
+      "target": "package:npm:next",
+      "specifier": "next/link",
       "line": 4,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/tickets.tsx",
+      "target": "package:npm:react",
+      "specifier": "react",
+      "line": 5,
       "resolved": false,
       "confidence": 0.5,
       "extractor": "javascript-imports"
@@ -4661,6 +5899,16 @@
       "target": "package:npm:@playwright/test",
       "specifier": "@playwright/test",
       "line": 3,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/e2e/tickets.spec.ts",
+      "target": "package:npm:@playwright/test",
+      "specifier": "@playwright/test",
+      "line": 4,
       "resolved": false,
       "confidence": 0.5,
       "extractor": "javascript-imports"
@@ -4678,9 +5926,19 @@
     {
       "type": "imports",
       "source": "file:web/lib/chat-client.ts",
+      "target": "file:web/lib/tickets.ts",
+      "specifier": "./tickets.ts",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/lib/chat-client.ts",
       "target": "file:web/lib/trace.ts",
       "specifier": "./trace.ts",
-      "line": 5,
+      "line": 6,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -4807,6 +6065,46 @@
     },
     {
       "type": "imports",
+      "source": "file:web/test/tickets.test.ts",
+      "target": "file:web/lib/chat-client.ts",
+      "specifier": "../lib/chat-client.ts",
+      "line": 2,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/tickets.test.ts",
+      "target": "file:web/lib/reduce.ts",
+      "specifier": "../lib/reduce.ts",
+      "line": 4,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/tickets.test.ts",
+      "target": "file:web/lib/tickets.ts",
+      "specifier": "../lib/tickets.ts",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/test/tickets.test.ts",
+      "target": "package:npm:vitest",
+      "specifier": "vitest",
+      "line": 1,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
       "source": "file:web/vitest.config.ts",
       "target": "package:npm:vitest",
       "specifier": "vitest/config",
@@ -4820,6 +6118,6 @@
     "Python AST unavailable: python3 failed"
   ],
   "stats": {
-    "unresolvedCalls": 93
+    "unresolvedCalls": 127
   }
 }
