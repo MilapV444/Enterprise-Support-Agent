@@ -2,6 +2,7 @@
 // customer's why view and execution trace. The stream is read with fetch (not EventSource) because it must
 // carry the Bearer token.
 import { createParser } from "./sse.ts";
+import type { Ticket, TicketDetail } from "./tickets.ts";
 import type { Trace, Why } from "./trace.ts";
 
 export class HttpError extends Error {
@@ -88,6 +89,31 @@ export class ChatClient {
         await this.sleep(250 * 2 ** attempt);
       }
     }
+  }
+
+  // The Raise ticket button: a turn carrying the action, with one Idempotency-Key for every retry, so a
+  // double click or a retry raises one ticket (the server answers on the conversation's event stream).
+  async confirmTicket(conversationId: string, proposal: string, { attempts = 3 } = {}) {
+    const key = this.uuid();
+    for (let attempt = 1; ; attempt += 1) {
+      try {
+        return await this.#request("POST",
+          `${conversation(conversationId)}/tickets/${encodeURIComponent(proposal)}/confirm`, undefined,
+          { "Idempotency-Key": key });
+      } catch (error) {
+        const retryable = !(error instanceof HttpError) || error.status >= 500;
+        if (!retryable || attempt >= attempts) throw error;
+        await this.sleep(250 * 2 ** attempt);
+      }
+    }
+  }
+
+  async tickets(): Promise<Ticket[]> {
+    return (await this.#request("GET", "/v1/tickets")).tickets;
+  }
+
+  ticket(ticketId: string): Promise<TicketDetail> {
+    return this.#request("GET", `/v1/tickets/${encodeURIComponent(ticketId)}`);
   }
 
   why(conversationId: string, turnId: string): Promise<Why[]> {

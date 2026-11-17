@@ -39,21 +39,25 @@ export function reduce(state: ChatState, { event, data, at }: Pick<StreamEvent, 
       return { ...state, draft: state.draft + (data.text ?? "") };
     case "citation":
       return { ...state, citations: [...state.citations, data as Citation] };
-    case "final":
-      return {
-        ...state,
-        status: null,
-        draft: "",
-        citations: [],
-        messages: [...state.messages, {
-          role: data.role ?? "assistant",
-          text: data.text ?? data.content ?? "",
-          at,
-          turnId: data.history ? undefined : data.turn_id,
-          citations: state.citations,
-          actions: data.actions ?? [],
-        }],
+    case "final": {
+      const reply: Message = {
+        role: data.role ?? "assistant",
+        text: data.text ?? data.content ?? "",
+        at,
+        turnId: data.history ? undefined : data.turn_id,
+        citations: state.citations,
+        actions: data.actions ?? [],
       };
+      // The server sends a turn's card before its final event (so a retried turn republishes nothing); show the
+      // reply first and the card it talks about after it.
+      const cards = [];
+      let kept = state.messages.length;
+      while (kept > 0 && state.messages[kept - 1].role === "card" && data.turn_id
+        && state.messages[kept - 1].card?.turn_id === data.turn_id) kept -= 1;
+      cards.push(...state.messages.slice(kept));
+      return { ...state, status: null, draft: "", citations: [],
+        messages: [...state.messages.slice(0, kept), reply, ...cards] };
+    }
     case "action_card":
       return { ...state, messages: [...state.messages, { role: "card", text: data.title ?? "Action", card: data, at }] };
     case "handoff":

@@ -1,13 +1,18 @@
 "use client";
 // The support portal: identity rail, the conversation, and the trust panels (citations, why, trace).
 // Token and conversation live in sessionStorage: the server binds a conversation to the sign-in session.
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
 import { ChatClient, HttpError, readClaims, type Claims } from "@/lib/chat-client.ts";
 import { addUserMessage, initialState, reduce, type ChatState, type Citation, type Message } from "@/lib/reduce.ts";
+import { ticketsPath, type TicketCard } from "@/lib/tickets.ts";
 import type { Trace, Why } from "@/lib/trace.ts";
 import { Icon, Logo, type IconName } from "./icons.tsx";
 import { CitationView, Drawer, TraceView, WhyPanel, type Loadable } from "./panels.tsx";
+import { TicketCardView, TicketDetailView, TicketsView } from "./tickets.tsx";
+
+const TICKET_CARDS = new Set(["ticket_proposal", "ticket", "sign_in"]);
 
 const LIMIT = 16384; // channels.api.envelope.TurnRequest
 const DISCLOSURE = "You are chatting with an AI assistant."; // safety/governance/disclosure.py
@@ -33,7 +38,11 @@ const store = {
 
 const clock = (at?: number) => at ? new Date(at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "";
 
-export default function Portal({ tenantId }: { tenantId: string }) {
+// view: the chat, or My tickets (ticketId: one ticket's page). Each is its own route; the conversation is
+// restored from sessionStorage when the customer comes back to the chat.
+export default function Portal({ tenantId, view = "chat", ticketId }: {
+  tenantId: string; view?: "chat" | "tickets"; ticketId?: string;
+}) {
   const client = useRef<ChatClient | null>(null);
   const stream = useRef<AbortController | null>(null);
   const storageKey = `support-agent:${tenantId}:session`;
@@ -181,6 +190,15 @@ export default function Portal({ tenantId }: { tenantId: string }) {
     }
   }
 
+  async function raiseTicket(proposal: string) {
+    await client.current!.confirmTicket(conversationId!, proposal);
+  }
+
+  function goSignIn() {
+    setRailOpen(true); // the rail is a drawer on small screens
+    setTimeout(() => document.getElementById("otp-email")?.focus(), 50);
+  }
+
   async function logout() {
     try { await client.current!.logout(); } catch { /* the session is dropped locally either way */ }
     await fresh().catch(() => setLost(true));
@@ -189,6 +207,7 @@ export default function Portal({ tenantId }: { tenantId: string }) {
   const tier = TIERS[claims?.tier ?? "T0_ANON"];
   const anonymous = !claims || claims.tier === "T0_ANON";
   const navItem = "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px]";
+  const current = "border-l-[3px] border-brand bg-brand/20 font-medium";
 
   const rail = (
     <nav aria-label="Portal" className="flex h-full w-[264px] flex-col bg-rail px-4 py-5 text-rail-ink">
@@ -202,15 +221,25 @@ export default function Portal({ tenantId }: { tenantId: string }) {
       <p className="mb-2 px-1 text-[11px] font-semibold tracking-wider text-rail-muted">NAVIGATION</p>
       <ul className="space-y-1">
         <li>
-          <span aria-current="page" className={`${navItem} border-l-[3px] border-brand bg-brand/20 font-medium`}>
-            <Icon name="chat" /> Chat
-          </span>
+          {view === "chat" ? (
+            <span aria-current="page" className={`${navItem} ${current}`}><Icon name="chat" /> Chat</span>
+          ) : (
+            <Link href={`/t/${encodeURIComponent(tenantId)}`} className={`${navItem} hover:bg-rail-raised`}>
+              <Icon name="chat" /> Chat
+            </Link>
+          )}
         </li>
         <li>
           <span aria-disabled="true" className={`${navItem} text-rail-muted`}>
             <Icon name="history" /> History
             <span className="ml-auto rounded-md bg-rail-raised px-2 py-0.5 text-[11px]">Disabled</span>
           </span>
+        </li>
+        <li>
+          <Link href={ticketsPath(tenantId)} aria-current={view === "tickets" && !ticketId ? "page" : undefined}
+            className={`${navItem} ${view === "tickets" ? current : "hover:bg-rail-raised"}`}>
+            <Icon name="ticket" /> My tickets
+          </Link>
         </li>
         {HELP_URL && (
           <li>
@@ -307,8 +336,11 @@ export default function Portal({ tenantId }: { tenantId: string }) {
             <Icon name="menu" />
           </button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-semibold">Chat</h1>
-            <p className="hidden truncate text-sm text-muted sm:block">Get answers from our documentation and knowledge base.</p>
+            <h1 className="text-xl font-semibold">{view === "chat" ? "Chat" : ticketId ? `Ticket ${ticketId}` : "My tickets"}</h1>
+            <p className="hidden truncate text-sm text-muted sm:block">
+              {view === "chat" ? "Get answers from our documentation and knowledge base."
+                : "The tickets you raised with our teams, and everything that happened on them."}
+            </p>
           </div>
           <span className="hidden items-center gap-1.5 text-sm text-muted 2xl:flex">
             <Icon name="shield" className="size-4" /> Enterprise Secure · Trusted Content
@@ -319,12 +351,26 @@ export default function Portal({ tenantId }: { tenantId: string }) {
               {tier.short}
             </span>
           </span>
-          <button onClick={() => open(client.current!.uuid())} title="New conversation"
-            className="flex items-center gap-1.5 rounded-full bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand-strong">
-            <Icon name="plus" className="size-4" /><span className="hidden sm:inline">New conversation</span>
-          </button>
+          {view === "chat" && (
+            <button onClick={() => open(client.current!.uuid())} title="New conversation"
+              className="flex items-center gap-1.5 rounded-full bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand-strong">
+              <Icon name="plus" className="size-4" /><span className="hidden sm:inline">New conversation</span>
+            </button>
+          )}
         </header>
 
+        {view === "tickets" && (
+          <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-6">
+            <div className="mx-auto max-w-3xl">
+              {ticketId
+                ? <TicketDetailView client={claims ? client.current : null} tenantId={tenantId} ticketId={ticketId}
+                    signedIn={!anonymous} />
+                : <TicketsView client={claims ? client.current : null} tenantId={tenantId} signedIn={!anonymous} />}
+            </div>
+          </div>
+        )}
+
+        {view === "chat" && <>
         <div className="mx-4 mt-4 flex items-start gap-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-3 text-warn-ink sm:mx-6">
           <Icon name="warn" className="mt-0.5 size-5 shrink-0" />
           <p className="text-sm">
@@ -350,9 +396,12 @@ export default function Portal({ tenantId }: { tenantId: string }) {
               </div>
             )}
             {chat.messages.map((message, i) => (
-              <Bubble key={i} message={message} why={message.turnId ? whys[message.turnId] : undefined}
-                onTrace={loadTrace} onWhy={toggleWhy} onCite={(citation) => setPanel({ kind: "citation", citation })}
-                onAction={(id) => id === "talk_to_human" && send("I'd like to talk to a person, please.")} />
+              message.role === "card" && TICKET_CARDS.has(message.card?.kind)
+                ? <TicketCardView key={i} card={message.card as TicketCard} tenantId={tenantId} onRaise={raiseTicket}
+                    onSignIn={goSignIn} />
+                : <Bubble key={i} message={message} why={message.turnId ? whys[message.turnId] : undefined}
+                    onTrace={loadTrace} onWhy={toggleWhy} onCite={(citation) => setPanel({ kind: "citation", citation })}
+                    onAction={(id) => id === "talk_to_human" && send("I'd like to talk to a person, please.")} />
             ))}
             {chat.draft && <div className="max-w-[85%] rounded-2xl border border-line bg-surface p-4 opacity-70">{chat.draft}</div>}
             <div aria-live="polite" className="min-h-6">
@@ -389,6 +438,7 @@ export default function Portal({ tenantId }: { tenantId: string }) {
             </button>
           </div>
         </form>
+        </>}
       </main>
 
       {panel?.kind === "trace" && (
