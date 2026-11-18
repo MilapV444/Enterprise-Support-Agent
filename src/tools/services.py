@@ -100,10 +100,16 @@ class RunAction(BaseModel):
     proposal: str = arg(False, personal=False, pattern=r"^ACT-[0-9]{5,}$")  # an offer the agent issued
 
 
+# Who carried an action out: the agent (a customer-confirmed offer) or support staff (the demo staff console).
+ACTOR_NAME = "nimbus_0004_service_actor.sql"
+ACTOR_SCHEMA = "ALTER TABLE service_actions ADD COLUMN actor text NOT NULL DEFAULT 'agent';"
+
+
 def apply_schema(database):
-    if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{SCHEMA_NAME}'"):
-        psql(database, f"BEGIN;\n{SCHEMA}\nINSERT INTO schema_migrations (name) VALUES ('{SCHEMA_NAME}');\n"
-                       "COMMIT;\n")
+    for name, sql in ((SCHEMA_NAME, SCHEMA), (ACTOR_NAME, ACTOR_SCHEMA)):
+        if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{name}'"):
+            psql(database, f"BEGIN;\n{sql}\nINSERT INTO schema_migrations (name) VALUES ('{name}');\n"
+                           "COMMIT;\n")
 
 
 def number(action_id):
@@ -137,18 +143,31 @@ def service(connect, tenant_id, principal_id, service_id):
     return _json(row) if row else None
 
 
-def activity(connect, tenant_id, principal_id, limit=20):
-    """What the agent did on the customer's services, newest first."""
+def activity(connect, tenant_id, principal_id=None, limit=20):
+    """What was done on the customer's services (every customer's for principal_id=None), newest first."""
     with connect() as conn, conn.transaction():
         context(conn, tenant_id)
         rows = conn.execute(
-            "SELECT a.id, s.name, a.action, a.replicas, a.conversation_id, a.done_at FROM service_actions a "
+            "SELECT a.id, s.name, a.action, a.replicas, a.conversation_id, a.done_at, a.actor, "
+            "a.principal_id "
+            "FROM service_actions a "
             "JOIN nimbus_services s ON s.tenant_id = a.tenant_id AND s.service_id = a.service_id "
-            "WHERE a.tenant_id = %s AND a.principal_id = %s AND a.status = 'done' "
-            "ORDER BY a.done_at DESC LIMIT %s", (tenant_id, principal_id, limit)).fetchall()
+            "WHERE a.tenant_id = %s AND (%s::text IS NULL OR a.principal_id = %s) AND a.status = 'done' "
+            "ORDER BY a.done_at DESC LIMIT %s", (tenant_id, principal_id, principal_id, limit)).fetchall()
     return [{"action_id": number(i), "service": name, "action": action, "replicas": replicas,
-             "conversation_id": conversation, "at": at.isoformat()}
-            for i, name, action, replicas, conversation, at in rows]
+             "conversation_id": conversation, "at": at.isoformat(), "actor": actor,
+             **({} if principal_id else {"principal_id": owner})}
+            for i, name, action, replicas, conversation, at, actor, owner in rows]
+
+
+def everyone(connect, tenant_id):
+    """Every customer's services in the tenant with their settled status (the staff console)."""
+    with connect() as conn, conn.transaction():
+        context(conn, tenant_id)
+        rows = conn.execute(f"{SERVICE.replace('SELECT ', 'SELECT s.principal_id, ', 1)} "
+                            "WHERE s.tenant_id = %s ORDER BY s.principal_id, s.kind DESC, s.name",
+                            (tenant_id,)).fetchall()
+    return [{"principal_id": row[0], **_json(row[1:])} for row in rows]
 
 
 def understand(text, own):
@@ -217,20 +236,50 @@ def confirm(connect, tenant_id, principal_id, action_id):
                                  .fetchone())
         if expired:
             raise Refused("this offer has expired")
-        conn.execute(f"SELECT 1 FROM nimbus_services s {where} FOR UPDATE",
-                     (tenant_id, principal_id, service_id))
-        now = _json(conn.execute(f"{SERVICE} {where}", (tenant_id, principal_id, service_id)).fetchone())
-        _, needs, running, settled = ACTIONS[action]
-        if now["status"] != needs:
-            raise Refused(f"the service is {now['status']} now")
-        conn.execute("UPDATE nimbus_services SET status = %s, settles_to = %s, "
-                     f"settles_at = now() + interval '{SETTLE}', replicas = coalesce(%s, replicas), "
-                     "updated_at = now() WHERE tenant_id = %s AND service_id = %s",
-                     (running, settled, replicas, tenant_id, service_id))
+        after = _carry_out(conn, tenant_id, principal_id, service_id, action, replicas)
         conn.execute("UPDATE service_actions SET status = 'done', done_at = now() WHERE id = %s",
                      (action_id,))
-        return action, _json(conn.execute(f"{SERVICE} {where}", (tenant_id, principal_id, service_id))
-                             .fetchone())
+        return action, after
+
+
+def _carry_out(conn, tenant_id, principal_id, service_id, action, replicas):
+    """Start the action on a locked service in the status it needs (else Refused) -> the service after it."""
+    where = "WHERE s.tenant_id = %s AND s.principal_id = %s AND s.service_id = %s"
+    conn.execute(f"SELECT 1 FROM nimbus_services s {where} FOR UPDATE", (tenant_id, principal_id, service_id))
+    now = _json(conn.execute(f"{SERVICE} {where}", (tenant_id, principal_id, service_id)).fetchone())
+    _, needs, running, settled = ACTIONS[action]
+    if now["status"] != needs:
+        raise Refused(f"the service is {now['status']} now")
+    conn.execute("UPDATE nimbus_services SET status = %s, settles_to = %s, "
+                 f"settles_at = now() + interval '{SETTLE}', replicas = coalesce(%s, replicas), "
+                 "updated_at = now() WHERE tenant_id = %s AND service_id = %s",
+                 (running, settled, replicas, tenant_id, service_id))
+    return _json(conn.execute(f"{SERVICE} {where}", (tenant_id, principal_id, service_id)).fetchone())
+
+
+def staff_act(connect, tenant_id, service_id, action, replicas=None, actor="staff:demo"):
+    """Support staff carry out an action on a customer's service directly (the demo staff console) -> the
+    service after it. Same rules as a customer's offer: the right kind, the status it needs, 1-10 replicas
+    for a scale; a repeat while it settles is Refused, so a double click changes nothing more."""
+    if action not in ACTIONS:
+        raise Refused(f"unknown action {action!r}")
+    if (action == "scale") != (replicas is not None) or (replicas is not None and not 1 <= replicas <= 10):
+        raise Refused("a scale needs 1-10 replicas, and only a scale takes them")
+    with connect() as conn, conn.transaction():
+        context(conn, tenant_id)
+        row = conn.execute("SELECT principal_id, kind FROM nimbus_services WHERE tenant_id = %s AND "
+                           "service_id = %s", (tenant_id, service_id)).fetchone()
+        if row is None:
+            raise Refused("no such service")
+        principal_id, kind = row
+        if kind not in ACTIONS[action][0]:
+            raise Refused(f"a {KINDS[kind]} cannot {action}")
+        after = _carry_out(conn, tenant_id, principal_id, service_id, action, replicas)
+        conn.execute("INSERT INTO service_actions (tenant_id, principal_id, conversation_id, proposal_key, "
+                     "service_id, action, replicas, status, done_at, actor) "
+                     "VALUES (%s, %s, 'staff', gen_random_uuid()::text, %s, %s, %s, 'done', now(), %s)",
+                     (tenant_id, principal_id, service_id, action, replicas, actor))
+        return after
 
 
 def register(registry, connect, identity):

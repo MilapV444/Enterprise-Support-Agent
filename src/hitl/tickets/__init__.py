@@ -25,7 +25,13 @@ from data.migrate import psql
 from hitl.queues import Refused, context
 
 PROPOSAL_TTL = "24 hours"   # an unconfirmed proposal expires after this
-RAISED = ("open", "in_review", "resolved", "closed")  # what My tickets lists; a proposal is only an offer
+RAISED = ("open", "in_review", "resolved", "closed", "rejected")  # listed; a proposal is an offer
+# What staff may move a raised ticket to (the demo staff console, channels.api.staff); the rest is Refused.
+MOVES = {"open": ("in_review", "resolved", "rejected", "closed"),
+         "in_review": ("open", "resolved", "rejected"),
+         "resolved": ("closed", "open"),
+         "rejected": ("open",)}
+VISIBILITY = ("customer", "internal")  # an internal note is for staff only; the customer never sees it
 CATEGORIES = ("refund", "billing", "technical", "account", "security", "general")
 
 SCHEMA_NAME = "hitl_0003_tickets.sql"
@@ -92,6 +98,16 @@ GRANT SELECT, UPDATE, DELETE ON support_tickets TO lifecycle_service;
 GRANT SELECT, DELETE ON ticket_events TO lifecycle_service;
 """
 
+# The staff side: a rejected status and staff-only notes.
+STAFF_NAME = "hitl_0004_ticket_staff.sql"
+STAFF_SCHEMA = """
+ALTER TABLE support_tickets DROP CONSTRAINT support_tickets_status_check;
+ALTER TABLE support_tickets ADD CONSTRAINT support_tickets_status_check
+  CHECK (status IN ('proposed', 'open', 'in_review', 'resolved', 'closed', 'expired', 'rejected'));
+ALTER TABLE ticket_events ADD COLUMN visibility text NOT NULL DEFAULT 'customer'
+  CHECK (visibility IN ('customer', 'internal'));
+"""
+
 COLUMNS = ("id, tenant_id, principal_id, conversation_id, proposal_key, category, subject, description, "
            "invoice_id, amount_cents, currency, status, queue, reason, expires_at, created_at, opened_at, "
            "updated_at")
@@ -131,9 +147,10 @@ class Ticket:
 
 
 def apply_schema(database):
-    if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{SCHEMA_NAME}'"):
-        psql(database, f"BEGIN;\n{SCHEMA}\nINSERT INTO schema_migrations (name) VALUES ('{SCHEMA_NAME}');\n"
-                       "COMMIT;\n")
+    for name, sql in ((SCHEMA_NAME, SCHEMA), (STAFF_NAME, STAFF_SCHEMA)):
+        if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{name}'"):
+            psql(database, f"BEGIN;\n{sql}\nINSERT INTO schema_migrations (name) VALUES ('{name}');\n"
+                           "COMMIT;\n")
 
 
 def number_id(number):
@@ -150,9 +167,17 @@ class Tickets:
         row = conn.execute(f"SELECT {COLUMNS} FROM support_tickets WHERE {where}", args).fetchone()
         return Ticket(*row) if row else None
 
-    def _event(self, conn, tenant_id, ticket_id, kind, actor, text=""):
-        conn.execute("INSERT INTO ticket_events (tenant_id, ticket_id, kind, actor, text) "
-                     "VALUES (%s, %s, %s, %s, %s)", (tenant_id, ticket_id, kind, actor, text))
+    def _event(self, conn, tenant_id, ticket_id, kind, actor, text="", visibility="customer"):
+        conn.execute("INSERT INTO ticket_events (tenant_id, ticket_id, kind, actor, text, visibility) "
+                     "VALUES (%s, %s, %s, %s, %s, %s)", (tenant_id, ticket_id, kind, actor, text, visibility))
+
+    def _with_events(self, conn, ticket, internal):
+        events = conn.execute("SELECT kind, actor, text, at, visibility FROM ticket_events "
+                              "WHERE ticket_id = %s AND (%s OR visibility = 'customer') ORDER BY id",
+                              (ticket.id, internal)).fetchall()
+        return Ticket(*[getattr(ticket, f) for f in Ticket.__dataclass_fields__ if f != "events"],
+                      events=tuple({"kind": k, "actor": a, "text": t, "at": at.isoformat(),
+                                    **({"visibility": v} if internal else {})} for k, a, t, at, v in events))
 
     def propose(self, tenant_id, principal_id, conversation_id, key, *, category, subject, queue, reason,
                 description="", invoice_id=None, amount_cents=None, currency=None, turn_id=None):
@@ -221,15 +246,72 @@ class Tickets:
         return [Ticket(*row) for row in rows]
 
     def get(self, tenant_id, principal_id, ticket_id):
-        """The customer's ticket (a proposal included) with its history, or None."""
+        """The customer's ticket (a proposal included) with its history but no staff-only notes, or None."""
         with self.connect() as conn, conn.transaction():
             context(conn, tenant_id)
             ticket = self._ticket(conn, "tenant_id = %s AND principal_id = %s AND id = %s",
                                   (tenant_id, principal_id, ticket_id))
+            return ticket and self._with_events(conn, ticket, internal=False)
+
+    # The staff side (the demo staff console: every customer of the tenant, no sign-in) ------------------
+
+    def raised(self, tenant_id):
+        """Every raised ticket of the tenant, newest first."""
+        with self.connect() as conn, conn.transaction():
+            context(conn, tenant_id)
+            rows = conn.execute(f"SELECT {COLUMNS} FROM support_tickets WHERE tenant_id = %s AND "
+                                "status = ANY(%s) ORDER BY id DESC", (tenant_id, list(RAISED))).fetchall()
+        return [Ticket(*row) for row in rows]
+
+    def staff_get(self, tenant_id, ticket_id):
+        """A raised ticket with its whole history, staff-only notes included, or None."""
+        with self.connect() as conn, conn.transaction():
+            context(conn, tenant_id)
+            ticket = self._ticket(conn, "tenant_id = %s AND id = %s AND status = ANY(%s)",
+                                  (tenant_id, ticket_id, list(RAISED)))
+            return ticket and self._with_events(conn, ticket, internal=True)
+
+    def move(self, tenant_id, ticket_id, status, actor, reason="", credit=False):
+        """Staff move a raised ticket along MOVES (a rejection needs a reason). credit=True approves a refund:
+        the ticket is resolved and its invoice marked credited in the same transaction."""
+        reason = reason.strip()
+        with self.connect() as conn, conn.transaction():
+            context(conn, tenant_id)
+            ticket = self._ticket(conn, "tenant_id = %s AND id = %s FOR UPDATE", (tenant_id, ticket_id))
+            if ticket is None or ticket.status not in MOVES:
+                raise Refused("no such ticket")
+            if status not in MOVES[ticket.status]:
+                raise Refused(f"a {ticket.status} ticket cannot become {status}")
+            if status == "rejected" and not reason:
+                raise Refused("say why the ticket is rejected")
+            if credit:
+                if status != "resolved" or ticket.category != "refund" or not ticket.invoice_id:
+                    raise Refused("only a refund ticket with an invoice can be approved")
+                credited = conn.execute(
+                    "UPDATE nimbus_invoices SET status = CASE WHEN %s::bigint IS NULL OR %s::bigint >= "
+                    "amount_usd * 100 THEN 'credited' ELSE 'partly credited' END WHERE tenant_id = %s AND "
+                    "principal_id = %s AND invoice_id = %s RETURNING status",
+                    (ticket.amount_cents, ticket.amount_cents, tenant_id, ticket.principal_id,
+                     ticket.invoice_id)).fetchone()
+                if credited is None:
+                    raise Refused("the ticket's invoice is not on the customer's account")
+                reason = f"Refund approved: {ticket.invoice_id} {credited[0]}. {reason}".strip()
+            conn.execute("UPDATE support_tickets SET status = %s, updated_at = now() WHERE id = %s",
+                         (status, ticket_id))
+            self._event(conn, tenant_id, ticket_id, "status", actor,
+                        f"{status}: {reason}" if reason else status)
+            return self._with_events(conn, self._ticket(conn, "id = %s", (ticket_id,)), internal=True)
+
+    def staff_note(self, tenant_id, ticket_id, actor, text, visibility):
+        """A staff reply the customer sees (visibility customer) or a staff-only note (internal)."""
+        if visibility not in VISIBILITY or not text.strip():
+            raise Refused("a note needs text and a visibility of customer or internal")
+        with self.connect() as conn, conn.transaction():
+            context(conn, tenant_id)
+            ticket = self._ticket(conn, "tenant_id = %s AND id = %s AND status = ANY(%s)",
+                                  (tenant_id, ticket_id, list(RAISED)))
             if ticket is None:
-                return None
-            events = conn.execute("SELECT kind, actor, text, at FROM ticket_events WHERE ticket_id = %s "
-                                  "ORDER BY id", (ticket_id,)).fetchall()
-        return Ticket(*[getattr(ticket, f) for f in Ticket.__dataclass_fields__ if f != "events"],
-                      events=tuple({"kind": k, "actor": a, "text": t, "at": at.isoformat()}
-                                   for k, a, t, at in events))
+                raise Refused("no such ticket")
+            self._event(conn, tenant_id, ticket_id, "note", actor, text.strip(), visibility)
+            conn.execute("UPDATE support_tickets SET updated_at = now() WHERE id = %s", (ticket_id,))
+            return self._with_events(conn, ticket, internal=True)

@@ -186,3 +186,26 @@ def test_an_expired_offer_is_refused(stack):
 def test_an_argument_that_is_not_an_offer_number_is_refused_before_anything_runs(stack):
     with pytest.raises(ValidationError):
         run(stack, "TKT-00001")
+
+
+def test_staff_act_directly_with_the_same_rules_and_the_customer_sees_who_did_it(stack):
+    worker = named("batch-worker-02", "bob")
+    after = services.staff_act(connect, "t_us", worker["service_id"], "stop")
+    assert after["status"] == "stopping"
+    with pytest.raises(services.Refused, match="stopping now"):              # a double click changes nothing
+        services.staff_act(connect, "t_us", worker["service_id"], "stop")
+    settle("batch-worker-02", "bob")
+    assert named("batch-worker-02", "bob")["status"] == "stopped"
+    done = services.activity(connect, "t_us", "bob")[0]
+    assert (done["service"], done["action"], done["actor"]) == ("batch-worker-02", "stop", "staff:demo")
+    assert services.activity(connect, "t_us")[0]["principal_id"] == "bob"    # staff see whose it is
+    app = named("checkout-worker", "bob")
+    for action, replicas, why in (("stop", None, "cannot stop"), ("scale", None, "1-10 replicas"),
+                                  ("scale", 11, "1-10 replicas"), ("explode", None, "unknown action")):
+        with pytest.raises(services.Refused, match=why):
+            services.staff_act(connect, "t_us", app["service_id"], action, replicas)
+    with pytest.raises(services.Refused, match="no such service"):
+        services.staff_act(connect, "t_eu", app["service_id"], "restart")     # another tenant's service
+    assert services.staff_act(connect, "t_us", app["service_id"], "scale", 3)["replicas"] == 3
+    owners = {s["principal_id"] for s in services.everyone(connect, "t_us")}
+    assert owners == {"sarah", "bob"} and services.everyone(connect, "t_eu") == []

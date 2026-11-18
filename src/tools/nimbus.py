@@ -92,10 +92,16 @@ class NoArguments(BaseModel):
     pass
 
 
+# A refund the staff console approves marks its invoice credited (hitl.tickets.Tickets.move): the status only.
+CREDIT_NAME = "nimbus_0003_invoice_credit.sql"
+CREDIT_SCHEMA = "GRANT UPDATE (status) ON nimbus_invoices TO app_runtime;"
+
+
 def apply_schema(database):
-    if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{SCHEMA_NAME}'"):
-        psql(database, f"BEGIN;\n{SCHEMA}\nINSERT INTO schema_migrations (name) VALUES ('{SCHEMA_NAME}');\n"
-                       "COMMIT;\n")
+    for name, sql in ((SCHEMA_NAME, SCHEMA), (CREDIT_NAME, CREDIT_SCHEMA)):
+        if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{name}'"):
+            psql(database, f"BEGIN;\n{sql}\nINSERT INTO schema_migrations (name) VALUES ('{name}');\n"
+                           "COMMIT;\n")
 
 
 def _rows(connect, tenant_id, sql, params):

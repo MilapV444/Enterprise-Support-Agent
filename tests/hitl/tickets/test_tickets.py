@@ -96,3 +96,45 @@ def test_the_runtime_role_cannot_delete_tickets(store):
         conn.execute("SELECT set_config('app.current_tenant_id', 't_us', true)")
         with pytest.raises(psycopg.errors.InsufficientPrivilege):
             conn.execute("DELETE FROM support_tickets")
+
+
+def raised(store, conversation, principal="sarah"):
+    proposal = store.propose("t_us", principal, conversation, "k", **REFUND)
+    return store.confirm("t_us", principal, proposal.id)
+
+
+def test_staff_move_tickets_only_along_the_allowed_steps(store):
+    ticket = raised(store, "c-staff-1")
+    with pytest.raises(Refused, match="cannot become"):
+        store.move("t_us", ticket.id, "proposed", "staff:demo")
+    with pytest.raises(Refused, match="why"):
+        store.move("t_us", ticket.id, "rejected", "staff:demo", "  ")         # a rejection needs a reason
+    moved = store.move("t_us", ticket.id, "rejected", "staff:demo", "Not a duplicate charge")
+    assert moved.status == "rejected" and moved.events[-1]["text"] == "rejected: Not a duplicate charge"
+    assert [t.status for t in store.list_for("t_us", "sarah") if t.id == ticket.id] == ["rejected"]
+    assert store.raised_in("t_us", "c-staff-1") is None                 # a rejected ticket takes no notes
+    with pytest.raises(Refused, match="cannot become"):
+        store.move("t_us", ticket.id, "closed", "staff:demo")            # rejected -> only reopened
+    assert store.move("t_us", ticket.id, "open", "staff:demo").status == "open"
+    assert store.move("t_us", ticket.id, "closed", "staff:demo").status == "closed"
+    with pytest.raises(Refused, match="no such ticket"):
+        store.move("t_us", ticket.id, "open", "staff:demo")              # closed is final
+    with pytest.raises(Refused, match="no such ticket"):
+        store.move("t_eu", ticket.id, "in_review", "staff:demo")         # another tenant's ticket
+
+
+def test_internal_notes_reach_staff_but_never_the_customer(store):
+    ticket = raised(store, "c-staff-2")
+    store.staff_note("t_us", ticket.id, "staff:demo", "We are checking the payment processor.", "customer")
+    store.staff_note("t_us", ticket.id, "staff:demo", "Looks like a retry bug, refund it.", "internal")
+    with pytest.raises(Refused, match="visibility"):
+        store.staff_note("t_us", ticket.id, "staff:demo", "hi", "everyone")
+    seen = [e["text"] for e in store.get("t_us", "sarah", ticket.id).events if e["kind"] == "note"]
+    assert seen == ["We are checking the payment processor."]
+    staff = [(e["text"], e["visibility"]) for e in store.staff_get("t_us", ticket.id).events
+             if e["kind"] == "note"]
+    assert staff == [("We are checking the payment processor.", "customer"),
+                     ("Looks like a retry bug, refund it.", "internal")]
+    assert ticket.id in [t.id for t in store.raised("t_us")] and store.raised("t_eu") == []
+    proposal = store.propose("t_us", "sarah", "c-staff-3", "k", **REFUND)
+    assert store.staff_get("t_us", proposal.id) is None                  # an offer is not a staff ticket

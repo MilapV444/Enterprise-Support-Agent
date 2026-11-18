@@ -29,6 +29,7 @@ from psycopg_pool import ConnectionPool
 from qdrant_client import QdrantClient
 
 from channels.api.app import database_url
+from channels.api.staff import staff_router
 from channels.identity.server import build_app
 from channels.identity.service import Identity
 from core.orchestrator.case_state import PostgresStore
@@ -198,6 +199,7 @@ def app(environ=os.environ):
     api = build_app(None, Identity(connect, idp=None, send_otp=code_sender(environ)), dispatch=dispatch,
                     poll_seconds=0.5, stream_seconds=300.0)
     api.state.turn_loop = loop
+    api.include_router(staff_router(connect))  # the demo staff console: NO sign-in (register S20)
 
     @api.get("/healthz")
     def healthz():
