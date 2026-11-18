@@ -15,9 +15,9 @@ Load Genesis and official Ponytail full, then run `genesis brief .` for the curr
 Fetch full records with `genesis context . --id ID` only when needed. Do not load project.json or historical proof wholesale.
 Ask the index before reading code: `genesis query . search|scope|callers|callees|impact|path` (`--json` for parsing). Run `genesis query . impact PATH` before editing shared code. Answers are advisory static analysis; `ambiguous` means candidates were not ruled out, so confirm in source.
 Run `genesis serve .` for a live map of the repository when structure is unclear; it reindexes on save and is read-only. Run `genesis index .` if the index is stale and nothing is watching.
-Context fingerprint: 7f13f0e9664d8a03d97bb892d6a0dd86d980f7567f1ee09612a328ea1717edf2. Use --since only after receiving that full packet; kickoff is not the packet.
+Context fingerprint: a033be944368d07112c07679c3e21e1884e692be89084f866132292b7b382348. Use --since only after receiving that full packet; kickoff is not the packet.
+- KNOWLEDGE-c9c96f22: Open issues register (single source; update by superseding)
 - KNOWLEDGE-f23c3c37: Sign-in codes emailed from the VM (239ea02)
-- KNOWLEDGE-fd105a4c: Open issues register (single source; update by superseding)
 - KNOWLEDGE-be4ff8ee: AC-16 live run on the VM (fbeed70): three steps pass, the follow-up re-offers the raised ticket
 Applicable invariants, active rules, authorization and proof references are in the packet. Truncated summaries are retrieval pointers, not the full evidence.
 Reuse fresh gates with --reuse. Reconcile interrupted attempts before replaying commands. Report state → evidence → blocker → next action; checkpoint before stopping.
