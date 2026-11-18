@@ -3,7 +3,7 @@ doc_id: kb-ticket-renewal-overcharge-dispute
 title: Resolved ticket: Auto-renewal billed $48,000 list price instead of $32,000 contracted rate
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

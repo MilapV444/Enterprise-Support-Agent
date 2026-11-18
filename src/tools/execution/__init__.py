@@ -45,6 +45,7 @@ from reliability.fallbacks import RetryBudget
 from safety.authz.cedar import User
 from tools.execution.calls import ToolCall, ToolResult, task_queue
 from tools.registry import Risk
+from tools.schemas import personal_arguments
 
 MAX_RETRIES, BASE_SECONDS, CAP_SECONDS = 3, 1.0, 15.0
 BREAKER_FAILURES, BREAKER_WINDOW, BREAKER_COOLDOWN = 5, 60.0, 30.0
@@ -186,7 +187,8 @@ class Executor:
                               case_id=call.case_id, call_id=call.tool_call_id,
                               credential_basis=system and system.credential,
                               risk_class=tool and tool.risk.value, error_code=error_code,
-                              personal=call.arguments or None)
+                              personal=personal_arguments(tool.args, call.arguments) if tool else
+                              (call.arguments or None))
         except Exception as error:  # noqa: BLE001 - no record, no output
             raise ToolFailure("AUDIT_UNAVAILABLE", type(error).__name__) from error
 

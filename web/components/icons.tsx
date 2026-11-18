@@ -1,6 +1,8 @@
 // Stroke icons (24px grid), drawn inline so the page needs no icon font or extra request.
 const paths = {
   chat: "M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12Z",
+  server: "M4 4h16v6H4z M4 14h16v6H4z M8 7h.01 M8 17h.01",
+  box: "M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Z M4 7.5l8 4.5 8-4.5 M12 12v9",
   history: "M3 12a9 9 0 1 0 3-6.7L3 8 M3 3v5h5 M12 7v5l3 2",
   help: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4 M12 17h.01",
   external: "M14 4h6v6 M20 4l-9 9 M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5",
@@ -24,6 +26,7 @@ const paths = {
   menu: "M4 6h16 M4 12h16 M4 18h16",
   shield: "M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3Z M8.5 12l2.5 2.5 4.5-4.5",
   sources: "M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4V5Z M20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7V5Z",
+  ticket: "M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7Z M14 5v14",
   person: "M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z M2 20a6 6 0 0 1 12 0 M14 20a6 6 0 0 1 8-5.6",
 } as const;
 

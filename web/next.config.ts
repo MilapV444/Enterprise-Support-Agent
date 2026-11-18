@@ -12,13 +12,16 @@ const config: NextConfig = {
     return [{ source: "/v1/:path*", destination: `${api}/v1/:path*` }];
   },
   async headers() {
+    // The demo staff console has no sign-in (register S20): at least keep it and its API out of search engines.
+    const noindex = [{ key: "X-Robots-Tag", value: "noindex, nofollow" }];
     return [{
       source: "/(.*)",
       headers: [
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "no-referrer" },
       ],
-    }];
+    }, { source: "/staffs/:path*", headers: noindex }, { source: "/staffs", headers: noindex },
+    { source: "/v1/staff/:path*", headers: noindex }];
   },
 };
 

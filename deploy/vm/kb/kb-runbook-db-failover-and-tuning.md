@@ -3,7 +3,7 @@ doc_id: kb-runbook-db-failover-and-tuning
 title: Nimbus DB runbook: multi-AZ failover, slow queries, backup restore, and tuning
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

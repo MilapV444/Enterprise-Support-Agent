@@ -1,0 +1,13 @@
+{
+  "task": "TK-04",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "ec1c695a-8ea0-42e0-84f0-9a9fd712a576",
+  "human": "Intelligent_developer_123",
+  "reason": "Pre-authorized by the user for the TK sweep (chat 2026-11-16). Self-review by Claude: every hand-off branch goes through hand_off, notes only on the owner's raised ticket, guests never get a proposal, retry-safe ordering; gate passed",
+  "observed_at": "2026-11-16T18:19:22.697Z",
+  "source_hash": "bdbb183ccd2c043d2684fddcb3f9f0b6b030997d7d1ae37ca835076216ec83a4",
+  "config_hash": "3aec066d87161669771da21446f3bb942181cd8c4ee39f133fa0a7da6bd6c8c0",
+  "reviewed_proofs": "c68623d9d5eb7fb7835eff272dad0b0e392e84420111bcd4a846408a7d134b61",
+  "hash": "6bde4359956601b3e39059dfa354d78ff36b6d7e94291109a89b2414806696eb"
+}

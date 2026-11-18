@@ -3,7 +3,7 @@ doc_id: kb-policy-internal-escalation-slas
 title: Internal escalation policy: AI-to-human handover triggers, queues, and SLAs
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

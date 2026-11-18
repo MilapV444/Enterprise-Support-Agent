@@ -3,7 +3,7 @@ doc_id: kb-runbook-net-vpc-subnet-409-conflict
 title: Nimbus Net runbook: resolving error 409 Conflict during VPC subnet bind
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

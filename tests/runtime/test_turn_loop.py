@@ -22,7 +22,7 @@ from qdrant_client import QdrantClient
 
 from channels import sessions
 from channels.api import turns
-from channels.api.envelope import InboundTurn
+from channels.api.envelope import InboundTurn, TurnAction
 from channels.identity import otp
 from channels.identity.server import build_app
 from channels.identity.service import Identity
@@ -33,10 +33,12 @@ from core.orchestrator.statechart import thread
 from cost.router import Router
 from data import events
 from data.migrate import migrate, psql
+from hitl import tickets as hitl_tickets
+from hitl.tickets import Tickets
 from knowledge.ingest import pipeline as ingest
 from knowledge.retrieval.pipeline import RestrictedMatch, Retriever
 from reliability.fallbacks import openai_compatible
-from runtime import FAILED, HANDOFF, NoJev, Services, TurnLoop, connector, production
+from runtime import FAILED, HANDOFF, NoJev, Services, TurnLoop, connector, production, tickets
 from safety.governance import records
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
@@ -45,6 +47,7 @@ from safety.screening.scorers import pattern_injection
 from tests.knowledge.ingest.test_ingest import DIMENSIONS, embed
 from tools import audit as tool_audit
 from tools import nimbus
+from tools import services as nimbus_services
 from tools.audit import AuditLog
 from tools.execution import Executor
 from workflows.dispatch import TemporalDispatcher
@@ -76,18 +79,22 @@ class World:
     reports (None: one claim citing every passage it was shown)."""
 
     def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None,
-                 specialists_down=False, redirecting=False):
+                 specialists_down=False, redirecting=False, wants_ticket=False):
         self.triage = triage or triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.05)
         self.model_down, self.jev, self.model = model_down, [], []
         self.lead, self.claims, self.read = lead, claims, read   # read: the record a specialist asks for
         self.specialists_down = specialists_down   # every specialist's model call fails (B23)
         self.redirecting = redirecting             # the first draft points the customer elsewhere (B25)
+        self.wants_ticket = wants_ticket           # the customer asks the billing team to act (TK-03)
 
     def jev_reply(self, request):
         body = json.loads(request.content)
         self.jev.append(body)
         if "intent" in body["questions"]:
             answers = self.triage
+        elif "wants_ticket" in body["questions"]:
+            answers = {"wants_ticket": {"type": "noul", "noul": 0.95 if self.wants_ticket else 0.05},
+                       "category": {"type": "choice", "choice": "refund", "confidence": 0.9}}
         elif "lead" in body["questions"]:               # delegation: one lead, nobody joins
             answers = {qid: {"type": "noul", "noul": 0.05} for qid in body["questions"]}
             answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": 0.9}
@@ -139,16 +146,18 @@ def stack():
     psql("postgres", f'DROP DATABASE IF EXISTS "{DB}" WITH (FORCE)')
     psql("postgres", f'CREATE DATABASE "{DB}"')
     migrate("main", DB)
-    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus, case_state):
+    for module in (events, turns, sessions, otp, records, ingest, tool_audit, nimbus, case_state,
+                   hitl_tickets, nimbus_services):
         module.apply_schema(DB)
     psql(DB, "INSERT INTO tenants (id, name, region) VALUES ('t_us', 'Acme', 'US'), ('t_eu', 'G', 'EU')")
     for tenant, principal, company in (("t_us", "sarah", "Acme"), ("t_us", "bob", "Bobco"),
                                        ("t_eu", "sarah", "Globex")):
         nimbus.seed(connector(DSN), tenant, principal, company=company)
+        nimbus_services.seed(connector(DSN), tenant, principal)
     client, namespace = QdrantClient(url="http://127.0.0.1:6333"), f"rt{uuid.uuid4().hex[:8]}_"
     with psycopg.connect(DSN, autocommit=True) as conn:
         report = seed_kb.seed(client, embed, DIMENSIONS, conn, namespace=namespace)
-    assert report["indexed"] == len(seed_kb.documents()[0])
+    assert report["indexed"] == len(seed_kb.documents())
     yield client, namespace
     for item in client.get_collections().collections:
         if item.name.startswith(namespace):
@@ -181,10 +190,11 @@ def queue():
     return f"test-{uuid.uuid4().hex}"
 
 
-def inbound(text, conversation=None, tier="T0_ANON", principal="anon:1", tenant="t_us", session=None):
+def inbound(text, conversation=None, tier="T0_ANON", principal="anon:1", tenant="t_us", session=None,
+            action=None):
     return InboundTurn(tenant_id=tenant, principal_id=principal, assurance_tier=tier, session_id=session,
                        conversation_id=conversation or f"c-{uuid.uuid4().hex[:8]}", turn_id=str(uuid.uuid4()),
-                       content=text, attachment_refs=[])
+                       content=text, attachment_refs=[], action=action)
 
 
 def signed_in(tier, principal="sarah", tenant="t_us"):
@@ -261,7 +271,9 @@ def test_with_every_model_down_the_customer_is_handed_to_a_person(stack):
     world = World(model_down=True)
     turn = inbound("How do I reset my password?")
     assert loop(stack, world).run(turn) == "handed_off"
-    assert published(turn)[-1] == ("handoff", {"turn_id": turn.turn_id, "text": HANDOFF})
+    assert published(turn)[-1] == ("handoff", {"turn_id": turn.turn_id,
+                                               "text": f"{HANDOFF} {tickets.SIGN_IN_OFFER}"})
+    assert published(turn)[-2][1]["kind"] == "sign_in"                  # a guest is asked to sign in (TK-04)
 
 
 def test_with_jev_and_every_model_down_triage_asks_and_the_turn_still_ends_in_a_hand_off(stack):
@@ -293,9 +305,10 @@ def test_when_no_passage_answers_it_the_case_goes_to_a_person_and_is_not_logged_
         "look at it with you." and "ESCALATED_HITL" in row[2]
 
 
-def test_the_lead_specialist_jev_picks_answers_and_an_internal_runbook_is_used_but_never_cited(stack):
-    """Golden question 16's case: the VPN runbook is internal; its steps reach the customer, its name does
-    not. (Worded for the hashing test embedder, which cannot rank the golden wording.)"""
+def test_the_lead_specialist_jev_picks_answers_and_the_runbook_it_uses_is_cited(stack):
+    """Golden question 16's case: the VPN runbook is customer_visible (2026-11-18: every article is), so
+    the answer that uses its steps cites it. (Worded for the hashing test embedder, which cannot rank the
+    golden wording.)"""
     world = World(triage=triage_answers("TECHNICAL_OUTAGE", 0.95, 2, 0.05), lead="technical")
     turn = inbound("my nimbus-vpn-cli daemon fails after the vpn client update with "
                    "VPN_ERR_TUN_DRIVER_MISMATCH")
@@ -303,14 +316,12 @@ def test_the_lead_specialist_jev_picks_answers_and_an_internal_runbook_is_used_b
     assert any("lead" in body["questions"] for body in world.jev)                    # Jev delegated
     prompts = [m[-1]["content"] for m in world.model]
     read = " ".join(p for p in prompts if "specialist of the support team" in p)
-    assert "internal knowledge kb-runbook-net-vpn-client-update-failure#" in read
-    internal_runbooks = [d.doc_id for d in seed_kb.documents()[0] if d.audience == "internal"]
+    assert "internal knowledge" not in read and "knowledge kb-runbook-net-vpn-client-update-failure#" in read
     cited = {data["doc_id"] for kind, data in published(turn) if kind == "citation"}
-    assert internal_runbooks and not cited & set(internal_runbooks)
+    assert "kb-runbook-net-vpn-client-update-failure" in cited
     (steps,) = psql(DB, f"SELECT trace -> 'steps' FROM decision_records WHERE turn_id = '{turn.turn_id}'")[0]
     steps = json.loads(steps) if isinstance(steps, str) else steps
-    assert [s["role"] for s in steps["specialists"]] == ["technical"] and steps["retrieval"]["internal"] >= 1
-    assert not {s["doc_id"] for s in steps["retrieval"]["sources"]} & set(internal_runbooks)
+    assert [s["role"] for s in steps["specialists"]] == ["technical"] and steps["retrieval"]["internal"] == 0
 
 
 def test_anything_that_breaks_mid_turn_ends_in_an_error_message(stack):
@@ -496,19 +507,19 @@ def test_qdrant_is_the_configured_one_unless_it_is_unset_or_loopback(configured,
     assert production.qdrant_url({}) == "http://127.0.0.1:6333"           # a laptop with nothing set
 
 
-def test_the_public_collection_holds_customer_visible_articles_and_internal_runbooks_only(stack):
-    """Internal policies, restricted articles and tickets in deploy/vm/kb never reach the public collection
-    (KR-D2); unrestricted internal runbooks do, read for customer answers but never cited."""
+def test_the_public_collection_holds_every_article_all_customer_visible(stack):
+    """2026-11-18: every article in deploy/vm/kb is customer_visible, so a customer's answer cites what it
+    uses; policies, runbooks and tickets reach the public collection, and so do the restricted articles,
+    which retrieval never gives a customer (only the B26 probe sees their ids)."""
     client, namespace = stack
     points, _ = client.scroll(f"{namespace}public_knowledge_v1", limit=10_000,
-                              with_payload=["audience", "source_kind", "source_system", "is_restricted"])
-    assert points and all(
-        p.payload["source_kind"] != "ticket" and not p.payload["is_restricted"]
-        and (p.payload["audience"] == "customer_visible" or p.payload["source_system"] == "runbooks")
-        for p in points)
-    public, skipped = seed_kb.documents()
-    assert "kb-policy-internal-refund-approval-matrix" in skipped
-    assert "kb-runbook-net-vpn-client-update-failure" in {d.doc_id for d in public}
+                              with_payload=["audience", "doc_id", "is_restricted"])
+    assert points and all(p.payload["audience"] == "customer_visible" for p in points)
+    indexed = {p.payload["doc_id"] for p in points}
+    assert {"kb-policy-internal-refund-approval-matrix", "kb-runbook-net-vpn-client-update-failure",
+            "kb-ticket-renewal-overcharge-dispute"} <= indexed == {d.doc_id for d in seed_kb.documents()}
+    assert {p.payload["doc_id"] for p in points if p.payload["is_restricted"]} == {
+        "kb-policy-internal-billing-high-value-wire-overrides", "kb-policy-internal-security-forensic-isolation"}
 
 
 def test_a_customer_answer_asks_retrieval_for_customer_visible_passages_only(stack):
@@ -656,3 +667,300 @@ def test_a_probe_that_fails_leaves_the_turn_to_be_answered_as_usual(stack):
     runner.s.retriever.restricted_match = broken
     turn = inbound("How do I reset my password?")
     assert runner.run(turn) == "answered" and "restricted" not in trace_steps(turn)
+
+
+# Ticket proposals (TK-03, FR-45; DECISION-368069f5) ---------------------------------------------------------
+
+BILLING = triage_answers("BILLING_INQUIRY", 0.95, 1, 0.05)
+
+
+def proposals(conversation, tenant="t_us"):
+    return psql(DB, f"SELECT proposal_key, status, invoice_id, amount_cents FROM support_tickets "
+                    f"WHERE tenant_id = '{tenant}' AND conversation_id = '{conversation}' ORDER BY id")
+
+
+def test_a_signed_in_customers_duplicate_charge_becomes_a_proposal_and_nothing_is_raised(stack):
+    world, session = World(triage=BILLING, wants_ticket=True), signed_in("T1_VERIFIED")
+    turn = inbound("I was charged twice on invoice inv-sarah-1, I want my refund of $500.",
+                   tier="T1_VERIFIED", principal="sarah", session=session)
+    runner = loop(stack, world)
+    assert runner.run(turn) == "answered"
+    (card,) = [data for kind, data in published(turn) if kind == "action_card"]
+    assert card["kind"] == "ticket_proposal" and card["invoice_id"] == "inv-sarah-1"
+    assert card["amount_cents"] == 50000 and card["status"] == "proposed"
+    assert card["actions"] == [{"type": "confirm_ticket", "proposal": card["ticket_id"],
+                                "label": "Raise ticket"}]
+    final = next(data for kind, data in published(turn) if kind == "final")
+    assert "USD 500.00" in final["text"] and "Nothing has been raised" in final["text"]
+    assert not re.search(r"\brefunded\b", final["text"])
+    assert proposals(turn.conversation_id) == [["refund:inv-sarah-1", "proposed", "inv-sarah-1", "50000"]]
+    assert Tickets(connector(DSN)).list_for("t_us", "sarah") == []          # an offer, not a ticket
+    assert runner.run(turn) == "already_answered" and len(proposals(turn.conversation_id)) == 1  # a retry
+
+
+def test_without_an_amount_the_invoices_own_amount_is_proposed(stack):
+    session = signed_in("T1_VERIFIED")
+    turn = inbound("Please refund invoice inv-sarah-1, it was a duplicate payment.", tier="T1_VERIFIED",
+                   principal="sarah", session=session)
+    assert loop(stack, World(triage=BILLING, wants_ticket=True)).run(turn) == "answered"
+    assert proposals(turn.conversation_id)[0][3] == "184000"
+
+
+def test_a_missing_invoice_is_asked_for_by_name_and_the_reply_completes_the_proposal(stack):
+    world, session = World(triage=BILLING, wants_ticket=True), signed_in("T1_VERIFIED")
+    runner, conversation = loop(stack, world), f"c-{uuid.uuid4().hex[:8]}"
+    first = inbound("I was double charged last month and want a refund.", conversation, tier="T1_VERIFIED",
+                    principal="sarah", session=session)
+    assert runner.run(first) == "asked"
+    question = next(data for kind, data in published(first) if kind == "final")["text"]
+    assert "invoice number" in question and proposals(conversation) == []
+    second = inbound("It is inv-sarah-2", conversation, tier="T1_VERIFIED", principal="sarah",
+                     session=session)
+    assert runner.run(second) == "answered"
+    assert [row[2] for row in proposals(conversation)] == ["inv-sarah-2"]
+
+
+def test_someone_elses_invoice_is_never_proposed(stack):
+    session = signed_in("T1_VERIFIED")
+    turn = inbound("Refund the duplicate charge on inv-bob-1 please.", tier="T1_VERIFIED", principal="sarah",
+                   session=session)
+    assert loop(stack, World(triage=BILLING, wants_ticket=True)).run(turn) == "asked"
+    question = next(data for kind, data in published(turn) if kind == "final")["text"]
+    assert "could not find that one on your account" in question and proposals(turn.conversation_id) == []
+
+
+def test_a_guest_is_asked_to_sign_in_before_any_proposal(stack):
+    turn = inbound("I got a duplicate charge on inv-sarah-1 and want my $500 back.")      # T0, no session
+    assert loop(stack, World(triage=BILLING, wants_ticket=True)).run(turn) == "answered"
+    (card,) = [data for kind, data in published(turn) if kind == "action_card"]
+    assert card["kind"] == "sign_in" and proposals(turn.conversation_id) == []
+    assert "sign in" in next(data for kind, data in published(turn) if kind == "final")["text"]
+
+
+def test_a_question_about_how_billing_works_is_answered_as_before(stack):
+    turn = inbound("How do refunds work for annual plans?", tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+    assert loop(stack, World(triage=BILLING, wants_ticket=False)).run(turn) == "answered"
+    assert not [kind for kind, _ in published(turn) if kind == "action_card"]
+    assert proposals(turn.conversation_id) == []
+
+
+# Every hand-off becomes a ticket proposal (TK-04, FR-46) ----------------------------------------------------
+
+UNSURE = triage_answers("TECHNICAL_OUTAGE", 0.3, 1, 0.05)   # below the 0.50 confidence: straight to a person
+
+
+def test_a_signed_in_customers_hand_off_offers_a_ticket_for_the_right_queue(stack):
+    turn = inbound("The dashboard does something odd since this morning.", tier="T1_VERIFIED",
+                   principal="sarah", session=signed_in("T1_VERIFIED"))
+    runner = loop(stack, World(triage=UNSURE))
+    assert runner.run(turn) == "handed_off"
+    *_, (card_kind, card), (last, handoff) = published(turn)
+    assert (card_kind, card["kind"], last) == ("action_card", "ticket_proposal", "handoff")
+    assert (card["category"], card["queue"], card["status"]) == ("technical", "queue_technical", "proposed")
+    assert card["actions"][0] == {"type": "confirm_ticket", "proposal": card["ticket_id"],
+                                  "label": "Raise ticket"}
+    assert handoff["text"].endswith(tickets.OFFER)
+    assert [row[1] for row in proposals(turn.conversation_id)] == ["proposed"]
+    assert runner.run(turn) == "already_answered" and len(proposals(turn.conversation_id)) == 1   # a retry
+
+
+def test_a_staff_only_hand_off_offers_a_ticket_to_that_team(stack):
+    turn = inbound("What is the exact treasury CLI command to stage a wire override?", tier="T1_VERIFIED",
+                   principal="sarah", session=signed_in("T1_VERIFIED"))
+    runner = loop(stack, World(triage=UNSURE))
+    runner.s.retriever.restricted_match = lambda *args, **kwargs: RestrictedMatch(
+        "kb-policy-internal-billing-high-value-wire-overrides", ("billing-team",), 0.75, 0.05)
+    assert runner.run(turn) == "handed_off"
+    card = next(data for kind, data in published(turn) if kind == "action_card")
+    assert (card["category"], card["queue"]) == ("billing", "queue_billing")
+
+
+def test_a_guests_hand_off_asks_them_to_sign_in_and_proposes_nothing(stack):
+    turn = inbound("The dashboard does something odd since this morning.")
+    assert loop(stack, World(triage=UNSURE)).run(turn) == "handed_off"
+    card = next(data for kind, data in published(turn) if kind == "action_card")
+    assert card["kind"] == "sign_in" and proposals(turn.conversation_id) == []
+
+
+def test_once_a_ticket_is_raised_later_messages_are_added_to_it_instead_of_handing_off_again(stack):
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+    runner = loop(stack, World(triage=UNSURE))
+    first = inbound("The dashboard does something odd.", conversation, tier="T1_VERIFIED", principal="sarah",
+                    session=session)
+    assert runner.run(first) == "handed_off"
+    card = next(data for kind, data in published(first) if kind == "action_card")
+    desk = Tickets(connector(DSN))
+    ticket = desk.confirm("t_us", "sarah", int(card["ticket_id"].removeprefix("TKT-")))  # the button: TK-05
+    second = inbound("It also logs me out every few minutes.", conversation, tier="T1_VERIFIED",
+                     principal="sarah", session=session)
+    assert runner.run(second) == "noted"
+    kinds = [kind for kind, _ in published(second)]
+    assert "handoff" not in kinds and kinds[-2:] == ["action_card", "final"]
+    final = next(data for kind, data in published(second) if kind == "final")
+    assert ticket.number in final["text"]
+    notes = [e["text"] for e in desk.get("t_us", "sarah", ticket.id).events if e["kind"] == "note"]
+    assert notes == ["It also logs me out every few minutes."]
+    assert trace_steps(second) is not None                                # its decision record was saved
+
+
+# Raising a proposal (TK-05, FR-47, AC-16) -------------------------------------------------------------------
+
+def with_desk(runner):
+    """The desk executor production composes beside the specialists' one (runtime.production.services)."""
+    runner.s.desk = production.customer_actions(connector(DSN), Identity(connector(DSN)),
+                                                Screener(lambda text: (0.0, []), pattern_injection))
+    return runner
+
+
+def raise_turn(number, conversation, session, principal="sarah", tier="T1_VERIFIED"):
+    return inbound(f"Raise ticket {number}", conversation, tier=tier, principal=principal, session=session,
+                   action=TurnAction(type="confirm_ticket", proposal=number))
+
+
+def test_raise_ticket_raises_the_customers_proposal_once(stack):
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+    runner = with_desk(loop(stack, World(triage=BILLING, wants_ticket=True)))
+    report = inbound("I was charged twice on inv-sarah-3, please refund it.", conversation,
+                     tier="T1_VERIFIED", principal="sarah", session=session)
+    assert runner.run(report) == "answered"
+    number = next(data for kind, data in published(report) if kind == "action_card")["ticket_id"]
+    click = raise_turn(number, conversation, session)
+    assert runner.run(click) == "raised"
+    card = next(data for kind, data in published(click) if kind == "action_card")
+    assert (card["kind"], card["ticket_id"], card["status"]) == ("ticket", number, "open")
+    final = next(data for kind, data in published(click) if kind == "final")["text"]
+    assert number in final and "billing team" in final
+    assert trace_steps(click) == {"ticket": {"raised": number}}
+    assert runner.run(click) == "already_answered"                           # the same turn retried
+    assert runner.run(raise_turn(number, conversation, session)) == "raised"  # a second click
+    assert [t.number for t in Tickets(connector(DSN)).list_for("t_us", "sarah")].count(number) == 1
+
+
+def test_someone_elses_proposal_is_not_raised_and_a_guest_is_asked_to_sign_in(stack):
+    bob = Tickets(connector(DSN)).propose("t_us", "bob", "c-bob-raise", "k", category="billing",
+                                          subject="Wrong charge", queue="queue_billing",
+                                          reason="billing request")
+    runner = with_desk(loop(stack, World()))
+    theirs = raise_turn(bob.number, "c-sarah-raise", signed_in("T1_VERIFIED"))
+    assert runner.run(theirs) == "not_raised"
+    assert next(data for kind, data in published(theirs) if kind == "final")["text"] == tickets.NOT_RAISED
+    guest = raise_turn(bob.number, "c-guest-raise", signed_in("T0_ANON", principal="bob"), principal="bob",
+                       tier="T0_ANON")
+    assert runner.run(guest) == "not_raised"
+    assert next(data for kind, data in published(guest) if kind == "action_card")["kind"] == "sign_in"
+    assert Tickets(connector(DSN)).get("t_us", "bob", bob.id).status == "proposed"
+
+
+def test_ac16_report_raise_and_follow_up_through_temporal(stack):
+    """AC-16 on the Temporal path: a proposal card, the raised ticket's card, one ticket however often it is
+    raised, and a follow-up that is added to it."""
+    world = World(triage=BILLING, wants_ticket=True)
+    dispatcher = TemporalDispatcher("127.0.0.1:7233", with_desk(loop(stack, world)), task_queue=queue())
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+
+    def until(turn, kinds=("final", "handoff", "error")):
+        deadline = time.monotonic() + 60
+        while time.monotonic() < deadline:
+            done = published(turn)
+            if any(kind in kinds for kind, _ in done):
+                return done
+            time.sleep(0.2)
+        raise AssertionError(f"turn {turn.turn_id} did not end")
+
+    try:
+        report = inbound("Duplicate charge on inv-sarah-2, I want my $500 back.", conversation,
+                         tier="T1_VERIFIED", principal="sarah", session=session)
+        dispatcher(report)
+        number = next(data for kind, data in until(report) if kind == "action_card")["ticket_id"]
+        for _ in range(2):                                                   # two clicks
+            click = raise_turn(number, conversation, session)
+            dispatcher(click)
+            assert next(data for kind, data in until(click) if kind == "action_card")["status"] == "open"
+        world.triage = UNSURE                                                # the follow-up goes to a person
+        follow_up = inbound("Any news on this?", conversation, tier="T1_VERIFIED", principal="sarah",
+                            session=session)
+        dispatcher(follow_up)
+        assert number in next(data for kind, data in until(follow_up) if kind == "final")["text"]
+    finally:
+        dispatcher.close()
+    desk_view = Tickets(connector(DSN))
+    (ticket,) = [t for t in desk_view.list_for("t_us", "sarah") if t.number == number]
+    events_ = desk_view.get("t_us", "sarah", ticket.id).events
+    assert [e["kind"] for e in events_] == ["proposed", "confirmed", "note"]
+
+
+# Service actions (tools.services, outside Genesis) --------------------------------------------------------
+
+def service_status(name, principal="sarah"):
+    return next(s for s in nimbus_services.services(connector(DSN), "t_us", principal)
+                if s["name"] == name)["status"]
+
+
+def confirm_turn(number, conversation, session, principal="sarah", tier="T1_VERIFIED"):
+    return inbound(f"Confirm {number}", conversation, tier=tier, principal=principal, session=session,
+                   action=TurnAction(type="confirm_action", proposal=number))
+
+
+def test_a_signed_in_customer_asking_to_stop_their_server_gets_an_offer_and_nothing_changes(stack):
+    world = World()
+    runner, conversation = with_desk(loop(stack, world)), f"c-{uuid.uuid4().hex[:8]}"
+    turn = inbound("Please close the payments server", conversation, tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+    assert runner.run(turn) == "offered"
+    card = next(data for kind, data in published(turn) if kind == "action_card")
+    assert (card["kind"], card["service"], card["action"]) == ("service_action_proposal", "payments-api-01",
+                                                               "stop")
+    assert card["actions"] == [{"type": "confirm_action", "proposal": card["action_id"],
+                                "label": "Stop server"}]
+    final = next(data for kind, data in published(turn) if kind == "final")["text"]
+    assert "Nothing has changed yet" in final
+    assert service_status("payments-api-01") == "running"
+    assert world.model == [] and world.jev == []          # decided in code: no model and no Jev request
+    assert trace_steps(turn) == {"service": {"offer": card["action_id"], "action": "stop"}}
+
+
+def test_confirming_the_offer_runs_the_tool_once_and_the_reply_is_the_read_back(stack):
+    session, conversation = signed_in("T1_VERIFIED"), f"c-{uuid.uuid4().hex[:8]}"
+    runner = with_desk(loop(stack, World()))
+    report = inbound("restart checkout-worker", conversation, tier="T1_VERIFIED", principal="sarah",
+                     session=session)
+    assert runner.run(report) == "offered"
+    number = next(data for kind, data in published(report) if kind == "action_card")["action_id"]
+    click = confirm_turn(number, conversation, session)
+    assert runner.run(click) == "done"
+    card = next(data for kind, data in published(click) if kind == "action_card")
+    assert (card["kind"], card["service"], card["status"]) == ("service", "checkout-worker", "restarting")
+    final = next(data for kind, data in published(click) if kind == "final")["text"]
+    assert final.startswith("checkout-worker is restarting now and will be running")
+    assert runner.run(click) == "already_answered"                              # the same turn retried
+    assert runner.run(confirm_turn(number, conversation, session)) == "done"    # a second click
+    done = nimbus_services.activity(connector(DSN), "t_us", "sarah")
+    assert [a["action_id"] for a in done].count(number) == 1
+
+
+def test_someone_elses_offer_is_not_carried_out_and_a_guest_is_asked_to_sign_in(stack):
+    bob = nimbus_services.services(connector(DSN), "t_us", "bob")[0]
+    number = nimbus_services.propose(connector(DSN), "t_us", "bob", "c-bob-act", "k", bob["service_id"],
+                                     "restart")
+    runner = with_desk(loop(stack, World()))
+    theirs = confirm_turn(number, "c-sarah-act", signed_in("T1_VERIFIED"))
+    assert runner.run(theirs) == "not_done"
+    final = next(data for kind, data in published(theirs) if kind == "final")["text"]
+    assert final == nimbus_services.NOT_DONE
+    guest = confirm_turn(number, "c-guest-act", signed_in("T0_ANON", principal="bob"), principal="bob",
+                         tier="T0_ANON")
+    assert runner.run(guest) == "not_done"
+    assert next(data for kind, data in published(guest) if kind == "action_card")["kind"] == "sign_in"
+    assert service_status(bob["name"], "bob") == "running"
+
+
+def test_an_unclear_service_request_gets_one_question_and_a_guest_gets_the_usual_answer(stack):
+    runner = with_desk(loop(stack, World()))
+    unclear = inbound("stop the worker", tier="T1_VERIFIED", principal="sarah",
+                      session=signed_in("T1_VERIFIED"))
+    assert runner.run(unclear) == "asked"
+    assert next(data for kind, data in published(unclear) if kind == "final")["text"] == (
+        "Which one do you mean: batch-worker-02, checkout-worker?")
+    guest = inbound("Please stop payments-api-01")
+    assert runner.run(guest) != "offered" and service_status("payments-api-01") == "running"

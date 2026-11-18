@@ -3,7 +3,7 @@ doc_id: kb-ticket-root-credential-reset-t2
 title: Resolved ticket: Emergency root credential rotation on srv-alpha-12 after T2 step-up
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

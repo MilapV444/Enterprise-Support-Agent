@@ -52,7 +52,8 @@ def allowed(source, target):
 
 def thread(tenant_id, case_id):
     """A case's config: one thread per (tenant, case). thread_id ("tenant:case") is the name the case's
-    LangGraph checkpoints had (scripts/copy_langgraph_state.py); the statechart reads tenant_id and case_id."""
+    LangGraph checkpoints had (scripts/copy_langgraph_state.py); the statechart reads tenant_id and
+    case_id."""
     return {"configurable": {"thread_id": f"{tenant_id}:{case_id}", "tenant_id": tenant_id,
                              "case_id": case_id}}
 

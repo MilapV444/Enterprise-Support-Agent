@@ -3,7 +3,7 @@ doc_id: kb-runbook-net-vpn-client-update-failure
 title: Nimbus Net VPN client failure after update: certificate refresh and reinstall
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

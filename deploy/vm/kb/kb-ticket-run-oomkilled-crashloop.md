@@ -3,7 +3,7 @@ doc_id: kb-ticket-run-oomkilled-crashloop
 title: Resolved ticket: Nimbus Run checkout-worker pods in CrashLoopBackOff due to OOMKilled
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

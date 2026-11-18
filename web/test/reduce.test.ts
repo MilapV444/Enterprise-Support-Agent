@@ -31,9 +31,11 @@ test("an expired stream clears the view before the history is replayed, and hist
   const state = run([
     { event: "final", data: { text: "stale" } },
     { event: "status", data: { code: "stream_expired" } },
-    { event: "final", data: { history: true, role: "user", content: "Hi", turn_id: "old" } },
+    { event: "final", data: { history: true, role: "user", content: "Hi", turn_id: "old", at: "2026-11-01T10:00:00Z" } },
   ]);
   expect(state.messages.map((m) => [m.role, m.text, m.turnId])).toEqual([["user", "Hi", undefined]]);
+  expect(state.status).toBeNull();
+  expect(state.messages[0].at).toBe(Date.parse("2026-11-01T10:00:00Z")); // a reopened chat keeps its times
 });
 
 test("errors and hand-offs end the status line", () => {

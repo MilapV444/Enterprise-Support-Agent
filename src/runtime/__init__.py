@@ -56,9 +56,15 @@ from core.orchestrator.decisions import JevUnavailable, Masked, mask
 from core.orchestrator.statechart import build, thread
 from core.orchestrator.triage import llm_fallback, triage_hook
 from data.events import EventLog
+from hitl.tickets import Tickets, number_id
+from runtime import tickets
 from safety.governance.disclosure import disclose
 from safety.output.checks import finalise
 from safety.screening.pipeline import SPOTLIGHT_RULE
+from tools import desk
+from tools import services as nimbus_services
+from tools.execution import ToolFailure
+from tools.execution.calls import ToolCall
 from tools.registry import Registry
 
 log = logging.getLogger(__name__)
@@ -89,7 +95,8 @@ TEAM = {  # what Jev reads to pick the lead (no digits: the Jev rule)
 TOOLS = {  # each specialist's read-only tools (tools.nimbus, W41); without Jev the generalist has all
     Role.GENERALIST: ("nimbus_status.service_status",),
     Role.BILLING: ("nimbus_account.my_invoices", "nimbus_support.my_subscriptions"),
-    Role.TECHNICAL: ("nimbus_status.service_status", "nimbus_support.my_tickets"),
+    Role.TECHNICAL: ("nimbus_status.service_status", "nimbus_support.my_tickets",
+                     "nimbus_support.my_services"),
     Role.ACCOUNT_OPS: ("nimbus_account.my_account", "nimbus_support.my_subscriptions"),
 }
 # B26: the team that owns a restricted article (its acl_groups) and its hitl.queues queue
@@ -186,6 +193,7 @@ class Services:
     decisions: object = None       # safety.governance.records.DecisionLog
     executor: object = None        # tools.execution.Executor over `tools`, audited; None: no tools
     tools: object = None           # the frozen tool registry (tools.nimbus.catalog)
+    desk: object = None            # tools.execution.Executor over tools.desk only: raises confirmed tickets
 
 
 class TurnLoop:
@@ -197,6 +205,7 @@ class TurnLoop:
         self.turns = {}                # (tenant, conversation) -> this turn's session, principal, tier, id
         self.records = {}              # (tenant, conversation) -> {tool id: masked output} read this turn
         self.restricted = {}           # (tenant, conversation) -> this turn's RestrictedMatch (B26), if any
+        self.cards = {}                # (tenant, conversation) -> this turn's action card (a ticket proposal)
         self.decide = Remasked(services.engine)
         tooled = services.executor is not None and services.tools is not None
         self.catalog = services.tools if tooled else Registry().freeze()
@@ -210,8 +219,7 @@ class TurnLoop:
                                                       self.specialist(Role.GENERALIST, "every topic")), None)
         triage = self.triage(triage_hook(services.engine, llm_fallback(services.complete)))
         self.graph = build({"triage": triage,
-                            "collect": lambda state: {"parameters": state.get("parameters") or {},
-                                                      "missing": []},
+                            "collect": self.collect,
                             "execute_sop": self.procedure, "react_step": self.diagnose,
                             "revalidate": lambda state: True}, store=services.store)
 
@@ -439,7 +447,159 @@ class TurnLoop:
         text, why = self.consult(state)
         return {"thought": f"the specialists' answer ({why})", "outcome": "answer", "answer": text}
 
+    def collect(self, state):
+        """COLLECTING_PARAMS (FR-45): a request for the billing team to act on one of the customer's own
+        charges collects a ticket's details (runtime.tickets); anything else has nothing to collect, and the
+        procedure answers from the documentation."""
+        key = (state["tenant_id"], state["case_id"])
+        texts = [m.get("content", "") for m in state.get("messages") or [] if m.get("role") == "user"]
+        wanted, category = tickets.wants(self.decide, "\n".join(texts[-4:]))
+        if not wanted:
+            return {"parameters": {}, "missing": []}
+        who = self.turns.get(key) or {}
+        if Tier[who.get("tier") or "T0_ANON"] < Tier.T1_VERIFIED:
+            return {"parameters": {"ticket": {"sign_in": True}}, "missing": [], "sop_name": "ticket"}
+        invoice = tickets.latest_invoice(texts)
+        owned = tickets.own_invoice(self.s.connect, key[0], who["principal_id"], invoice) if invoice else None
+        ticket = {"category": category, "invoice": invoice, "reason": texts[-1] if texts else ""}
+        if owned is None:
+            return {"parameters": {"ticket": ticket}, "missing": ["own_invoice" if invoice else "invoice"],
+                    "sop_name": "ticket"}
+        stated = tickets.amount_cents(texts)
+        return {"parameters": {"ticket": {**ticket, "amount_cents": owned if stated is None else stated}},
+                "missing": [], "sop_name": "ticket"}
+
+    def propose_ticket(self, state, ticket):
+        """The ticket proposal and its card (a guest's card asks to sign in first); nothing is raised here."""
+        key = (state["tenant_id"], state["case_id"])
+        if ticket.get("sign_in"):
+            self.cards[key] = tickets.SIGN_IN_CARD
+            return {"response": tickets.SIGN_IN}
+        proposal = tickets.propose(self.s.connect, state, self.turns[key], ticket)
+        self.cards[key] = tickets.proposal_card(proposal)
+        self.steps.setdefault(key, {})["ticket"] = {"proposal": proposal.number,
+                                                    "category": proposal.category}
+        return {"response": tickets.proposal_reply(proposal)}
+
+    def raise_ticket(self, turn):
+        """FR-47: the customer confirmed a proposal. support_desk.raise_ticket runs through the audited desk
+        executor on the customer's live session (the token decides whose ticket it is); a repeat returns the
+        same ticket, so a retried turn raises nothing more."""
+        proposal = turn.action.proposal
+        call = ToolCall(tool_call_id=f"{turn.turn_id}:raise", tool_id=desk.RAISE,
+                        arguments={"proposal": proposal}, tenant_id=turn.tenant_id,
+                        principal_id=turn.principal_id, case_id=turn.conversation_id,
+                        checkpoint_id=turn.turn_id, session_id=turn.session_id)
+        try:
+            if self.s.desk is None:
+                raise ToolFailure("SYSTEM_UNAVAILABLE", "no desk executor is configured")
+            self.s.desk.run(call)
+        except ToolFailure as failure:
+            if failure.code in ("STEP_UP_REQUIRED", "AUTHENTICATION_EXPIRED"):
+                self.publish(turn, "action_card", tickets.SIGN_IN_CARD)
+                text = tickets.SIGN_IN_AGAIN
+            else:
+                text = tickets.NOT_RAISED
+            self.record(turn, "escalate", "The ticket could not be raised.", [],
+                        {"steps": {"ticket": {"proposal": proposal, "failure": failure.code}}})
+            self.publish(turn, "final", disclose({"role": "assistant", "text": text}))
+            return "not_raised"
+        ticket = Tickets(self.s.connect).get(turn.tenant_id, turn.principal_id, number_id(proposal))
+        card = ticket.card()
+        self.publish(turn, "action_card", tickets.raised_card(card))
+        self.record(turn, "answer", "We raised your ticket at your request.", [],  # no digits: the why view
+                    {"steps": {"ticket": {"raised": card["ticket_id"]}}})
+        self.publish(turn, "final", disclose({"role": "assistant", "text": tickets.raised_reply(card)}))
+        return "raised"
+
+    def service_request(self, turn):
+        """A signed-in customer asking to stop, start, restart or scale one of their own services
+        (tools.services.understand, in code) gets an offer card, or one question; nothing changes until they
+        confirm. None when the message is not such a request."""
+        own = nimbus_services.services(self.s.connect, turn.tenant_id, turn.principal_id)
+        wanted = nimbus_services.understand(turn.content, own)
+        if wanted is None:
+            return None
+        if "reply" in wanted:
+            self.record(turn, "ask_customer", "We need one more detail before we can help.",
+                        ["Content safety"], {"steps": {"service": {"asked": True}}})
+            self.publish(turn, "final", disclose({"role": "assistant", "text": wanted["reply"]}))
+            return "asked"
+        target, action, replicas = wanted["service"], wanted["action"], wanted["replicas"]
+        offer = nimbus_services.propose(self.s.connect, turn.tenant_id, turn.principal_id,
+                                        turn.conversation_id, turn.turn_id, target["service_id"], action,
+                                        replicas)
+        self.publish(turn, "action_card", nimbus_services.offer_card(offer, target, action, replicas))
+        self.record(turn, "answer", "We offered to change one of your services.", ["Content safety"],
+                    {"steps": {"service": {"offer": offer, "action": action}}})
+        self.publish(turn, "final", disclose({"role": "assistant",
+                                              "text": nimbus_services.offer_reply(target, action, replicas)}))
+        return "offered"
+
+    def run_service_action(self, turn):
+        """The customer confirmed an offer: nimbus_services.run_action runs through the audited desk executor
+        on their live session, then the service is read back apart from the tool (MA-D14) and the reply says
+        only what that read shows."""
+        offer = turn.action.proposal
+        call = ToolCall(tool_call_id=f"{turn.turn_id}:act", tool_id=nimbus_services.RUN,
+                        arguments={"proposal": offer}, tenant_id=turn.tenant_id,
+                        principal_id=turn.principal_id, case_id=turn.conversation_id,
+                        checkpoint_id=turn.turn_id, session_id=turn.session_id)
+        try:
+            if self.s.desk is None:
+                raise ToolFailure("SYSTEM_UNAVAILABLE", "no desk executor is configured")
+            done = self.s.desk.run(call).data
+        except ToolFailure as failure:
+            if failure.code in ("STEP_UP_REQUIRED", "AUTHENTICATION_EXPIRED"):
+                self.publish(turn, "action_card", nimbus_services.SIGN_IN_CARD)
+                text = nimbus_services.SIGN_IN_AGAIN
+            else:
+                text = nimbus_services.NOT_DONE
+            self.record(turn, "escalate", "The change could not be made.", [],
+                        {"steps": {"service": {"offer": offer, "failure": failure.code}}})
+            self.publish(turn, "final", disclose({"role": "assistant", "text": text}))
+            return "not_done"
+        after = nimbus_services.service(self.s.connect, turn.tenant_id, turn.principal_id,
+                                        done["service"]["service_id"])
+        self.publish(turn, "action_card", nimbus_services.done_card(done["action"], after))
+        self.record(turn, "answer", "We changed your service at your request.", [],  # no digits: the why view
+                    {"steps": {"service": {"done": offer, "action": done["action"],
+                                           "status": after["status"]}}})
+        self.publish(turn, "final", disclose({"role": "assistant",
+                                              "text": nimbus_services.done_reply(done["action"], after)}))
+        return "done"
+
+    def hand_off(self, turn, masked, reason, notice, triage, trace):
+        """FR-46: a hand-off offers a ticket (a guest is asked to sign in first); in a conversation with a
+        raised ticket, the message is added to it as a note instead of handing off again. Cards go before the
+        event that ends the turn, so a retried turn republishes nothing."""
+        key, desk = (turn.tenant_id, turn.conversation_id), Tickets(self.s.connect)
+        raised = desk.raised_in(turn.tenant_id, turn.conversation_id)
+        if raised is not None and raised.principal_id == turn.principal_id:
+            desk.add_note(turn.tenant_id, turn.principal_id, raised.id, "customer", masked)
+            self.publish(turn, "action_card", tickets.ticket_card(raised))
+            self.record(turn, "escalate", "We added your message to your ticket.", [],
+                        {**trace, "ticket": raised.number})
+            self.publish(turn, "final", disclose({"role": "assistant", "text": tickets.noted_reply(raised)}))
+            return "noted"
+        if Tier[turn.assurance_tier] >= Tier.T1_VERIFIED:
+            team = self.restricted[key][1] if key in self.restricted else None
+            category = tickets.handoff_category((triage or {}).get("intent"), team)
+            proposal = tickets.propose_handoff(self.s.connect, turn.tenant_id, turn.principal_id,
+                                               turn.conversation_id, turn.turn_id, category, reason, masked)
+            self.publish(turn, "action_card", tickets.handoff_card(proposal))
+            notice = f"{notice} {tickets.OFFER}"
+        else:
+            self.publish(turn, "action_card", tickets.SIGN_IN_CARD)
+            notice = f"{notice} {tickets.SIGN_IN_OFFER}"
+        self.record(turn, "escalate", reason, [], trace)
+        self.publish(turn, "handoff", {"text": notice})
+        return "handed_off"
+
     def procedure(self, state):
+        ticket = (state.get("parameters") or {}).get("ticket")
+        if ticket:
+            return self.propose_ticket(state, ticket)
         text, why = self.consult(state, PROCEDURE + "\n")
         return {"response": text} if text else {"error": f"no answer for the procedure ({why})"}
 
@@ -470,6 +630,10 @@ class TurnLoop:
                 return "already_answered"
             if not any(kind == "status" and data.get("state") == "working" for kind, data in done):
                 self.publish(turn, "status", {"state": "working", "text": "Looking into it"})
+            if turn.action is not None:  # a card's button, not a message: no screening, no statechart
+                if turn.action.type == "confirm_action":
+                    return self.run_service_action(turn)
+                return self.raise_ticket(turn)
             verdict = self.s.screener.screen("user_message", turn.content)
             steps = {"screening": verdict.band}
             if verdict.band == "block":
@@ -479,6 +643,11 @@ class TurnLoop:
                              "steps": steps})
                 self.publish(turn, "final", disclose({"role": "assistant", "text": BLOCKED}))
                 return "blocked"
+            if Tier[turn.assurance_tier] >= Tier.T1_VERIFIED:
+                # ponytail: answered beside the statechart, so the case thread misses this message
+                offered = self.service_request(turn)
+                if offered:
+                    return offered
             masked, found = self.s.tokens.mask(turn.content)
             self.probe_restricted(turn, masked)
             config = thread(turn.tenant_id, turn.conversation_id)
@@ -506,11 +675,17 @@ class TurnLoop:
                     self.publish(turn, "citation", {"doc_id": section.doc_id, "title": section.title,
                                                     "heading": section.heading,
                                                     "excerpt": section.text[:600]})
-                self.record(turn, "answer", "We answered from our documentation.", ["Content safety"], trace)
+                if key in self.cards:  # before the final event: a retried turn that ended republishes nothing
+                    self.publish(turn, "action_card", self.cards[key])
+                why = ("We offered to raise a ticket." if key in self.cards
+                       else "We answered from our documentation.")
+                self.record(turn, "answer", why, ["Content safety"], trace)
                 self.publish(turn, "final", disclose({"role": "assistant", "text": checked.text}))
                 return "answered"
             if state.get("stage") == "AWAITING_CUSTOMER":
-                question = self.clarifying_question(state, masked)
+                collected = "COLLECTING_PARAMS" in steps["stages"] and state.get("missing")
+                question = (tickets.missing_question(state["missing"]) if collected
+                            else self.clarifying_question(state, masked))
                 if question:
                     self.record(turn, "ask_customer", "We need one more detail before we can help.",
                                 ["Content safety"], trace)
@@ -522,9 +697,7 @@ class TurnLoop:
             if key in self.restricted:  # ponytail: queue only in the trace until hand-offs reach queues (W11)
                 reason = f"This is handled by our {self.restricted[key][1]} team."
                 notice = f"{reason} {HANDOFF}"
-            self.record(turn, "escalate", reason, [], trace)
-            self.publish(turn, "handoff", {"text": notice})
-            return "handed_off"
+            return self.hand_off(turn, masked, reason, notice, triage, trace)
         except Exception:  # noqa: BLE001 - the customer gets an answer whatever broke
             log.exception("turn %s failed", turn.turn_id)
             try:
@@ -534,7 +707,7 @@ class TurnLoop:
             return "failed"
         finally:
             for per_turn in (self.evidence, self.passages, self.steps, self.turns, self.records,
-                             self.restricted):
+                             self.restricted, self.cards):
                 per_turn.pop(key, None)
 
 

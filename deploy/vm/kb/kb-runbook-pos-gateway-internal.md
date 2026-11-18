@@ -3,7 +3,7 @@ doc_id: kb-runbook-pos-gateway-internal
 title: Nimbus POS Gateway internal engineering runbook: POS-OFFLINE and GATEWAY_TIMEOUT
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

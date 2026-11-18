@@ -92,10 +92,16 @@ class NoArguments(BaseModel):
     pass
 
 
+# A refund the staff console approves marks its invoice credited (hitl.tickets.Tickets.move): the status only.
+CREDIT_NAME = "nimbus_0003_invoice_credit.sql"
+CREDIT_SCHEMA = "GRANT UPDATE (status) ON nimbus_invoices TO app_runtime;"
+
+
 def apply_schema(database):
-    if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{SCHEMA_NAME}'"):
-        psql(database, f"BEGIN;\n{SCHEMA}\nINSERT INTO schema_migrations (name) VALUES ('{SCHEMA_NAME}');\n"
-                       "COMMIT;\n")
+    for name, sql in ((SCHEMA_NAME, SCHEMA), (CREDIT_NAME, CREDIT_SCHEMA)):
+        if not psql(database, f"SELECT 1 FROM schema_migrations WHERE name = '{name}'"):
+            psql(database, f"BEGIN;\n{sql}\nINSERT INTO schema_migrations (name) VALUES ('{name}');\n"
+                           "COMMIT;\n")
 
 
 def _rows(connect, tenant_id, sql, params):
@@ -132,7 +138,11 @@ def catalog(connect, identity):
          Tier.T1_VERIFIED, "SELECT subscription_id, product, seats, status, renews_on "
                            "FROM nimbus_subscriptions WHERE principal_id = %(me)s ORDER BY product",
          "subscriptions")
-    tool("nimbus_account.my_account", "The customer's own account: company, plan and home region",
+    tool("nimbus_support.my_services", "The customer's own servers and container apps and their status",
+         Tier.T1_VERIFIED, "SELECT s.name, s.kind, s.region, CASE WHEN s.settles_at <= now() "
+                           "THEN s.settles_to ELSE s.status END AS status, s.replicas FROM nimbus_services s "
+                           "WHERE s.principal_id = %(me)s ORDER BY s.kind DESC, s.name", "services")
+    tool("nimbus_account.my_account","The customer's own account: company, plan and home region",
          Tier.T2_SSO, "SELECT account_id, company, plan, region, since FROM nimbus_accounts "
                       "WHERE principal_id = %(me)s", "account")
     tool("nimbus_account.my_invoices", "The customer's own invoices with their amounts and payment status",

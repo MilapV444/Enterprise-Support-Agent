@@ -1,7 +1,9 @@
 // API client for the portal: sign-in, idempotent turn submission, the resumable event stream, and the
 // customer's why view and execution trace. The stream is read with fetch (not EventSource) because it must
 // carry the Bearer token.
+import type { Services } from "./services.ts";
 import { createParser } from "./sse.ts";
+import type { Ticket, TicketDetail } from "./tickets.ts";
 import type { Trace, Why } from "./trace.ts";
 
 export class HttpError extends Error {
@@ -15,6 +17,7 @@ export class HttpError extends Error {
 export type StreamEvent = { id: string | null; event: string; data: Record<string, any> };
 export type Tier = "T0_ANON" | "T1_VERIFIED" | "T2_SSO";
 export type Claims = { sub: string; tid: string; tier: Tier; exp: number };
+export type Conversation = { id: string; title: string | null; updated_at: string };
 
 type Options = {
   baseUrl?: string;
@@ -22,6 +25,17 @@ type Options = {
   uuid?: () => string;
   sleep?: (ms: number) => Promise<void>;
 };
+
+// Resolves once the page is visible (at once outside a browser).
+export const visible = (): Promise<void> => new Promise((resolve) => {
+  if (typeof document === "undefined" || !document.hidden) return resolve();
+  const shown = () => {
+    if (document.hidden) return;
+    document.removeEventListener("visibilitychange", shown);
+    resolve();
+  };
+  document.addEventListener("visibilitychange", shown);
+});
 
 // Display only: the server checks the signature and enforces the tier on every request.
 export function readClaims(token: string | null): Claims | null {
@@ -90,6 +104,47 @@ export class ChatClient {
     }
   }
 
+  // The Raise ticket button: a turn carrying the action, with one Idempotency-Key for every retry, so a
+  // double click or a retry raises one ticket (the server answers on the conversation's event stream).
+  confirmTicket(conversationId: string, proposal: string, options = {}) {
+    return this.#confirm(`${conversation(conversationId)}/tickets/${encodeURIComponent(proposal)}/confirm`, options);
+  }
+
+  // A service action card's button (Stop server ...): the same, so a double click changes the service once.
+  confirmAction(conversationId: string, proposal: string, options = {}) {
+    return this.#confirm(`${conversation(conversationId)}/actions/${encodeURIComponent(proposal)}/confirm`, options);
+  }
+
+  async services(): Promise<Services> {
+    return this.#request("GET", "/v1/services");
+  }
+
+  async #confirm(path: string, { attempts = 3 } = {}) {
+    const key = this.uuid();
+    for (let attempt = 1; ; attempt += 1) {
+      try {
+        return await this.#request("POST", path, undefined, { "Idempotency-Key": key });
+      } catch (error) {
+        const retryable = !(error instanceof HttpError) || error.status >= 500;
+        if (!retryable || attempt >= attempts) throw error;
+        await this.sleep(250 * 2 ** attempt);
+      }
+    }
+  }
+
+  // The History list: the caller's own conversations, last active first, titled by their first message.
+  async conversations(): Promise<Conversation[]> {
+    return (await this.#request("GET", "/v1/conversations")).conversations ?? [];
+  }
+
+  async tickets(): Promise<Ticket[]> {
+    return (await this.#request("GET", "/v1/tickets")).tickets;
+  }
+
+  ticket(ticketId: string): Promise<TicketDetail> {
+    return this.#request("GET", `/v1/tickets/${encodeURIComponent(ticketId)}`);
+  }
+
   why(conversationId: string, turnId: string): Promise<Why[]> {
     return this.#request("GET", `${conversation(conversationId)}/decisions?turn_id=${encodeURIComponent(turnId)}`);
   }
@@ -99,7 +154,9 @@ export class ChatClient {
   }
 
   // Calls onEvent for every event; when the stream drops it reconnects with Last-Event-ID so missed events
-  // are replayed. Stops when `signal` aborts or the server refuses (4xx).
+  // are replayed. Stops when `signal` aborts or the server refuses (4xx). A hidden tab waits to be shown
+  // before it reconnects: the server ends each stream after a few minutes, so a forgotten tab stops
+  // polling the database (Neon's free compute only sleeps when nothing queries it).
   async listen(conversationId: string, onEvent: (event: StreamEvent) => void,
     { signal, retryMs = 1000 }: { signal?: AbortSignal; retryMs?: number } = {}) {
     const url = `${this.baseUrl}${conversation(conversationId)}/events`;
@@ -125,6 +182,7 @@ export class ChatClient {
         if (error instanceof HttpError && error.status < 500) throw error;
       }
       await this.sleep(retryMs);
+      await visible();
     }
   }
 

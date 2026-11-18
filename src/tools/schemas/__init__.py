@@ -12,6 +12,8 @@ schema gate a tool must pass to be registered:
 - sensitive fields have no default, so nothing silently defaults to production;
 - types are primitives, enums, literals or reviewed sub-models (and lists / optionals of those): no dict,
   no Any.
+Every argument counts as personal data, sealed under the customer's key in the tool audit record, unless the
+field says personal=False (an id the agent issued itself, for instance): personal_arguments().
 """
 
 import types
@@ -24,10 +26,19 @@ from pydantic_core import PydanticUndefined
 PRIMITIVES = (str, int, float, bool)
 
 
-def arg(sensitive, default=PydanticUndefined, **options):
-    """A tool argument field; sensitive=True marks values that need provenance."""
-    extra = {**options.pop("json_schema_extra", {}), "sensitive": sensitive}
+def arg(sensitive, default=PydanticUndefined, personal=True, **options):
+    """A tool argument field; sensitive=True marks values that need provenance, personal=False values that
+    hold no personal data (they are not sealed in the audit record)."""
+    extra = {**options.pop("json_schema_extra", {}), "sensitive": sensitive, "personal": personal}
     return Field(default, json_schema_extra=extra, **options)
+
+
+def personal_arguments(schema, arguments):
+    """The arguments to seal in the audit record: all but the fields declared personal=False; None if none."""
+    plain = {name for name, info in schema.model_fields.items()
+             if (info.json_schema_extra or {}).get("personal") is False}
+    personal = {name: value for name, value in arguments.items() if name not in plain}
+    return personal or None
 
 
 def is_sensitive(info):

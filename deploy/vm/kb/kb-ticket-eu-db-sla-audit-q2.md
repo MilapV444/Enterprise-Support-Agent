@@ -3,7 +3,7 @@ doc_id: kb-ticket-eu-db-sla-audit-q2
 title: Resolved ticket: Q2 EU database uptime audit and 10% SLA credit for Globex Corp
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

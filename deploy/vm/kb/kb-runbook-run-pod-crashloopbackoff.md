@@ -3,7 +3,7 @@ doc_id: kb-runbook-run-pod-crashloopbackoff
 title: Nimbus Run runbook: triaging and resolving container pod CrashLoopBackOff
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

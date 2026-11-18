@@ -1,0 +1,13 @@
+{
+  "task": "TK-01",
+  "gate": "independent-review",
+  "kind": "review",
+  "attempt": "603fbf0b-2006-40e3-b7cb-aaf090aa5943",
+  "human": "Intelligent_developer_123",
+  "reason": "Pre-authorized by the user for the TK sweep (chat 2026-11-16). Self-review by Claude: schema, RLS, grants, idempotent proposals, single confirm, erasure/retention coverage; gate passed",
+  "observed_at": "2026-11-16T17:50:39.774Z",
+  "source_hash": "7cb73d7c3b899fc202b926f40cc230ed1cf77fe81cae9ddfa1739bec05753ed1",
+  "config_hash": "42d0ddd47fabeea263dbe6ef356c5b10644c0e94dcc89813ba933ae7c32b889e",
+  "reviewed_proofs": "6bc979fab2d8e9cef636d29a7aeeea976401c223330bf012a977bd2dff75011a",
+  "hash": "630c67f45fb539616ab387a2d5a6d0698193b52370329a1265e200e17446ca04"
+}

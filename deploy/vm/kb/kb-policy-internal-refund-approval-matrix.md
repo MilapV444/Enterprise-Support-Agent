@@ -3,7 +3,7 @@ doc_id: kb-policy-internal-refund-approval-matrix
 title: Internal refund and service credit approval matrix
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

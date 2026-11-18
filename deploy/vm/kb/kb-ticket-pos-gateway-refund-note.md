@@ -3,7 +3,7 @@ doc_id: kb-ticket-pos-gateway-refund-note
 title: Resolved ticket: POS terminal sync delay with embedded prompt injection in customer log
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

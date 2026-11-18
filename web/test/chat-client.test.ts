@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { ChatClient, HttpError, readClaims } from "../lib/chat-client.ts";
+import { ChatClient, HttpError, readClaims, visible } from "../lib/chat-client.ts";
 
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status });
 const stream = (text: string) => new Response(text, { status: 200, headers: { "Content-Type": "text/event-stream" } });
@@ -51,6 +51,24 @@ test("a dropped stream reconnects with Last-Event-ID and sends the Bearer token"
   expect(requests[0]["Last-Event-ID"]).toBeUndefined();
   expect(requests[1]["Last-Event-ID"]).toBe("4");
   expect(requests.every((headers) => headers.Authorization === "Bearer tok")).toBe(true);
+});
+
+test("a hidden tab waits to be shown before it reconnects", async () => {
+  const page = Object.assign(new EventTarget(), { hidden: true });
+  const show = (hidden: boolean) => { page.hidden = hidden; page.dispatchEvent(new Event("visibilitychange")); };
+  (globalThis as { document?: unknown }).document = page;
+  try {
+    let shown = false;
+    const waiting = visible().then(() => { shown = true; });
+    show(true);
+    await Promise.resolve();
+    expect(shown).toBe(false);
+    show(false);
+    await waiting;
+    expect(shown).toBe(true);
+  } finally {
+    delete (globalThis as { document?: unknown }).document;
+  }
 });
 
 test("a refused stream stops instead of retrying forever", async () => {
