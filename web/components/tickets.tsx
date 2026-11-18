@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import { HttpError, type ChatClient } from "@/lib/chat-client.ts";
 import {
-  categoryLabel, eventLabel, money, proposalOf, statusLabel, teamLabel, ticketPath, ticketsPath,
+  categoryLabel, eventText, eventTitle, money, proposalOf, statusLabel, teamLabel, ticketPath, ticketsPath,
   type Ticket, type TicketCard, type TicketDetail,
 } from "@/lib/tickets.ts";
 import { Icon } from "./icons.tsx";
@@ -18,6 +18,7 @@ const when = (at: string | null | undefined) =>
 export function StatusChip({ status }: { status: string }) {
   const tone = status === "proposed" || status === "expired" ? "border-line text-muted"
     : status === "resolved" || status === "closed" ? "border-ok/40 text-ok"
+    : status === "rejected" ? "border-bad/40 text-bad"
     : "border-brand/50 text-brand";
   return <span className={`rounded-full border px-2 py-0.5 text-xs font-medium ${tone}`}>{statusLabel(status)}</span>;
 }
@@ -224,10 +225,10 @@ export function TicketDetailView({ client, tenantId, ticketId, signedIn }: {
         {ticket.events.map((event, i) => (
           <li key={i} className="relative">
             <span className="absolute -left-[21px] top-1.5 size-2.5 rounded-full bg-brand" aria-hidden="true" />
-            <p className="text-sm font-medium">{eventLabel(event.kind)}</p>
+            <p className="text-sm font-medium">{eventTitle(event)}</p>
             <p className="text-xs text-muted">{when(event.at)}</p>
-            {event.kind === "note" && event.text && (
-              <p className="mt-1 whitespace-pre-wrap break-words text-sm">{event.text}</p>
+            {eventText(event) && (
+              <p className="mt-1 whitespace-pre-wrap break-words text-sm">{eventText(event)}</p>
             )}
           </li>
         ))}

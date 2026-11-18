@@ -1,7 +1,7 @@
 // Support tickets in the portal (FR-47): the card fields the API sends (hitl.tickets.Ticket.card), the detail
 // view's extra fields, and the formatting the cards, the list and the detail page share. Pure.
 
-export type TicketStatus = "proposed" | "open" | "in_review" | "resolved" | "closed" | "expired";
+export type TicketStatus = "proposed" | "open" | "in_review" | "resolved" | "closed" | "expired" | "rejected";
 export type Ticket = {
   ticket_id: string;            // TKT-00042
   status: TicketStatus;
@@ -13,7 +13,11 @@ export type Ticket = {
   queue: string;
   created_at: string;
 };
-export type TicketEvent = { kind: "proposed" | "confirmed" | "note" | "status"; actor: string; text: string; at: string };
+// visibility only reaches the staff console: the customer's API leaves staff-only notes out entirely.
+export type TicketEvent = {
+  kind: "proposed" | "confirmed" | "note" | "status"; actor: string; text: string; at: string;
+  visibility?: "customer" | "internal";
+};
 export type TicketDetail = Ticket & {
   description: string;
   reason: string;
@@ -31,7 +35,7 @@ export type TicketCard = Partial<Ticket> & {
 
 const STATUS: Record<TicketStatus, string> = {
   proposed: "Not raised yet", open: "Open", in_review: "In review", resolved: "Resolved", closed: "Closed",
-  expired: "Offer expired",
+  expired: "Offer expired", rejected: "Rejected",
 };
 const TEAMS: Record<string, string> = {
   queue_billing: "Billing team", queue_technical: "Technical team", queue_account: "Account team",
@@ -44,6 +48,13 @@ const EVENTS: Record<TicketEvent["kind"], string> = {
 export const statusLabel = (status: string) => STATUS[status as TicketStatus] ?? status;
 export const teamLabel = (queue: string) => TEAMS[queue] ?? "Support team";
 export const eventLabel = (kind: string) => EVENTS[kind as TicketEvent["kind"]] ?? kind;
+export const byStaff = (actor: string) => actor.startsWith("staff:");
+// A timeline entry's title: a staff member's note is their reply.
+export const eventTitle = (event: TicketEvent) =>
+  event.kind === "note" && byStaff(event.actor) ? "Reply from support" : eventLabel(event.kind);
+// What a timeline entry shows under its title: a note's text, or why staff changed the status.
+export const eventText = (event: TicketEvent) =>
+  event.kind === "note" || (event.kind === "status" && byStaff(event.actor)) ? event.text : "";
 export const categoryLabel = (category: string) => category.charAt(0).toUpperCase() + category.slice(1);
 
 export function money(cents: number | null | undefined, currency: string | null | undefined) {

@@ -18,6 +18,8 @@ export type ServiceActivity = {
   replicas: number | null;
   conversation_id: string;
   at: string;
+  actor?: string;               // "agent" (a confirmed chat offer) or "staff:..." (the staff console)
+  principal_id?: string;        // the staff console's activity names the customer
 };
 export type Services = { services: Service[]; activity: ServiceActivity[] };
 // An action_card event: an offer with its Confirm button, or the service after the change.
@@ -46,6 +48,9 @@ export const busy = (status: string) => BUSY.has(status);
 // "good" running, "busy" while a change settles, "idle" stopped
 export const tone = (status: string) => status === "running" ? "good" : busy(status) ? "busy" : "idle";
 export const kindLabel = (kind: string) => kind === "app" ? "Container app" : "Server";
+// Who carried a change out, as the customer reads it.
+export const doneBy = (entry: ServiceActivity) =>
+  entry.actor?.startsWith("staff:") ? "Support staff" : "Support assistant";
 
 export function activityLabel(entry: ServiceActivity) {
   const scale = entry.action === "scale" && entry.replicas ? ` to ${entry.replicas} replicas` : "";

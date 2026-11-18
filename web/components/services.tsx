@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 import type { ChatClient } from "@/lib/chat-client.ts";
 import {
-  activityLabel, ago, busy, kindLabel, lastAction, offerOf, statusLabel, tone,
+  activityLabel, ago, busy, doneBy, kindLabel, lastAction, offerOf, statusLabel, tone,
   type Service, type ServiceCard, type Services,
 } from "@/lib/services.ts";
 import { Icon } from "./icons.tsx";
@@ -64,7 +64,7 @@ function Group({ title, items, latest }: {
               </span>
               {last && (
                 <span className="order-last w-full text-xs text-muted sm:order-none sm:w-auto">
-                  Support assistant · {last.action_id} · {ago(last.at)}
+                  {doneBy(last)} · {last.action_id} · {ago(last.at)}
                 </span>
               )}
               <ServiceStatus status={service.status} />
@@ -123,7 +123,7 @@ export function ServicesView({ client, signedIn }: { client: ChatClient | null; 
                 <span className="absolute -left-[21px] top-1.5 size-2.5 rounded-full bg-brand" aria-hidden="true" />
                 <p className="text-sm font-medium">{activityLabel(entry)}</p>
                 <p className="text-xs text-muted">
-                  {new Date(entry.at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} · {entry.action_id}, confirmed by you in the chat
+                  {new Date(entry.at).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} · {entry.action_id}, {doneBy(entry) === "Support staff" ? "carried out by support staff" : "confirmed by you in the chat"}
                 </p>
               </li>
             ))}
