@@ -157,7 +157,7 @@ def stack():
     client, namespace = QdrantClient(url="http://127.0.0.1:6333"), f"rt{uuid.uuid4().hex[:8]}_"
     with psycopg.connect(DSN, autocommit=True) as conn:
         report = seed_kb.seed(client, embed, DIMENSIONS, conn, namespace=namespace)
-    assert report["indexed"] == len(seed_kb.documents()[0])
+    assert report["indexed"] == len(seed_kb.documents())
     yield client, namespace
     for item in client.get_collections().collections:
         if item.name.startswith(namespace):
@@ -507,20 +507,19 @@ def test_qdrant_is_the_configured_one_unless_it_is_unset_or_loopback(configured,
     assert production.qdrant_url({}) == "http://127.0.0.1:6333"           # a laptop with nothing set
 
 
-def test_the_public_collection_holds_every_unrestricted_article_all_customer_visible(stack):
+def test_the_public_collection_holds_every_article_all_customer_visible(stack):
     """2026-11-18: every article in deploy/vm/kb is customer_visible, so a customer's answer cites what it
-    uses; policies, runbooks and tickets reach the public collection, restricted articles never do."""
+    uses; policies, runbooks and tickets reach the public collection, and so do the restricted articles,
+    which retrieval never gives a customer (only the B26 probe sees their ids)."""
     client, namespace = stack
     points, _ = client.scroll(f"{namespace}public_knowledge_v1", limit=10_000,
                               with_payload=["audience", "doc_id", "is_restricted"])
-    assert points and all(p.payload["audience"] == "customer_visible" and not p.payload["is_restricted"]
-                          for p in points)
-    public, skipped = seed_kb.documents()
-    assert sorted(skipped) == ["kb-policy-internal-billing-high-value-wire-overrides",
-                               "kb-policy-internal-security-forensic-isolation"]
+    assert points and all(p.payload["audience"] == "customer_visible" for p in points)
     indexed = {p.payload["doc_id"] for p in points}
     assert {"kb-policy-internal-refund-approval-matrix", "kb-runbook-net-vpn-client-update-failure",
-            "kb-ticket-renewal-overcharge-dispute"} <= indexed == {d.doc_id for d in public}
+            "kb-ticket-renewal-overcharge-dispute"} <= indexed == {d.doc_id for d in seed_kb.documents()}
+    assert {p.payload["doc_id"] for p in points if p.payload["is_restricted"]} == {
+        "kb-policy-internal-billing-high-value-wire-overrides", "kb-policy-internal-security-forensic-isolation"}
 
 
 def test_a_customer_answer_asks_retrieval_for_customer_visible_passages_only(stack):

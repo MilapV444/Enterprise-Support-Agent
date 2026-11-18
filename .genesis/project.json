@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-18T16:58:41.998Z"
+    "updated_at": "2026-11-18T17:09:05.059Z"
   },
   "policy": {
     "ponytail": "full",
@@ -480,6 +480,16 @@
       "status": "accepted",
       "source": "deploy/vm/seed_kb.py",
       "recorded_at": "2026-11-18T16:58:31.501Z",
+      "paths": [],
+      "tags": []
+    },
+    {
+      "id": "DECISION-ec47b7e9",
+      "title": "Restricted articles stay in the public index (amends DECISION-edf54408)",
+      "text": "2026-11-18: DECISION-edf54408's seed skipped the 2 restricted articles, and its VM reseed (7a209e4) purged them from the public collection, where they had been and where the B26 restricted-match probe (Retriever.restricted_match) needs them to hand billing-team / security-team questions to that team. deploy/vm/seed_kb.py now indexes every article in deploy/vm/kb, restricted ones included; a customer never reads a restricted chunk (access_filter must_not is_restricted, plus the live_check guard), and the probe sees only doc_id and acl_groups.",
+      "status": "accepted",
+      "source": "deploy/vm/seed_kb.py",
+      "recorded_at": "2026-11-18T17:09:03.957Z",
       "paths": [],
       "tags": []
     }
@@ -49143,11 +49153,11 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-18T16:58:41.446Z",
+    "at": "2026-11-18T17:09:04.656Z",
     "revision": {
-      "commit": "295b59712a3fcdab5fa987f0fff177279457e937",
+      "commit": "7a209e4fb32efadaf88210bde7ba4a5a514822bc",
       "dirty": true,
-      "source_hash": "690ca1c1e598e7e5b64ea802260b0ef53f9afa9e226e59c8181f2b284ad2db86"
+      "source_hash": "ed31a0c38f0eb4df63a11ff926bad0926642a83e17e4c027030ff026b5942815"
     },
     "active_task": null,
     "next_action": "Review completed work and choose the next bounded outcome."
