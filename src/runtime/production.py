@@ -192,13 +192,23 @@ def app(environ=os.environ):
     loop = TurnLoop(services(environ, store(database_url())))
     connect = connector(database_url())
     dispatch = TemporalDispatcher(environ.get("TEMPORAL_ADDRESS", "127.0.0.1:7233"), loop)
-    api = build_app(None, Identity(connect, idp=None, send_otp=code_sender(environ)), dispatch=dispatch)
+    # Neon's free compute only scales to zero after 5 idle minutes, so nothing may query it on a timer: each
+    # stream polls every 0.5 s and ends after 5 min (a visible portal tab reconnects with Last-Event-ID, a
+    # hidden one waits until it is shown).
+    api = build_app(None, Identity(connect, idp=None, send_otp=code_sender(environ)), dispatch=dispatch,
+                    poll_seconds=0.5, stream_seconds=300.0)
     api.state.turn_loop = loop
 
     @api.get("/healthz")
     def healthz():
+        """The rollout's check (release.py): the database answers."""
         with connect() as conn:
             conn.execute("SELECT 1")
         return {"status": "ok", "revision": environ.get("APP_REVISION", "unknown")}
+
+    @api.get("/livez")
+    def livez():
+        """The container's 30 s health check: the process answers, without waking the database."""
+        return {"status": "ok"}
 
     return api

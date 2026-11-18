@@ -26,6 +26,17 @@ type Options = {
   sleep?: (ms: number) => Promise<void>;
 };
 
+// Resolves once the page is visible (at once outside a browser).
+export const visible = (): Promise<void> => new Promise((resolve) => {
+  if (typeof document === "undefined" || !document.hidden) return resolve();
+  const shown = () => {
+    if (document.hidden) return;
+    document.removeEventListener("visibilitychange", shown);
+    resolve();
+  };
+  document.addEventListener("visibilitychange", shown);
+});
+
 // Display only: the server checks the signature and enforces the tier on every request.
 export function readClaims(token: string | null): Claims | null {
   try {
@@ -143,7 +154,9 @@ export class ChatClient {
   }
 
   // Calls onEvent for every event; when the stream drops it reconnects with Last-Event-ID so missed events
-  // are replayed. Stops when `signal` aborts or the server refuses (4xx).
+  // are replayed. Stops when `signal` aborts or the server refuses (4xx). A hidden tab waits to be shown
+  // before it reconnects: the server ends each stream after a few minutes, so a forgotten tab stops
+  // polling the database (Neon's free compute only sleeps when nothing queries it).
   async listen(conversationId: string, onEvent: (event: StreamEvent) => void,
     { signal, retryMs = 1000 }: { signal?: AbortSignal; retryMs?: number } = {}) {
     const url = `${this.baseUrl}${conversation(conversationId)}/events`;
@@ -169,6 +182,7 @@ export class ChatClient {
         if (error instanceof HttpError && error.status < 500) throw error;
       }
       await this.sleep(retryMs);
+      await visible();
     }
   }
 

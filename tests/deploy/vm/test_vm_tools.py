@@ -228,7 +228,8 @@ def test_the_vm_api_has_no_mock_sso_route_and_answers_its_health_check(ledger_db
     paths = set(api.openapi()["paths"])
     assert "/v1/identity/mock-idp" not in paths and {"/healthz", "/v1/identity/anonymous"} <= paths
     assert TestClient(api).get("/healthz").json() == {"status": "ok", "revision": "r1"}
-    assert api.state.turn_loop is not None                    # accepted turns are answered, not dropped
+    assert TestClient(api).get("/livez").json() == {"status": "ok"}   # the container check: no database
+    assert api.state.turn_loop is not None                   # accepted turns are answered, not dropped
     with pytest.raises(SystemExit, match="SUPPORT_AGENT_DEV_AUTH"):
         production.app({"SUPPORT_AGENT_DEV_AUTH": "1"})
 

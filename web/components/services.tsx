@@ -13,7 +13,9 @@ import {
 } from "@/lib/services.ts";
 import { Icon } from "./icons.tsx";
 
-const POLL_MS = 3000; // ponytail: polling; an SSE feed when many customers watch at once
+// ponytail: polling; an SSE feed when many customers watch at once. Slow, and skipped while the tab is
+// hidden, so an open tab does not keep the database (Neon's free compute) awake.
+const POLL_MS = 10_000;
 const TONES = {
   good: "border-ok/40 bg-ok-soft text-ok",
   busy: "border-warn-line bg-warn-bg text-warn-ink",
@@ -84,9 +86,11 @@ export function ServicesView({ client, signedIn }: { client: ChatClient | null; 
     const load = () => client.services()
       .then((value) => { if (live) { setData(value); setFailed(false); } })
       .catch(() => live && setFailed(true));
+    const tick = () => { if (!document.hidden) load(); };
     load();
-    const timer = setInterval(load, POLL_MS);
-    return () => { live = false; clearInterval(timer); };
+    const timer = setInterval(tick, POLL_MS);
+    document.addEventListener("visibilitychange", tick);
+    return () => { live = false; clearInterval(timer); document.removeEventListener("visibilitychange", tick); };
   }, [client, signedIn]);
 
   if (!signedIn) return <SignInFirst />;
