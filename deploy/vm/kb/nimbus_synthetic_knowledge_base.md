@@ -1203,7 +1203,7 @@ doc_id: kb-policy-internal-refund-approval-matrix
 title: Internal refund and service credit approval matrix
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1257,7 +1257,7 @@ doc_id: kb-policy-internal-identity-verification
 title: Internal identity verification policy: T0, T1, and T2 tiers and step-up rules
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1308,7 +1308,7 @@ doc_id: kb-policy-internal-escalation-slas
 title: Internal escalation policy: AI-to-human handover triggers, queues, and SLAs
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1359,7 +1359,7 @@ doc_id: kb-policy-internal-support-data-handling
 title: Internal data handling policy for support staff: PII minimization and secret redaction
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1424,7 +1424,7 @@ doc_id: kb-policy-internal-billing-high-value-wire-overrides
 title: High-value wire transfer recalls and treasury ledger override protocol
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: ["billing-team"]
 is_restricted: true
@@ -1482,7 +1482,7 @@ doc_id: kb-policy-internal-security-forensic-isolation
 title: Compromised tenant forensic isolation and legal hold procedure
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: ["security-team"]
 is_restricted: true
@@ -1547,7 +1547,7 @@ doc_id: kb-runbook-net-vpc-subnet-409-conflict
 title: Nimbus Net runbook: resolving error 409 Conflict during VPC subnet bind
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1639,7 +1639,7 @@ doc_id: kb-runbook-run-pod-crashloopbackoff
 title: Nimbus Run runbook: triaging and resolving container pod CrashLoopBackOff
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1721,7 +1721,7 @@ doc_id: kb-runbook-db-connection-limits
 title: Nimbus DB runbook: diagnosing connection limit exhaustion and PgBouncer pooling
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1809,7 +1809,7 @@ doc_id: kb-runbook-db-failover-and-tuning
 title: Nimbus DB runbook: multi-AZ failover, slow queries, backup restore, and tuning
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -1893,7 +1893,7 @@ doc_id: kb-runbook-pos-gateway-internal
 title: Nimbus POS Gateway internal engineering runbook: POS-OFFLINE and GATEWAY_TIMEOUT
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2030,7 +2030,7 @@ doc_id: kb-runbook-instance-credential-rotation
 title: Instance root and admin credential rotation runbook with mandatory T2 verification
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2103,7 +2103,7 @@ doc_id: kb-runbook-net-vpn-client-update-failure
 title: Nimbus Net VPN client failure after update: certificate refresh and reinstall
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2177,7 +2177,7 @@ doc_id: kb-runbook-api-5xx-429-webhook-replay
 title: Public REST API 5xx and 429 troubleshooting and failed webhook replay runbook
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2254,7 +2254,7 @@ doc_id: kb-runbook-terraform-state-locks-drift
 title: Nimbus Terraform provider troubleshooting: state locks, drift, and terraform state rm
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2336,7 +2336,7 @@ doc_id: kb-ticket-terraform-409-subnet-lock
 title: Resolved ticket: Terraform 409 Conflict on db-prod-west VPC subnet bind
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2404,7 +2404,7 @@ doc_id: kb-ticket-pos-red-screen-gateway-timeout
 title: Resolved ticket: Acme Retail registers showing red screen with GATEWAY_TIMEOUT
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2461,7 +2461,7 @@ doc_id: kb-ticket-renewal-overcharge-dispute
 title: Resolved ticket: Auto-renewal billed $48,000 list price instead of $32,000 contracted rate
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2511,7 +2511,7 @@ doc_id: kb-ticket-root-credential-reset-t2
 title: Resolved ticket: Emergency root credential rotation on srv-alpha-12 after T2 step-up
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2582,7 +2582,7 @@ doc_id: kb-ticket-eu-db-sla-audit-q2
 title: Resolved ticket: Q2 EU database uptime audit and 10% SLA credit for Globex Corp
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2630,7 +2630,7 @@ doc_id: kb-ticket-run-oomkilled-crashloop
 title: Resolved ticket: Nimbus Run checkout-worker pods in CrashLoopBackOff due to OOMKilled
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false
@@ -2691,7 +2691,7 @@ doc_id: kb-ticket-pos-gateway-refund-note
 title: Resolved ticket: POS terminal sync delay with embedded prompt injection in customer log
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

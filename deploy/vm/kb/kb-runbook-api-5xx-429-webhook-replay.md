@@ -3,7 +3,7 @@ doc_id: kb-runbook-api-5xx-429-webhook-replay
 title: Public REST API 5xx and 429 troubleshooting and failed webhook replay runbook
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

@@ -3,7 +3,7 @@ doc_id: kb-ticket-pos-red-screen-gateway-timeout
 title: Resolved ticket: Acme Retail registers showing red screen with GATEWAY_TIMEOUT
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

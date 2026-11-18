@@ -305,9 +305,10 @@ def test_when_no_passage_answers_it_the_case_goes_to_a_person_and_is_not_logged_
         "look at it with you." and "ESCALATED_HITL" in row[2]
 
 
-def test_the_lead_specialist_jev_picks_answers_and_an_internal_runbook_is_used_but_never_cited(stack):
-    """Golden question 16's case: the VPN runbook is internal; its steps reach the customer, its name does
-    not. (Worded for the hashing test embedder, which cannot rank the golden wording.)"""
+def test_the_lead_specialist_jev_picks_answers_and_the_runbook_it_uses_is_cited(stack):
+    """Golden question 16's case: the VPN runbook is customer_visible (2026-11-18: every article is), so
+    the answer that uses its steps cites it. (Worded for the hashing test embedder, which cannot rank the
+    golden wording.)"""
     world = World(triage=triage_answers("TECHNICAL_OUTAGE", 0.95, 2, 0.05), lead="technical")
     turn = inbound("my nimbus-vpn-cli daemon fails after the vpn client update with "
                    "VPN_ERR_TUN_DRIVER_MISMATCH")
@@ -315,14 +316,12 @@ def test_the_lead_specialist_jev_picks_answers_and_an_internal_runbook_is_used_b
     assert any("lead" in body["questions"] for body in world.jev)                    # Jev delegated
     prompts = [m[-1]["content"] for m in world.model]
     read = " ".join(p for p in prompts if "specialist of the support team" in p)
-    assert "internal knowledge kb-runbook-net-vpn-client-update-failure#" in read
-    internal_runbooks = [d.doc_id for d in seed_kb.documents()[0] if d.audience == "internal"]
+    assert "internal knowledge" not in read and "knowledge kb-runbook-net-vpn-client-update-failure#" in read
     cited = {data["doc_id"] for kind, data in published(turn) if kind == "citation"}
-    assert internal_runbooks and not cited & set(internal_runbooks)
+    assert "kb-runbook-net-vpn-client-update-failure" in cited
     (steps,) = psql(DB, f"SELECT trace -> 'steps' FROM decision_records WHERE turn_id = '{turn.turn_id}'")[0]
     steps = json.loads(steps) if isinstance(steps, str) else steps
-    assert [s["role"] for s in steps["specialists"]] == ["technical"] and steps["retrieval"]["internal"] >= 1
-    assert not {s["doc_id"] for s in steps["retrieval"]["sources"]} & set(internal_runbooks)
+    assert [s["role"] for s in steps["specialists"]] == ["technical"] and steps["retrieval"]["internal"] == 0
 
 
 def test_anything_that_breaks_mid_turn_ends_in_an_error_message(stack):
@@ -508,19 +507,20 @@ def test_qdrant_is_the_configured_one_unless_it_is_unset_or_loopback(configured,
     assert production.qdrant_url({}) == "http://127.0.0.1:6333"           # a laptop with nothing set
 
 
-def test_the_public_collection_holds_customer_visible_articles_and_internal_runbooks_only(stack):
-    """Internal policies, restricted articles and tickets in deploy/vm/kb never reach the public collection
-    (KR-D2); unrestricted internal runbooks do, read for customer answers but never cited."""
+def test_the_public_collection_holds_every_unrestricted_article_all_customer_visible(stack):
+    """2026-11-18: every article in deploy/vm/kb is customer_visible, so a customer's answer cites what it
+    uses; policies, runbooks and tickets reach the public collection, restricted articles never do."""
     client, namespace = stack
     points, _ = client.scroll(f"{namespace}public_knowledge_v1", limit=10_000,
-                              with_payload=["audience", "source_kind", "source_system", "is_restricted"])
-    assert points and all(
-        p.payload["source_kind"] != "ticket" and not p.payload["is_restricted"]
-        and (p.payload["audience"] == "customer_visible" or p.payload["source_system"] == "runbooks")
-        for p in points)
+                              with_payload=["audience", "doc_id", "is_restricted"])
+    assert points and all(p.payload["audience"] == "customer_visible" and not p.payload["is_restricted"]
+                          for p in points)
     public, skipped = seed_kb.documents()
-    assert "kb-policy-internal-refund-approval-matrix" in skipped
-    assert "kb-runbook-net-vpn-client-update-failure" in {d.doc_id for d in public}
+    assert sorted(skipped) == ["kb-policy-internal-billing-high-value-wire-overrides",
+                               "kb-policy-internal-security-forensic-isolation"]
+    indexed = {p.payload["doc_id"] for p in points}
+    assert {"kb-policy-internal-refund-approval-matrix", "kb-runbook-net-vpn-client-update-failure",
+            "kb-ticket-renewal-overcharge-dispute"} <= indexed == {d.doc_id for d in public}
 
 
 def test_a_customer_answer_asks_retrieval_for_customer_visible_passages_only(stack):

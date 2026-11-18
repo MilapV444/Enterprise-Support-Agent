@@ -3,7 +3,7 @@ doc_id: kb-policy-internal-identity-verification
 title: Internal identity verification policy: T0, T1, and T2 tiers and step-up rules
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

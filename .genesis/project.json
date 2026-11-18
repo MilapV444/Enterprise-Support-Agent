@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-18T16:56:56.018Z"
+    "updated_at": "2026-11-18T16:58:41.998Z"
   },
   "policy": {
     "ponytail": "full",
@@ -470,6 +470,16 @@
       "status": "accepted",
       "source": "user, chat 2026-11-16",
       "recorded_at": "2026-11-16T17:10:32.004Z",
+      "paths": [],
+      "tags": []
+    },
+    {
+      "id": "DECISION-edf54408",
+      "title": "Every knowledge-base article is customer_visible",
+      "text": "2026-11-18, the user's decision: every article in deploy/vm/kb (and the bundled nimbus_synthetic_knowledge_base.md) is labelled audience customer_visible, so a customer's answer cites every article it uses. Before, the 9 internal runbooks were read for customer answers but never cited, and the 6 internal policies and 7 resolved tickets were never read for customers. deploy/vm/seed_kb.py now indexes every unrestricted article into the public collection, tickets included; the 2 restricted articles (billing-team wire overrides, security-team forensic isolation) stay out, so is_restricted / acl_groups gating is unchanged. Narrows KR-D2 / KR-D13 for this knowledge base (the code default stays internal and the turn loop still cites only customer_visible passages, register S18 holds). Risks the user accepted when told: the tickets name other tenants (e.g. Initech Logistics) and amounts; kb-policy-internal-identity-verification (marked INTERNAL ONLY) and the refund approval matrix become citable to customers. The runtime's uncited runbooks path (UNCITED) is now inert.",
+      "status": "accepted",
+      "source": "deploy/vm/seed_kb.py",
+      "recorded_at": "2026-11-18T16:58:31.501Z",
       "paths": [],
       "tags": []
     }
@@ -49133,9 +49143,9 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-18T16:56:55.576Z",
+    "at": "2026-11-18T16:58:41.446Z",
     "revision": {
-      "commit": "a513b0c2600981c73837a4d7f54660b83bfc6bdd",
+      "commit": "295b59712a3fcdab5fa987f0fff177279457e937",
       "dirty": true,
       "source_hash": "690ca1c1e598e7e5b64ea802260b0ef53f9afa9e226e59c8181f2b284ad2db86"
     },

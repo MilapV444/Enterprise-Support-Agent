@@ -3,7 +3,7 @@ doc_id: kb-runbook-db-connection-limits
 title: Nimbus DB runbook: diagnosing connection limit exhaustion and PgBouncer pooling
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

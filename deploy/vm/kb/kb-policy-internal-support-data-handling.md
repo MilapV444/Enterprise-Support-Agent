@@ -3,7 +3,7 @@ doc_id: kb-policy-internal-support-data-handling
 title: Internal data handling policy for support staff: PII minimization and secret redaction
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

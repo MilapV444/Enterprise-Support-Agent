@@ -3,7 +3,7 @@ doc_id: kb-policy-internal-security-forensic-isolation
 title: Compromised tenant forensic isolation and legal hold procedure
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: ["security-team"]
 is_restricted: true

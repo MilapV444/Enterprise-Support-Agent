@@ -3,7 +3,7 @@ doc_id: kb-runbook-instance-credential-rotation
 title: Instance root and admin credential rotation runbook with mandatory T2 verification
 source_system: runbooks
 source_kind: operational
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

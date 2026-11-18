@@ -3,7 +3,7 @@ doc_id: kb-ticket-terraform-409-subnet-lock
 title: Resolved ticket: Terraform 409 Conflict on db-prod-west VPC subnet bind
 source_system: tickets
 source_kind: ticket
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: []
 is_restricted: false

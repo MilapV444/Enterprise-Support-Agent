@@ -3,7 +3,7 @@ doc_id: kb-policy-internal-billing-high-value-wire-overrides
 title: High-value wire transfer recalls and treasury ledger override protocol
 source_system: policies
 source_kind: curated
-audience: internal
+audience: customer_visible
 provenance: human
 acl_groups: ["billing-team"]
 is_restricted: true

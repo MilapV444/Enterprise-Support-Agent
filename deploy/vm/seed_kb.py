@@ -7,10 +7,10 @@ acl_groups, is_restricted, updated_at); the body after it is what is chunked and
 in deploy/vm/models.json, and indexed into the public collection through knowledge.ingest, one batch per source
 system, so a rerun replaces the articles in place and an article removed from the folder is purged.
 
-The public collection holds the customer_visible articles that are not tickets (KR-D2, KR-D13, KR-Q1 i) and
-the unrestricted internal runbooks: a customer's answer may use a runbook's steps but never cites it (the
-turn loop filters citations on audience). Internal policies, restricted articles and tickets are listed as
-skipped. The source "seed_kb" (the first, unlabelled articles) is synced empty, which purges them from an
+The public collection holds every unrestricted article, tickets included: all of them are customer_visible
+(2026-11-18, the user's decision: a customer's answer cites every article it uses), and the turn loop cites
+only customer_visible passages. Restricted articles (is_restricted, read by their acl_groups' team) are listed
+as skipped. The source "seed_kb" (the first, unlabelled articles) is synced empty, which purges them from an
 index seeded before.
 """
 
@@ -49,11 +49,10 @@ def documents(folder=KB):
     for path in sorted(folder.glob("kb-*.md")):
         labels, body = front_matter(path.read_text(encoding="utf-8").replace("\r\n", "\n"))
         document = Document(markdown=body, **{key: labels[key] for key in FIELDS})
-        runbook = document.source_system == "runbooks" and not document.is_restricted
-        if (document.audience == "customer_visible" or runbook) and document.source_kind != "ticket":
-            public.append(document)
-        else:
+        if document.is_restricted:
             skipped.append(document.doc_id)
+        else:
+            public.append(document)
     return public, skipped
 
 
@@ -65,7 +64,7 @@ def seed(client, embed, dimensions, conn, folder=KB, namespace=""):
     public, skipped = documents(folder)
     reports = {source: ingestion.run_batch("public", source, public)
                for source in sorted({LEGACY} | {d.source_system for d in public})}
-    return {"indexed": sum(r["indexed"] for r in reports.values()), "skipped_internal": skipped,
+    return {"indexed": sum(r["indexed"] for r in reports.values()), "skipped_restricted": skipped,
             "purged_missing": sorted(d for r in reports.values() for d in r["purged_missing"]),
             "by_source": reports}
 
