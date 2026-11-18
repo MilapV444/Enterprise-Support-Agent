@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-18T17:09:05.059Z"
+    "updated_at": "2026-11-18T17:23:07.059Z"
   },
   "policy": {
     "ponytail": "full",
@@ -1688,6 +1688,15 @@
       "recorded_at": "2026-11-18T16:54:33.892Z",
       "paths": [],
       "supersedes": "KNOWLEDGE-fd105a4c"
+    },
+    {
+      "id": "KNOWLEDGE-a067fd07",
+      "title": "VM knowledge base re-seeded: every article customer_visible (0277bda)",
+      "text": "2026-11-18, VM live 0277bda. deploy/vm/seed_kb.py run in the api container: public_knowledge_v1 holds 44 articles (244 chunks), all audience customer_visible: 27 curated, 10 runbooks, 7 tickets; the 2 restricted articles are indexed with is_restricted true for the B26 probe. Gotcha met on the way: the first re-seed (7a209e4) purged the 2 restricted articles and Ingestion.purge wrote durable knowledge_tombstones rows for them ('no longer in the source'), which made the next batch skip them (skipped_tombstoned). Those 2 rows (created 17:03 UTC, the only rows in the table) were deleted on the VM database, then the re-seed indexed all 44. Local: tests/runtime/test_turn_loop.py and tests/knowledge pass (90) on compose Postgres/Qdrant; the local .env's QDRANT_URL names a Qdrant Cloud cluster with DATABASE_URL empty, not seeded. tests/deploy/vm/test_vm_image.py anonymous-turn test still fails, as on clean HEAD (register W46).",
+      "source": "deploy/vm/seed_kb.py",
+      "tags": [],
+      "recorded_at": "2026-11-18T17:23:05.850Z",
+      "paths": []
     }
   ],
   "tasks": [
@@ -49153,9 +49162,9 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-18T17:09:04.656Z",
+    "at": "2026-11-18T17:23:06.631Z",
     "revision": {
-      "commit": "7a209e4fb32efadaf88210bde7ba4a5a514822bc",
+      "commit": "0277bda0467b94e96fca466646cf9aad9a474767",
       "dirty": true,
       "source_hash": "ed31a0c38f0eb4df63a11ff926bad0926642a83e17e4c027030ff026b5942815"
     },
