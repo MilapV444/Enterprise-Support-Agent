@@ -322,13 +322,11 @@ digraph genesis {
   "symbol:web/components/panels.tsx#function:Call" [label="Call",class="symbol"];
   "symbol:web/components/panels.tsx#function:CitationView" [label="CitationView",class="symbol"];
   "symbol:web/components/panels.tsx#function:Drawer" [label="Drawer",class="symbol"];
-  "symbol:web/components/panels.tsx#function:Passed" [label="Passed",class="symbol"];
   "symbol:web/components/panels.tsx#function:Pending" [label="Pending",class="symbol"];
   "symbol:web/components/panels.tsx#function:Result" [label="Result",class="symbol"];
   "symbol:web/components/panels.tsx#function:StatusMark" [label="StatusMark",class="symbol"];
   "symbol:web/components/panels.tsx#function:TraceView" [label="TraceView",class="symbol"];
   "symbol:web/components/panels.tsx#function:treeLines" [label="treeLines",class="symbol"];
-  "symbol:web/components/panels.tsx#function:WhyPanel" [label="WhyPanel",class="symbol"];
   "symbol:web/components/panels.tsx#function:word" [label="word",class="symbol"];
   "symbol:web/components/panels.tsx#type:Loadable" [label="Loadable",class="symbol"];
   "symbol:web/components/panels.tsx#variable:GOOD" [label="GOOD",class="symbol"];
@@ -532,7 +530,6 @@ digraph genesis {
   "symbol:web/lib/trace.ts#type:Agent" [label="Agent",class="symbol"];
   "symbol:web/lib/trace.ts#type:ToolCall" [label="ToolCall",class="symbol"];
   "symbol:web/lib/trace.ts#type:Trace" [label="Trace",class="symbol"];
-  "symbol:web/lib/trace.ts#type:Why" [label="Why",class="symbol"];
   "symbol:web/middleware.ts#function:middleware" [label="middleware",class="symbol"];
   "symbol:web/middleware.ts#function:policy" [label="policy",class="symbol"];
   "symbol:web/middleware.ts#variable:config" [label="config",class="symbol"];
@@ -744,13 +741,11 @@ digraph genesis {
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:Call" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:CitationView" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:Drawer" [label="defines"];
-  "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:Passed" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:Pending" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:Result" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:StatusMark" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:TraceView" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:treeLines" [label="defines"];
-  "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:WhyPanel" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#function:word" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#type:Loadable" [label="defines"];
   "file:web/components/panels.tsx" -> "symbol:web/components/panels.tsx#variable:GOOD" [label="defines"];
@@ -954,7 +949,6 @@ digraph genesis {
   "file:web/lib/trace.ts" -> "symbol:web/lib/trace.ts#type:Agent" [label="defines"];
   "file:web/lib/trace.ts" -> "symbol:web/lib/trace.ts#type:ToolCall" [label="defines"];
   "file:web/lib/trace.ts" -> "symbol:web/lib/trace.ts#type:Trace" [label="defines"];
-  "file:web/lib/trace.ts" -> "symbol:web/lib/trace.ts#type:Why" [label="defines"];
   "file:web/middleware.ts" -> "symbol:web/middleware.ts#function:middleware" [label="defines"];
   "file:web/middleware.ts" -> "symbol:web/middleware.ts#function:policy" [label="defines"];
   "file:web/middleware.ts" -> "symbol:web/middleware.ts#variable:config" [label="defines"];

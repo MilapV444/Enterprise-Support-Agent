@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "5565927a24e3eda6849e531854c6a7379970d457",
-  "sourceHash": "1bcdd77d1fc74d00ffe2dfe42c0499ff34a9556b78f111b61c9423515d4a0465",
+  "revision": "b597e76b3ce7b5f42830dc163fd2c2b85f52e59d",
+  "sourceHash": "f2be126caff2b5eec98ca58000de83dcc15dbf24f4b0cea5ba68344c3302ecf7",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -2577,7 +2577,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2439dac8e2979e573c6d77a064f8709a3005dc5dda25ea265a39a73e7e55fb7e"
+      "contentHash": "af4fe118f46e291cbe4e8eae550933d78dc3f5387d6c4e3aa66e096a7c9a730a"
     },
     {
       "id": "file:web/components/panels.tsx",
@@ -2587,7 +2587,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "aa20c5df5044cca7ac06b1c117ee977c65d72a371f92774633bf317a7b4fd306"
+      "contentHash": "f71a6d7748742149acb1a8544ba4ff7beb92c054b801ed5e808e4472fffd7ee7"
     },
     {
       "id": "file:web/components/portal.tsx",
@@ -2597,7 +2597,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "0838462e29d9f76bd2c3edf9968788b7b722634bdb1753295639edf94fd98c2d"
+      "contentHash": "22e3107e5fefa1fbfaef8f57a9727a7cd117e5405dfb370f52b0bf7009841502"
     },
     {
       "id": "file:web/components/services.tsx",
@@ -2687,7 +2687,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "207482a67a28cf2cb2cac562849128ecc38225c1419c9da81e60cfd66cb08831"
+      "contentHash": "c604102819282d7039bf8b94b10299f434f8f079957d3c69771c161d59f9655e"
     },
     {
       "id": "file:web/e2e/services.spec.ts",
@@ -2727,7 +2727,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "f095880f9d4f7e7b8d5e166a4aa3bff4f5c6b3d198e36cf23ce08e3ae194bee3"
+      "contentHash": "0e3ba9a1adf2f5a623b069eead32d3e51435fa5c2410a599ed629bd46d6051dd"
     },
     {
       "id": "file:web/lib/reduce.ts",
@@ -2787,7 +2787,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "f1c4fab6ea7435fb57ddbb4bece857d0fc1f212dca6daab37daa610ba5b4df74"
+      "contentHash": "c4b7e824c49d14f897f63b6778c7a5ea024ebf1bcf6add42329bd07891e26585"
     },
     {
       "id": "file:web/middleware.ts",
@@ -3178,7 +3178,7 @@
       "name": "Icon",
       "label": "Icon",
       "path": "web/components/icons.tsx",
-      "line": 35,
+      "line": 33,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "01c316765cfeb138e4ae3bf25d606feddda393204ce68e03b9fb736957bfc2b3"
@@ -3190,7 +3190,7 @@
       "name": "Logo",
       "label": "Logo",
       "path": "web/components/icons.tsx",
-      "line": 44,
+      "line": 42,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7e672d31f5f42cdb7d5ed6434dac2c400875dbb5fc5785d5aeebed6d4cbc538b"
@@ -3202,7 +3202,7 @@
       "name": "IconName",
       "label": "IconName",
       "path": "web/components/icons.tsx",
-      "line": 33,
+      "line": 31,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "d611458580f4c333e4f2c307ac06809cb1649c562f9b6e7a52f062d6e42d73b0"
@@ -3268,18 +3268,6 @@
       "contentHash": "511e0312f28734e4e51a30787b24d5325a865f0c163dba657986c00010978052"
     },
     {
-      "id": "symbol:web/components/panels.tsx#function:Passed",
-      "type": "symbol",
-      "kind": "function",
-      "name": "Passed",
-      "label": "Passed",
-      "path": "web/components/panels.tsx",
-      "line": 232,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols",
-      "contentHash": "26cd1816612eb255a9273b43e5d8bfe35b4d75220303086afae4325a008e4604"
-    },
-    {
       "id": "symbol:web/components/panels.tsx#function:Pending",
       "type": "symbol",
       "kind": "function",
@@ -3340,18 +3328,6 @@
       "contentHash": "3115ac747c52db43f33d0bd88ecd68fae90bde5ad5a85342a81f4fb1b91fceef"
     },
     {
-      "id": "symbol:web/components/panels.tsx#function:WhyPanel",
-      "type": "symbol",
-      "kind": "function",
-      "name": "WhyPanel",
-      "label": "WhyPanel",
-      "path": "web/components/panels.tsx",
-      "line": 246,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols",
-      "contentHash": "d22cee38130c82a98ad580a09b90392260dc7ec4882d1f449f2eaa7579db67db"
-    },
-    {
       "id": "symbol:web/components/panels.tsx#function:word",
       "type": "symbol",
       "kind": "function",
@@ -3394,7 +3370,7 @@
       "name": "Bubble",
       "label": "Bubble",
       "path": "web/components/portal.tsx",
-      "line": 540,
+      "line": 523,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "0171b978a8038761424bc51aaf4c13b12e436151c8b4c9595d738845d90fad76"
@@ -4282,7 +4258,7 @@
       "name": "shot",
       "label": "shot",
       "path": "web/e2e/portal.spec.ts",
-      "line": 65,
+      "line": 61,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "199e09a6ef6244d54d58ba594bc9728a9371f66f68649b094bc5b0ef93871c5b"
@@ -4318,7 +4294,7 @@
       "name": "watchErrors",
       "label": "watchErrors",
       "path": "web/e2e/portal.spec.ts",
-      "line": 58,
+      "line": 54,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7c57da52d1402a1e267275a43128e57837a7cd040e3c4c4f045b010d30818533"
@@ -4642,7 +4618,7 @@
       "name": "conversation",
       "label": "conversation",
       "path": "web/lib/chat-client.ts",
-      "line": 204,
+      "line": 200,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f125081823fa91df4ddb5903d574ceb20288cc1f32407f2ddb6a5852c9db2aa8"
@@ -5758,7 +5734,7 @@
       "name": "Agent",
       "label": "Agent",
       "path": "web/lib/trace.ts",
-      "line": 13,
+      "line": 6,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "075528587d29fc9d5c6a82269495f071985d26e16248dbaefc5bb24b0a47c273"
@@ -5770,7 +5746,7 @@
       "name": "ToolCall",
       "label": "ToolCall",
       "path": "web/lib/trace.ts",
-      "line": 11,
+      "line": 4,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "dcec90fb687a8994e642b1fdeb303e63943772f11ebb51977dc08846a556dc8b"
@@ -5782,22 +5758,10 @@
       "name": "Trace",
       "label": "Trace",
       "path": "web/lib/trace.ts",
-      "line": 23,
+      "line": 16,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "cfdb349b9c591f4a0611606d6722d1c09533cf51656a105de54b5337c4ded920"
-    },
-    {
-      "id": "symbol:web/lib/trace.ts#type:Why",
-      "type": "symbol",
-      "kind": "type",
-      "name": "Why",
-      "label": "Why",
-      "path": "web/lib/trace.ts",
-      "line": 3,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols",
-      "contentHash": "930cb69ab25731a1e93d7eb8cee5a849695c052a415b81d6a8311dc2c535af1a"
     },
     {
       "id": "symbol:web/middleware.ts#function:middleware",
@@ -7752,7 +7716,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#function:Icon",
-      "line": 35,
+      "line": 33,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -7761,7 +7725,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#function:Logo",
-      "line": 44,
+      "line": 42,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -7770,7 +7734,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#type:IconName",
-      "line": 33,
+      "line": 31,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -7823,15 +7787,6 @@
     {
       "type": "defines",
       "source": "file:web/components/panels.tsx",
-      "target": "symbol:web/components/panels.tsx#function:Passed",
-      "line": 232,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/panels.tsx",
       "target": "symbol:web/components/panels.tsx#function:Pending",
       "line": 46,
       "resolved": true,
@@ -7877,15 +7832,6 @@
     {
       "type": "defines",
       "source": "file:web/components/panels.tsx",
-      "target": "symbol:web/components/panels.tsx#function:WhyPanel",
-      "line": 246,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/panels.tsx",
       "target": "symbol:web/components/panels.tsx#function:word",
       "line": 61,
       "resolved": true,
@@ -7914,7 +7860,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#function:Bubble",
-      "line": 540,
+      "line": 523,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -8580,7 +8526,7 @@
       "type": "defines",
       "source": "file:web/e2e/portal.spec.ts",
       "target": "symbol:web/e2e/portal.spec.ts#function:shot",
-      "line": 65,
+      "line": 61,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -8607,7 +8553,7 @@
       "type": "defines",
       "source": "file:web/e2e/portal.spec.ts",
       "target": "symbol:web/e2e/portal.spec.ts#function:watchErrors",
-      "line": 58,
+      "line": 54,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -8850,7 +8796,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#function:conversation",
-      "line": 204,
+      "line": 200,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -9687,7 +9633,7 @@
       "type": "defines",
       "source": "file:web/lib/trace.ts",
       "target": "symbol:web/lib/trace.ts#type:Agent",
-      "line": 13,
+      "line": 6,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -9696,7 +9642,7 @@
       "type": "defines",
       "source": "file:web/lib/trace.ts",
       "target": "symbol:web/lib/trace.ts#type:ToolCall",
-      "line": 11,
+      "line": 4,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -9705,16 +9651,7 @@
       "type": "defines",
       "source": "file:web/lib/trace.ts",
       "target": "symbol:web/lib/trace.ts#type:Trace",
-      "line": 23,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/lib/trace.ts",
-      "target": "symbol:web/lib/trace.ts#type:Why",
-      "line": 3,
+      "line": 16,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -11037,6 +10974,6 @@
     "Python AST unavailable: python3 failed"
   ],
   "stats": {
-    "unresolvedCalls": 260
+    "unresolvedCalls": 254
   }
 }
