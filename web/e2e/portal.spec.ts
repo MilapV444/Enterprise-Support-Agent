@@ -9,6 +9,7 @@ const TRACE = {
   turn_id: "turn-1", detail: "full", tier: "T1_VERIFIED",
   summary: "Answered from our documentation after the output checks passed.",
   final: { label: "Final answer", outcome: "composed" },
+  models: ["claude-haiku-5-5"],
   agents: [
     { id: "coordinator", name: "Coordinator", role: "Screens the message and routes it", status: "success",
       outcome: "routed to the Knowledge Agent", notes: ["Stages: Triaged → Deliberating → Resolved"],
@@ -75,6 +76,8 @@ test("a reply shows its sources and how it was answered", async ({ page }) => {
   await page.getByRole("button", { name: "How this was answered" }).click();
   const drawer = page.getByRole("dialog");
   await expect(drawer.getByText("Execution tree")).toBeVisible();
+  await expect(drawer.getByText("Model used")).toBeVisible();
+  await expect(drawer.getByText("claude-haiku-5-5")).toBeVisible();
   await expect(drawer.getByText("Retrieval lookup")).toBeVisible();
   await expect(drawer.getByText("query: refund recent subscription")).toBeVisible();
   await drawer.getByText("Shared state (6 items)").click();

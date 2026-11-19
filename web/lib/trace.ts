@@ -19,6 +19,7 @@ export type Trace = {
   tier: string;
   summary: string;
   final: { label: string; outcome: string };
+  models?: string[]; // the language models that wrote the reply; absent from an older API
   agents: Agent[];
   shared_state: Record<string, string | number | null>;
 };

@@ -151,6 +151,13 @@ export function TraceView({ item, retry }: { item: Loadable<Trace>; retry: () =>
         return (
           <div className="space-y-4">
             <p className="text-sm text-muted">{trace.summary}</p>
+            {(trace.models?.length ?? 0) > 0 && (
+              <p className="flex items-center gap-2 rounded-lg border border-line px-3 py-2 text-sm">
+                <Icon name="spark" className="size-4 shrink-0 text-brand" />
+                <span className="text-muted">{trace.models!.length > 1 ? "Models used" : "Model used"}</span>
+                <span className="break-all font-mono text-xs">{trace.models!.join(", ")}</span>
+              </p>
+            )}
             {trace.detail === "summary" && (
               <p className="rounded-lg border border-brand/30 bg-brand-soft px-3 py-2 text-xs text-brand-strong">
                 Sign in with an email code to see each step, its tool calls and the shared state.
@@ -180,7 +187,7 @@ export function TraceView({ item, retry }: { item: Loadable<Trace>; retry: () =>
               </details>
             )}
             <p className="text-xs text-muted">
-              This view describes the steps, never scores or internal settings.
+              This view describes the steps and the models used, never scores or internal settings.
             </p>
           </div>
         );

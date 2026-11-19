@@ -437,8 +437,8 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
         <div className="mx-4 mt-4 flex items-start gap-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-3 text-warn-ink sm:mx-6">
           <Icon name="warn" className="mt-0.5 size-5 shrink-0" />
           <p className="text-sm">
-            <strong className="font-semibold">{DISCLOSURE}</strong> Every answer shows its sources and how it was
-            answered.
+            <strong className="font-semibold">{DISCLOSURE}</strong> A person can take over at any time. Every answer
+            shows its sources and how it was answered.
           </p>
         </div>
 

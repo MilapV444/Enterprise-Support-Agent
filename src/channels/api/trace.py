@@ -8,8 +8,10 @@ the one turn loop.
 
 Redaction happens here, on the server, by assurance tier: an anonymous customer (T0) gets the summary and the
 agent outline only; a signed-in one (T1 / T2) also gets tool calls, their arguments and the shared state. No
-tier ever gets scores, confidences, thresholds, model ids or the screening band (UU3: probing the view to map
-cut-offs), and the forensic trace (Jev answers, classifier scores) is never selected.
+tier ever gets scores, confidences, thresholds or the screening band (UU3: probing the view to map cut-offs),
+and the forensic trace (Jev answers, classifier scores) is never selected. Every tier gets the language
+models that wrote the turn ("models"), shown at the user's request (2026-11-19, outside the spec): a model
+name says which tier answered, not where a cut-off sits.
 """
 
 SUMMARY_ONLY = "T0_ANON"
@@ -60,7 +62,8 @@ def _agents(decision, steps):
                 [source["title"] for source in sources]))
         answered = (answer or {}).get("outcome") == "answered"
         if answer:
-            calls.append(_call("Draft answer", "SUCCESS" if answered else "NO ANSWER"))
+            calls.append(_call("Draft answer", "SUCCESS" if answered else "NO ANSWER",
+                               {"model": answer["model"]} if answer.get("model") else None))
         found = f"{len(sources)} source{'s' * (len(sources) != 1)}" if sources else "no matching source"
         agents.append({"id": "knowledge", "name": "Knowledge Agent",
                        "role": "Finds documentation passages and drafts the answer",
@@ -74,7 +77,8 @@ def _agents(decision, steps):
                        "role": "Reads the passages for its domain and reports findings",
                        "status": "success" if found else "failed",
                        "outcome": f"{found} finding{'s' * (found != 1)}" if found else "no findings",
-                       "calls": [_call("Read passages", "SUCCESS" if found else "NO FINDINGS")],
+                       "calls": [_call("Read passages", "SUCCESS" if found else "NO FINDINGS",
+                                       {"model": spec["model"]} if spec.get("model") else None)],
                        "notes": []})
     if "review" in steps:
         passed = steps["review"] == "deliver"
@@ -85,6 +89,12 @@ def _agents(decision, steps):
                        "calls": [_call("Output checks", "PASS" if passed else "HELD")],
                        "notes": ["Safety, promises and grounding checked"]})
     return agents
+
+
+def _models(steps):
+    """The models that wrote the turn, specialists first, each once."""
+    used = [s.get("model") for s in steps.get("specialists", [])] + [(steps.get("answer") or {}).get("model")]
+    return list(dict.fromkeys(model for model in used if model))
 
 
 def customer_trace(turn_id, decision, steps, requested_at, tier):
@@ -102,7 +112,7 @@ def customer_trace(turn_id, decision, steps, requested_at, tier):
     return {"turn_id": turn_id, "detail": "full" if full else "summary", "tier": tier,
             "summary": SUMMARIES.get(decision, "Answered."),
             "final": {"label": "Final answer", "outcome": FINAL.get(decision, decision)},
-            "agents": agents, "shared_state": shared if full else {}}
+            "models": _models(steps or {}), "agents": agents, "shared_state": shared if full else {}}
 
 
 def load(conn, tenant_id, conversation_id, turn_id):

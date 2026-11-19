@@ -342,7 +342,8 @@ class TurnLoop:
             found = (reply.outcome == "answered" and findings(reply.text, ids)) or "[]"
             claims = json.loads(found)
             self.steps.setdefault(key, {}).setdefault("specialists", []).append(
-                {"role": role.value, "outcome": reply.outcome, "claims": len(claims)})
+                {"role": role.value, "outcome": reply.outcome, "claims": len(claims),
+                 **({"model": reply.model} if reply.model else {})})
             return {"thought": f"read the passages as the {role.value} specialist", "findings": found,
                     "evidence": sorted({e for claim in claims for e in claim["evidence"]})}
         return act
@@ -363,7 +364,8 @@ class TurnLoop:
                 [{"role": "system", "content": SYSTEM}, {"role": "user", "content": content}],
                 self.decide, {"message": Masked(self.customer_query(messages))},
                 verify=lambda text: self.check(text).verdict == "deliver")
-            self.steps.setdefault(key, {})["answer"] = {"outcome": reply.outcome, "retried": reply.cascaded}
+            self.steps.setdefault(key, {})["answer"] = {"outcome": reply.outcome, "retried": reply.cascaded,
+                                                        **({"model": reply.model} if reply.model else {})}
             if reply.outcome != "answered":
                 raise NoDraft(f"NO_DRAFT_{reply.outcome.upper()}")
             return reply.text
