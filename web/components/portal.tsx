@@ -1,5 +1,5 @@
 "use client";
-// The support portal: identity rail, the conversation, and the trust panels (citations, why, trace).
+// The support portal: identity rail, the conversation, and the trust panels (citations, trace).
 // Token and conversation live in sessionStorage: the server binds a conversation to the sign-in session.
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,9 +9,9 @@ import { ChatClient, HttpError, readClaims, type Claims, type Conversation } fro
 import { addUserMessage, initialState, reduce, type ChatState, type Citation, type Message } from "@/lib/reduce.ts";
 import { SERVICE_CARDS, servicesPath, type ServiceCard } from "@/lib/services.ts";
 import { ticketsPath, type TicketCard } from "@/lib/tickets.ts";
-import type { Trace, Why } from "@/lib/trace.ts";
+import type { Trace } from "@/lib/trace.ts";
 import { Icon, Logo, type IconName } from "./icons.tsx";
-import { CitationView, Drawer, TraceView, WhyPanel, type Loadable } from "./panels.tsx";
+import { CitationView, Drawer, TraceView, type Loadable } from "./panels.tsx";
 import { ServiceCardView, ServicesView } from "./services.tsx";
 import { TicketCardView, TicketDetailView, TicketsView } from "./tickets.tsx";
 
@@ -59,7 +59,6 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   const [sending, setSending] = useState(false);
   const [panel, setPanel] = useState<Panel>(null);
   const [traces, setTraces] = useState<Record<string, Loadable<Trace>>>({});
-  const [whys, setWhys] = useState<Record<string, Loadable<Why[]> | undefined>>({});
   const [otp, setOtp] = useState<Otp>({ stage: "email", email: "", code: "" });
   const [railOpen, setRailOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -81,7 +80,6 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
     setConversationId(conversation);
     setChat(initialState());
     setTraces({});
-    setWhys({});
     setPanel(null);
     setLost(false);
     remember(conversation);
@@ -183,20 +181,6 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
         ? "The record of this answer is still being written. Try again in a moment."
         : "Could not load how this was answered.";
       setTraces((all) => ({ ...all, [turnId]: { state: "error", message } }));
-    }
-  }
-
-  async function toggleWhy(turnId: string) {
-    if (whys[turnId]) {
-      setWhys((all) => ({ ...all, [turnId]: undefined }));
-      return;
-    }
-    setWhys((all) => ({ ...all, [turnId]: { state: "loading" } }));
-    try {
-      const value = await client.current!.why(conversationId!, turnId);
-      setWhys((all) => ({ ...all, [turnId]: { state: "ready", value } }));
-    } catch {
-      setWhys((all) => ({ ...all, [turnId]: { state: "error", message: "Could not load why this answer was given." } }));
     }
   }
 
@@ -453,8 +437,8 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
         <div className="mx-4 mt-4 flex items-start gap-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-3 text-warn-ink sm:mx-6">
           <Icon name="warn" className="mt-0.5 size-5 shrink-0" />
           <p className="text-sm">
-            <strong className="font-semibold">{DISCLOSURE}</strong> A person can take over at any time. Every answer
-            shows its sources, why it was given and how it was answered.
+            <strong className="font-semibold">{DISCLOSURE}</strong> Every answer shows its sources and how it was
+            answered.
           </p>
         </div>
 
@@ -481,9 +465,8 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
                 : message.role === "card" && TICKET_CARDS.has(message.card?.kind)
                 ? <TicketCardView key={i} card={message.card as TicketCard} tenantId={tenantId} onRaise={raiseTicket}
                     onSignIn={goSignIn} />
-                : <Bubble key={i} message={message} why={message.turnId ? whys[message.turnId] : undefined}
-                    onTrace={loadTrace} onWhy={toggleWhy} onCite={(citation) => setPanel({ kind: "citation", citation })}
-                    onAction={(id) => id === "talk_to_human" && send("I'd like to talk to a person, please.")} />
+                : <Bubble key={i} message={message} onTrace={loadTrace}
+                    onCite={(citation) => setPanel({ kind: "citation", citation })} />
             ))}
             {chat.draft && <div className="max-w-[85%] rounded-2xl border border-line bg-surface p-4 opacity-70">{chat.draft}</div>}
             <div aria-live="polite" className="min-h-6">
@@ -537,13 +520,10 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   );
 }
 
-function Bubble({ message, why, onTrace, onWhy, onCite, onAction }: {
+function Bubble({ message, onTrace, onCite }: {
   message: Message;
-  why?: Loadable<Why[]>;
   onTrace: (turnId: string) => void;
-  onWhy: (turnId: string) => void;
   onCite: (citation: Citation) => void;
-  onAction: (id: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
   if (message.role === "user") {
@@ -564,11 +544,9 @@ function Bubble({ message, why, onTrace, onWhy, onCite, onAction }: {
     );
   }
   const citations = message.citations ?? [];
-  const actions = (message.actions ?? []).filter((action) => action.id !== "talk_to_human");
-  const human = (message.actions ?? []).some((action) => action.id === "talk_to_human");
   const link = "flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-muted hover:bg-subtle hover:text-ink";
-  const action = (icon: IconName, label: string, onClick: () => void, active = false) => (
-    <button onClick={onClick} className={`${link} ${active ? "text-brand" : ""}`} aria-pressed={active}>
+  const action = (icon: IconName, label: string, onClick: () => void) => (
+    <button onClick={onClick} className={link}>
       <Icon name={icon} className="size-4" /> {label}
     </button>
   );
@@ -582,7 +560,6 @@ function Bubble({ message, why, onTrace, onWhy, onCite, onAction }: {
       <div className="mt-2 flex flex-wrap items-center gap-1">
         {citations.length > 0 && action("sources", `Sources (${citations.length})`, () => onCite(citations[0]))}
         {message.turnId && action("external", "How this was answered", () => onTrace(message.turnId!))}
-        {message.turnId && action("why", "Why this answer", () => onWhy(message.turnId!), Boolean(why))}
         <button onClick={() => navigator.clipboard?.writeText(message.text).then(() => setCopied(true))}
           className={link} aria-label="Copy reply">
           <Icon name={copied ? "check" : "copy"} className="size-4" />
@@ -602,17 +579,6 @@ function Bubble({ message, why, onTrace, onWhy, onCite, onAction }: {
           ))}
         </ul>
       )}
-      {(human || actions.length > 0) && (
-        <div className="mt-2 flex flex-wrap gap-2">
-          {[...actions, ...(human ? [{ id: "talk_to_human", label: "Talk to a human" }] : [])].map((item) => (
-            <button key={item.id} onClick={() => onAction(item.id)}
-              className="flex items-center gap-1.5 rounded-full border border-brand/50 px-3 py-1 text-sm text-brand hover:bg-brand-soft">
-              {item.id === "talk_to_human" && <Icon name="person" className="size-4" />} {item.label}
-            </button>
-          ))}
-        </div>
-      )}
-      {why && message.turnId && <WhyPanel item={why} onClose={() => onWhy(message.turnId!)} />}
     </article>
   );
 }

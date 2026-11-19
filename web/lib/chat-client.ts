@@ -1,10 +1,10 @@
 // API client for the portal: sign-in, idempotent turn submission, the resumable event stream, and the
-// customer's why view and execution trace. The stream is read with fetch (not EventSource) because it must
+// customer's execution trace. The stream is read with fetch (not EventSource) because it must
 // carry the Bearer token.
 import type { Services } from "./services.ts";
 import { createParser } from "./sse.ts";
 import type { Ticket, TicketDetail } from "./tickets.ts";
-import type { Trace, Why } from "./trace.ts";
+import type { Trace } from "./trace.ts";
 
 export class HttpError extends Error {
   status: number;
@@ -143,10 +143,6 @@ export class ChatClient {
 
   ticket(ticketId: string): Promise<TicketDetail> {
     return this.#request("GET", `/v1/tickets/${encodeURIComponent(ticketId)}`);
-  }
-
-  why(conversationId: string, turnId: string): Promise<Why[]> {
-    return this.#request("GET", `${conversation(conversationId)}/decisions?turn_id=${encodeURIComponent(turnId)}`);
   }
 
   trace(conversationId: string, turnId: string): Promise<Trace> {
