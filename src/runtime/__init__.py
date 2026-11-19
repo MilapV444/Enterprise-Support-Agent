@@ -230,6 +230,17 @@ class TurnLoop:
             turn_events.publish(EventLog(conn), turn.tenant_id, turn.conversation_id, event_type,
                                 {"turn_id": turn.turn_id, **data})
 
+    def progress(self, key, text):
+        """A status event as a stage starts (UA-D8: the reply is buffered, the steps are shown meanwhile); each
+        text once per turn, so a retried turn repeats none."""
+        turn = self.turns.get(key)
+        if turn is None or text in turn.setdefault("shown", set()):
+            return
+        turn["shown"].add(text)
+        with self.s.connect() as conn:
+            turn_events.publish(EventLog(conn), key[0], key[1], "status",
+                                {"turn_id": turn["turn_id"], "state": "progress", "text": text})
+
     def published(self, turn):
         """(type, data) of the events this turn has published so far."""
         # ponytail: reads the whole conversation's log; filter by turn in SQL if conversations grow long
@@ -259,6 +270,7 @@ class TurnLoop:
         """This turn's passages: customer_visible ones plus the internal runbooks, which are never cited."""
         key, failed = (state["tenant_id"], state["case_id"]), False
         tier = (state.get("event") or {}).get("tier", "T0_ANON")
+        self.progress(key, "Searching our help articles")
         try:
             result = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1], query,
                                                audiences=CUSTOMER, sources=UNCITED)
@@ -291,6 +303,7 @@ class TurnLoop:
         run = executor_tool(self.s.executor)
 
         def masked_run(request):
+            self.progress(key, "Reading your account records")
             text = self.s.tokens.mask(run(request))[0]
             self.records.setdefault(key, {})[request.tool_id] = text
             self.steps.setdefault(key, {}).setdefault("tools", []).append(
@@ -309,6 +322,7 @@ class TurnLoop:
             records = "".join(f"\n\n{self.records[key][t]}" for t in read)
             tools = self.catalog.tools if about else self.team[role].tools  # about: the generalist alone
             offered = [] if history else self.offered(key, tools)
+            self.progress(key, f"Asking the {role.value.replace('_', ' ')} specialist")
             upstream = brief.get("upstream")
             lead = delimit(upstream["findings"], f"{upstream['role']} findings") + "\n" if upstream else ""
             choice = ("\n" + TOOL_STEP.format(tools="\n".join(f"- {t}: {self.catalog.tools[t].description}"
@@ -339,6 +353,7 @@ class TurnLoop:
         key, messages = (state["tenant_id"], state["case_id"]), state["messages"]
 
         def write(claims):
+            self.progress(key, "Writing your answer")
             facts = "\n".join(f"- {claim.text}" for claim in claims)
             conversation = "\n".join(f"{m.get('role', 'user')}: {m.get('content', '')}"
                                      for m in messages[-8:])
@@ -376,6 +391,7 @@ class TurnLoop:
     def triage(self, hook):
         """Triage, except that more detail cannot open a staff-only article: no clarifying question then."""
         def run(state):
+            self.progress((state["tenant_id"], state["case_id"]), "Working out what you need")
             result = hook(state)
             if (state["tenant_id"], state["case_id"]) in self.restricted:
                 result = {**result, "missing_params": False}
@@ -634,6 +650,8 @@ class TurnLoop:
                 if turn.action.type == "confirm_action":
                     return self.run_service_action(turn)
                 return self.raise_ticket(turn)
+            self.turns[key]["shown"] = {data.get("text") for kind, data in done if kind == "status"}
+            self.progress(key, "Checking your message")
             verdict = self.s.screener.screen("user_message", turn.content)
             steps = {"screening": verdict.band}
             if verdict.band == "block":
@@ -669,6 +687,7 @@ class TurnLoop:
                          classifier=str(triage.get("rationale") or "").split(":", 1)[0] or None)
             trace = {"triage": state.get("triage"), "path": state.get("path"), "steps": steps}
             if state.get("stage") == "RESOLVED" and state.get("final_response"):
+                self.progress(key, "Checking the answer")
                 checked = self.check(state["final_response"])
                 steps["review"] = checked.verdict
                 for section in self.evidence.get(key, []):

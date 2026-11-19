@@ -356,14 +356,19 @@ def test_a_turn_posted_to_the_api_is_answered_on_its_event_stream(stack, monkeyp
     deadline = time.monotonic() + 30
     while time.monotonic() < deadline:
         with psycopg.connect(DSN, autocommit=True) as conn:
-            kinds = [kind for _, kind, data in turns.events_after(conn, "t_us", conversation, 0)
-                     if data.get("turn_id") == turn_id]
+            events = [(kind, data) for _, kind, data in turns.events_after(conn, "t_us", conversation, 0)
+                      if data.get("turn_id") == turn_id]
+        kinds = [kind for kind, _ in events]
         if "final" in kinds:
             break
         time.sleep(0.2)
     dispatcher.close()
     assert kinds[0] == "status" and kinds[-1] == "final"                     # queued, working, ..., final
-    assert kinds.count("status") == 2
+    states = [data["state"] for kind, data in events if kind == "status"]
+    assert states[:2] == ["queued", "working"] and set(states[2:]) == {"progress"}
+    shown = [data["text"] for kind, data in events if kind == "status" and data["state"] == "progress"]
+    assert "Searching our help articles" in shown and "Checking the answer" in shown  # each stage, as it starts
+    assert len(shown) == len(set(shown))
 
 
 def test_how_this_was_answered_is_summary_only_when_anonymous_and_full_once_signed_in(stack, monkeypatch):
@@ -455,8 +460,11 @@ def test_a_turn_whose_worker_died_mid_statechart_resumes_there_and_ends_once(sta
     assert saved["pending"] and saved["event"]["id"] == turn.turn_id
     triaged = sum(1 for body in world.jev if "intent" in body["questions"])
     assert runner.run(turn) == "answered"                         # the retry
-    kinds = [kind for kind, _ in published(turn)]
-    assert kinds.count("final") == 1 and kinds.count("status") == 1 and "error" not in kinds
+    events = published(turn)
+    kinds = [kind for kind, _ in events]
+    shown = [data["text"] for kind, data in events if kind == "status"]
+    assert kinds.count("final") == 1 and "error" not in kinds
+    assert shown.count("Looking into it") == 1 and len(shown) == len(set(shown))  # the retry repeats no status
     state = runner.graph.get_state(thread("t_us", turn.conversation_id))
     assert len(state["path"]) == len(set(state["path"])) and state["path"][-1] == "RESOLVED"
     assert sum(1 for body in world.jev if "intent" in body["questions"]) == triaged  # not triaged again
