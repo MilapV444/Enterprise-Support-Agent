@@ -9,7 +9,7 @@
     "non_goals": [],
     "trust_boundary": "local repository",
     "created_at": "2026-10-09T16:13:56.964Z",
-    "updated_at": "2026-11-19T16:58:48.607Z"
+    "updated_at": "2026-11-20T15:10:15.033Z"
   },
   "policy": {
     "ponytail": "full",
@@ -49174,11 +49174,11 @@
     }
   },
   "checkpoint": {
-    "at": "2026-11-19T16:58:48.228Z",
+    "at": "2026-11-20T15:10:06.283Z",
     "revision": {
-      "commit": "b597e76b3ce7b5f42830dc163fd2c2b85f52e59d",
+      "commit": "c5192910b974d2440404505f3d72f3de11fee06f",
       "dirty": false,
-      "source_hash": "03265383bdeaf057235d89b5813de17d75e89524ed67146815c06a95f85c67e5"
+      "source_hash": "767e68d926097d7134474b84c1f9d0d69c7c04ab3f75ecf748791e21fa96ac63"
     },
     "active_task": null,
     "next_action": "Review completed work and choose the next bounded outcome."
