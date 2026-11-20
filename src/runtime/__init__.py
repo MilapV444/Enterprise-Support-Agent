@@ -77,8 +77,7 @@ BLOCKED = "Your message was stopped by our safety checks. A person can help if y
 HANDOFF = "A specialist will take it from here. You can keep writing here in the meantime."
 FAILED = ("Something went wrong on our side while answering. A person will follow up, or try again in a "
           "moment.")
-PROCEDURE = ("No change has been made to your account: describe what the customer can do themselves, and say "
-             "a person will carry out anything that needs an account change.")
+PROCEDURE = "No change has been made to your account: describe what the customer can do themselves."
 NO_EVIDENCE = "Our documentation does not cover this, so a specialist will look at it with you."
 EVIDENCE = 5                       # passages the specialists read
 MAX_CLAIMS = 8
