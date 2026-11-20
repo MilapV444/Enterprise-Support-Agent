@@ -115,7 +115,9 @@ TOOL_STEP = """Before answering you may read one of the customer's own records, 
 To read one, reply with JSON only: {{"action": "<record id>"}}. Otherwise reply with the findings as asked."""
 DRAFT = ("Answer the customer from the specialist findings only. Do not tell them to contact another team, "
          "department, person or specialist, and do not end with offers of further help: if a person is "
-         "needed, the conversation is handed over without being asked.")
+         "needed, the conversation is handed over without being asked. When they ask how something works, "
+         "state the rules and what happens as facts (for example, refunds go back to the original payment "
+         "method within the stated days), not as something they must ask a person or team to do.")
 # internal trace only (the customer view shows none of these): what agents.merge's redirect check saw
 REDIRECT_TRACE = ("redirect", "redirect_confidence", "redrafted", "rejected_draft")
 # B25: one redraft, then a person
@@ -426,7 +428,8 @@ class TurnLoop:
                     outcome = human("LEAD_UNAVAILABLE")
                 else:
                     outcome = merge(self.decide, turn["results"], {**evidence, **self.records.get(key, {})},
-                                    draft, redraft=self.draft(state, instruction + REDRAFT + "\n"))
+                                    draft, redraft=self.draft(state, instruction + REDRAFT + "\n"),
+                                    dated={s.parent_id: s.updated_at for s in sections})
         except NoDraft as error:
             outcome = human(str(error))
         used = {e for claim in outcome.accepted for e in claim.evidence}

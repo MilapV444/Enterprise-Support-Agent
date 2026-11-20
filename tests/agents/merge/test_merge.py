@@ -140,6 +140,34 @@ def test_a_conflict_is_settled_only_by_a_clear_evidence_margin(a, b, outcome_kin
     assert state["evidence_b"] == EVIDENCE["billing.credit_memos"]
 
 
+@pytest.mark.parametrize("old, new, record", [
+    (B, A, None),                                                         # text: no Jev scoring needed
+    (claim("eu_uptime_q2", "Archive: 99.90 percent", "billing.credit_memos", "99.90", "percent"), UPTIME, None),
+    (B, A, claim("root_cause", "Your ticket says a billing job", "tool.record")),  # undated: kept
+])
+def test_the_newest_article_wins_a_topic_before_any_conflict_check(old, new, record):
+    dated = {"ops.uptime": "2026-09-15", "billing.credit_memos": "2024-11-10"}
+    results = [result("billing", old), result("technical", new)] + ([result("account_ops", record)] if record
+                                                                     else [])
+    jev, draft = Jev(support={c["text"]: 5 for c in (old, new) + ((record,) if record else ())}), Drafts()
+    outcome = merge(DecisionEngine(jev), results, {**EVIDENCE, "tool.record": "TKT-1"}, draft, dated=dated)
+    if record is None:
+        assert outcome.kind == "reply" and [c.text for c in draft.calls[0]] == [new["text"]]
+    else:  # the record still conflicts with the newest article: Jev settles it as before
+        assert outcome.reason == "EVIDENCE_AMBIGUITY" and set(outcome.detail["claims"]) == {"technical",
+                                                                                            "account_ops"}
+
+
+def test_same_date_or_no_dates_keep_the_conflict_check():
+    outcome, _, _ = run([result("technical", A), result("billing", B)], Jev(support={A["text"]: 3,
+                                                                                    B["text"]: 3}))
+    assert outcome.reason == "EVIDENCE_AMBIGUITY"
+    same = merge(DecisionEngine(Jev(support={A["text"]: 3, B["text"]: 3})),
+                 [result("technical", A), result("billing", B)], EVIDENCE, Drafts(),
+                 dated={"ops.uptime": "2026-09-15", "billing.credit_memos": "2026-09-15"})
+    assert same.reason == "EVIDENCE_AMBIGUITY"
+
+
 def test_three_way_conflicts_need_one_clear_winner():
     c = claim("root_cause", "A network change caused the outage", "kb.sla")
     jev = Jev(support={A["text"]: 5, B["text"]: 1, c["text"]: 3})

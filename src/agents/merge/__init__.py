@@ -6,6 +6,8 @@ merge(engine, results, evidence, draft) -> Outcome, exactly one per turn:
 1. claims: each specialist result's typed claims (claims_from: until agents.topology carries the contracts,
    a completed result's findings are a JSON list of claims). A claim is a topic, an optional number with its
    unit, its text and the evidence ids it cites; the role is the result's, never the claim's own say.
+   Newest first (newest()): on one topic, claims citing an older article than another claim are dropped,
+   before any conflict check, so a superseded article never makes a discrepancy.
 2. numbers, in code only: two claims on the same topic with numbers that differ (beyond the unit's
    tolerance), or in different units, go to a person with the values side by side. Jev never judges numbers.
 3. other disagreements: Jev scores, on masked text, how strongly each claim's own cited evidence supports it
@@ -135,11 +137,25 @@ def redirect_of(engine, text):
     return answer.value, round(answer.confidence, 2), answer.value in HOLD and answer.confidence >= HOLD_AT
 
 
-def merge(engine, results, evidence, draft, verified_actions=(), redraft=None):
+def newest(claims, dated):
+    """Per topic, an older article never outvotes a newer one (the user's rule, 2026-11-20): of the claims that
+    cite dated evidence (an article's updated_at), only those citing the latest date stay. Claims citing no
+    dated evidence (tool records) are kept as they are."""
+    def date(claim):
+        return max((dated[e] for e in claim.evidence if dated.get(e)), default=None)
+    latest = {}
+    for claim in claims:
+        if date(claim):
+            latest[claim.topic] = max(latest.get(claim.topic, ""), date(claim))
+    return [claim for claim in claims if date(claim) is None or date(claim) == latest[claim.topic]]
+
+
+def merge(engine, results, evidence, draft, verified_actions=(), redraft=None, dated=None):
     """evidence: {evidence id: masked text}; draft(claims) -> the coordinator's reply text; verified_actions:
     executed writes their read-back confirmed (agents.contracts.ExecutedAction); redraft(claims): one more
-    draft when the first points the customer elsewhere (register B25), checked again before it is used."""
-    claims = [claim for result in results for claim in claims_from(result)]
+    draft when the first points the customer elsewhere (register B25), checked again before it is used;
+    dated: {evidence id: its article's updated_at}, so the newest article wins a topic (newest())."""
+    claims = newest([claim for result in results for claim in claims_from(result)], dated or {})
     if not claims:
         return human("NOTHING_TO_SAY")
     numbers = numeric_conflicts(claims)

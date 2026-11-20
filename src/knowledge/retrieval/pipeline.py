@@ -70,6 +70,7 @@ class Section:
     provenance: str
     collection: str
     flagged: bool = False      # screening found injected instructions (sanitized)
+    updated_at: str = ""       # the article's, for agents.merge.newest
 
 
 @dataclass
@@ -192,7 +193,7 @@ class Retriever:
             text, flagged = screen(payload["parent_text"])
             candidates.append(Section(payload["parent_id"], payload["doc_id"], payload["title"],
                                       payload["heading"], text, payload["audience"], payload["source_kind"],
-                                      payload["provenance"], name, flagged))
+                                      payload["provenance"], name, flagged, payload.get("updated_at") or ""))
             if len(candidates) == CANDIDATES:
                 break
 
