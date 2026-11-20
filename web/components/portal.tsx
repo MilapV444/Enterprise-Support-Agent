@@ -18,14 +18,9 @@ import { TicketCardView, TicketDetailView, TicketsView } from "./tickets.tsx";
 const TICKET_CARDS = new Set(["ticket_proposal", "ticket", "sign_in"]);
 
 const LIMIT = 16384; // channels.api.envelope.TurnRequest
-const DISCLOSURE = "You are chatting with an AI assistant."; // safety/governance/disclosure.py
+const DISCLOSURE = "You are chatting with an AI assistant. A person can take over at any time."; // safety/governance/disclosure.py
 const HELP_URL = process.env.NEXT_PUBLIC_HELP_CENTER_URL;
 const SUGGESTIONS = ["How do I reset my password?", "How do refunds work?", "Where can I find my invoices?"];
-const TIERS: Record<string, { short: string; label: string }> = {
-  T0_ANON: { short: "T0", label: "Guest" },
-  T1_VERIFIED: { short: "T1", label: "Signed in" },
-  T2_SSO: { short: "T2", label: "Signed in" },
-};
 
 const HISTORY_OPEN = "support-agent:history-open"; // the History drop-down stays as the customer left it
 
@@ -65,6 +60,7 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [pastChats, setPastChats] = useState<Conversation[] | "error" | null>(null);
   const thread = useRef<HTMLDivElement>(null);
+  const signIn = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
   const remember = useCallback((conversation: string) => {
@@ -222,6 +218,7 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
       remember(conversationId!);
       setTraces({}); // the trace shows more once signed in
       setOtp({ stage: "email", email: "", code: "" });
+      signIn.current?.close();
     } catch {
       setOtp((o) => ({ ...o, busy: false, error: "That code did not work. Check it, or send a new one." }));
     }
@@ -236,8 +233,16 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   }
 
   function goSignIn() {
-    setRailOpen(true); // the rail is a drawer on small screens
-    setTimeout(() => document.getElementById("otp-email")?.focus(), 50);
+    signIn.current?.showModal();
+    signIn.current?.querySelector("input")?.focus(); // the field, not the Close button
+  }
+
+  function newChat() {
+    setRailOpen(false);
+    const conversation = client.current!.uuid();
+    if (view === "chat") return open(conversation);
+    remember(conversation);
+    router.push(`/t/${encodeURIComponent(tenantId)}`);
   }
 
   async function logout() {
@@ -245,13 +250,13 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
     await fresh().catch(() => setLost(true));
   }
 
-  const tier = TIERS[claims?.tier ?? "T0_ANON"];
   const anonymous = !claims || claims.tier === "T0_ANON";
   const navItem = "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px]";
   const current = "border-l-[3px] border-brand bg-brand/20 font-medium";
 
   const rail = (
-    <nav aria-label="Portal" className="flex h-full w-[264px] flex-col overflow-y-auto bg-rail px-4 py-5 text-rail-ink">
+    <nav aria-label="Portal" className="rail flex h-full w-[264px] flex-col bg-rail text-rail-ink">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pt-5 pb-3">
       <div className="mb-7 flex items-center gap-3 px-1">
         <Logo className="size-9 text-rail-ink" />
         <div>
@@ -268,13 +273,9 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
           </Link>
         </li>
         <li>
-          {view === "chat" ? (
-            <span aria-current="page" className={`${navItem} ${current}`}><Icon name="chat" /> Chat</span>
-          ) : (
-            <Link href={`/t/${encodeURIComponent(tenantId)}`} className={`${navItem} hover:bg-rail-raised`}>
-              <Icon name="chat" /> Chat
-            </Link>
-          )}
+          <button onClick={newChat} className={`${navItem} w-full hover:bg-rail-raised`}>
+            <Icon name="plus" /> New conversation
+          </button>
         </li>
         <li>
           <button onClick={toggleHistory} aria-expanded={historyOpen} aria-controls="history-list"
@@ -320,73 +321,13 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
         )}
       </ul>
 
-      <p className="mb-2 mt-7 px-1 text-[11px] font-semibold tracking-wider text-rail-muted">SIGN IN</p>
-      <div className="space-y-2">
-        <div className={`flex items-center gap-3 rounded-lg border px-3 py-2.5 ${anonymous
-          ? "border-brand/50 bg-rail-raised" : "border-rail-line"}`}>
-          <Icon name="user" className="size-5 text-brand-strong" />
-          <span className="flex-1">
-            <span className="block text-sm font-medium">Anonymous</span>
-            <span className="block text-xs text-rail-muted">Continue without signing in</span>
-          </span>
-          {anonymous && <Icon name="check" className="size-5 text-brand-strong" />}
-        </div>
-
-        <div className={`rounded-lg border px-3 py-2.5 ${!anonymous ? "border-brand/50 bg-rail-raised" : "border-rail-line"}`}>
-          <div className="flex items-center gap-3">
-            <Icon name="mail" className="size-5 text-rail-muted" />
-            <span className="flex-1">
-              <span className="block text-sm font-medium">Email code (OTP)</span>
-              <span className="block truncate text-xs text-rail-muted">
-                {anonymous ? "Get a code sent to your email" : `Verified as ${claims?.sub}`}
-              </span>
-            </span>
-            {!anonymous && <Icon name="check" className="size-5 text-brand-strong" />}
-          </div>
-          {anonymous && (otp.stage === "email" ? (
-            <form onSubmit={startOtp} className="mt-3 space-y-2">
-              <label htmlFor="otp-email" className="block text-xs text-rail-muted">Work email</label>
-              <input id="otp-email" type="email" required autoComplete="email" placeholder="you@company.com"
-                value={otp.email} onChange={(e) => setOtp((o) => ({ ...o, email: e.target.value }))}
-                className="w-full rounded-md border border-rail-line bg-rail px-3 py-2 text-sm placeholder:text-rail-muted focus:border-brand focus:outline-none" />
-              <button disabled={otp.busy} className="flex w-full items-center justify-center gap-2 rounded-md bg-brand py-2 text-sm font-medium text-white hover:bg-brand-strong disabled:opacity-60">
-                Send code <Icon name="right" className="size-4" />
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={verifyOtp} className="mt-3 space-y-2">
-              <label htmlFor="otp-code" className="block text-xs text-rail-muted">Code sent to {otp.email}</label>
-              <input id="otp-code" inputMode="numeric" autoComplete="one-time-code" required value={otp.code}
-                onChange={(e) => setOtp((o) => ({ ...o, code: e.target.value }))}
-                className="w-full rounded-md border border-rail-line bg-rail px-3 py-2 font-mono text-sm tracking-widest focus:border-brand focus:outline-none" />
-              <button disabled={otp.busy} className="w-full rounded-md bg-brand py-2 text-sm font-medium text-white hover:bg-brand-strong disabled:opacity-60">
-                Verify
-              </button>
-              <button type="button" onClick={() => setOtp({ stage: "email", email: otp.email, code: "" })}
-                className="w-full text-xs text-rail-muted hover:text-rail-ink">Use a different address</button>
-              {process.env.NODE_ENV !== "production" && (
-                <p className="text-[11px] text-rail-muted">Development: the code is printed in the API log.</p>
-              )}
-            </form>
-          ))}
-          {otp.error && <p role="alert" className="mt-2 text-xs text-[#ffb4ab]">{otp.error}</p>}
-        </div>
-
-        <div className="rounded-lg border border-rail-line bg-rail-raised/50 px-3 py-2.5 opacity-80">
-          <div className="flex items-center gap-3">
-            <Icon name="building" className="size-5 text-rail-muted" />
-            <span className="flex-1">
-              <span className="block text-sm font-medium">Enterprise SSO</span>
-              <span className="block text-xs text-rail-muted">Single sign-on</span>
-            </span>
-          </div>
-          <span className="mt-2 inline-block rounded-md bg-rail-line px-2 py-0.5 text-[11px]">Coming soon</span>
-        </div>
       </div>
 
-      <button onClick={logout} className={`${navItem} mt-auto border-t border-rail-line pt-4 hover:bg-rail-raised`}>
-        <Icon name="logout" /> Log out
-      </button>
+      <div className="border-t border-rail-line px-4 py-3">
+        <button onClick={logout} className={`${navItem} w-full hover:bg-rail-raised`}>
+          <Icon name="logout" /> Log out
+        </button>
+      </div>
     </nav>
   );
 
@@ -415,20 +356,15 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
                 : "The tickets you raised with our teams, and everything that happened on them."}
             </p>
           </div>
-          <span className="hidden items-center gap-1.5 text-sm text-muted 2xl:flex">
-            <Icon name="shield" className="size-4" /> Enterprise Secure · Trusted Content
-          </span>
-          <span className="flex items-center gap-2 text-sm font-medium" aria-label={`${tier.label}, tier ${tier.short}`}>
-            <span className="hidden sm:inline">{tier.label}</span>
-            <span className="rounded-md border border-[#e0a458] bg-[#fff6ea] px-1.5 py-0.5 font-mono text-xs text-[#a35a00] dark:bg-transparent">
-              {tier.short}
-            </span>
-          </span>
-          {view === "chat" && (
-            <button onClick={() => open(client.current!.uuid())} title="New conversation"
-              className="flex items-center gap-1.5 rounded-full bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand-strong">
-              <Icon name="plus" className="size-4" /><span className="hidden sm:inline">New conversation</span>
+          {anonymous ? (
+            <button onClick={goSignIn}
+              className="flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-strong">
+              <Icon name="user" className="size-4" /> Sign in
             </button>
+          ) : (
+            <span className="flex min-w-0 items-center gap-1.5 text-sm text-muted" aria-label={`Signed in as ${claims?.sub}`}>
+              <Icon name="user" className="size-4 shrink-0" /><span className="hidden truncate sm:inline">{claims?.sub}</span>
+            </span>
           )}
         </header>
 
@@ -452,14 +388,6 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
         )}
 
         {view === "chat" && <>
-        <div className="mx-4 mt-4 flex items-start gap-3 rounded-xl border border-warn-line bg-warn-bg px-4 py-3 text-warn-ink sm:mx-6">
-          <Icon name="warn" className="mt-0.5 size-5 shrink-0" />
-          <p className="text-sm">
-            <strong className="font-semibold">{DISCLOSURE}</strong> A person can take over at any time. Every answer
-            shows its sources and how it was answered.
-          </p>
-        </div>
-
         <div ref={thread} className="flex-1 overflow-y-auto px-4 py-5 sm:px-6">
           <div className="mx-auto flex max-w-3xl flex-col gap-5">
             {chat.messages.length === 0 && !chat.status && (
@@ -509,7 +437,7 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
           </div>
         </div>
 
-        <form onSubmit={submit} className="mx-4 mb-4 rounded-2xl border border-line bg-surface p-3 shadow-sm sm:mx-6">
+        <form onSubmit={submit} className="mx-4 mb-1.5 rounded-2xl border border-line bg-surface p-3 shadow-sm sm:mx-6">
           <label htmlFor="composer" className="sr-only">Message</label>
           <textarea id="composer" rows={2} maxLength={LIMIT} value={input} onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKey} placeholder="Type your message…"
@@ -522,8 +450,48 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
             </button>
           </div>
         </form>
+        <p className="mx-4 mb-3 text-center text-xs text-muted sm:mx-6">{DISCLOSURE}</p>
         </>}
       </main>
+
+      <dialog ref={signIn} aria-labelledby="sign-in-title" onClose={() => setOtp((o) => ({ ...o, error: undefined }))}
+        className="m-auto w-[calc(100%-2rem)] max-w-sm rounded-2xl border border-line bg-surface p-6 text-ink shadow-xl backdrop:bg-black/50">
+        <div className="mb-4 flex items-center gap-3">
+          <Icon name="mail" className="size-5 text-brand" />
+          <h2 id="sign-in-title" className="flex-1 text-lg font-semibold">Sign in</h2>
+          <button aria-label="Close" onClick={() => signIn.current?.close()} className="rounded-md p-1 text-muted hover:bg-subtle">
+            <Icon name="x" className="size-4" />
+          </button>
+        </div>
+        {otp.stage === "email" ? (
+          <form onSubmit={startOtp} className="space-y-3">
+            <p className="text-sm text-muted">We will email you a one-time code.</p>
+            <label htmlFor="otp-email" className="block text-sm font-medium">Work email</label>
+            <input id="otp-email" type="email" required autoComplete="email" placeholder="you@company.com"
+              value={otp.email} onChange={(e) => setOtp((o) => ({ ...o, email: e.target.value }))}
+              className="w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm placeholder:text-muted focus:border-brand focus:outline-none" />
+            <button disabled={otp.busy} className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand py-2 text-sm font-medium text-white hover:bg-brand-strong disabled:opacity-60">
+              Send code <Icon name="right" className="size-4" />
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={verifyOtp} className="space-y-3">
+            <label htmlFor="otp-code" className="block text-sm font-medium">Code sent to {otp.email}</label>
+            <input id="otp-code" inputMode="numeric" autoComplete="one-time-code" required autoFocus value={otp.code}
+              onChange={(e) => setOtp((o) => ({ ...o, code: e.target.value }))}
+              className="w-full rounded-lg border border-line bg-surface px-3 py-2 font-mono text-sm tracking-widest focus:border-brand focus:outline-none" />
+            <button disabled={otp.busy} className="w-full rounded-lg bg-brand py-2 text-sm font-medium text-white hover:bg-brand-strong disabled:opacity-60">
+              Verify
+            </button>
+            <button type="button" onClick={() => setOtp({ stage: "email", email: otp.email, code: "" })}
+              className="w-full text-xs text-muted hover:text-ink">Use a different address</button>
+            {process.env.NODE_ENV !== "production" && (
+              <p className="text-xs text-muted">Development: the code is printed in the API log.</p>
+            )}
+          </form>
+        )}
+        {otp.error && <p role="alert" className="mt-3 text-sm text-bad">{otp.error}</p>}
+      </dialog>
 
       {panel?.kind === "trace" && (
         <Drawer title="How this was answered" onClose={() => setPanel(null)}>

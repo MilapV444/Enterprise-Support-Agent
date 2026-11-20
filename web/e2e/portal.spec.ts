@@ -71,7 +71,7 @@ test("a reply shows its sources and how it was answered", async ({ page }) => {
   await expect(page.getByText("You are chatting with an AI assistant.")).toBeVisible();
   await expect(page.getByText("within 30 days of the charge")).toBeVisible();
   await expect(page.getByText("AI-assisted")).toBeVisible();
-  await expect(page.getByLabel("Signed in, tier T1")).toBeVisible();
+  await expect(page.getByLabel("Signed in as sam@acme.test")).toBeVisible();
 
   await page.getByRole("button", { name: "How this was answered" }).click();
   const drawer = page.getByRole("dialog");
@@ -99,7 +99,7 @@ test("a reply offers no why view or talk-to-human button, and the phone layout h
   await page.setViewportSize({ width: 390, height: 844 });
   await stub(page, "T0_ANON");
   await page.goto("/");
-  await expect(page.getByLabel("Guest, tier T0")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
   await expect(page.getByText("within 30 days of the charge")).toBeVisible();
   await expect(page.getByRole("button", { name: /Why this answer|Talk to a human/ })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
