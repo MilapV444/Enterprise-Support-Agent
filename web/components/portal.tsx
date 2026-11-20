@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 
-import { ChatClient, HttpError, readClaims, type Claims, type Conversation } from "@/lib/chat-client.ts";
+import { ChatClient, HttpError, readClaims, type Claims, type Conversation, type Vote } from "@/lib/chat-client.ts";
 import { addUserMessage, initialState, reduce, type ChatState, type Citation, type Message } from "@/lib/reduce.ts";
 import { SERVICE_CARDS, servicesPath, type ServiceCard } from "@/lib/services.ts";
 import { ticketsPath, type TicketCard } from "@/lib/tickets.ts";
@@ -59,6 +59,7 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   const [sending, setSending] = useState(false);
   const [panel, setPanel] = useState<Panel>(null);
   const [traces, setTraces] = useState<Record<string, Loadable<Trace>>>({});
+  const [votes, setVotes] = useState<Record<string, Vote>>({});
   const [otp, setOtp] = useState<Otp>({ stage: "email", email: "", code: "" });
   const [railOpen, setRailOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -80,9 +81,11 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
     setConversationId(conversation);
     setChat(initialState());
     setTraces({});
+    setVotes({});
     setPanel(null);
     setLost(false);
     remember(conversation);
+    api.votes(conversation).then(setVotes, () => { /* no thumbs shown as given; voting again answers 409 */ });
     api.listen(conversation, (event) => setChat((state) => reduce(state, { ...event, at: Date.now() })),
       { signal: controller.signal }).catch(() => {
       if (!controller.signal.aborted) setLost(true);
@@ -181,6 +184,21 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
         ? "The record of this answer is still being written. Try again in a moment."
         : "Could not load how this was answered.";
       setTraces((all) => ({ ...all, [turnId]: { state: "error", message } }));
+    }
+  }
+
+  // The first vote is final. Returns the line shown under the reply.
+  async function rate(turnId: string, signal: Vote, comment = "") {
+    try {
+      const result = await client.current!.rate(conversationId!, turnId, signal, comment);
+      setVotes((all) => ({ ...all, [turnId]: signal }));
+      return result.comment === "dropped"
+        ? "Thanks. Your comment had personal details in it, so we kept only your rating."
+        : "Thanks for the feedback.";
+    } catch (error) {
+      if (!(error instanceof HttpError && error.status === 409)) return "Could not send your rating. Try again.";
+      client.current!.votes(conversationId!).then(setVotes, () => {});
+      return "You already rated this reply.";
     }
   }
 
@@ -466,7 +484,8 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
                 ? <TicketCardView key={i} card={message.card as TicketCard} tenantId={tenantId} onRaise={raiseTicket}
                     onSignIn={goSignIn} />
                 : <Bubble key={i} message={message} onTrace={loadTrace}
-                    onCite={(citation) => setPanel({ kind: "citation", citation })} />
+                    onCite={(citation) => setPanel({ kind: "citation", citation })}
+                    vote={message.turnId ? votes[message.turnId] : undefined} onRate={rate} />
             ))}
             {chat.draft && <div className="max-w-[85%] rounded-2xl border border-line bg-surface p-4 opacity-70">{chat.draft}</div>}
             <div aria-live="polite" className="min-h-6">
@@ -520,12 +539,18 @@ export default function Portal({ tenantId, view = "chat", ticketId }: {
   );
 }
 
-function Bubble({ message, onTrace, onCite }: {
+function Bubble({ message, onTrace, onCite, vote, onRate }: {
   message: Message;
   onTrace: (turnId: string) => void;
   onCite: (citation: Citation) => void;
+  vote?: Vote;
+  onRate: (turnId: string, signal: Vote, comment?: string) => Promise<string>;
 }) {
   const [copied, setCopied] = useState(false);
+  const [asking, setAsking] = useState(false);    // the thumbs-down box is open
+  const [comment, setComment] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
   if (message.role === "user") {
     return (
       <div className="ml-auto max-w-[85%] rounded-2xl bg-user px-4 py-3 text-white sm:max-w-[70%]">
@@ -542,6 +567,12 @@ function Bubble({ message, onTrace, onCite }: {
         <Icon name={message.role === "card" ? "doc" : "person"} className="size-4" /> {message.text}
       </p>
     );
+  }
+  async function send(signal: Vote, text = "") {
+    setBusy(true);
+    setNote(await onRate(message.turnId!, signal, text));
+    setBusy(false);
+    setAsking(false);
   }
   const citations = message.citations ?? [];
   const link = "flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-muted hover:bg-subtle hover:text-ink";
@@ -564,7 +595,30 @@ function Bubble({ message, onTrace, onCite }: {
           className={link} aria-label="Copy reply">
           <Icon name={copied ? "check" : "copy"} className="size-4" />
         </button>
+        {message.turnId && (["up", "down"] as const).map((signal) => (
+          <button key={signal} disabled={Boolean(vote) || busy} aria-pressed={vote === signal || (signal === "down" && asking)}
+            aria-label={signal === "up" ? "Helpful" : "Not helpful"}
+            onClick={() => signal === "down" ? setAsking(true) : send("up")}
+            className={`${vote === signal ? link.replace("text-muted", "text-brand") : link} disabled:cursor-default disabled:hover:bg-transparent ${vote && vote !== signal ? "opacity-40" : ""}`}>
+            <Icon name={signal === "up" ? "thumbUp" : "thumbDown"} className="size-4" />
+          </button>
+        ))}
       </div>
+      {asking && !vote && (
+        <form className="mt-2 rounded-xl border border-line bg-surface p-3"
+          onSubmit={(event) => { event.preventDefault(); send("down", comment); }}>
+          <label htmlFor={`why-${message.turnId}`} className="text-sm font-medium">What went wrong? (optional)</label>
+          <textarea id={`why-${message.turnId}`} value={comment} onChange={(event) => setComment(event.target.value)}
+            maxLength={2000} rows={2} placeholder="The answer was wrong, incomplete, or not what I asked"
+            className="mt-1 w-full resize-y rounded-lg border border-line bg-surface p-2 text-sm" />
+          <div className="mt-2 flex justify-end gap-2">
+            <button type="button" onClick={() => setAsking(false)} className={link}>Cancel</button>
+            <button type="submit" disabled={busy}
+              className="rounded-md bg-brand px-3 py-1 text-sm font-medium text-white disabled:opacity-60">Send feedback</button>
+          </div>
+        </form>
+      )}
+      {note && <p role="status" className="mt-1 text-sm text-muted">{note}</p>}
       {citations.length > 0 && (
         <ul className="mt-2 flex flex-wrap gap-2" aria-label="Sources">
           {citations.map((citation, i) => (

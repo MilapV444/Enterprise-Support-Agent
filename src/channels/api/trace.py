@@ -91,7 +91,7 @@ def _agents(decision, steps):
     return agents
 
 
-def _models(steps):
+def models(steps):
     """The models that wrote the turn, specialists first, each once."""
     used = [s.get("model") for s in steps.get("specialists", [])] + [(steps.get("answer") or {}).get("model")]
     return list(dict.fromkeys(model for model in used if model))
@@ -112,7 +112,7 @@ def customer_trace(turn_id, decision, steps, requested_at, tier):
     return {"turn_id": turn_id, "detail": "full" if full else "summary", "tier": tier,
             "summary": SUMMARIES.get(decision, "Answered."),
             "final": {"label": "Final answer", "outcome": FINAL.get(decision, decision)},
-            "models": _models(steps or {}), "agents": agents, "shared_state": shared if full else {}}
+            "models": models(steps or {}), "agents": agents, "shared_state": shared if full else {}}
 
 
 def load(conn, tenant_id, conversation_id, turn_id):
