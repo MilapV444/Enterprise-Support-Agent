@@ -32,7 +32,7 @@ Under the 2024–2025 policy, if an annual **Growth** or **Enterprise** tenant d
 
 ### 3. Grace window for unintended auto-renewals (5 business days post-renewal)
 
-If an annual or monthly subscription auto-renews because a `Billing Administrator` forgot to turn off auto-renewal ahead of the renewal date, the customer may contact Nimbus Support within **5 business days after the renewal invoice charge** to reverse the renewal and receive a 95% cash refund (5% processing deduction), provided no new production clusters were launched after the renewal date.
+If an annual or monthly subscription auto-renews because a `Billing Administrator` forgot to turn off auto-renewal ahead of the renewal date, the customer may ask within **5 business days after the renewal invoice charge** to reverse the renewal and receive a 95% cash refund (5% processing deduction), provided no new production clusters were launched after the renewal date.
 
 ### 4. Duplicate charges and Nimbus billing errors
 
@@ -40,4 +40,4 @@ Any duplicate charge or invoice amount that exceeds the customer's signed order 
 
 ## How to request a refund under the 2024–2025 policy
 
-To request a 30-day satisfaction refund, a 5-day post-renewal reversal, or a pro-rated annual downgrade refund, open a web chat with Nimbus Support and provide your Tenant ID (`tnt_...`) and invoice number (`inv_...`). Under the 2024–2025 support workflow, frontline support specialists may issue refunds up to **$2,500 USD** directly after verifying a 6-digit email code.
+To request a 30-day satisfaction refund, a 5-day post-renewal reversal, or a pro-rated annual downgrade refund, include your Tenant ID (`tnt_...`) and invoice number (`inv_...`) in the refund request. Under the 2024–2025 support workflow, frontline support specialists may issue refunds up to **$2,500 USD** directly after verifying a 6-digit email code.

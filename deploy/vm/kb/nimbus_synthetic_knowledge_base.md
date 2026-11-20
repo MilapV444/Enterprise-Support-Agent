@@ -404,7 +404,7 @@ To protect customer confidentiality across our multi-tenant platform, the Nimbus
 
 Users with the `Tenant Owner` or `Billing Administrator` role (authenticated via T2 SSO with MFA) can upgrade from Starter to Growth or add additional user seats at any time under **Organization Settings > Billing & Plan > Change Plan**. Upgrades and seat additions take effect immediately and generate a pro-rated USD invoice for the remainder of the current billing period.
 
-To upgrade to the **Enterprise** plan or expand an Enterprise annual seat block, click **Request Enterprise Quote** in the billing console or contact your Named Support Manager to execute an updated Enterprise Order Form.
+To upgrade to the **Enterprise** plan or expand an Enterprise annual seat block, click **Request Enterprise Quote** in the billing console to execute an updated Enterprise Order Form.
 
 ### Scheduling a plan downgrade or seat reduction
 
@@ -652,7 +652,7 @@ Because Nimbus Systems does not inspect or query the interior of customer databa
 To permanently erase a former employee's Nimbus Cloud Platform user profile (`<EMAIL_1>`, `<NAME_1>`, `<PHONE_1>`):
 
 1. A **Tenant Owner** verified at Tier T2 removes the user from **Organization Settings > Users & Roles > Delete User**.
-2. To purge the user's personal email and name from historical support tickets and identity logs ahead of standard retention, submit a **Privacy Erasure Request** from the console or via web chat after completing T2 verification.
+2. To purge the user's personal email and name from historical support tickets and identity logs ahead of standard retention, submit a **Privacy Erasure Request** from the console after completing T2 verification.
 3. Nimbus Privacy Operations completes verified user-profile erasure requests within **30 calendar days** and replaces personal identifiers in historical support records with anonymized tokens (`<REDACTED_USER>`), while preserving immutable security audit timestamps.
 
 ## Standard Nimbus Cloud Platform data retention schedules
@@ -784,7 +784,7 @@ Minutes of unavailability or degraded performance resulting from any of the foll
 
 ## How and by when to submit an SLA credit claim
 
-To claim a service credit for a verified SLA breach on the Growth or Enterprise plan, a `Tenant Owner` or `Billing Administrator` must submit a formal SLA claim through **Organization Settings > Compliance & SLA > File SLA Claim** or via web chat **no later than 30 calendar days after the end of the calendar month** in which the outage occurred (for example, a claim for a June outage in Q2 must be filed on or before July 30). Claims submitted after the 30-calendar-day deadline are waived. Every claim must specify the Tenant ID, affected service and region, UTC timestamps of the outage, and supporting incident IDs from `https://status.nimbuscloud.example.com`.
+To claim a service credit for a verified SLA breach on the Growth or Enterprise plan, a `Tenant Owner` or `Billing Administrator` must submit a formal SLA claim through **Organization Settings > Compliance & SLA > File SLA Claim** **no later than 30 calendar days after the end of the calendar month** in which the outage occurred (for example, a claim for a June outage in Q2 must be filed on or before July 30). Claims submitted after the 30-calendar-day deadline are waived. Every claim must specify the Tenant ID, affected service and region, UTC timestamps of the outage, and supporting incident IDs from `https://status.nimbuscloud.example.com`.
 
 === FILE: kb-policy-service-credits.md ===
 ---
@@ -927,7 +927,7 @@ Under the 2024–2025 policy, if an annual **Growth** or **Enterprise** tenant d
 
 ### 3. Grace window for unintended auto-renewals (5 business days post-renewal)
 
-If an annual or monthly subscription auto-renews because a `Billing Administrator` forgot to turn off auto-renewal ahead of the renewal date, the customer may contact Nimbus Support within **5 business days after the renewal invoice charge** to reverse the renewal and receive a 95% cash refund (5% processing deduction), provided no new production clusters were launched after the renewal date.
+If an annual or monthly subscription auto-renews because a `Billing Administrator` forgot to turn off auto-renewal ahead of the renewal date, the customer may ask within **5 business days after the renewal invoice charge** to reverse the renewal and receive a 95% cash refund (5% processing deduction), provided no new production clusters were launched after the renewal date.
 
 ### 4. Duplicate charges and Nimbus billing errors
 
@@ -935,7 +935,7 @@ Any duplicate charge or invoice amount that exceeds the customer's signed order 
 
 ## How to request a refund under the 2024–2025 policy
 
-To request a 30-day satisfaction refund, a 5-day post-renewal reversal, or a pro-rated annual downgrade refund, open a web chat with Nimbus Support and provide your Tenant ID (`tnt_...`) and invoice number (`inv_...`). Under the 2024–2025 support workflow, frontline support specialists may issue refunds up to **$2,500 USD** directly after verifying a 6-digit email code.
+To request a 30-day satisfaction refund, a 5-day post-renewal reversal, or a pro-rated annual downgrade refund, include your Tenant ID (`tnt_...`) and invoice number (`inv_...`) in the refund request. Under the 2024–2025 support workflow, frontline support specialists may issue refunds up to **$2,500 USD** directly after verifying a 6-digit email code.
 
 === FILE: kb-policy-billing-disputes.md ===
 ---
@@ -964,7 +964,7 @@ A `Tenant Owner` or `Billing Administrator` (verified at Tier T2 via corporate S
 
 ## Required evidence to open a Nimbus Billing Dispute
 
-When raising a billing dispute through **Organization Settings > Billing & Plan > Invoices > Dispute Invoice** or via web chat with Nimbus Support (which escalates to `queue-billing-ops` if the disputed amount is **$1,000 USD or higher**), provide the following mandatory information:
+When raising a billing dispute through **Organization Settings > Billing & Plan > Invoices > Dispute Invoice** (disputes of **$1,000 USD or higher** are reviewed by `queue-billing-ops`), provide the following mandatory information:
 
 1. **Tenant ID and Organization Name:** For example, `tnt_01H9X8K2M4P` (`Acme Retail` or `Initech Logistics`).
 2. **Disputed Invoice Number and Issue Date:** For example, `inv_2026_10_88412` issued on `2026-10-01`.
@@ -1093,7 +1093,7 @@ Once a subscription reaches its cancellation effective date (`TERM_EXPIRED_CANCE
 ### Stage 2: Day 8 to Day 30 post-cancellation (Soft-Delete Quarantine)
 
 - Console and API access is locked (`TENANT_QUARANTINED`), and encrypted volume snapshots are held in cold regional quarantine storage inside the tenant's original US or EU residency realm.
-- During this 30-day window, a Tenant Owner can still reactivate the tenant by contacting Nimbus Support (`queue-billing-ops`) and settling a renewal invoice; all Nimbus DB and Nimbus Run state can be restored intact.
+- During this 30-day window, a Tenant Owner can still reactivate the tenant by requesting reactivation (handled by `queue-billing-ops`) and settling a renewal invoice; all Nimbus DB and Nimbus Run state can be restored intact.
 
 ### Stage 3: Day 31 post-cancellation (Permanent Cryptographic Erasure)
 
