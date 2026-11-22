@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "project": "Enterprise-Support-Agent",
-  "revision": "c5192910b974d2440404505f3d72f3de11fee06f",
-  "sourceHash": "3393faea24e768839673c8bc8691f9944a2e759c7d421435f9e28e9884c17251",
+  "revision": "2a8bb8dcbad9b3613a8473306fc008ef13364c0e",
+  "sourceHash": "5249b81961510103533c7560086890a12494581bcfd483f4d8bd7fc0b7ee7386",
   "provenance": {
     "tool": "genesis-graphizer",
     "method": "static-analysis",
@@ -120,6 +120,16 @@
       "contentHash": "fa2e04710611403e612eb6ab4bd5ad1677a19270386ad29ddadcef0043fa7e43"
     },
     {
+      "id": "file:evals/regressions.py",
+      "type": "file",
+      "label": "evals/regressions.py",
+      "path": "evals/regressions.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "0529b192b27738bc44af1a7d2fa041d93ca1d2c07d4bc103ad7749b286c70b82"
+    },
+    {
       "id": "file:evals/scoring/__init__.py",
       "type": "file",
       "label": "evals/scoring/__init__.py",
@@ -168,6 +178,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "b0ccc7ec39bde9cffbf3b5fb591841fc5b87125dfdd9647be0e58599ce0e8a6f"
+    },
+    {
+      "id": "file:scripts/feedback_report.py",
+      "type": "file",
+      "label": "scripts/feedback_report.py",
+      "path": "scripts/feedback_report.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "11341c38c00a9900474a5e1fdaf45046857b70de6f4b2a299d32ab6040adbb08"
     },
     {
       "id": "file:scripts/generate_adp_index.py",
@@ -407,7 +427,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "079f74bc675aa2469bee1235767234188c670dab11411c59c10ee73d9febdcc8"
+      "contentHash": "94b68b32dc82d0665f5e797abfe192f758343a54dce2cd912888b2795814b749"
     },
     {
       "id": "file:src/agents/topology/__init__.py",
@@ -447,7 +467,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c76364de195ecd760049134221590f8a79bff8033f5e8b8ddfe8572f69c47b52"
+      "contentHash": "1b1d3f40735d2d2f6d767033f74a22a237acc8012d4e56aeec96334556e89df7"
     },
     {
       "id": "file:src/channels/api/envelope.py",
@@ -457,7 +477,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "5e5eb663039793a0637b3d2589bb19126a982828d881f90ab1708b75ca817135"
+      "contentHash": "21fe655436c09c592e40cad1ef9053e225e61d4897e0bd2761a0565120c9d019"
     },
     {
       "id": "file:src/channels/api/staff.py",
@@ -467,7 +487,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c04279c68013f87e4d3ba03b11f1b8f658992fa43f1a3194fb0442a5d89765f4"
+      "contentHash": "187500024df16005e88007cb451cd0197f7b16a9a730a9ee663fae7ee399ed7d"
     },
     {
       "id": "file:src/channels/api/trace.py",
@@ -477,7 +497,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "cca30dc6868a2ac1a1e76a3714eedddb4969aacd826110a7d22ae7b3c60d9ac7"
+      "contentHash": "3e547c3ddad753c23096e496d79cbfd73be0fe3d84f19d1fd9f8ced310fcccc1"
     },
     {
       "id": "file:src/channels/api/turns.py",
@@ -657,7 +677,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "d3aa555c9d5eda0b1a447dc82661b291a5f519dc53869f1467169801434c9ae1"
+      "contentHash": "e46fc77992a63d1f8166b715dd0cce7cf2651888453db5e7c86367658291b874"
     },
     {
       "id": "file:src/core/orchestrator/triage.py",
@@ -667,7 +687,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "0c4ebc9dab81c13fe2bb6b8c1dc20188ef19f69a686b82210b53d273ac3f5839"
+      "contentHash": "a64c436c6d857ee3377517acaa523538b90d809e300f3be1800ea2454025dcf4"
     },
     {
       "id": "file:src/core/recovery/__init__.py",
@@ -897,7 +917,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "9cfb718e7cff49419ee96fcdaab9cff1526ee649d1ca2b09cf2659c3f549fce8"
+      "contentHash": "268e26e75870ffdf90c8adda7132303b9198be1798942b06e73db68a6b45b05e"
     },
     {
       "id": "file:src/improvement/feedback/taxonomy.py",
@@ -997,7 +1017,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "b83663eed3071a326afba9d887fda398b851d86bfd49e9393320c3eb0e79d1bd"
+      "contentHash": "a9d0a9573261724b6016c8c74c524c3a4e14fb63e2fc543864f384f13de21bfc"
     },
     {
       "id": "file:src/memory/conversation/__init__.py",
@@ -1087,7 +1107,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "4a7465b6f95825c98ca90a98f661b738ea4853e1bb57069f25760e53ffa3a8d7"
+      "contentHash": "cbe9e8c0e87a12deb292f7c3f5564734e1b742c00022fcfa187a4173f4cfbe0b"
     },
     {
       "id": "file:src/memory/lifecycle/retention.py",
@@ -1177,7 +1197,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2f2bfd08a5939efc2470ac571e134ddb29b8504e6ec9d2078b74d50d82c7ca87"
+      "contentHash": "3faae801a5c8a6329377171c659dc16f4e44afdbd6802c1f9ae58825830a0c74"
     },
     {
       "id": "file:src/runtime/__main__.py",
@@ -1197,7 +1217,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "984a13b9554cf9c8832d50bcc497bdad5687fded79f33f5a35ca97693cf1142c"
+      "contentHash": "5082652773513b0cc19a6148cc896d87ff582dd424d65ddfe23aa8c9c81e61f3"
     },
     {
       "id": "file:src/runtime/tickets.py",
@@ -1377,7 +1397,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "f4af7a49bc718471741cd3f99a9be58796fa3f6258a89f59b49b327aeb7c4bac"
+      "contentHash": "072196ba38c0d836f81006c42f9cbce6586005d98d0c8b1457846a58a9bccd44"
     },
     {
       "id": "file:src/tools/audit.py",
@@ -1547,7 +1567,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "16eb58be45ad2d51ea740f15e1ba3543f53b3e2782e6b76c0933ce887889beb4"
+      "contentHash": "33a1ea40e9e33f8461b440b7b101881828aaa52b31806198943fa12b5c3295ee"
     },
     {
       "id": "file:src/workflows/ticket.py",
@@ -1577,7 +1597,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "dc1845b6703d5f8048080e4d7361f7736fd737f7b2ea98ffef7e17013362b173"
+      "contentHash": "b6ce3bf9c1fc06ed88cb7692b6eecd32650ebee81353365b37c0bd0d60b5908f"
     },
     {
       "id": "file:tests/agents/topology/test_topology.py",
@@ -1727,7 +1747,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "1ba67010796ac60795a1625b8dcc7402aa4143572c7a6bf686ca265422044dc4"
+      "contentHash": "836c67274f2f88c0296b46efef9ec74e3364b9a162856dec469ccc1d00d82c44"
     },
     {
       "id": "file:tests/deploy/test_backbone.py",
@@ -1837,7 +1857,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "d75fa0ec77ace75d8c818947c2f22bdec640bfd08057cdf6cda8cf84c03b89cc"
+      "contentHash": "6eb517244dc7e9d81b65f3a292b3b5d7c1a09617694ce1934a25a7dd1fe4895a"
     },
     {
       "id": "file:tests/evals/gate/test_release_gate.py",
@@ -1957,7 +1977,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "429ede24a787da7e8fa668b63ca4ed1095755da8b1fc78a4039be9edf637e150"
+      "contentHash": "f4e53927f2051ec2cca5c1092256c6edf75db720f6c1ff9d3671d67f2ccc82e9"
     },
     {
       "id": "file:tests/improvement/feedback/test_feedback.py",
@@ -1968,6 +1988,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "b6e8f0792b941b98bb205a5c7d6d4e784243337d9e3df38a2ea2ae7250b29e54"
+    },
+    {
+      "id": "file:tests/improvement/feedback/test_thumbs.py",
+      "type": "file",
+      "label": "tests/improvement/feedback/test_thumbs.py",
+      "path": "tests/improvement/feedback/test_thumbs.py",
+      "language": "python",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "48b9ba01a6ceb3c9ef2427493381a01d7a5c96f568d32754ded6bf8eb563a9dc"
     },
     {
       "id": "file:tests/improvement/levers/test_levers.py",
@@ -2217,7 +2247,7 @@
       "language": "python",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "99d9241ea8af429d04af3b342ab3486d04ef2d9e1d5203aa54196a9e98d0674a"
+      "contentHash": "64156f92125081058f6e73002ffb072340785aa2b960332073c9a32d03f3e023"
     },
     {
       "id": "file:tests/safety/authz/test_cedar.py",
@@ -2437,7 +2467,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "e6960fa700f770b70fce2a7d1b99ddddc3b118631a25a68f8726ec5cdd59754f"
+      "contentHash": "4e202921eaf70ce6adbe5e3d440818bf7d2e73c805e8da8de89bf9ebf682e12d"
     },
     {
       "id": "file:web/.next-e2e/server/app/_not-found/page.js",
@@ -2457,7 +2487,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2538565d2cbcf3d5f7643751eebac62f85f1bc0b49a04edc6d5ae1b4ace6386c"
+      "contentHash": "78753655674c8f68ce19f15a09d40d7ebefadb685b1aa81a9ba64d1d61da4d23"
     },
     {
       "id": "file:web/.next-e2e/server/app/page.js",
@@ -2477,7 +2507,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "32bf1288d492a02eb4f9cd1e728e72eddfcf3ee7d2902858b76044fe8ad7bac4"
+      "contentHash": "6322e6d3291594693956f0c13cac1da970173c380a1786c8e52658db761ef355"
     },
     {
       "id": "file:web/.next-e2e/server/app/staffs/customers/[tenantId]/[email]/page.js",
@@ -2497,7 +2527,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "0eab89a2ad272b4c9213e4a03dfb9d5afa2fd4122a5e83a4c8f2262241964ef9"
+      "contentHash": "a9b85d5a13855dd716829b3d621b47b5908802f44e58c902ea6137cbaeb5e83b"
     },
     {
       "id": "file:web/.next-e2e/server/app/staffs/customers/page.js",
@@ -2510,6 +2540,26 @@
       "contentHash": "c4d35954b9604fc72c0dd265a695bca4d524719d9da2347fe6c64b2685b06038"
     },
     {
+      "id": "file:web/.next-e2e/server/app/staffs/feedback/page_client-reference-manifest.js",
+      "type": "file",
+      "label": "web/.next-e2e/server/app/staffs/feedback/page_client-reference-manifest.js",
+      "path": "web/.next-e2e/server/app/staffs/feedback/page_client-reference-manifest.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "40a88f23f15458112b7380cc852dcafac607056f61063701296b994456514a7a"
+    },
+    {
+      "id": "file:web/.next-e2e/server/app/staffs/feedback/page.js",
+      "type": "file",
+      "label": "web/.next-e2e/server/app/staffs/feedback/page.js",
+      "path": "web/.next-e2e/server/app/staffs/feedback/page.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "47b52232ccc44b866b574bb74aa5dda908b57eaee0ee9f4b04397f7363f34e53"
+    },
+    {
       "id": "file:web/.next-e2e/server/app/staffs/handoffs/page_client-reference-manifest.js",
       "type": "file",
       "label": "web/.next-e2e/server/app/staffs/handoffs/page_client-reference-manifest.js",
@@ -2517,7 +2567,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c8c282c569a93d8bc0c80189e346efda2ca36e04ec3a18a3cb1e72aece1a55de"
+      "contentHash": "c2aa31692a5be9e66ea8f83cb49bf38bf82790a0c0ac7ba3041b40fc1ad72300"
     },
     {
       "id": "file:web/.next-e2e/server/app/staffs/handoffs/page.js",
@@ -2537,7 +2587,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2e057644de4673cbb1a1703842cf60b27cbfc49605030dbc0b66d255824bf077"
+      "contentHash": "f38785c2e4684243cb08a8421cf0b4b70c88a6277694171e0dfd8b9eff111c97"
     },
     {
       "id": "file:web/.next-e2e/server/app/staffs/page.js",
@@ -2557,7 +2607,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "d6858e1a576b76e6053de75fb3fe8911bb8c809aea58b477ce97cc71e3396b71"
+      "contentHash": "a93818cd323b821f3af46197b0c1759425717a1a255ae41afa5c539a23ffdc3a"
     },
     {
       "id": "file:web/.next-e2e/server/app/staffs/services/page.js",
@@ -2577,7 +2627,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c5cee5ea0c70829370d4ca4e4162b758e0b39c461a479d14d940159f451ac97c"
+      "contentHash": "656de2970852b9721c3b774fea20377cead382826ccb523aff5fddec5fc1a6f0"
     },
     {
       "id": "file:web/.next-e2e/server/app/staffs/tickets/[ticketId]/page.js",
@@ -2597,7 +2647,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "23d112f7b5b8b6dbee353e988e5511a2e314028385145142dd8c8147781cca50"
+      "contentHash": "dba5be1976d0016c1181a6684c093644a341cbb2693c6b4e7c4a0f7816463b2c"
     },
     {
       "id": "file:web/.next-e2e/server/app/staffs/tickets/page.js",
@@ -2617,7 +2667,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "c0184b0972d194f9e25b1f433129202445c7c866f25d5b13ffcc6fde0da71c00"
+      "contentHash": "2d2d4379052ae1468faa9406ea5d62b090fc2e743c910bb5ad8fcace0b406d05"
     },
     {
       "id": "file:web/.next-e2e/server/app/t/[tenantId]/page.js",
@@ -2637,7 +2687,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "5f40770bc04a6fa3b32b618ee3f7604ba2cc95d6b201d614c1f1e8375b96fd43"
+      "contentHash": "9dbd04b25334fe71f6a82e5174e5d1e776d510cb5c3458e582f8635891fe18dc"
     },
     {
       "id": "file:web/.next-e2e/server/app/t/[tenantId]/services/page.js",
@@ -2657,7 +2707,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "2a031c7c3bd961288ffbd34839650d660a9b50944ae60e58701c786fc2f8cd14"
+      "contentHash": "102ff622ce64cefe251cca77f11137a324b9d440d7f74b4fa30a1023a152d92b"
     },
     {
       "id": "file:web/.next-e2e/server/app/t/[tenantId]/tickets/[ticketId]/page.js",
@@ -2677,7 +2727,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "65808e3e34f6df91eed9d5df0f31aae60ad87ace4932937a4e4f877a0bd20d46"
+      "contentHash": "bbdb8a106d362704ad5fbd2d800c689476490cad163691448423a82a94d207c4"
     },
     {
       "id": "file:web/.next-e2e/server/app/t/[tenantId]/tickets/page.js",
@@ -2737,7 +2787,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "3203003d112f144dd1e45329434d9993f3bf749809f090374773201dd1a7d9e6"
+      "contentHash": "4b880461f68c04f1dec3bb651aedc5bb0f1140009f6e3debf718eeb34b95b63d"
     },
     {
       "id": "file:web/.next-e2e/server/chunks/825.js",
@@ -2747,7 +2797,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "4ed08a4160cf174e6db235b80fca5f5f5a2e5629cfdba15bef08928758237da1"
+      "contentHash": "0620e7ed5d7e9874ec6526fa68c86a9b25b159a59160a36e24c304e8468d4bbf"
     },
     {
       "id": "file:web/.next-e2e/server/chunks/943.js",
@@ -2870,14 +2920,34 @@
       "contentHash": "ff7a6b792c650fad487d25b0028a157017d9a78d298bbfab62ecada21900bec8"
     },
     {
-      "id": "file:web/.next-e2e/static/chunks/131-f6dc4d30d097d0fe.js",
+      "id": "file:web/.next-e2e/static/aJBwASXSCHyeU08F-ZM8v/_buildManifest.js",
       "type": "file",
-      "label": "web/.next-e2e/static/chunks/131-f6dc4d30d097d0fe.js",
-      "path": "web/.next-e2e/static/chunks/131-f6dc4d30d097d0fe.js",
+      "label": "web/.next-e2e/static/aJBwASXSCHyeU08F-ZM8v/_buildManifest.js",
+      "path": "web/.next-e2e/static/aJBwASXSCHyeU08F-ZM8v/_buildManifest.js",
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "7fd6641f942e9f37c2daaba92dcc390f2da1064a504ab0cb9754dc5ac751a1a7"
+      "contentHash": "9895237764124bfc5270aa264d7c2b9a11018b5535d94b5b2e1999af370dd8c0"
+    },
+    {
+      "id": "file:web/.next-e2e/static/aJBwASXSCHyeU08F-ZM8v/_ssgManifest.js",
+      "type": "file",
+      "label": "web/.next-e2e/static/aJBwASXSCHyeU08F-ZM8v/_ssgManifest.js",
+      "path": "web/.next-e2e/static/aJBwASXSCHyeU08F-ZM8v/_ssgManifest.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "678f6ce2cb80b1fe72fc67e7412be6e2ab6ada083111b64f7c40d35e3cba5e00"
+    },
+    {
+      "id": "file:web/.next-e2e/static/chunks/131-0342bf703e98ece6.js",
+      "type": "file",
+      "label": "web/.next-e2e/static/chunks/131-0342bf703e98ece6.js",
+      "path": "web/.next-e2e/static/chunks/131-0342bf703e98ece6.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "a37b5cb7eb3200bce99a66d0405f66e88bbf731d79f5d03436a88d83acefe1ec"
     },
     {
       "id": "file:web/.next-e2e/static/chunks/139.7a5a8e93a21948c1.js",
@@ -2950,14 +3020,14 @@
       "contentHash": "83aed00d04301fb5bee16890b480c3efff37ebcba8d72f9675e3322e958101af"
     },
     {
-      "id": "file:web/.next-e2e/static/chunks/851-5115aef867a5b203.js",
+      "id": "file:web/.next-e2e/static/chunks/851-70829f5b9c7791b2.js",
       "type": "file",
-      "label": "web/.next-e2e/static/chunks/851-5115aef867a5b203.js",
-      "path": "web/.next-e2e/static/chunks/851-5115aef867a5b203.js",
+      "label": "web/.next-e2e/static/chunks/851-70829f5b9c7791b2.js",
+      "path": "web/.next-e2e/static/chunks/851-70829f5b9c7791b2.js",
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "9a6952aa90ca540a2b11ee3714a51c0828d462a144a805582bbcee7a6a0d84e7"
+      "contentHash": "10822e389e76c8fcdb330785607aa08d53ac62f8dfbc17867964886f8ff552b1"
     },
     {
       "id": "file:web/.next-e2e/static/chunks/app/_not-found/page-fa5a2a9008a33f20.js",
@@ -3010,6 +3080,16 @@
       "contentHash": "24ecb81828c48f74788e7cdc982e9811cac977565149023e4f13e923ff6d36ab"
     },
     {
+      "id": "file:web/.next-e2e/static/chunks/app/staffs/feedback/page-bb47fa2fcfc936d0.js",
+      "type": "file",
+      "label": "web/.next-e2e/static/chunks/app/staffs/feedback/page-bb47fa2fcfc936d0.js",
+      "path": "web/.next-e2e/static/chunks/app/staffs/feedback/page-bb47fa2fcfc936d0.js",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "149135b2e59c799e137f26ca00a94a68331ec231bce077bdf938c17bccf6c0f1"
+    },
+    {
       "id": "file:web/.next-e2e/static/chunks/app/staffs/handoffs/page-2ce06f95fb8bae87.js",
       "type": "file",
       "label": "web/.next-e2e/static/chunks/app/staffs/handoffs/page-2ce06f95fb8bae87.js",
@@ -3020,14 +3100,14 @@
       "contentHash": "96d4ae29a1d9d60c70de97ac9fdbc0f88157e565025ee063c5a72139dcc52e88"
     },
     {
-      "id": "file:web/.next-e2e/static/chunks/app/staffs/layout-df895bd7a51fee81.js",
+      "id": "file:web/.next-e2e/static/chunks/app/staffs/layout-9205a2a01012a966.js",
       "type": "file",
-      "label": "web/.next-e2e/static/chunks/app/staffs/layout-df895bd7a51fee81.js",
-      "path": "web/.next-e2e/static/chunks/app/staffs/layout-df895bd7a51fee81.js",
+      "label": "web/.next-e2e/static/chunks/app/staffs/layout-9205a2a01012a966.js",
+      "path": "web/.next-e2e/static/chunks/app/staffs/layout-9205a2a01012a966.js",
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "7a107f33e92a2e0f27f8c4aef4aa392f63247e7b8df2497aa295137d174e27b8"
+      "contentHash": "baa769edff74fe8ebb5525e652cbc05c730dd962a984e876fa75e3f937e1ff39"
     },
     {
       "id": "file:web/.next-e2e/static/chunks/app/staffs/page-a5c5988d0e10ed8f.js",
@@ -3180,26 +3260,6 @@
       "contentHash": "59de08fa49fef9e749b061bcac79bd3af994ee3d3ed608929c7261b4d18e902f"
     },
     {
-      "id": "file:web/.next-e2e/static/Ig1zTK9UTRBK0JQnlzK9w/_buildManifest.js",
-      "type": "file",
-      "label": "web/.next-e2e/static/Ig1zTK9UTRBK0JQnlzK9w/_buildManifest.js",
-      "path": "web/.next-e2e/static/Ig1zTK9UTRBK0JQnlzK9w/_buildManifest.js",
-      "language": "javascript",
-      "confidence": 1,
-      "extractor": "filesystem",
-      "contentHash": "41df2f9463f9523316f30648969dba3b999706a58d37a2a6ca87e38614b54543"
-    },
-    {
-      "id": "file:web/.next-e2e/static/Ig1zTK9UTRBK0JQnlzK9w/_ssgManifest.js",
-      "type": "file",
-      "label": "web/.next-e2e/static/Ig1zTK9UTRBK0JQnlzK9w/_ssgManifest.js",
-      "path": "web/.next-e2e/static/Ig1zTK9UTRBK0JQnlzK9w/_ssgManifest.js",
-      "language": "javascript",
-      "confidence": 1,
-      "extractor": "filesystem",
-      "contentHash": "678f6ce2cb80b1fe72fc67e7412be6e2ab6ada083111b64f7c40d35e3cba5e00"
-    },
-    {
       "id": "file:web/.next-e2e/types/app/layout.ts",
       "type": "file",
       "label": "web/.next-e2e/types/app/layout.ts",
@@ -3238,6 +3298,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "8e34449ec4b08c8de90f40eae1578850c6b065bd508720f8052c970b60dbdaba"
+    },
+    {
+      "id": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "type": "file",
+      "label": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "eefc1692c882d8e70997cafebca6a1fb7c64d13589ddc644fa333bde994729c1"
     },
     {
       "id": "file:web/.next-e2e/types/app/staffs/handoffs/page.ts",
@@ -3347,7 +3417,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "0746ed95767f18e1cc5e196db8cba1668c8a3ee9fd549eba1a14ca5e24b19cb2"
+      "contentHash": "82e644a9f53f33b7a9fde4db903d96324ef6b67ce337c0cdbcc27465123eb58b"
     },
     {
       "id": "file:web/.next-e2e/types/validator.ts",
@@ -3357,7 +3427,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "8c894fb03dc15709a33dfbbebc5c6844310362903f4ec90f03dfada8ab655400"
+      "contentHash": "71ce8b284e2a060bea930fa345ac7c7bef9b15d4cf9b31e892d014268042ef78"
     },
     {
       "id": "file:web/app/layout.tsx",
@@ -3398,6 +3468,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "97e9dc883f0a81156dcd0d2733814e5b4e952a7ce71599c156b8872283495576"
+    },
+    {
+      "id": "file:web/app/staffs/feedback/page.tsx",
+      "type": "file",
+      "label": "web/app/staffs/feedback/page.tsx",
+      "path": "web/app/staffs/feedback/page.tsx",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "493e424c2f57b7c159f60c46ec486acee9e4ba4c679c08adcb7b16d260fb4335"
     },
     {
       "id": "file:web/app/staffs/handoffs/page.tsx",
@@ -3507,7 +3587,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "af4fe118f46e291cbe4e8eae550933d78dc3f5387d6c4e3aa66e096a7c9a730a"
+      "contentHash": "51fbcebd6ad8523e67960e96f2e5c085624501044010ef7a6bd618154a649891"
     },
     {
       "id": "file:web/components/panels.tsx",
@@ -3527,7 +3607,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "0d97a5a417e837e1e24a47474c058ab0a6e41e993c3e7c0f8e72246f5bf858e4"
+      "contentHash": "38327775571ab51dc865a482eda184937abadd5bb69369871925bde73461b9b2"
     },
     {
       "id": "file:web/components/services.tsx",
@@ -3548,6 +3628,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "15d573d999cc042a94b5f728061f27f526faea362721f725c74cd846b3f14457"
+    },
+    {
+      "id": "file:web/components/staff/feedback.tsx",
+      "type": "file",
+      "label": "web/components/staff/feedback.tsx",
+      "path": "web/components/staff/feedback.tsx",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "bda09ce67ae38481683490770ae2e99ae9e07a49159a5e013c5133f4208e2d1a"
     },
     {
       "id": "file:web/components/staff/overview.tsx",
@@ -3587,7 +3677,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "eaf700da7f518a1915cb2160f982b024b5ee030f3afae2e8c4cdd071130fba32"
+      "contentHash": "b028e6982765363e63aeae5f0cc3e12e2853ff8136f1bd47ab5c77c18ac93d94"
     },
     {
       "id": "file:web/components/tickets.tsx",
@@ -3598,6 +3688,16 @@
       "confidence": 1,
       "extractor": "filesystem",
       "contentHash": "6468f205178634d5f39b618b9a1461f88761a2bb28016d41f1117668e5744b60"
+    },
+    {
+      "id": "file:web/e2e/feedback.spec.ts",
+      "type": "file",
+      "label": "web/e2e/feedback.spec.ts",
+      "path": "web/e2e/feedback.spec.ts",
+      "language": "javascript",
+      "confidence": 1,
+      "extractor": "filesystem",
+      "contentHash": "c9c95932d96bf78f50d0b6ef15aa25da5f6d41e3566ebc347d53a736433db628"
     },
     {
       "id": "file:web/e2e/history.spec.ts",
@@ -3617,7 +3717,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "712f5a769fe4377277258fad62c39976efe621c205ad045777720c0563bcd02f"
+      "contentHash": "c9e8cfe258659f99ca350eade26a93a69cb97599331b6de99a2b14cef7c237ff"
     },
     {
       "id": "file:web/e2e/services.spec.ts",
@@ -3627,7 +3727,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "42ad732e5827b7b4b23d2cb0aa060997a9326f13e4ed0b2cddd4cd64d4870748"
+      "contentHash": "14963776d75a17c7c08c52adbf0b443c987fb8b34ad9f0507842034ea0a775c7"
     },
     {
       "id": "file:web/e2e/staff.spec.ts",
@@ -3647,7 +3747,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "98dead14525823ad8a42db7df7623f554858546a050ac4a3f813a1aecda319ff"
+      "contentHash": "881fbbb8a9997d9e4cf95086938d04512ac60dfa38e696f851cbd1b3606cec67"
     },
     {
       "id": "file:web/lib/chat-client.ts",
@@ -3657,7 +3757,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "0e3ba9a1adf2f5a623b069eead32d3e51435fa5c2410a599ed629bd46d6051dd"
+      "contentHash": "99d6e72f0d6b0cba77cb74eb4b25e1d1affce2ff852119189cc3a3ed84d0c03b"
     },
     {
       "id": "file:web/lib/reduce.ts",
@@ -3697,7 +3797,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "86cf3748ae4eed6d548e4bd49e8f949d568e961a3a864de09c8568372792d0ef"
+      "contentHash": "5a9a81d3b000f15dea66099ba28a9f1453be1497e616ae1172be109ceea4f136"
     },
     {
       "id": "file:web/lib/tickets.ts",
@@ -3787,7 +3887,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "9896ec526d2485931bdf117dfd0e980656697f6091edb564666972bb6e79f2f6"
+      "contentHash": "d1a0efd371b5ceee51d02bbfd9d26b544cd36bde4a274d33210976e35da7ce4a"
     },
     {
       "id": "file:web/test/reduce.test.ts",
@@ -3827,7 +3927,7 @@
       "language": "javascript",
       "confidence": 1,
       "extractor": "filesystem",
-      "contentHash": "6e4b2a46cafafb75fcc53a356f0c3cd22446f36319d70ae63db3044867f49661"
+      "contentHash": "2f52e01abdd40133e1cf82d7dbcec1fde91de355753e4ce04baf003856c89393"
     },
     {
       "id": "file:web/test/tickets.test.ts",
@@ -4600,6 +4700,186 @@
       "name": "Zero",
       "label": "Zero",
       "path": "web/.next-e2e/types/app/staffs/customers/page.ts",
+      "line": 82,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "0fe14fc31a0f0e669293aef304d2139532367af25b38b8d2b38957d737693fde"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#function:checkFields",
+      "type": "symbol",
+      "kind": "function",
+      "name": "checkFields",
+      "label": "checkFields",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 78,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d833152321e00f8ad27b7c8fb9d41fcef7a900a0c57114d452dc5474831023e2"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#interface:LayoutProps",
+      "type": "symbol",
+      "kind": "interface",
+      "name": "LayoutProps",
+      "label": "LayoutProps",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 58,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "64fdb59798625a4b38f756231fac0037a330cbe6c169371efe3b24f753c74461"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#interface:PageProps",
+      "type": "symbol",
+      "kind": "interface",
+      "name": "PageProps",
+      "label": "PageProps",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 54,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "22a695bad3b8a55d339ae8fd5b3e787053e8f197d034f6a7aad4c2a9b9644cd2"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Diff",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Diff",
+      "label": "Diff",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 70,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "41959c3cc2d4b6633c1482ee09f266b478a5e42561e6eaeac28212a5f7352838"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:FirstArg",
+      "type": "symbol",
+      "kind": "type",
+      "name": "FirstArg",
+      "label": "FirstArg",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 72,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d4765c093922218f45d58fffeb4165ac01b4cc44deb28b280ae6a64e072d6fcf"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:MaybeField",
+      "type": "symbol",
+      "kind": "type",
+      "name": "MaybeField",
+      "label": "MaybeField",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 74,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "0ec33f4988f70f0186beb62b145f1076e4c40c967d2f67b77df7251b7b39af24"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Negative",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Negative",
+      "label": "Negative",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 83,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "8a22257b068f3dc11a19fdcf220acbfe57b7cc4421f816fa85ebae62bad60fce"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:NonNegative",
+      "type": "symbol",
+      "kind": "type",
+      "name": "NonNegative",
+      "label": "NonNegative",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 84,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "6a958d8072ad1c500db6cb2608bc9fa8650b8453d50d7a9405e9397d3494ba89"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Numeric",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Numeric",
+      "label": "Numeric",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 81,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "a26d86cdeeb77478a9f7b4754af0fea820da9b2a51758e2411a87ccdae576bdc"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:OmitWithTag",
+      "type": "symbol",
+      "kind": "type",
+      "name": "OmitWithTag",
+      "label": "OmitWithTag",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 69,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "b680d5519cd742b604ee05404eef90d0ce97c67b6d89df436e380266e903c362"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:RevalidateRange",
+      "type": "symbol",
+      "kind": "type",
+      "name": "RevalidateRange",
+      "label": "RevalidateRange",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 66,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "3b7f640cf140904ac630370d3201bd088a1c5fc6ae432be77c9c252ab52c3be1"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:SecondArg",
+      "type": "symbol",
+      "kind": "type",
+      "name": "SecondArg",
+      "label": "SecondArg",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 73,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "8daf0dd38467a4b498f463f83a851dbcf9605082bc9800d06fef42e941e4a20e"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:SegmentParams",
+      "type": "symbol",
+      "kind": "type",
+      "name": "SegmentParams",
+      "label": "SegmentParams",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 7,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "8f448106d741ed638c150d3fef6ba538b3646f7f4779b441dc3450d70c87e32a"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:TEntry",
+      "type": "symbol",
+      "kind": "type",
+      "name": "TEntry",
+      "label": "TEntry",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "line": 5,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "d70a9de7c4901a6abadb85b74241fc31b1ce8c352a178c026e4a22ec81a20f7e"
+    },
+    {
+      "id": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Zero",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Zero",
+      "label": "Zero",
+      "path": "web/.next-e2e/types/app/staffs/feedback/page.ts",
       "line": 82,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
@@ -6232,7 +6512,7 @@
       "name": "LayoutSlotMap",
       "label": "LayoutSlotMap",
       "path": "web/.next-e2e/types/routes.d.ts",
-      "line": 31,
+      "line": 32,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "fa2b2ad0a1db99b324505fc2d4e044985956109a3dad5ba0d1cbbc1643e77c3c"
@@ -6292,7 +6572,7 @@
       "name": "ParamsOf",
       "label": "ParamsOf",
       "path": "web/.next-e2e/types/routes.d.ts",
-      "line": 29,
+      "line": 30,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "72a1a04b565518a0717b6bb605419aa926bd45d3d1b38bb277464693b6edd2fa"
@@ -6442,6 +6722,18 @@
       "contentHash": "ae1ba81abec6e13cda0622e1334cfa53ccb881f3fb4aca23f6d7ada4d65c9a81"
     },
     {
+      "id": "symbol:web/app/staffs/feedback/page.tsx#function:StaffFeedback",
+      "type": "symbol",
+      "kind": "function",
+      "name": "StaffFeedback",
+      "label": "StaffFeedback",
+      "path": "web/app/staffs/feedback/page.tsx",
+      "line": 3,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "9009496c9e9e868f6d03f3a7b83a8cc878d765d3ca16fc457a02bb294b5ac206"
+    },
+    {
       "id": "symbol:web/app/staffs/handoffs/page.tsx#function:StaffHandoffs",
       "type": "symbol",
       "kind": "function",
@@ -6580,7 +6872,7 @@
       "name": "Icon",
       "label": "Icon",
       "path": "web/components/icons.tsx",
-      "line": 33,
+      "line": 35,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "01c316765cfeb138e4ae3bf25d606feddda393204ce68e03b9fb736957bfc2b3"
@@ -6592,7 +6884,7 @@
       "name": "Logo",
       "label": "Logo",
       "path": "web/components/icons.tsx",
-      "line": 42,
+      "line": 44,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7e672d31f5f42cdb7d5ed6434dac2c400875dbb5fc5785d5aeebed6d4cbc538b"
@@ -6604,7 +6896,7 @@
       "name": "IconName",
       "label": "IconName",
       "path": "web/components/icons.tsx",
-      "line": 31,
+      "line": 33,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "d611458580f4c333e4f2c307ac06809cb1649c562f9b6e7a52f062d6e42d73b0"
@@ -6772,7 +7064,7 @@
       "name": "Bubble",
       "label": "Bubble",
       "path": "web/components/portal.tsx",
-      "line": 523,
+      "line": 510,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "0171b978a8038761424bc51aaf4c13b12e436151c8b4c9595d738845d90fad76"
@@ -6784,7 +7076,7 @@
       "name": "clock",
       "label": "clock",
       "path": "web/components/portal.tsx",
-      "line": 44,
+      "line": 39,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "c2398a61998e250d71affddc742bf54af551540fa0ebfb28a30ebeeca28f35c5"
@@ -6796,7 +7088,7 @@
       "name": "Portal",
       "label": "Portal",
       "path": "web/components/portal.tsx",
-      "line": 48,
+      "line": 43,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "3b6e5189cf59d96a9239c634c19bce7e5a4037de3a80cbde5c2685226f7d77d9"
@@ -6808,7 +7100,7 @@
       "name": "Otp",
       "label": "Otp",
       "path": "web/components/portal.tsx",
-      "line": 33,
+      "line": 28,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f375a27418861f085c52b2f4d52e59ce2ba584712c25ecb912cfefaadc72fa6d"
@@ -6820,7 +7112,7 @@
       "name": "Panel",
       "label": "Panel",
       "path": "web/components/portal.tsx",
-      "line": 32,
+      "line": 27,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f4f6b0bc8954ed327d9d2cda78133fd17899590671abbbed897194c99825aa0d"
@@ -6856,7 +7148,7 @@
       "name": "HISTORY_OPEN",
       "label": "HISTORY_OPEN",
       "path": "web/components/portal.tsx",
-      "line": 30,
+      "line": 25,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "ef4bc0bd1823a58ab3543aca5bb2fb08b59e69a4d2458317592db23c05cc2c30"
@@ -6880,7 +7172,7 @@
       "name": "store",
       "label": "store",
       "path": "web/components/portal.tsx",
-      "line": 35,
+      "line": 30,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "06aca960648e7be71f54f464d52f173f49664e78b7851ee844c69e3b0bceb170"
@@ -6908,18 +7200,6 @@
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "ca99174472ebd92c7850d9dc8bcc03a40997a03aca89d7771c51ffa49d33753e"
-    },
-    {
-      "id": "symbol:web/components/portal.tsx#variable:TIERS",
-      "type": "symbol",
-      "kind": "variable",
-      "name": "TIERS",
-      "label": "TIERS",
-      "path": "web/components/portal.tsx",
-      "line": 24,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols",
-      "contentHash": "7051c05c180491b650eb9c5777924cc700b164b368326fe7715b3e1e4e820240"
     },
     {
       "id": "symbol:web/components/services.tsx#function:Group",
@@ -7052,6 +7332,66 @@
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "112074f76b49adc62f17f97e86c3f908a127c59174c9da68c2c87e9f8d0f64ee"
+    },
+    {
+      "id": "symbol:web/components/staff/feedback.tsx#function:Down",
+      "type": "symbol",
+      "kind": "function",
+      "name": "Down",
+      "label": "Down",
+      "path": "web/components/staff/feedback.tsx",
+      "line": 39,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "b9a7f8a938e923a30e4b2b0e931456bbad45e300479d566a7051419698955e4d"
+    },
+    {
+      "id": "symbol:web/components/staff/feedback.tsx#function:failure",
+      "type": "symbol",
+      "kind": "function",
+      "name": "failure",
+      "label": "failure",
+      "path": "web/components/staff/feedback.tsx",
+      "line": 10,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "a70ade4d4095a5f1902f72a7bbf4def1303f994f4ea9d83f17a91bdea56b6693"
+    },
+    {
+      "id": "symbol:web/components/staff/feedback.tsx#function:FeedbackView",
+      "type": "symbol",
+      "kind": "function",
+      "name": "FeedbackView",
+      "label": "FeedbackView",
+      "path": "web/components/staff/feedback.tsx",
+      "line": 65,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "016b4a852923f12e5ac17c50c734721b568adaae5bda8721dbf50d16c866622d"
+    },
+    {
+      "id": "symbol:web/components/staff/feedback.tsx#function:Rates",
+      "type": "symbol",
+      "kind": "function",
+      "name": "Rates",
+      "label": "Rates",
+      "path": "web/components/staff/feedback.tsx",
+      "line": 22,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "f09b9564124831b3603176256ab09ee59f40c05dd1ffd1a770c03130b68d025a"
+    },
+    {
+      "id": "symbol:web/components/staff/feedback.tsx#function:Tile",
+      "type": "symbol",
+      "kind": "function",
+      "name": "Tile",
+      "label": "Tile",
+      "path": "web/components/staff/feedback.tsx",
+      "line": 12,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "4889128cc06f6b492f15704900183b32773469e3cd56788a1b794ec2e275266c"
     },
     {
       "id": "symbol:web/components/staff/overview.tsx#function:Bars",
@@ -7240,7 +7580,7 @@
       "name": "Button",
       "label": "Button",
       "path": "web/components/staff/ui.tsx",
-      "line": 72,
+      "line": 73,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "2a492ef6d8f450239cd57322d24afe460aa0e8b8b64af23b349601f8dc6e80ea"
@@ -7252,7 +7592,7 @@
       "name": "category",
       "label": "category",
       "path": "web/components/staff/ui.tsx",
-      "line": 105,
+      "line": 106,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "51c10200978233efecba64c18cde789fcf6a33a8bc976a9e370de2ab0009d524"
@@ -7264,7 +7604,7 @@
       "name": "Empty",
       "label": "Empty",
       "path": "web/components/staff/ui.tsx",
-      "line": 137,
+      "line": 138,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "e1fd448994a645da7a26b35926224212d922ecfac7c7ead366085f6a6079a4cc"
@@ -7276,7 +7616,7 @@
       "name": "Loading",
       "label": "Loading",
       "path": "web/components/staff/ui.tsx",
-      "line": 168,
+      "line": 169,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "a95320917f2edf50c2e103c9dbcb54b9bd74858b9e82702f2e7905d5e5bc1088"
@@ -7288,7 +7628,7 @@
       "name": "PageTitle",
       "label": "PageTitle",
       "path": "web/components/staff/ui.tsx",
-      "line": 51,
+      "line": 52,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "ddff05b423a7f3774e7e1d359b89256327e8dfdbe220a6f317938334c8d902b1"
@@ -7300,7 +7640,7 @@
       "name": "Problem",
       "label": "Problem",
       "path": "web/components/staff/ui.tsx",
-      "line": 133,
+      "line": 134,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "4c1f9fafaa1ac0d3b33f15e5ce31c12d62a02074622ba9c06b051ca2d6250820"
@@ -7312,7 +7652,7 @@
       "name": "queue",
       "label": "queue",
       "path": "web/components/staff/ui.tsx",
-      "line": 106,
+      "line": 107,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "4957aacae1732700c356130c7aa503026214eea58f277faa7b5bf3eeada0cea2"
@@ -7324,7 +7664,7 @@
       "name": "Search",
       "label": "Search",
       "path": "web/components/staff/ui.tsx",
-      "line": 123,
+      "line": 124,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "b3bfa32c8f6ca23e9e8f6512db0c0f0b23dc2b92a3c9c0d1baafea317dbe1c79"
@@ -7336,7 +7676,7 @@
       "name": "Select",
       "label": "Select",
       "path": "web/components/staff/ui.tsx",
-      "line": 110,
+      "line": 111,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "77b139bcecefceee5803d81892d4c8d8e0bd178c28ce337c837dc61b80db1f55"
@@ -7348,7 +7688,7 @@
       "name": "ServiceState",
       "label": "ServiceState",
       "path": "web/components/staff/ui.tsx",
-      "line": 95,
+      "line": 96,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "8988a522d0da37d5755f311f2f72742a688267095610b725bb803f40c6966c0e"
@@ -7360,7 +7700,7 @@
       "name": "Shell",
       "label": "Shell",
       "path": "web/components/staff/ui.tsx",
-      "line": 19,
+      "line": 20,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "dd17b7091569dff93264502f41810994fb48d4e176c81c7ac0d4087b44b3c8af"
@@ -7372,7 +7712,7 @@
       "name": "TicketStatus",
       "label": "TicketStatus",
       "path": "web/components/staff/ui.tsx",
-      "line": 85,
+      "line": 86,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "52b96641ff81239161f6d0bfa552484a5efbf69cfd69b13e693e6f5f22914548"
@@ -7384,7 +7724,7 @@
       "name": "useLoad",
       "label": "useLoad",
       "path": "web/components/staff/ui.tsx",
-      "line": 148,
+      "line": 149,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "138609c1e9ed9449e9a4e06198e2c6a5b553cb083086073d894a409b6ef9b361"
@@ -7396,7 +7736,7 @@
       "name": "when",
       "label": "when",
       "path": "web/components/staff/ui.tsx",
-      "line": 107,
+      "line": 108,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "fb6f27aff28c7afcd961c271240ee8f8839a0f669412d3b4ee685d7235f71955"
@@ -7408,7 +7748,7 @@
       "name": "BUTTONS",
       "label": "BUTTONS",
       "path": "web/components/staff/ui.tsx",
-      "line": 67,
+      "line": 68,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "8f10344d8dee39eb84a750404b3e2a74c99336f01b3ee19d5ca60c7f8ab39fd2"
@@ -7420,7 +7760,7 @@
       "name": "input",
       "label": "input",
       "path": "web/components/staff/ui.tsx",
-      "line": 64,
+      "line": 65,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "890c61ffeca5418926265bde395e91f4cde6a6286171d9b5c35a1ce1ba597afd"
@@ -7432,7 +7772,7 @@
       "name": "panel",
       "label": "panel",
       "path": "web/components/staff/ui.tsx",
-      "line": 63,
+      "line": 64,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "c5991837b5e3d2bc0867801d1017c21957dec488c40700b41555e8b2994c152b"
@@ -7444,7 +7784,7 @@
       "name": "SERVICE_TONES",
       "label": "SERVICE_TONES",
       "path": "web/components/staff/ui.tsx",
-      "line": 90,
+      "line": 91,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "33b5284affdfa917fc1da466ddeb8b161a968a7bf554e6fbe0c323243f11629c"
@@ -7468,7 +7808,7 @@
       "name": "td",
       "label": "td",
       "path": "web/components/staff/ui.tsx",
-      "line": 66,
+      "line": 67,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "49e3e7fc946d1c85deaf40994943e9e026595f1d77dba2eec3ae0970a8297631"
@@ -7480,7 +7820,7 @@
       "name": "th",
       "label": "th",
       "path": "web/components/staff/ui.tsx",
-      "line": 65,
+      "line": 66,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "0cc94a8532cd6bf9c241c4ac03d029ef295688dc4bced0d295619bc832a84640"
@@ -7492,7 +7832,7 @@
       "name": "TICKET_TONES",
       "label": "TICKET_TONES",
       "path": "web/components/staff/ui.tsx",
-      "line": 78,
+      "line": 79,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "5b14aed8ce9347cc6fbf753b2a147f253768a6eb03762a72297ca8d2efc15d0b"
@@ -7604,6 +7944,42 @@
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "fb6f27aff28c7afcd961c271240ee8f8839a0f669412d3b4ee685d7235f71955"
+    },
+    {
+      "id": "symbol:web/e2e/feedback.spec.ts#function:stub",
+      "type": "symbol",
+      "kind": "function",
+      "name": "stub",
+      "label": "stub",
+      "path": "web/e2e/feedback.spec.ts",
+      "line": 9,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "c4a6fb285b734e143ca963f91aad7aa75b4fb66c362a3cb665988e0b811378e5"
+    },
+    {
+      "id": "symbol:web/e2e/feedback.spec.ts#variable:REPLY",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "REPLY",
+      "label": "REPLY",
+      "path": "web/e2e/feedback.spec.ts",
+      "line": 7,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "2300bbd90d438bf86aa48d8c3313b7bc6a0b5d986080cb80dcdc90b310cb6dc1"
+    },
+    {
+      "id": "symbol:web/e2e/feedback.spec.ts#variable:token",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "token",
+      "label": "token",
+      "path": "web/e2e/feedback.spec.ts",
+      "line": 5,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "b585e7993970475f487553f58b8a4d0b3ab19ce8ab79fb9f78c2a5dd405c3a77"
     },
     {
       "id": "symbol:web/e2e/history.spec.ts#function:stub",
@@ -7996,7 +8372,7 @@
       "name": "ChatClient",
       "label": "ChatClient",
       "path": "web/lib/chat-client.ts",
-      "line": 50,
+      "line": 51,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "a60bdcbe900db6b227a86ff2e6d8d722a984d6a3e4d82d58c044bf018fa06a57"
@@ -8020,7 +8396,7 @@
       "name": "conversation",
       "label": "conversation",
       "path": "web/lib/chat-client.ts",
-      "line": 200,
+      "line": 213,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f125081823fa91df4ddb5903d574ceb20288cc1f32407f2ddb6a5852c9db2aa8"
@@ -8032,7 +8408,7 @@
       "name": "readClaims",
       "label": "readClaims",
       "path": "web/lib/chat-client.ts",
-      "line": 41,
+      "line": 42,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "910a5c8d944e1000c725999c0311dee5eff73b5585ae7de4efbaaf2761d52175"
@@ -8044,7 +8420,7 @@
       "name": "visible",
       "label": "visible",
       "path": "web/lib/chat-client.ts",
-      "line": 30,
+      "line": 31,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "df986e1c53028fe3d78894493f0ebdd5c8a9185ae8c1f923866dcafb9ecc94fb"
@@ -8080,7 +8456,7 @@
       "name": "Options",
       "label": "Options",
       "path": "web/lib/chat-client.ts",
-      "line": 22,
+      "line": 23,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "ac1ca0b3b4944447a9ce0a2e793ec54dbf9c7b1620e071cd3edab8df7a5ffbf8"
@@ -8108,6 +8484,18 @@
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "7e09d5b320880c7c8e8a4caafb0e39470f2ab7a249e912c51d22c39a8d6e6046"
+    },
+    {
+      "id": "symbol:web/lib/chat-client.ts#type:Vote",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Vote",
+      "label": "Vote",
+      "path": "web/lib/chat-client.ts",
+      "line": 21,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "57bfec7ccd2b2766cd4cba95f6a3be439cc628a9fbbc93edf7185c6401d6931c"
     },
     {
       "id": "symbol:web/lib/reduce.ts#function:addUserMessage",
@@ -8440,7 +8828,7 @@
       "name": "StaffError",
       "label": "StaffError",
       "path": "web/lib/staff.ts",
-      "line": 49,
+      "line": 64,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "c8598dce595bfcbeec5ee7f9c9fe01933efdf725634aad76e19fb7d2805fe2a5"
@@ -8452,7 +8840,7 @@
       "name": "actionsFor",
       "label": "actionsFor",
       "path": "web/lib/staff.ts",
-      "line": 180,
+      "line": 201,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "4a624b8731a08ba1c6f95c645fe3223fed88dff32120d8095f209b70730371c7"
@@ -8464,7 +8852,7 @@
       "name": "actorLabel",
       "label": "actorLabel",
       "path": "web/lib/staff.ts",
-      "line": 213,
+      "line": 234,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "3991c1b59db8d8c9b96aca43fa10b470b2cb34a575f6f64e3e4a055401758e28"
@@ -8476,7 +8864,7 @@
       "name": "call",
       "label": "call",
       "path": "web/lib/staff.ts",
-      "line": 53,
+      "line": 68,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "275a4df1511ba5b75928c00e2c66415805a9707269292d0d5db604cece65c91e"
@@ -8488,7 +8876,7 @@
       "name": "canMove",
       "label": "canMove",
       "path": "web/lib/staff.ts",
-      "line": 102,
+      "line": 123,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "8edba9a04fee238255d30caa9f7630c1dcdf5155b909d442136b5bbd9b77e751"
@@ -8500,7 +8888,7 @@
       "name": "countBy",
       "label": "countBy",
       "path": "web/lib/staff.ts",
-      "line": 147,
+      "line": 168,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "66422eea9c2ddc569c4b5088d563371a2b78104b23aa671dd0dd226f823301ef"
@@ -8512,7 +8900,7 @@
       "name": "customerHref",
       "label": "customerHref",
       "path": "web/lib/staff.ts",
-      "line": 81,
+      "line": 102,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "1d5578d9f2301485e76c48c5d8414b11ae0c1c3cc6d892ca4ff5497801be9e57"
@@ -8524,7 +8912,7 @@
       "name": "day",
       "label": "day",
       "path": "web/lib/staff.ts",
-      "line": 113,
+      "line": 134,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "735187ee7d888aa74cb978db1b4f6ae5786be70cc6f6e72247cab56e0dbb9707"
@@ -8536,7 +8924,7 @@
       "name": "didWhat",
       "label": "didWhat",
       "path": "web/lib/staff.ts",
-      "line": 209,
+      "line": 230,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "32faa9a5b016e70859ed60b7d6d915fc78862b49e97cdc7f7f14b66d90be780c"
@@ -8548,7 +8936,7 @@
       "name": "filterCustomers",
       "label": "filterCustomers",
       "path": "web/lib/staff.ts",
-      "line": 198,
+      "line": 219,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "8055ea6094e0ea2b8e15fbae5a20508629298531d748613cb4838ec806acd384"
@@ -8560,7 +8948,7 @@
       "name": "filterServices",
       "label": "filterServices",
       "path": "web/lib/staff.ts",
-      "line": 171,
+      "line": 192,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "c0ef344c478c345887d981ab8fb0ccdcfdf148da6ae024f33acd066872cd0026"
@@ -8572,7 +8960,7 @@
       "name": "filterTickets",
       "label": "filterTickets",
       "path": "web/lib/staff.ts",
-      "line": 114,
+      "line": 135,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "edcd7c522027f6460fe05d58a95370e54675f61b5824db8cee6f6605083bfafe"
@@ -8584,7 +8972,7 @@
       "name": "movesFor",
       "label": "movesFor",
       "path": "web/lib/staff.ts",
-      "line": 87,
+      "line": 108,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "02581d648b57aff9c6ceac10e373723a04e80da5e313ce057080c283c8fc31cb"
@@ -8596,10 +8984,22 @@
       "name": "paginate",
       "label": "paginate",
       "path": "web/lib/staff.ts",
-      "line": 136,
+      "line": 157,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "e87521ff9ecd1637306e18a4dc8206230348a77859f08b82ac7f35b2b2cb4e81"
+    },
+    {
+      "id": "symbol:web/lib/staff.ts#function:percent",
+      "type": "symbol",
+      "kind": "function",
+      "name": "percent",
+      "label": "percent",
+      "path": "web/lib/staff.ts",
+      "line": 99,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "88793bda07c690b756cafec55796f2a1eba7e4cac7e7d30cbd0e1109814b2128"
     },
     {
       "id": "symbol:web/lib/staff.ts#function:serviceHealth",
@@ -8608,7 +9008,7 @@
       "name": "serviceHealth",
       "label": "serviceHealth",
       "path": "web/lib/staff.ts",
-      "line": 186,
+      "line": 207,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "c042ea18c0b18e05a19decc1dc84b6acf74a92c4cd055857fd1eeb93c56f5a44"
@@ -8620,7 +9020,7 @@
       "name": "sortTickets",
       "label": "sortTickets",
       "path": "web/lib/staff.ts",
-      "line": 125,
+      "line": 146,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "dbc11024717b7e29361ad144c638b22e6ae2a6a353035a76587d6ada413c02f1"
@@ -8632,7 +9032,7 @@
       "name": "summary",
       "label": "summary",
       "path": "web/lib/staff.ts",
-      "line": 153,
+      "line": 174,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "ecdce2b8cf4458244b7fd894e792d57e93a7336fe1e945b333f047114b5d9d75"
@@ -8644,10 +9044,22 @@
       "name": "ticketHref",
       "label": "ticketHref",
       "path": "web/lib/staff.ts",
-      "line": 80,
+      "line": 101,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "83ef95f63996c69949bc22a7e97271f3d1ea5fbb25c376443851d4e48b744801"
+    },
+    {
+      "id": "symbol:web/lib/staff.ts#function:worstFirst",
+      "type": "symbol",
+      "kind": "function",
+      "name": "worstFirst",
+      "label": "worstFirst",
+      "path": "web/lib/staff.ts",
+      "line": 97,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "11d4f80830a6aff47f3d8600ea6b8b7f9c5b3cbc6aff0d75357f91d8cbf92a5b"
     },
     {
       "id": "symbol:web/lib/staff.ts#type:Activity",
@@ -8692,10 +9104,22 @@
       "name": "CustomerFilter",
       "label": "CustomerFilter",
       "path": "web/lib/staff.ts",
-      "line": 196,
+      "line": 217,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "b7bfc7522e3ccf39a397eef3d52634b7c4b298bf69462825b926b3f68d6d2060"
+    },
+    {
+      "id": "symbol:web/lib/staff.ts#type:FeedbackReport",
+      "type": "symbol",
+      "kind": "type",
+      "name": "FeedbackReport",
+      "label": "FeedbackReport",
+      "path": "web/lib/staff.ts",
+      "line": 57,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "4c2b5932013ffbb8f0ef6ac49fa37bd30c6263085a204cbec13cf3bee36fd652"
     },
     {
       "id": "symbol:web/lib/staff.ts#type:Handoff",
@@ -8728,10 +9152,34 @@
       "name": "Move",
       "label": "Move",
       "path": "web/lib/staff.ts",
-      "line": 86,
+      "line": 107,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f53d601b1c54b9a6e4a000bb0c39638835a30a2cb2acc9ed145b7ea2d4cd8266"
+    },
+    {
+      "id": "symbol:web/lib/staff.ts#type:Rate",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Rate",
+      "label": "Rate",
+      "path": "web/lib/staff.ts",
+      "line": 56,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "2cc07935b10e99c8e3cbae86c3124c6c214daa8fe7d6cae1522773a8f83ef444"
+    },
+    {
+      "id": "symbol:web/lib/staff.ts#type:Rating",
+      "type": "symbol",
+      "kind": "type",
+      "name": "Rating",
+      "label": "Rating",
+      "path": "web/lib/staff.ts",
+      "line": 51,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "15b91c1ef182f333a388149b08289872afaf94160a5bfd490dfaecc4f7fa2e5a"
     },
     {
       "id": "symbol:web/lib/staff.ts#type:ServiceFilter",
@@ -8740,7 +9188,7 @@
       "name": "ServiceFilter",
       "label": "ServiceFilter",
       "path": "web/lib/staff.ts",
-      "line": 169,
+      "line": 190,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "52934dcf4090054f2168bc2136ae587e787b43b724e4cd6192e256454f85ecb0"
@@ -8776,7 +9224,7 @@
       "name": "TicketFilter",
       "label": "TicketFilter",
       "path": "web/lib/staff.ts",
-      "line": 106,
+      "line": 127,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "fadc5d2567a522056ceb872e6403ccd80ffae0099468e6bb90b5b53fd177b115"
@@ -8788,7 +9236,7 @@
       "name": "TicketSort",
       "label": "TicketSort",
       "path": "web/lib/staff.ts",
-      "line": 111,
+      "line": 132,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "32023349f2546b7350aec2e65155e915d6fa8ef73220cb8a8cbb920a9b1ddb4a"
@@ -8800,10 +9248,22 @@
       "name": "ACTIVE",
       "label": "ACTIVE",
       "path": "web/lib/staff.ts",
-      "line": 82,
+      "line": 103,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f5250e80a8f3c8d8b4b8a498723cbf94262bba331fb196e3f5cf4a812f5e1d3b"
+    },
+    {
+      "id": "symbol:web/lib/staff.ts#variable:CRITICAL",
+      "type": "symbol",
+      "kind": "variable",
+      "name": "CRITICAL",
+      "label": "CRITICAL",
+      "path": "web/lib/staff.ts",
+      "line": 62,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols",
+      "contentHash": "998dd6b9e4fe95f36f1c4ad1dce378b78c8d95be0ffe9dfa2fa8344643eaba59"
     },
     {
       "id": "symbol:web/lib/staff.ts#variable:DID",
@@ -8812,7 +9272,7 @@
       "name": "DID",
       "label": "DID",
       "path": "web/lib/staff.ts",
-      "line": 206,
+      "line": 227,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "1e5dfd9c5c22134ea6644301506467dbb9722fcb03415d2b1133a83a7bf9582b"
@@ -8824,7 +9284,7 @@
       "name": "enc",
       "label": "enc",
       "path": "web/lib/staff.ts",
-      "line": 63,
+      "line": 78,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "fb96ba65b54919a61ccd7d5cb57f3250c25f60052208702dd41d99d4f3142fd9"
@@ -8836,7 +9296,7 @@
       "name": "NO_CUSTOMER_FILTER",
       "label": "NO_CUSTOMER_FILTER",
       "path": "web/lib/staff.ts",
-      "line": 197,
+      "line": 218,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "d01b17c7958ba27805768b5bac1422547a232e3ce69985392701d712056db5fe"
@@ -8848,7 +9308,7 @@
       "name": "NO_FILTER",
       "label": "NO_FILTER",
       "path": "web/lib/staff.ts",
-      "line": 110,
+      "line": 131,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "f3932a87ad9d41f437e1a21328c0009359194effb496d950ccfcefb2d8bb56a6"
@@ -8860,7 +9320,7 @@
       "name": "NO_SERVICE_FILTER",
       "label": "NO_SERVICE_FILTER",
       "path": "web/lib/staff.ts",
-      "line": 170,
+      "line": 191,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "0feae66090c2fb460d2b6d17b9e2fe1bc45a542533e75283405e75b3415da420"
@@ -8872,7 +9332,7 @@
       "name": "optionsOf",
       "label": "optionsOf",
       "path": "web/lib/staff.ts",
-      "line": 143,
+      "line": 164,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "de5f88cf80e101974c7c6aa320509335d9c76bb07c8f6f93fa1b9f958d007894"
@@ -8884,7 +9344,7 @@
       "name": "staffApi",
       "label": "staffApi",
       "path": "web/lib/staff.ts",
-      "line": 64,
+      "line": 79,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "9e17f5b667fb9618731d5c9c6380bca9acfc5dbf0e824104ad0188b01dcf95c8"
@@ -8896,7 +9356,7 @@
       "name": "STATUSES",
       "label": "STATUSES",
       "path": "web/lib/staff.ts",
-      "line": 83,
+      "line": 104,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols",
       "contentHash": "07c361a078dba73f4e72c7bbdf44644e6b1d233e58dbf54ea1b77291967fdc0a"
@@ -9775,6 +10235,69 @@
       "type": "calls",
       "source": "symbol:web/components/staff/customers.tsx#function:Presence",
       "target": "symbol:web/lib/services.ts#function:ago",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/staff/feedback.tsx#function:Down",
+      "target": "symbol:web/components/staff/feedback.tsx#function:failure",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/staff/feedback.tsx#function:Down",
+      "target": "symbol:web/components/staff/ui.tsx#function:when",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/staff/feedback.tsx#function:FeedbackView",
+      "target": "symbol:web/components/staff/feedback.tsx#function:failure",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.75,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/staff/feedback.tsx#function:FeedbackView",
+      "target": "symbol:web/components/staff/ui.tsx#function:useLoad",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/staff/feedback.tsx#function:FeedbackView",
+      "target": "symbol:web/lib/staff.ts#function:percent",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/staff/feedback.tsx#function:FeedbackView",
+      "target": "symbol:web/lib/staff.ts#function:worstFirst",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/components/staff/feedback.tsx#function:Rates",
+      "target": "symbol:web/lib/staff.ts#function:percent",
       "tier": "proven",
       "resolved": true,
       "confidence": 0.7,
@@ -10917,6 +11440,24 @@
     },
     {
       "type": "calls",
+      "source": "symbol:web/test/staff.test.ts#function:service",
+      "target": "symbol:web/lib/staff.ts#function:percent",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
+      "source": "symbol:web/test/staff.test.ts#function:service",
+      "target": "symbol:web/lib/staff.ts#function:worstFirst",
+      "tier": "proven",
+      "resolved": true,
+      "confidence": 0.7,
+      "extractor": "conservative-js-calls"
+    },
+    {
+      "type": "calls",
       "source": "symbol:web/test/staff.test.ts#variable:TICKETS",
       "target": "symbol:web/lib/staff.ts#function:summary",
       "tier": "proven",
@@ -11495,6 +12036,141 @@
       "type": "defines",
       "source": "file:web/.next-e2e/types/app/staffs/customers/page.ts",
       "target": "symbol:web/.next-e2e/types/app/staffs/customers/page.ts#type:Zero",
+      "line": 82,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#function:checkFields",
+      "line": 78,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#interface:LayoutProps",
+      "line": 58,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#interface:PageProps",
+      "line": 54,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Diff",
+      "line": 70,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:FirstArg",
+      "line": 72,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:MaybeField",
+      "line": 74,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Negative",
+      "line": 83,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:NonNegative",
+      "line": 84,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Numeric",
+      "line": 81,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:OmitWithTag",
+      "line": 69,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:RevalidateRange",
+      "line": 66,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:SecondArg",
+      "line": 73,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:SegmentParams",
+      "line": 7,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:TEntry",
+      "line": 5,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "symbol:web/.next-e2e/types/app/staffs/feedback/page.ts#type:Zero",
       "line": 82,
       "resolved": true,
       "confidence": 0.8,
@@ -12719,7 +13395,7 @@
       "type": "defines",
       "source": "file:web/.next-e2e/types/routes.d.ts",
       "target": "symbol:web/.next-e2e/types/routes.d.ts#interface:LayoutSlotMap",
-      "line": 31,
+      "line": 32,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -12764,7 +13440,7 @@
       "type": "defines",
       "source": "file:web/.next-e2e/types/routes.d.ts",
       "target": "symbol:web/.next-e2e/types/routes.d.ts#type:ParamsOf",
-      "line": 29,
+      "line": 30,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -12879,6 +13555,15 @@
     },
     {
       "type": "defines",
+      "source": "file:web/app/staffs/feedback/page.tsx",
+      "target": "symbol:web/app/staffs/feedback/page.tsx#function:StaffFeedback",
+      "line": 3,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
       "source": "file:web/app/staffs/handoffs/page.tsx",
       "target": "symbol:web/app/staffs/handoffs/page.tsx#function:StaffHandoffs",
       "line": 3,
@@ -12980,7 +13665,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#function:Icon",
-      "line": 33,
+      "line": 35,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -12989,7 +13674,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#function:Logo",
-      "line": 42,
+      "line": 44,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -12998,7 +13683,7 @@
       "type": "defines",
       "source": "file:web/components/icons.tsx",
       "target": "symbol:web/components/icons.tsx#type:IconName",
-      "line": 31,
+      "line": 33,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13124,7 +13809,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#function:Bubble",
-      "line": 523,
+      "line": 510,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13133,7 +13818,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#function:clock",
-      "line": 44,
+      "line": 39,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13142,7 +13827,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#function:Portal",
-      "line": 48,
+      "line": 43,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13151,7 +13836,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#type:Otp",
-      "line": 33,
+      "line": 28,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13160,7 +13845,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#type:Panel",
-      "line": 32,
+      "line": 27,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13187,7 +13872,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:HISTORY_OPEN",
-      "line": 30,
+      "line": 25,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13205,7 +13890,7 @@
       "type": "defines",
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:store",
-      "line": 35,
+      "line": 30,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13224,15 +13909,6 @@
       "source": "file:web/components/portal.tsx",
       "target": "symbol:web/components/portal.tsx#variable:TICKET_CARDS",
       "line": 18,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/portal.tsx",
-      "target": "symbol:web/components/portal.tsx#variable:TIERS",
-      "line": 24,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13332,6 +14008,51 @@
       "source": "file:web/components/staff/customers.tsx",
       "target": "symbol:web/components/staff/customers.tsx#function:Presence",
       "line": 15,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "symbol:web/components/staff/feedback.tsx#function:Down",
+      "line": 39,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "symbol:web/components/staff/feedback.tsx#function:failure",
+      "line": 10,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "symbol:web/components/staff/feedback.tsx#function:FeedbackView",
+      "line": 65,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "symbol:web/components/staff/feedback.tsx#function:Rates",
+      "line": 22,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "symbol:web/components/staff/feedback.tsx#function:Tile",
+      "line": 12,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13475,7 +14196,7 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#function:Button",
-      "line": 72,
+      "line": 73,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13484,51 +14205,6 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#function:category",
-      "line": 105,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:Empty",
-      "line": 137,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:Loading",
-      "line": 168,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:PageTitle",
-      "line": 51,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:Problem",
-      "line": 133,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:queue",
       "line": 106,
       "resolved": true,
       "confidence": 0.8,
@@ -13537,8 +14213,8 @@
     {
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:Search",
-      "line": 123,
+      "target": "symbol:web/components/staff/ui.tsx#function:Empty",
+      "line": 138,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13546,8 +14222,8 @@
     {
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:Select",
-      "line": 110,
+      "target": "symbol:web/components/staff/ui.tsx#function:Loading",
+      "line": 169,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13555,8 +14231,8 @@
     {
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:ServiceState",
-      "line": 95,
+      "target": "symbol:web/components/staff/ui.tsx#function:PageTitle",
+      "line": 52,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13564,8 +14240,8 @@
     {
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:Shell",
-      "line": 19,
+      "target": "symbol:web/components/staff/ui.tsx#function:Problem",
+      "line": 134,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13573,25 +14249,7 @@
     {
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:TicketStatus",
-      "line": 85,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:useLoad",
-      "line": 148,
-      "resolved": true,
-      "confidence": 0.8,
-      "extractor": "conservative-js-symbols"
-    },
-    {
-      "type": "defines",
-      "source": "file:web/components/staff/ui.tsx",
-      "target": "symbol:web/components/staff/ui.tsx#function:when",
+      "target": "symbol:web/components/staff/ui.tsx#function:queue",
       "line": 107,
       "resolved": true,
       "confidence": 0.8,
@@ -13600,8 +14258,71 @@
     {
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
+      "target": "symbol:web/components/staff/ui.tsx#function:Search",
+      "line": 124,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/ui.tsx",
+      "target": "symbol:web/components/staff/ui.tsx#function:Select",
+      "line": 111,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/ui.tsx",
+      "target": "symbol:web/components/staff/ui.tsx#function:ServiceState",
+      "line": 96,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/ui.tsx",
+      "target": "symbol:web/components/staff/ui.tsx#function:Shell",
+      "line": 20,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/ui.tsx",
+      "target": "symbol:web/components/staff/ui.tsx#function:TicketStatus",
+      "line": 86,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/ui.tsx",
+      "target": "symbol:web/components/staff/ui.tsx#function:useLoad",
+      "line": 149,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/ui.tsx",
+      "target": "symbol:web/components/staff/ui.tsx#function:when",
+      "line": 108,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#variable:BUTTONS",
-      "line": 67,
+      "line": 68,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13610,7 +14331,7 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#variable:input",
-      "line": 64,
+      "line": 65,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13619,7 +14340,7 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#variable:panel",
-      "line": 63,
+      "line": 64,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13628,7 +14349,7 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#variable:SERVICE_TONES",
-      "line": 90,
+      "line": 91,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13646,7 +14367,7 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#variable:td",
-      "line": 66,
+      "line": 67,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13655,7 +14376,7 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#variable:th",
-      "line": 65,
+      "line": 66,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13664,7 +14385,7 @@
       "type": "defines",
       "source": "file:web/components/staff/ui.tsx",
       "target": "symbol:web/components/staff/ui.tsx#variable:TICKET_TONES",
-      "line": 78,
+      "line": 79,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -13746,6 +14467,33 @@
       "source": "file:web/components/tickets.tsx",
       "target": "symbol:web/components/tickets.tsx#function:when",
       "line": 15,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/feedback.spec.ts",
+      "target": "symbol:web/e2e/feedback.spec.ts#function:stub",
+      "line": 9,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/feedback.spec.ts",
+      "target": "symbol:web/e2e/feedback.spec.ts#variable:REPLY",
+      "line": 7,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/e2e/feedback.spec.ts",
+      "target": "symbol:web/e2e/feedback.spec.ts#variable:token",
+      "line": 5,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14042,7 +14790,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#class:ChatClient",
-      "line": 50,
+      "line": 51,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14060,7 +14808,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#function:conversation",
-      "line": 200,
+      "line": 213,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14069,7 +14817,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#function:readClaims",
-      "line": 41,
+      "line": 42,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14078,7 +14826,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#function:visible",
-      "line": 30,
+      "line": 31,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14105,7 +14853,7 @@
       "type": "defines",
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#type:Options",
-      "line": 22,
+      "line": 23,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14124,6 +14872,15 @@
       "source": "file:web/lib/chat-client.ts",
       "target": "symbol:web/lib/chat-client.ts#type:Tier",
       "line": 18,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/chat-client.ts",
+      "target": "symbol:web/lib/chat-client.ts#type:Vote",
+      "line": 21,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14375,7 +15132,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#class:StaffError",
-      "line": 49,
+      "line": 64,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14384,7 +15141,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:actionsFor",
-      "line": 180,
+      "line": 201,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14393,7 +15150,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:actorLabel",
-      "line": 213,
+      "line": 234,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14402,7 +15159,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:call",
-      "line": 53,
+      "line": 68,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14411,7 +15168,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:canMove",
-      "line": 102,
+      "line": 123,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14420,7 +15177,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:countBy",
-      "line": 147,
+      "line": 168,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14429,7 +15186,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:customerHref",
-      "line": 81,
+      "line": 102,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14438,7 +15195,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:day",
-      "line": 113,
+      "line": 134,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14447,7 +15204,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:didWhat",
-      "line": 209,
+      "line": 230,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14456,7 +15213,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:filterCustomers",
-      "line": 198,
+      "line": 219,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14465,7 +15222,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:filterServices",
-      "line": 171,
+      "line": 192,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14474,7 +15231,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:filterTickets",
-      "line": 114,
+      "line": 135,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14483,7 +15240,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:movesFor",
-      "line": 87,
+      "line": 108,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14492,7 +15249,16 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:paginate",
-      "line": 136,
+      "line": 157,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/staff.ts",
+      "target": "symbol:web/lib/staff.ts#function:percent",
+      "line": 99,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14501,7 +15267,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:serviceHealth",
-      "line": 186,
+      "line": 207,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14510,7 +15276,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:sortTickets",
-      "line": 125,
+      "line": 146,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14519,7 +15285,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:summary",
-      "line": 153,
+      "line": 174,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14528,7 +15294,16 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#function:ticketHref",
-      "line": 80,
+      "line": 101,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/staff.ts",
+      "target": "symbol:web/lib/staff.ts#function:worstFirst",
+      "line": 97,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14564,7 +15339,16 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#type:CustomerFilter",
-      "line": 196,
+      "line": 217,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/staff.ts",
+      "target": "symbol:web/lib/staff.ts#type:FeedbackReport",
+      "line": 57,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14591,7 +15375,25 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#type:Move",
-      "line": 86,
+      "line": 107,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/staff.ts",
+      "target": "symbol:web/lib/staff.ts#type:Rate",
+      "line": 56,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/staff.ts",
+      "target": "symbol:web/lib/staff.ts#type:Rating",
+      "line": 51,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14600,7 +15402,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#type:ServiceFilter",
-      "line": 169,
+      "line": 190,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14627,7 +15429,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#type:TicketFilter",
-      "line": 106,
+      "line": 127,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14636,7 +15438,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#type:TicketSort",
-      "line": 111,
+      "line": 132,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14645,7 +15447,16 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:ACTIVE",
-      "line": 82,
+      "line": 103,
+      "resolved": true,
+      "confidence": 0.8,
+      "extractor": "conservative-js-symbols"
+    },
+    {
+      "type": "defines",
+      "source": "file:web/lib/staff.ts",
+      "target": "symbol:web/lib/staff.ts#variable:CRITICAL",
+      "line": 62,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14654,7 +15465,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:DID",
-      "line": 206,
+      "line": 227,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14663,7 +15474,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:enc",
-      "line": 63,
+      "line": 78,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14672,7 +15483,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:NO_CUSTOMER_FILTER",
-      "line": 197,
+      "line": 218,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14681,7 +15492,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:NO_FILTER",
-      "line": 110,
+      "line": 131,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14690,7 +15501,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:NO_SERVICE_FILTER",
-      "line": 170,
+      "line": 191,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14699,7 +15510,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:optionsOf",
-      "line": 143,
+      "line": 164,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14708,7 +15519,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:staffApi",
-      "line": 64,
+      "line": 79,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -14717,7 +15528,7 @@
       "type": "defines",
       "source": "file:web/lib/staff.ts",
       "target": "symbol:web/lib/staff.ts#variable:STATUSES",
-      "line": 83,
+      "line": 104,
       "resolved": true,
       "confidence": 0.8,
       "extractor": "conservative-js-symbols"
@@ -15245,6 +16056,26 @@
     },
     {
       "type": "imports",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "file:web/app/staffs/feedback/page.tsx",
+      "specifier": "../../../../../app/staffs/feedback/page.js",
+      "line": 2,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/.next-e2e/types/app/staffs/feedback/page.ts",
+      "target": "package:npm:next",
+      "specifier": "next/dist/lib/metadata/types/metadata-interface.js",
+      "line": 3,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
       "source": "file:web/.next-e2e/types/app/staffs/handoffs/page.ts",
       "target": "file:web/app/staffs/handoffs/page.tsx",
       "specifier": "../../../../../app/staffs/handoffs/page.js",
@@ -15545,6 +16376,16 @@
     },
     {
       "type": "imports",
+      "source": "file:web/app/staffs/feedback/page.tsx",
+      "target": "file:web/components/staff/feedback.tsx",
+      "specifier": "@/components/staff/feedback.tsx",
+      "line": 1,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
       "source": "file:web/app/staffs/handoffs/page.tsx",
       "target": "file:web/components/staff/overview.tsx",
       "specifier": "@/components/staff/overview.tsx",
@@ -15708,7 +16549,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/components/icons.tsx",
       "specifier": "./icons.tsx",
-      "line": 12,
+      "line": 13,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15718,7 +16559,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/components/panels.tsx",
       "specifier": "./panels.tsx",
-      "line": 13,
+      "line": 14,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15728,7 +16569,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/components/services.tsx",
       "specifier": "./services.tsx",
-      "line": 14,
+      "line": 15,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15738,7 +16579,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/components/tickets.tsx",
       "specifier": "./tickets.tsx",
-      "line": 15,
+      "line": 16,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15748,7 +16589,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/chat-client.ts",
       "specifier": "@/lib/chat-client.ts",
-      "line": 6,
+      "line": 7,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15758,7 +16599,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/reduce.ts",
       "specifier": "@/lib/reduce.ts",
-      "line": 8,
+      "line": 9,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15768,7 +16609,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/services.ts",
       "specifier": "@/lib/services.ts",
-      "line": 9,
+      "line": 10,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15778,7 +16619,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/tickets.ts",
       "specifier": "@/lib/tickets.ts",
-      "line": 10,
+      "line": 11,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15788,7 +16629,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "file:web/lib/trace.ts",
       "specifier": "@/lib/trace.ts",
-      "line": 11,
+      "line": 12,
       "resolved": true,
       "confidence": 0.85,
       "extractor": "javascript-imports"
@@ -15798,7 +16639,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "package:npm:next",
       "specifier": "next/link",
-      "line": 3,
+      "line": 4,
       "resolved": false,
       "confidence": 0.5,
       "extractor": "javascript-imports"
@@ -15808,7 +16649,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "package:npm:next",
       "specifier": "next/navigation",
-      "line": 4,
+      "line": 5,
       "resolved": false,
       "confidence": 0.5,
       "extractor": "javascript-imports"
@@ -15818,7 +16659,7 @@
       "source": "file:web/components/portal.tsx",
       "target": "package:npm:react",
       "specifier": "react",
-      "line": 5,
+      "line": 6,
       "resolved": false,
       "confidence": 0.5,
       "extractor": "javascript-imports"
@@ -15945,6 +16786,36 @@
     },
     {
       "type": "imports",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "file:web/components/staff/ui.tsx",
+      "specifier": "./ui.tsx",
+      "line": 8,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "file:web/lib/staff.ts",
+      "specifier": "@/lib/staff.ts",
+      "line": 6,
+      "resolved": true,
+      "confidence": 0.85,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
+      "source": "file:web/components/staff/feedback.tsx",
+      "target": "package:npm:react",
+      "specifier": "react",
+      "line": 5,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
       "source": "file:web/components/staff/overview.tsx",
       "target": "file:web/components/staff/ui.tsx",
       "specifier": "./ui.tsx",
@@ -16205,6 +17076,16 @@
     },
     {
       "type": "imports",
+      "source": "file:web/e2e/feedback.spec.ts",
+      "target": "package:npm:@playwright/test",
+      "specifier": "@playwright/test",
+      "line": 3,
+      "resolved": false,
+      "confidence": 0.5,
+      "extractor": "javascript-imports"
+    },
+    {
+      "type": "imports",
       "source": "file:web/e2e/history.spec.ts",
       "target": "package:npm:@playwright/test",
       "specifier": "@playwright/test",
@@ -16218,7 +17099,7 @@
       "source": "file:web/e2e/portal.spec.ts",
       "target": "package:npm:@playwright/test",
       "specifier": "@playwright/test",
-      "line": 2,
+      "line": 3,
       "resolved": false,
       "confidence": 0.5,
       "extractor": "javascript-imports"
@@ -16558,6 +17439,6 @@
     "Python AST unavailable: python3 failed"
   ],
   "stats": {
-    "unresolvedCalls": 296
+    "unresolvedCalls": 323
   }
 }
