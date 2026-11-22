@@ -47,6 +47,7 @@ LEAD_AT = 0.50
 CO_ACTIVATE_AT = 0.80
 MAX_FINDINGS = 4000     # characters
 MAX_EVIDENCE = 20
+NO_CONFIDENT_FIT = "no specialist is a confident fit"   # Jev answered, but no lead reached LEAD_AT
 
 
 class Role(str, Enum):
@@ -162,7 +163,7 @@ def delegate(engine, specialists, message):
         return Plan(None, handoff="delegation could not be decided")
     lead, confidence = Role(answers["lead"].value), answers["lead"].confidence
     if confidence < LEAD_AT:
-        return Plan(None, lead_confidence=confidence, handoff="no specialist is a confident fit")
+        return Plan(None, lead_confidence=confidence, handoff=NO_CONFIDENT_FIT)
     chosen = [(lead, False)] + [
         (role, _yes(answers[f"after_{role.value}"]) >= CO_ACTIVATE_AT) for role in others
         if role is not lead and _yes(answers[f"needs_{role.value}"]) >= CO_ACTIVATE_AT]
@@ -233,8 +234,11 @@ def masked_text(message):
 
 
 def _result(role, status, findings, history, evidence=(), **extra):
+    """steps: the records read; a step that reads nothing (findings, a refused move) counts only when it is
+    the specialist's only step, so the report after its last read is free."""
+    steps = sum("observation" in h for h in history) or min(len(history), 1)
     return {"role": role, "status": status, "findings": findings, "evidence": list(evidence),
-            "steps": len(history), **extra}
+            "steps": steps, **extra}
 
 
 def valid_findings(move):
@@ -244,9 +248,9 @@ def valid_findings(move):
 
 
 def specialist_graph(spec, run_tool):
-    """One specialist as run(state, config) -> state with its "result": up to brief["steps"] ReAct steps over
-    its own tools, then a typed result. A turn may bring its own run_tool in
-    config["configurable"]["run_tool"] (DECISION-ea5b8887 C); else this one."""
+    """One specialist as run(state, config) -> state with its "result": up to brief["steps"] reads of its own
+    tools, then one step that must report (it is not counted), then a typed result. A turn may bring its own
+    run_tool in config["configurable"]["run_tool"] (DECISION-ea5b8887 C); else this one."""
     def step(state, config):
         brief, history = state["brief"], list(state.get("history", []))
         run = (config.get("configurable") or {}).get("run_tool") or run_tool
@@ -260,6 +264,10 @@ def specialist_graph(spec, run_tool):
                         "result": _result(spec.role.value, "blocked", "invalid findings", history)}
             return {"history": history, "result": _result(spec.role.value, "completed", move["findings"],
                                                           history, move.get("evidence", []))}
+        read = [h["observation"] for h in history if "observation" in h]
+        if len(read) >= brief["steps"]:  # the free step after the last read reports; it may not read again
+            return {"history": history, "result": _result(spec.role.value, "blocked", "step budget used up",
+                                                          history, last_observation=read[-1])}
         action, arguments = move.get("action"), move.get("action_input", {})
         if action not in spec.tools or not isinstance(arguments, dict):
             return {"history": history,
@@ -273,14 +281,11 @@ def specialist_graph(spec, run_tool):
         except Exception as error:  # noqa: BLE001 - the next step may retry once (Reflexion), within budget
             observation = {"error": failure_code(error)}
         history[-1]["observation"] = observation
-        if len(history) >= brief["steps"]:
-            return {"history": history, "result": _result(spec.role.value, "blocked", "step budget used up",
-                                                          history, last_observation=observation)}
         return {"history": history}
 
     def run(state, config=None):
         state = dict(state)
-        while not state.get("result"):  # every step either ends the work or uses budget, so this stops
+        while not state.get("result"):  # each step reads within budget or ends the work, so this stops
             state.update(step(state, config or {}))
         return state
     return run

@@ -41,6 +41,7 @@ import psycopg
 from agents.merge import COMPLETED, Claim, Outcome, claims_from, human, merge
 from agents.topology import (
     MAX_FINDINGS,
+    NO_CONFIDENT_FIT,
     STEPS_PER_SPECIALIST,
     Role,
     Specialist,
@@ -93,11 +94,12 @@ TEAM = {  # what Jev reads to pick the lead (no digits: the Jev rule)
                        "verification, users and roles, subscriptions and data privacy"),
 }
 TOOLS = {  # each specialist's read-only tools (tools.nimbus, W41); without Jev the generalist has all
-    Role.GENERALIST: ("nimbus_status.service_status",),
+    Role.GENERALIST: ("nimbus_status.service_status", "nimbus_support.my_services"),
     Role.BILLING: ("nimbus_account.my_invoices", "nimbus_support.my_subscriptions"),
     Role.TECHNICAL: ("nimbus_status.service_status", "nimbus_support.my_tickets",
                      "nimbus_support.my_services"),
-    Role.ACCOUNT_OPS: ("nimbus_account.my_account", "nimbus_support.my_subscriptions"),
+    Role.ACCOUNT_OPS: ("nimbus_account.my_account", "nimbus_support.my_subscriptions",
+                       "nimbus_support.my_services"),
 }
 # B26: the team that owns a restricted article (its acl_groups) and its hitl.queues queue
 TEAMS = {"billing-team": ("billing", "queue_billing"), "security-team": ("security", "queue_account")}
@@ -112,7 +114,9 @@ only, at most eight items:
 "evidence": ["<passage or record id>"]}}]
 Add "value" (a number) and "unit" only when the fact is a quantity. Reply [] when nothing in the passages
 or records answers it."""
-TOOL_STEP = """Before answering you may read one of the customer's own records, if it would help:
+TOOL_STEP = """The passages do not hold the customer's own data. When the customer asks about their own
+account (their services, tickets, subscriptions, invoices or account details), read the matching record below
+before answering; otherwise read one only if it would help:
 {tools}
 To read one, reply with JSON only: {{"action": "<record id>"}}. Otherwise reply with the findings as asked."""
 DRAFT = ("Answer only the latest question, from the specialist findings only. The conversation is context: "
@@ -334,6 +338,8 @@ class TurnLoop:
             records = "".join(f"\n\n{self.records[key][t]}" for t in read)
             tools = self.catalog.tools if about else self.team[role].tools  # about: the generalist alone
             offered = [] if history else self.offered(key, tools)
+            if not history:  # the trace shows what each specialist could read (a guest is offered nothing)
+                self.steps.setdefault(key, {}).setdefault("offered", {})[role.value] = offered
             self.progress(key, f"Asking the {role.value.replace('_', ' ')} specialist")
             upstream = brief.get("upstream")
             lead = delimit(upstream["findings"], f"{upstream['role']} findings") + "\n" if upstream else ""
@@ -424,6 +430,7 @@ class TurnLoop:
             return None, "RESTRICTED_ANSWER"
         self.turns.setdefault(key, {})["dialogue"] = dialogue(state["messages"])  # the specialists' context
         sections, draft = self.retrieve(state, query), self.draft(state, instruction)
+        query = self.steps[key]["retrieval"]["query"]  # standalone: the rewrite resolved it from the dialogue
         evidence = {s.parent_id: f"{s.title}\n{s.text}" for s in sections}
         who = self.turns.get(key) or {}
         brief = {"tenant_id": key[0], "case_id": key[1], "turn_id": who.get("turn_id") or str(uuid.uuid4()),
@@ -436,12 +443,17 @@ class TurnLoop:
                 outcome = self.alone(brief, query, draft, config)
             else:
                 turn = self.coordinator({**brief, "message": query}, config)
-                if turn["plan"]["handoff"]:
+                self.steps.setdefault(key, {})["plan"] = plan = {**turn["plan"]}
+                lead, results = plan["lead"], turn["results"]
+                if plan["handoff"] == NO_CONFIDENT_FIT:  # no confident lead: the generalist tries first
+                    plan["fallback"], lead = "generalist", Role.GENERALIST.value
+                    results = [self.general(brief, query, config)]
+                if lead is None:  # Jev could not decide the delegation
                     outcome = human("NO_DELEGATION")
-                elif self.unanswered(key, turn["plan"]["lead"]):
+                elif self.unanswered(key, lead):
                     outcome = human("LEAD_UNAVAILABLE")
                 else:
-                    outcome = merge(self.decide, turn["results"], {**evidence, **self.records.get(key, {})},
+                    outcome = merge(self.decide, results, {**evidence, **self.records.get(key, {})},
                                     draft, redraft=self.draft(state, instruction + REDRAFT + "\n"),
                                     dated={s.parent_id: s.updated_at for s in sections})
         except NoDraft as error:
@@ -461,15 +473,18 @@ class TurnLoop:
         return any(s["role"] == role and s["outcome"] != "answered"
                    for s in self.steps.get(key, {}).get("specialists", []))
 
+    def general(self, brief, query, config):
+        """The generalist's result: it reads for every domain, with every tool the customer's tier allows."""
+        return self.generalist({"brief": {**brief, "role": Role.GENERALIST.value, "objective": query,
+                                          "steps": STEPS_PER_SPECIALIST}, "history": []}, config)["result"]
+
     def alone(self, brief, query, draft, config):
-        """Without Jev nothing delegates or adjudicates: the generalist reads for every domain, with every
-        tool; agents.merge's code-only check still applies (topics are unique per specialist: nothing to
-        adjudicate)."""
-        done = self.generalist({"brief": {**brief, "role": Role.GENERALIST.value, "objective": query,
-                                          "steps": STEPS_PER_SPECIALIST}, "history": []}, config)
+        """Without Jev nothing delegates or adjudicates: the generalist answers alone; agents.merge's
+        code-only check still applies (topics are unique per specialist: nothing to adjudicate)."""
+        result = self.general(brief, query, config)
         if self.unanswered((brief["tenant_id"], brief["case_id"]), Role.GENERALIST.value):
             return human("LEAD_UNAVAILABLE")
-        claims = tuple(claims_from(done["result"]))
+        claims = tuple(claims_from(result))
         if not claims:
             return human("NOTHING_TO_SAY")
         text = draft(claims)

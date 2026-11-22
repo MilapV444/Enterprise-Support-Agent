@@ -20,6 +20,7 @@ import pytest
 from fastapi.testclient import TestClient
 from qdrant_client import QdrantClient
 
+from agents.topology import NO_CONFIDENT_FIT
 from channels import sessions
 from channels.api import turns
 from channels.api.envelope import InboundTurn, TurnAction
@@ -80,8 +81,11 @@ class World:
     reports (None: one claim citing every passage it was shown)."""
 
     def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None,
-                 specialists_down=False, redirecting=False, wants_ticket=False):
+                 specialists_down=False, redirecting=False, wants_ticket=False, lead_confidence=0.9,
+                 standalone=None):
         self.triage = triage or triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.05)
+        self.lead_confidence = lead_confidence     # Jev's lead confidence (under 0.5: no confident fit)
+        self.standalone = standalone               # what the retrieval rewrite turns the message into
         self.model_down, self.jev, self.model = model_down, [], []
         self.lead, self.claims, self.read = lead, claims, read   # read: the record a specialist asks for
         self.specialists_down = specialists_down   # every specialist's model call fails (B23)
@@ -98,7 +102,7 @@ class World:
                        "category": {"type": "choice", "choice": "refund", "confidence": 0.9}}
         elif "lead" in body["questions"]:               # delegation: one lead, nobody joins
             answers = {qid: {"type": "noul", "noul": 0.05} for qid in body["questions"]}
-            answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": 0.9}
+            answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": self.lead_confidence}
         elif "redirect" in body["questions"]:
             elsewhere = REDIRECTING in json.dumps(body["state"])
             answers = {"redirect": {"type": "choice", "choice": "hand_off" if elsewhere else "self_service",
@@ -116,7 +120,7 @@ class World:
             return httpx.Response(503, json={"error": "overloaded"})
         if "standalone search query" in prompt:
             latest = prompt.split("Latest message:\n", 1)[1].strip()
-            text = json.dumps({"standalone_query": latest, "exact_identifiers": []})
+            text = json.dumps({"standalone_query": self.standalone or latest, "exact_identifiers": []})
         elif "Classify the customer conversation" in prompt or "Classify the customer message" in prompt:
             text = json.dumps({"intent": "GENERAL_INQUIRY", "severity": 1, "missing_details": False,
                                "confidence": 0.95})
@@ -588,6 +592,44 @@ def test_a_signed_in_customer_is_answered_from_their_own_record_read_through_the
     assert tool_audit_of(turn) == [("nimbus_account.my_invoices", "ok", "sarah", None)]
     assert trace_steps(turn)["tools"] == [{"role": "billing", "tool": "nimbus_account.my_invoices"}]
     assert [kind for kind, _ in published(turn)][-1] == "final"
+
+
+def test_account_ops_reads_the_customers_own_services_and_the_trace_shows_the_plan_and_offers(stack):
+    world = World(lead="account_ops", read="nimbus_support.my_services")
+    turn = inbound("What services are running on my account?", tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+    assert loop(stack, world, tools=True).run(turn) == "answered"
+    steps = trace_steps(turn)
+    assert steps["tools"] == [{"role": "account_ops", "tool": "nimbus_support.my_services"}]
+    assert "nimbus_support.my_services" in steps["offered"]["account_ops"]
+    assert "nimbus_account.my_account" not in steps["offered"]["account_ops"]      # T2 only
+    assert steps["plan"]["lead"] == "account_ops" and steps["plan"]["handoff"] is None
+    assert steps["plan"]["assignments"][0] == {"role": "account_ops", "steps": 2, "after_lead": False}
+
+
+def test_with_no_confident_lead_the_generalist_answers_instead_of_a_hand_off(stack):
+    world = World(lead_confidence=0.3)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "answered"
+    plan = trace_steps(turn)["plan"]
+    assert plan["handoff"] == NO_CONFIDENT_FIT and plan["fallback"] == "generalist"
+    assert specialist_prompts(world) and all("generalist specialist" in p for p in specialist_prompts(world))
+
+
+def test_with_no_confident_lead_and_nothing_the_generalist_can_say_a_person_takes_it(stack):
+    world = World(lead_confidence=0.3, claims=[])
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "handed_off"
+    assert trace_steps(turn)["answer"]["outcome"] == "NOTHING_TO_SAY"
+
+
+def test_jev_and_the_specialists_get_the_standalone_question_the_rewrite_resolved(stack):
+    world = World(standalone="How do I reset my password with single sign-on?")
+    turn = inbound("And with SSO?")
+    assert loop(stack, world).run(turn) == "answered"
+    (delegation,) = [body for body in world.jev if "lead" in body["questions"]]
+    assert delegation["state"]["message"] == world.standalone
+    assert all(delimit(world.standalone, "customer message") in p for p in specialist_prompts(world))
 
 
 def test_an_anonymous_customer_is_offered_no_account_record_and_is_answered_from_passages(stack):

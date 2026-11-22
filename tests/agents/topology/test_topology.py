@@ -275,8 +275,9 @@ def test_independent_specialists_run_in_parallel_within_their_steps():
     results = {r["role"]: r for r in state["results"]}
     assert results["technical"]["findings"] == "technical: {'ok': 'ops.uptime ok'}"
     assert roles(state) == ["billing", "technical", "account_ops"]  # role order, whoever finished first
-    assert [r["steps"] for r in state["results"]] == [2, 2, 1]       # account_ops got the one step left
-    assert ledger(state["results"], state["plan"])[1] == STEPS_PER_TURN
+    assert [r["steps"] for r in state["results"]] == [1, 1, 1]       # one read each; the report is free
+    assert all(r["status"] == "completed" for r in state["results"])  # account_ops too, on its one step
+    assert ledger(state["results"], state["plan"])[1] == 4
 
 
 def test_several_dependents_run_after_the_lead_and_each_gets_its_completed_result():
@@ -295,7 +296,7 @@ def test_several_dependents_run_after_the_lead_and_each_gets_its_completed_resul
     assert set(seen) == {("billing", "completed"), ("technical", "completed")}
     results = {r["role"]: r for r in state["results"]}
     assert "after generalist:" in results["billing"]["findings"]
-    assert results["technical"]["steps"] == 1 and results["technical"]["status"] == "blocked"  # one step left
+    assert results["technical"]["steps"] == 1 and results["technical"]["status"] == "completed"  # read+report
 
 
 @pytest.mark.parametrize("lead_act", [
@@ -338,7 +339,7 @@ def test_a_failed_tool_call_gets_one_retry_within_the_budget():
         return finishing("technical", "ops.uptime")(brief, history)
     state, tools = turn(Jev(), Tools(fail_once={"ops.uptime"}), technical=retry)
     (result,) = state["results"]
-    assert result["status"] == "blocked" and result["last_observation"] == {"ok": "ops.uptime ok"}
+    assert result["status"] == "completed" and "ops.uptime ok" in result["findings"] and result["steps"] == 2
     assert tools.calls == [("technical", "ops.uptime"), ("technical", "ops.uptime")]
 
 
