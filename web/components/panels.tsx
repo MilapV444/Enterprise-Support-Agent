@@ -9,7 +9,7 @@ import { Icon, type IconName } from "./icons.tsx";
 
 export type Loadable<T> = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; value: T };
 
-const GOOD = new Set(["SUCCESS", "PASS", "MASKED", "NONE FOUND"]);
+const GOOD = new Set(["SUCCESS", "PASS", "MASKED", "NONE FOUND", "SKIPPED"]);
 
 export function Drawer({ title, icon, onClose, children }: {
   title: string; icon?: IconName; onClose: () => void; children: ReactNode;

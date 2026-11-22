@@ -60,8 +60,10 @@ TOOL_REGISTRY = tool_registry()
 class Jev:
     """lead: (role, confidence); needs / after: {role: P(yes)}; answers: raw overrides (malformed output)."""
 
-    def __init__(self, lead=("technical", 0.9), needs=None, after=None, down=False, answers=None):
+    def __init__(self, lead=("technical", 0.9), needs=None, after=None, down=False, answers=None,
+                 records=0.0):
         self.lead, self.needs, self.after, self.down, self.raw = lead, needs or {}, after or {}, down, answers
+        self.records = records   # P(yes) that the customer's own records alone answer it
         self.seen = []
 
     def evaluate(self, state, questions):
@@ -74,6 +76,8 @@ class Jev:
             if kind in ("needs", "after"):
                 p = getattr(self, kind).get(role, 0.0)
                 answers[qid] = Answer(p >= 0.5, max(p, 1 - p))
+            if qid == "records_only":
+                answers[qid] = Answer(self.records >= 0.5, max(self.records, 1 - self.records))
         return {**answers, **(self.raw or {})}
 
 
@@ -311,6 +315,18 @@ def test_dependents_are_skipped_not_run_when_the_lead_did_not_complete(lead_act)
     assert results["billing"] == {"role": "billing", "status": "skipped",
                                   "findings": "the lead did not complete", "evidence": [], "steps": 0}
     assert all(role != "billing" for role, _ in tools.calls)
+
+
+def test_the_plan_with_its_records_only_answer_is_handed_over_before_anyone_is_dispatched():
+    seen, tools = [], Tools()
+    graph = coordinator(DecisionEngine(Jev(records=0.9)), specialists(), tools)
+    graph({**TURN, "message": AUDIT},
+          {"configurable": {"planned": lambda plan: seen.append((plan["lead"], plan["records_only"],
+                                                                  list(tools.calls)))}})
+    assert seen == [("technical", True, [])]                        # nobody had read anything yet
+    assert delegate(DecisionEngine(Jev(records=0.2)), specialists(), Masked(AUDIT)).records_only is False
+    assert delegate(DecisionEngine(Jev(lead=("technical", 0.3), records=0.9)), specialists(),
+                    Masked(AUDIT)).records_only is False             # a hand-off plan searches as usual
 
 
 def test_a_specialist_that_knows_the_answer_reports_in_one_step():

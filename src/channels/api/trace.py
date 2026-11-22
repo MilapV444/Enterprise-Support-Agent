@@ -56,7 +56,8 @@ def _agents(decision, steps):
         calls = []
         if retrieval:
             calls.append(_call(
-                "Retrieval lookup", "FAILED" if retrieval.get("failed") else "SUCCESS",
+                "Retrieval lookup", "SKIPPED" if retrieval.get("skipped")  # the customer's records answer it
+                else "FAILED" if retrieval.get("failed") else "SUCCESS",
                 {"index": ", ".join(retrieval.get("collections") or []) or "knowledge base",
                  "query": str(retrieval.get("query", ""))[:160]},
                 [source["title"] for source in sources]))
@@ -65,9 +66,11 @@ def _agents(decision, steps):
             calls.append(_call("Draft answer", "SUCCESS" if answered else "NO ANSWER",
                                {"model": answer["model"]} if answer.get("model") else None))
         found = f"{len(sources)} source{'s' * (len(sources) != 1)}" if sources else "no matching source"
+        found = "no documentation: answered from your account records" if (retrieval or {}).get("skipped") \
+            else f"retrieved {found}"
         agents.append({"id": "knowledge", "name": "Knowledge Agent",
                        "role": "Finds documentation passages and drafts the answer",
-                       "status": "success" if answered else "failed", "outcome": f"retrieved {found}",
+                       "status": "success" if answered else "failed", "outcome": found,
                        "calls": calls,
                        "notes": ["Retried once after the first draft did not pass the checks"]
                        if (answer or {}).get("retried") else []})

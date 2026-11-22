@@ -45,6 +45,9 @@ STEPS_PER_TURN = 6      # all agents, the coordinator included
 COORDINATOR_STEPS = 1   # the delegation decision
 LEAD_AT = 0.50
 CO_ACTIVATE_AT = 0.80
+RECORDS_ONLY_AT = 0.80  # Jev's yes that the customer's own records answer it: documentation is not searched
+RECORDS_ONLY = ("Can this inquiry be answered from the customer's own account records alone (their services, "
+                "tickets, subscriptions, invoices or account details), without any documentation?")
 MAX_FINDINGS = 4000     # characters
 MAX_EVIDENCE = 20
 NO_CONFIDENT_FIT = "no specialist is a confident fit"   # Jev answered, but no lead reached LEAD_AT
@@ -103,6 +106,7 @@ class Plan:
     assignments: tuple[Assignment, ...] = ()
     lead_confidence: float = 0.0
     handoff: str | None = None   # why nothing was dispatched
+    records_only: bool = False   # the customer's own records answer it: no documentation search
 
     @property
     def steps(self):
@@ -111,7 +115,7 @@ class Plan:
     def as_state(self):
         """Plain JSON for the checkpoint."""
         return {"lead": self.lead and self.lead.value, "lead_confidence": self.lead_confidence,
-                "handoff": self.handoff,
+                "handoff": self.handoff, "records_only": self.records_only,
                 "assignments": [{"role": a.role.value, "steps": a.steps, "after_lead": a.after_lead}
                                 for a in self.assignments]}
 
@@ -149,7 +153,7 @@ def delegate(engine, specialists, message):
               "instructions": "Which specialist should take the lead on this customer inquiry?",
               "criteria": {role.value: spec.description for role, spec in specialists.items()}}
     others = [role for role in specialists if role is not Role.GENERALIST]
-    questions = {"lead": lead_q}
+    questions = {"lead": lead_q, "records_only": {"type": "noul", "instructions": RECORDS_ONLY}}
     for role in others:
         name = role.value.replace("_", " ")
         questions[f"needs_{role.value}"] = {"type": "noul", "instructions": (
@@ -173,7 +177,8 @@ def delegate(engine, specialists, message):
         if steps:
             assignments.append(Assignment(role, steps, after_lead))
             budget -= steps
-    return Plan(lead, tuple(assignments), confidence)
+    return Plan(lead, tuple(assignments), confidence,
+                records_only=_yes(answers["records_only"]) >= RECORDS_ONLY_AT)
 
 
 # Tools ------------------------------------------------------------------------------------------------------
@@ -293,7 +298,8 @@ def specialist_graph(spec, run_tool):
 
 def coordinator(engine, specialists, run_tool):
     """One turn as turn(state, config) -> state; start one with start_turn(). run_tool is the default; a turn
-    passes its own as config["configurable"]["run_tool"], which reaches every specialist."""
+    passes its own as config["configurable"]["run_tool"], which reaches every specialist, and may pass
+    config["configurable"]["planned"](plan), called once the plan is made and before anyone is dispatched."""
     runs = {role: specialist_graph(spec, run_tool) for role, spec in specialists.items()}
 
     def plan(state):
@@ -333,6 +339,9 @@ def coordinator(engine, specialists, run_tool):
     def turn(state, config=None):
         config = config or {}
         state = {"results": [], **state, **plan(state)}
+        planned = (config.get("configurable") or {}).get("planned")
+        if planned:
+            planned(state["plan"])
         first, _ = briefs(state, False)
         if first:  # no first wave (a hand-off plan): straight to join
             state["results"] = merge_results([], run_all(first, config))

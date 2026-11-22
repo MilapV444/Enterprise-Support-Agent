@@ -27,6 +27,7 @@ from channels.api.envelope import InboundTurn, TurnAction
 from channels.identity import otp
 from channels.identity.server import build_app
 from channels.identity.service import Identity
+from channels.identity.tiers import Tier
 from core.context.assembler import delimit
 from core.orchestrator import case_state
 from core.orchestrator.case_state import MemoryStore
@@ -40,7 +41,7 @@ from hitl.tickets import Tickets
 from knowledge.ingest import pipeline as ingest
 from knowledge.retrieval.pipeline import RestrictedMatch, Retriever
 from reliability.fallbacks import openai_compatible
-from runtime import FAILED, HANDOFF, NoJev, Services, TurnLoop, connector, production, tickets
+from runtime import FAILED, HANDOFF, STANDING, NoJev, Services, TurnLoop, connector, production, tickets
 from safety.governance import records
 from safety.governance.records import DecisionLog
 from safety.pii.tokens import Tokenizer
@@ -82,7 +83,8 @@ class World:
 
     def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None,
                  specialists_down=False, redirecting=False, wants_ticket=False, lead_confidence=0.9,
-                 standalone=None):
+                 standalone=None, records_only=False):
+        self.records_only = records_only           # Jev: the customer's own records alone answer it (B1)
         self.triage = triage or triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.05)
         self.lead_confidence = lead_confidence     # Jev's lead confidence (under 0.5: no confident fit)
         self.standalone = standalone               # what the retrieval rewrite turns the message into
@@ -103,6 +105,7 @@ class World:
         elif "lead" in body["questions"]:               # delegation: one lead, nobody joins
             answers = {qid: {"type": "noul", "noul": 0.05} for qid in body["questions"]}
             answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": self.lead_confidence}
+            answers["records_only"] = {"type": "noul", "noul": 0.95 if self.records_only else 0.05}
         elif "redirect" in body["questions"]:
             elsewhere = REDIRECTING in json.dumps(body["state"])
             answers = {"redirect": {"type": "choice", "choice": "hand_off" if elsewhere else "self_service",
@@ -605,6 +608,41 @@ def test_account_ops_reads_the_customers_own_services_and_the_trace_shows_the_pl
     assert "nimbus_account.my_account" not in steps["offered"]["account_ops"]      # T2 only
     assert steps["plan"]["lead"] == "account_ops" and steps["plan"]["handoff"] is None
     assert steps["plan"]["assignments"][0] == {"role": "account_ops", "steps": 2, "after_lead": False}
+
+
+def test_a_question_the_customers_own_records_answer_searches_no_documentation(stack):
+    world = World(lead="account_ops", read="nimbus_support.my_services", records_only=True)
+    turn = inbound("What services are running on my account?", tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+    assert loop(stack, world, tools=True).run(turn) == "answered"
+    steps = trace_steps(turn)
+    assert steps["retrieval"]["skipped"] and steps["plan"]["records_only"]
+    assert steps["tools"] == [{"role": "account_ops", "tool": "nimbus_support.my_services"}]
+    assert "Searching our help articles" not in [d.get("text") for k, d in published(turn) if k == "status"]
+    assert not any("Rank the passages" in m[-1]["content"] for m in world.model)       # no rerank either
+    assert all("(no knowledge passage matched)" in p for p in specialist_prompts(world))
+    assert "citation" not in [kind for kind, _ in published(turn)]
+
+
+def test_a_guest_whose_question_only_records_answer_still_gets_the_documentation(stack):
+    world = World(records_only=True)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "answered"           # no record to read: the search still runs
+    assert "skipped" not in trace_steps(turn)["retrieval"]
+
+
+def test_the_specialists_and_the_writer_are_told_the_customers_verified_tier(stack):
+    world = World(lead="account_ops", read="nimbus_support.my_services")
+    signed = inbound("What services are running on my account?", tier="T1_VERIFIED", principal="sarah",
+                     session=signed_in("T1_VERIFIED"))
+    assert loop(stack, world, tools=True).run(signed) == "answered"
+    prompts = [m[-1]["content"] for m in world.model]
+    (draft,) = [p for p in prompts if "specialist findings" in p]
+    assert STANDING[Tier.T1_VERIFIED] in draft and all(STANDING[Tier.T1_VERIFIED] in p
+                                                         for p in specialist_prompts(world))
+    world = World()
+    assert loop(stack, world).run(inbound("How do I reset my password?")) == "answered"
+    assert all(STANDING[Tier.T0_ANON] in p for p in specialist_prompts(world))
 
 
 def test_with_no_confident_lead_the_generalist_answers_instead_of_a_hand_off(stack):

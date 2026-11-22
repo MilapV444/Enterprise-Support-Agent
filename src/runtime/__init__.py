@@ -91,7 +91,16 @@ TEAM = {  # what Jev reads to pick the lead (no digits: the Jev rule)
     Role.TECHNICAL: ("Outages, errors and failing services: networking and VPN, databases, containers, APIs, "
                      "webhooks, infrastructure as code and point of sale terminals"),
     Role.ACCOUNT_OPS: ("Sign-in, passwords, multi-factor authentication, single sign-on, identity "
-                       "verification, users and roles, subscriptions and data privacy"),
+                       "verification, users and roles, subscriptions, data privacy, and the customer's own "
+                       "services, servers and container apps"),
+}
+STANDING = {  # who the models answer (C1): a passage about verification tiers needs the customer's own tier
+    Tier.T0_ANON: "The customer is not signed in (T0, unverified): none of their account records are read.",
+    Tier.T1_VERIFIED: ("The customer is signed in and verified (T1, a one-time code to their email); any "
+                       "customer record shown here was read through their own session and may be shared "
+                       "with them."),
+    Tier.T2_SSO: ("The customer is signed in and verified (T2, single sign-on with MFA); any customer record "
+                  "shown here was read through their own session and may be shared with them."),
 }
 TOOLS = {  # each specialist's read-only tools (tools.nimbus, W41); without Jev the generalist has all
     Role.GENERALIST: ("nimbus_status.service_status", "nimbus_support.my_services"),
@@ -282,23 +291,33 @@ class TurnLoop:
         texts = [m.get("content", "") for m in episode(messages) if m.get("role") == "user"]
         return " ".join(texts[-4:]) or (messages[-1]["content"] if messages else "")
 
-    def retrieve(self, state, query):
-        """This turn's passages: customer_visible ones plus the internal runbooks, which are never cited."""
+    def search(self, state, query, plan=None):
+        """This turn's passages: customer_visible ones plus the internal runbooks, which are never cited.
+        Not searched when Jev says the customer's own records answer it and the lead may read one (B1)."""
         key, failed = (state["tenant_id"], state["case_id"]), False
+        retrieval = self.steps[key]["retrieval"]
+        lead = (plan or {}).get("lead")
+        if (plan or {}).get("records_only") and lead and self.offered(key, self.team[Role(lead)].tools):
+            retrieval["skipped"] = True
+            return
         tier = (state.get("event") or {}).get("tier", "T0_ANON")
         self.progress(key, "Searching our help articles")
         try:
-            result = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1], query,
-                                               audiences=CUSTOMER, sources=UNCITED)
-            sections, query = result.sections[:EVIDENCE], result.query.text
+            result = self.s.retriever.retrieve(tier, state["tenant_id"], state["messages"][:-1], query.text,
+                                               audiences=CUSTOMER, sources=UNCITED, query=query)
+            sections = result.sections[:EVIDENCE]
         except Exception:  # noqa: BLE001 - the embedder or index is down: no passages, so no claims
             log.warning("retrieval failed; the specialists read no knowledge passages", exc_info=True)
             sections, failed = [], True
         self.passages[key] = sections
-        self.steps.setdefault(key, {})["retrieval"] = {
-            "query": query, "failed": failed, "collections": sorted({s.collection for s in sections}),
-            "sources": [], "internal": sum(s.audience not in CUSTOMER for s in sections)}
-        return sections
+        retrieval.update(failed=failed, collections=sorted({s.collection for s in sections}),
+                         internal=sum(s.audience not in CUSTOMER for s in sections))
+
+    def standing(self, key):
+        """C1: the customer's verified tier, as the specialists and the writer are told it."""
+        turn = self.turns.get(key) or {}
+        tier = Tier[turn.get("tier") or "T0_ANON"] if turn.get("session_id") else Tier.T0_ANON
+        return STANDING[tier]
 
     def allowed(self, tool_ids):
         return frozenset(t for t in tool_ids if t in self.catalog.tools)
@@ -345,6 +364,7 @@ class TurnLoop:
             lead = delimit(upstream["findings"], f"{upstream['role']} findings") + "\n" if upstream else ""
             earlier = (self.turns.get(key) or {}).get("dialogue")
             earlier = delimit(earlier, "conversation so far") + "\n" if earlier else ""
+            earlier += self.standing(key) + "\n"
             choice = ("\n" + TOOL_STEP.format(tools="\n".join(f"- {t}: {self.catalog.tools[t].description}"
                                                                for t in offered))) if offered else ""
             task = FINDINGS.format(role=role.value.replace("_", " "), about=about or TEAM[role])
@@ -379,7 +399,7 @@ class TurnLoop:
             conversation = delimit(dialogue(messages), "conversation")
             latest = delimit(self.customer_query(messages), "latest question")
             facts = delimit(facts, "specialist findings")
-            content = f"{facts}\n\n{conversation}\n\n{latest}\n{instruction}{DRAFT}"
+            content = f"{facts}\n\n{conversation}\n\n{latest}\n{self.standing(key)}\n{instruction}{DRAFT}"
             reply = self.s.router.answer(
                 [{"role": "system", "content": SYSTEM}, {"role": "user", "content": content}],
                 self.decide, {"message": Masked(self.customer_query(messages))},
@@ -424,30 +444,37 @@ class TurnLoop:
         """Retrieval, the specialists and the merge: (reply text, "answered"), or (None, why a person takes
         it: NOTHING_TO_SAY when no passage answers it, RESTRICTED_ANSWER when the answer is staff-only, or an
         agents.merge / delegation code)."""
-        key, query = (state["tenant_id"], state["case_id"]), self.customer_query(state["messages"])
+        key = (state["tenant_id"], state["case_id"])
         if key in self.restricted:
             self.steps.setdefault(key, {})["answer"] = {"outcome": "RESTRICTED_ANSWER", "retried": False}
             return None, "RESTRICTED_ANSWER"
         self.turns.setdefault(key, {})["dialogue"] = dialogue(state["messages"])  # the specialists' context
-        sections, draft = self.retrieve(state, query), self.draft(state, instruction)
-        query = self.steps[key]["retrieval"]["query"]  # standalone: the rewrite resolved it from the dialogue
-        evidence = {s.parent_id: f"{s.title}\n{s.text}" for s in sections}
+        # the rewrite resolves the latest question from the dialogue; Jev and the specialists get it
+        query = self.s.retriever.standalone(state["messages"][:-1], self.customer_query(state["messages"]))
+        self.steps.setdefault(key, {})["retrieval"] = {"query": query.text, "failed": False,
+                                                       "collections": [], "sources": [], "internal": 0}
+        draft = self.draft(state, instruction)
         who = self.turns.get(key) or {}
         brief = {"tenant_id": key[0], "case_id": key[1], "turn_id": who.get("turn_id") or str(uuid.uuid4()),
                  # no session (a turn from before AGENT-02): offered() offers no tool, so it is never used
                  "session_id": who.get("session_id") or "none",
                  "principal_id": who.get("principal_id") or state["session_id"]}
-        config = {"configurable": {"run_tool": self.tool_runner(key)}}
+        # documentation is searched once the plan is made, unless the customer's own records answer it (B1)
+        config = {"configurable": {"run_tool": self.tool_runner(key),
+                                   "planned": lambda plan: self.search(state, query, plan)}}
         try:
             if isinstance(getattr(self.s.engine, "jev", None), NoJev):
-                outcome = self.alone(brief, query, draft, config)
+                self.search(state, query)
+                outcome = self.alone(brief, query.text, draft, config)
             else:
-                turn = self.coordinator({**brief, "message": query}, config)
+                turn = self.coordinator({**brief, "message": query.text}, config)
                 self.steps.setdefault(key, {})["plan"] = plan = {**turn["plan"]}
                 lead, results = plan["lead"], turn["results"]
                 if plan["handoff"] == NO_CONFIDENT_FIT:  # no confident lead: the generalist tries first
                     plan["fallback"], lead = "generalist", Role.GENERALIST.value
-                    results = [self.general(brief, query, config)]
+                    results = [self.general(brief, query.text, config)]
+                sections = self.passages.get(key, [])   # searched by now, between the plan and the dispatch
+                evidence = {s.parent_id: f"{s.title}\n{s.text}" for s in sections}
                 if lead is None:  # Jev could not decide the delegation
                     outcome = human("NO_DELEGATION")
                 elif self.unanswered(key, lead):
@@ -459,7 +486,8 @@ class TurnLoop:
         except NoDraft as error:
             outcome = human(str(error))
         used = {e for claim in outcome.accepted for e in claim.evidence}
-        self.evidence[key] = [s for s in sections if s.parent_id in used and s.audience in CUSTOMER]
+        self.evidence[key] = [s for s in self.passages.get(key, [])
+                              if s.parent_id in used and s.audience in CUSTOMER]
         steps = self.steps.setdefault(key, {})
         steps["retrieval"]["sources"] = [{"doc_id": s.doc_id, "title": s.title} for s in self.evidence[key]]
         answer = steps.setdefault("answer", {"retried": False})
