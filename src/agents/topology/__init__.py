@@ -48,6 +48,8 @@ CO_ACTIVATE_AT = 0.80
 RECORDS_ONLY_AT = 0.80  # Jev's yes that the customer's own records answer it: documentation is not searched
 RECORDS_ONLY = ("Can this inquiry be answered from the customer's own account records alone (their services, "
                 "tickets, subscriptions, invoices or account details), without any documentation?")
+RECORD_AT = 0.80        # Jev's confidence that the inquiry is about this one record: the lead reads it alone
+RECORD_Q = "Which of the customer's own account records is this inquiry about?"
 MAX_FINDINGS = 4000     # characters
 MAX_EVIDENCE = 20
 NO_CONFIDENT_FIT = "no specialist is a confident fit"   # Jev answered, but no lead reached LEAD_AT
@@ -107,6 +109,7 @@ class Plan:
     lead_confidence: float = 0.0
     handoff: str | None = None   # why nothing was dispatched
     records_only: bool = False   # the customer's own records answer it: no documentation search
+    record: str | None = None    # the customer's own record the inquiry is about (Jev, confident)
 
     @property
     def steps(self):
@@ -115,7 +118,7 @@ class Plan:
     def as_state(self):
         """Plain JSON for the checkpoint."""
         return {"lead": self.lead and self.lead.value, "lead_confidence": self.lead_confidence,
-                "handoff": self.handoff, "records_only": self.records_only,
+                "handoff": self.handoff, "records_only": self.records_only, "record": self.record,
                 "assignments": [{"role": a.role.value, "steps": a.steps, "after_lead": a.after_lead}
                                 for a in self.assignments]}
 
@@ -147,17 +150,23 @@ def _yes(answer):
     return answer.confidence if answer.value is True else 1 - answer.confidence
 
 
-def delegate(engine, specialists, message):
-    """The delegation plan for one masked customer message."""
+def delegate(engine, specialists, message, records=None):
+    """The delegation plan for one masked customer message. records: {record name: description} of the
+    customer's own records; when Jev names the one the inquiry is about and the lead can read it, the lead
+    works alone (nobody else reads the same record)."""
     lead_q = {"type": "choice",
               "instructions": "Which specialist should take the lead on this customer inquiry?",
               "criteria": {role.value: spec.description for role, spec in specialists.items()}}
     others = [role for role in specialists if role is not Role.GENERALIST]
     questions = {"lead": lead_q, "records_only": {"type": "noul", "instructions": RECORDS_ONLY}}
+    if records:
+        questions["record"] = {"type": "choice", "instructions": RECORD_Q,
+                               "criteria": {**records, "none": "None of the customer's own records"}}
     for role in others:
         name = role.value.replace("_", " ")
         questions[f"needs_{role.value}"] = {"type": "noul", "instructions": (
-            f"Does addressing this inquiry require factual input or action from the {name} specialist?")}
+            f"Does addressing this inquiry require factual input or action from the {name} specialist, "
+            f"who covers: {specialists[role].description}?")}
         questions[f"after_{role.value}"] = {
             "type": "noul", "instructions": f"Does the {name} part of this inquiry depend on what the lead "
                                             "specialist finds first?"}
@@ -168,9 +177,12 @@ def delegate(engine, specialists, message):
     lead, confidence = Role(answers["lead"].value), answers["lead"].confidence
     if confidence < LEAD_AT:
         return Plan(None, lead_confidence=confidence, handoff=NO_CONFIDENT_FIT)
-    chosen = [(lead, False)] + [
+    named = answers.get("record") if records else None
+    record = named.value if named and named.value != "none" and named.confidence >= RECORD_AT else None
+    alone = record is not None and any(t.split(".", 1)[-1] == record for t in specialists[lead].tools)
+    chosen = [(lead, False)] + ([] if alone else [
         (role, _yes(answers[f"after_{role.value}"]) >= CO_ACTIVATE_AT) for role in others
-        if role is not lead and _yes(answers[f"needs_{role.value}"]) >= CO_ACTIVATE_AT]
+        if role is not lead and _yes(answers[f"needs_{role.value}"]) >= CO_ACTIVATE_AT])
     budget, assignments = STEPS_PER_TURN - COORDINATOR_STEPS, []
     for role, after_lead in chosen:
         steps = min(STEPS_PER_SPECIALIST, budget)
@@ -178,7 +190,7 @@ def delegate(engine, specialists, message):
             assignments.append(Assignment(role, steps, after_lead))
             budget -= steps
     return Plan(lead, tuple(assignments), confidence,
-                records_only=_yes(answers["records_only"]) >= RECORDS_ONLY_AT)
+                records_only=_yes(answers["records_only"]) >= RECORDS_ONLY_AT, record=record)
 
 
 # Tools ------------------------------------------------------------------------------------------------------
@@ -296,10 +308,11 @@ def specialist_graph(spec, run_tool):
     return run
 
 
-def coordinator(engine, specialists, run_tool):
+def coordinator(engine, specialists, run_tool, records=None):
     """One turn as turn(state, config) -> state; start one with start_turn(). run_tool is the default; a turn
     passes its own as config["configurable"]["run_tool"], which reaches every specialist, and may pass
-    config["configurable"]["planned"](plan), called once the plan is made and before anyone is dispatched."""
+    config["configurable"]["planned"](plan), called once the plan is made and before anyone is dispatched.
+    records: {record name: description} of the customer's own records (delegate())."""
     runs = {role: specialist_graph(spec, run_tool) for role, spec in specialists.items()}
 
     def plan(state):
@@ -307,7 +320,7 @@ def coordinator(engine, specialists, run_tool):
             raise ValueError("a turn needs its tenant, case, session, principal and message")
         message = masked_text(state["message"])
         return {"turn_id": state.get("turn_id") or str(uuid.uuid4()),
-                "plan": delegate(engine, specialists, Masked(message)).as_state()}
+                "plan": delegate(engine, specialists, Masked(message), records).as_state()}
 
     def run_all(ready, config):
         """The specialists of these briefs, in parallel."""

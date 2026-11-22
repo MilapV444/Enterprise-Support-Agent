@@ -83,8 +83,10 @@ class World:
 
     def __init__(self, triage=None, model_down=False, lead="generalist", claims=None, read=None,
                  specialists_down=False, redirecting=False, wants_ticket=False, lead_confidence=0.9,
-                 standalone=None, records_only=False):
+                 standalone=None, records_only=False, record=None, needs=()):
+        self.needs = needs                         # roles Jev says the inquiry also needs (co-activation)
         self.records_only = records_only           # Jev: the customer's own records alone answer it (B1)
+        self.record = record                       # Jev: the own record the inquiry is about (A4)
         self.triage = triage or triage_answers("GENERAL_INQUIRY", 0.95, 1, 0.05)
         self.lead_confidence = lead_confidence     # Jev's lead confidence (under 0.5: no confident fit)
         self.standalone = standalone               # what the retrieval rewrite turns the message into
@@ -106,6 +108,9 @@ class World:
             answers = {qid: {"type": "noul", "noul": 0.05} for qid in body["questions"]}
             answers["lead"] = {"type": "choice", "choice": self.lead, "confidence": self.lead_confidence}
             answers["records_only"] = {"type": "noul", "noul": 0.95 if self.records_only else 0.05}
+            answers.update({f"needs_{role}": {"type": "noul", "noul": 0.95} for role in self.needs})
+            if "record" in body["questions"]:                # which own record it is about (A4)
+                answers["record"] = {"type": "choice", "choice": self.record or "none", "confidence": 0.9}
         elif "redirect" in body["questions"]:
             elsewhere = REDIRECTING in json.dumps(body["state"])
             answers = {"redirect": {"type": "choice", "choice": "hand_off" if elsewhere else "self_service",
@@ -131,6 +136,8 @@ class World:
             text = "Which page were you on when the error appeared?"
         elif "specialist of the support team" in prompt and self.read and f"- {self.read}:" in prompt:
             text = json.dumps({"action": self.read})
+        elif "specialist of the support team" in prompt and callable(self.claims):   # claims per prompt
+            text = json.dumps(self.claims(prompt))
         elif "specialist of the support team" in prompt and RECORD_ID.search(prompt):
             text = json.dumps([{"topic": "open_invoice", "text": "Your latest invoice is open.",
                                 "evidence": RECORD_ID.findall(prompt)}])
@@ -605,9 +612,59 @@ def test_account_ops_reads_the_customers_own_services_and_the_trace_shows_the_pl
     steps = trace_steps(turn)
     assert steps["tools"] == [{"role": "account_ops", "tool": "nimbus_support.my_services"}]
     assert "nimbus_support.my_services" in steps["offered"]["account_ops"]
-    assert "nimbus_account.my_account" not in steps["offered"]["account_ops"]      # T2 only
+    assert "nimbus_account.my_account" in steps["offered"]["account_ops"]          # T1 since 2026-11-22
     assert steps["plan"]["lead"] == "account_ops" and steps["plan"]["handoff"] is None
     assert steps["plan"]["assignments"][0] == {"role": "account_ops", "steps": 2, "after_lead": False}
+
+
+def running(prompt):
+    """Account ops counts three running services, technical four: one topic, two numbers."""
+    n = "3" if "account ops specialist" in prompt else "4"
+    evidence = RECORD_ID.findall(prompt) or PASSAGE_ID.findall(prompt)
+    return [{"topic": "running_services", "text": f"{n} of your services are running", "value": n,
+             "unit": "services", "evidence": evidence}] if evidence else []
+
+
+def services_turn():
+    return inbound("What services are running on my account?", tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+
+
+def test_a_lead_that_reads_the_record_asked_about_answers_alone(stack):
+    world = World(lead="account_ops", needs=("technical",), record="my_services",
+                  read="nimbus_support.my_services")
+    turn = services_turn()
+    assert loop(stack, world, tools=True).run(turn) == "answered"
+    steps = trace_steps(turn)
+    assert steps["plan"]["record"] == "my_services" and [a["role"] for a in steps["plan"]["assignments"]] \
+        == ["account_ops"]
+    assert steps["tools"] == [{"role": "account_ops", "tool": "nimbus_support.my_services"}]
+
+
+def test_two_readings_of_the_same_record_keep_the_leads_instead_of_a_hand_off(stack):
+    world = World(lead="account_ops", needs=("technical",), read="nimbus_support.my_services", claims=running)
+    turn = services_turn()
+    assert loop(stack, world, tools=True).run(turn) == "answered"
+    steps = trace_steps(turn)
+    assert sorted(t["role"] for t in steps["tools"]) == ["account_ops", "technical"]   # both read it
+    assert steps["answer"]["lead_kept"] == ["running_services"]
+
+
+def test_a_numeric_discrepancy_hand_off_records_what_disagreed(stack):
+    world = World(lead="account_ops", needs=("technical",), claims=running)
+    turn = inbound("How do I reset my password?")
+    assert loop(stack, world).run(turn) == "handed_off"
+    answer = trace_steps(turn)["answer"]
+    assert answer["outcome"] == "NUMERIC_DISCREPANCY"
+    assert answer["values"] == {"running_services": {"account_ops": "3 services", "technical": "4 services"}}
+
+
+def test_an_email_verified_customer_is_answered_from_their_own_invoices(stack):
+    world = World(lead="billing", read="nimbus_account.my_invoices")
+    turn = inbound("Is my latest invoice paid?", tier="T1_VERIFIED", principal="sarah",
+                   session=signed_in("T1_VERIFIED"))
+    assert loop(stack, world, tools=True).run(turn) == "answered"
+    assert tool_audit_of(turn) == [("nimbus_account.my_invoices", "ok", "sarah", None)]
 
 
 def test_a_question_the_customers_own_records_answer_searches_no_documentation(stack):
@@ -686,7 +743,7 @@ def test_without_jev_the_generalist_may_read_any_record_the_customers_tier_allow
     offered = specialist_prompts(world)[0]
     assert {"- nimbus_status.service_status:", "- nimbus_support.my_tickets:",
             "- nimbus_support.my_subscriptions:"} <= set(re.findall(r"- nimbus_\w+\.\w+:", offered))
-    assert "my_invoices" not in offered and "my_account" not in offered               # SSO only
+    assert "- nimbus_account.my_invoices:" in offered and "- nimbus_account.my_account:" in offered  # T1 too
     assert tool_audit_of(turn) == [("nimbus_support.my_tickets", "ok", "sarah", None)]
 
 

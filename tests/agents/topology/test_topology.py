@@ -61,9 +61,10 @@ class Jev:
     """lead: (role, confidence); needs / after: {role: P(yes)}; answers: raw overrides (malformed output)."""
 
     def __init__(self, lead=("technical", 0.9), needs=None, after=None, down=False, answers=None,
-                 records=0.0):
+                 records=0.0, record=None):
         self.lead, self.needs, self.after, self.down, self.raw = lead, needs or {}, after or {}, down, answers
         self.records = records   # P(yes) that the customer's own records alone answer it
+        self.record = record     # the customer's own record Jev names (A4)
         self.seen = []
 
     def evaluate(self, state, questions):
@@ -78,6 +79,8 @@ class Jev:
                 answers[qid] = Answer(p >= 0.5, max(p, 1 - p))
             if qid == "records_only":
                 answers[qid] = Answer(self.records >= 0.5, max(self.records, 1 - self.records))
+            if qid == "record":
+                answers[qid] = Answer(self.record or "none", 0.9)
         return {**answers, **(self.raw or {})}
 
 
@@ -327,6 +330,31 @@ def test_the_plan_with_its_records_only_answer_is_handed_over_before_anyone_is_d
     assert delegate(DecisionEngine(Jev(records=0.2)), specialists(), Masked(AUDIT)).records_only is False
     assert delegate(DecisionEngine(Jev(lead=("technical", 0.3), records=0.9)), specialists(),
                     Masked(AUDIT)).records_only is False             # a hand-off plan searches as usual
+
+
+def test_jev_reads_each_specialists_description_when_asked_if_it_is_needed():
+    jev = Jev()
+    delegate(DecisionEngine(jev), specialists(), Masked(AUDIT))
+    questions = jev.seen[0][1]
+    assert all(DESCRIPTIONS[role] in questions[f"needs_{role}"]["instructions"]
+               for role in TOOLS if role != "generalist")
+
+
+RECORDS = {"uptime": "The uptime record", "credit_memos": "The credit memos"}
+
+
+def test_a_lead_that_reads_the_record_the_inquiry_is_about_works_alone():
+    jev = Jev(lead=("technical", 0.9), needs={"billing": 0.9}, record="uptime")
+    plan = delegate(DecisionEngine(jev), specialists(), Masked(AUDIT), RECORDS)
+    assert [a.role for a in plan.assignments] == [Role.TECHNICAL] and plan.record == "uptime"
+    assert jev.seen[0][1]["record"]["criteria"] == {**RECORDS, "none": "None of the customer's own records"}
+
+
+@pytest.mark.parametrize("record", ["credit_memos", None])   # the lead cannot read it / about no record
+def test_otherwise_the_others_join_as_before(record):
+    jev = Jev(lead=("technical", 0.9), needs={"billing": 0.9}, record=record)
+    plan = delegate(DecisionEngine(jev), specialists(), Masked(AUDIT), RECORDS)
+    assert [a.role for a in plan.assignments] == [Role.TECHNICAL, Role.BILLING]
 
 
 def test_a_specialist_that_knows_the_answer_reports_in_one_step():

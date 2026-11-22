@@ -137,6 +137,9 @@ DRAFT = ("Answer only the latest question, from the specialist findings only. Th
          "method within the stated days), not as something they must ask a person or team to do.")
 # internal trace only (the customer view shows none of these): what agents.merge's redirect check saw
 REDIRECT_TRACE = ("redirect", "redirect_confidence", "redrafted", "rejected_draft")
+# M3: what disagreed when the merge hands off (numbers per topic and role, or the topic and each role's masked
+# claim with Jev's support level), and the topics where the lead's reading of a shared record stood (M1)
+CONFLICT_TRACE = ("values", "topic", "claims", "lead_kept")
 # B25: one redraft, then a person
 REDRAFT = ("Your previous draft pointed the customer to another team or person. Rewrite it with only the "
            "facts and steps from the findings that the customer can use themselves.")
@@ -237,7 +240,10 @@ class TurnLoop:
                               for role, about in TEAM.items()], self.catalog)
         # runs inside a statechart stage, saved with the case; each turn passes its run_tool in the config
         # (consult)
-        self.coordinator = coordinator(self.decide, self.team, run_tool=None)
+        # the customer's own records Jev may name (A4): "my_services" -> its description
+        own = {tool_id.split(".", 1)[1]: tool.description for tool_id, tool in self.catalog.tools.items()
+               if ".my_" in tool_id}
+        self.coordinator = coordinator(self.decide, self.team, run_tool=None, records=own)
         everything = self.allowed(self.catalog.tools)
         self.generalist = specialist_graph(Specialist(Role.GENERALIST, "every topic", everything,
                                                       self.specialist(Role.GENERALIST, "every topic")), None)
@@ -482,7 +488,8 @@ class TurnLoop:
                 else:
                     outcome = merge(self.decide, results, {**evidence, **self.records.get(key, {})},
                                     draft, redraft=self.draft(state, instruction + REDRAFT + "\n"),
-                                    dated={s.parent_id: s.updated_at for s in sections})
+                                    dated={s.parent_id: s.updated_at for s in sections},
+                                    lead=lead, records=self.records.get(key, {}))
         except NoDraft as error:
             outcome = human(str(error))
         used = {e for claim in outcome.accepted for e in claim.evidence}
@@ -493,6 +500,7 @@ class TurnLoop:
         answer = steps.setdefault("answer", {"retried": False})
         answer["outcome"] = "answered" if outcome.kind == "reply" else outcome.reason
         answer.update({k: outcome.detail[k] for k in REDIRECT_TRACE if k in outcome.detail})
+        answer.update({k: outcome.detail[k] for k in CONFLICT_TRACE if k in outcome.detail})
         return (outcome.text, "answered") if outcome.kind == "reply" else (None, outcome.reason)
 
     def unanswered(self, key, role):
