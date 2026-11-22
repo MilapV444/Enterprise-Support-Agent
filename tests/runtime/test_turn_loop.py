@@ -26,6 +26,7 @@ from channels.api.envelope import InboundTurn, TurnAction
 from channels.identity import otp
 from channels.identity.server import build_app
 from channels.identity.service import Identity
+from core.context.assembler import delimit
 from core.orchestrator import case_state
 from core.orchestrator.case_state import MemoryStore
 from core.orchestrator.decisions import DecisionEngine, JevClient
@@ -255,6 +256,23 @@ def test_a_second_message_in_the_conversation_is_answered_too(stack):
     runner = loop(stack, world)
     assert runner.run(inbound("How do I reset my password?", conversation)) == "answered"
     assert runner.run(inbound("And if I use single sign-on?", conversation)) == "answered"
+
+
+def test_a_later_question_reads_the_whole_dialogue_and_only_it_is_answered(stack):
+    world, conversation = World(), f"c-{uuid.uuid4().hex[:8]}"
+    runner = loop(stack, world)
+    first, second = "Where can I find my invoices?", "How do refunds work?"
+    assert runner.run(inbound(first, conversation)) == "answered"
+    world.model.clear()
+    assert runner.run(inbound(second, conversation)) == "answered"
+    prompts = [m[-1]["content"] for m in world.model]
+    (draft,) = [p for p in prompts if "specialist findings" in p]
+    assert f"user: {first}\nassistant: {ANSWER}\nuser: {second}" in draft        # questions and replies
+    assert delimit(second, "latest question") in draft                         # the one to answer
+    assert all(delimit(second, "customer message") in p and f"assistant: {ANSWER}" in p
+               for p in specialist_prompts(world))
+    (rewrite,) = [p for p in prompts if "standalone search query" in p]
+    assert rewrite.split("Latest message:\n", 1)[1].strip() == second
 
 
 # Never silence --------------------------------------------------------------------------------------------

@@ -61,6 +61,7 @@ from runtime import tickets
 from safety.governance.disclosure import disclose
 from safety.output.checks import finalise
 from safety.screening.pipeline import SPOTLIGHT_RULE
+from schemas.thread_state import episode
 from tools import desk
 from tools import services as nimbus_services
 from tools.execution import ToolFailure
@@ -103,7 +104,8 @@ TEAMS = {"billing-team": ("billing", "queue_billing"), "security-team": ("securi
 DEFAULT_TEAM = ("support", "queue_senior")
 FINDINGS = """You are the {role} specialist of the support team ({about}).
 From the knowledge passages and customer records above, list the facts and steps that answer the customer's
-message within your domain. Passages labelled internal are staff runbooks: keep only what the customer can do
+message within your domain; the conversation so far is context, its earlier questions were answered
+already. Passages labelled internal are staff runbooks: keep only what the customer can do
 or should know, never internal tools, teams, document names or steps only staff can perform. Reply with JSON
 only, at most eight items:
 [{{"topic": "short_snake_case name unique to this item", "text": "one fact or step, with its exact commands",
@@ -113,7 +115,9 @@ or records answers it."""
 TOOL_STEP = """Before answering you may read one of the customer's own records, if it would help:
 {tools}
 To read one, reply with JSON only: {{"action": "<record id>"}}. Otherwise reply with the findings as asked."""
-DRAFT = ("Answer the customer from the specialist findings only. Do not tell them to contact another team, "
+DRAFT = ("Answer only the latest question, from the specialist findings only. The conversation is context: "
+         "its earlier questions were answered already, so do not answer, repeat or summarise them. Do not "
+         "tell them to contact another team, "
          "department, person or specialist, and do not end with offers of further help: if a person is "
          "needed, the conversation is handed over without being asked. When they ask how something works, "
          "state the rules and what happens as facts (for example, refunds go back to the original payment "
@@ -172,6 +176,12 @@ def passages(sections):
         return f"{'knowledge' if section.audience in CUSTOMER else 'internal knowledge'} {section.parent_id}"
     return "\n\n".join(delimit(f"{s.title}\n{s.text}", label(s)) for s in sections) \
         or "(no knowledge passage matched)"
+
+
+def dialogue(messages):
+    """The whole conversation, the customer's messages and the replies, as the models read it."""
+    # ponytail: uncapped; fold older turns into a summary (memory.conversation.dialogue) if long chats crowd
+    return "\n".join(f"{m.get('role', 'user')}: {m.get('content', '')}" for m in messages)
 
 
 class NoJev:
@@ -264,7 +274,8 @@ class TurnLoop:
         return finalise(draft, lambda instruction: draft, system_prompt=SYSTEM)
 
     def customer_query(self, messages):
-        texts = [m.get("content", "") for m in messages if m.get("role") == "user"]
+        """The question being answered: the customer's messages since the last reply that answered one."""
+        texts = [m.get("content", "") for m in episode(messages) if m.get("role") == "user"]
         return " ".join(texts[-4:]) or (messages[-1]["content"] if messages else "")
 
     def retrieve(self, state, query):
@@ -326,11 +337,13 @@ class TurnLoop:
             self.progress(key, f"Asking the {role.value.replace('_', ' ')} specialist")
             upstream = brief.get("upstream")
             lead = delimit(upstream["findings"], f"{upstream['role']} findings") + "\n" if upstream else ""
+            earlier = (self.turns.get(key) or {}).get("dialogue")
+            earlier = delimit(earlier, "conversation so far") + "\n" if earlier else ""
             choice = ("\n" + TOOL_STEP.format(tools="\n".join(f"- {t}: {self.catalog.tools[t].description}"
                                                                for t in offered))) if offered else ""
             task = FINDINGS.format(role=role.value.replace("_", " "), about=about or TEAM[role])
-            prompt = (f"{passages(sections)}{records}\n\n{delimit(brief['objective'], 'customer message')}\n"
-                      f"{lead}{task}{choice}")
+            prompt = (f"{passages(sections)}{records}\n\n{earlier}"
+                      f"{delimit(brief['objective'], 'customer message')}\n{lead}{task}{choice}")
             ids = {s.parent_id for s in sections} | set(read)
             reply = self.s.router.answer([{"role": "system", "content": SPOTLIGHT_RULE},
                                           {"role": "user", "content": prompt}],
@@ -357,10 +370,10 @@ class TurnLoop:
         def write(claims):
             self.progress(key, "Writing your answer")
             facts = "\n".join(f"- {claim.text}" for claim in claims)
-            conversation = "\n".join(f"{m.get('role', 'user')}: {m.get('content', '')}"
-                                     for m in messages[-8:])
-            content = (f"{delimit(facts, 'specialist findings')}\n\n{delimit(conversation, 'conversation')}\n"
-                       f"{instruction}{DRAFT}")
+            conversation = delimit(dialogue(messages), "conversation")
+            latest = delimit(self.customer_query(messages), "latest question")
+            facts = delimit(facts, "specialist findings")
+            content = f"{facts}\n\n{conversation}\n\n{latest}\n{instruction}{DRAFT}"
             reply = self.s.router.answer(
                 [{"role": "system", "content": SYSTEM}, {"role": "user", "content": content}],
                 self.decide, {"message": Masked(self.customer_query(messages))},
@@ -409,6 +422,7 @@ class TurnLoop:
         if key in self.restricted:
             self.steps.setdefault(key, {})["answer"] = {"outcome": "RESTRICTED_ANSWER", "retried": False}
             return None, "RESTRICTED_ANSWER"
+        self.turns.setdefault(key, {})["dialogue"] = dialogue(state["messages"])  # the specialists' context
         sections, draft = self.retrieve(state, query), self.draft(state, instruction)
         evidence = {s.parent_id: f"{s.title}\n{s.text}" for s in sections}
         who = self.turns.get(key) or {}
@@ -472,7 +486,7 @@ class TurnLoop:
         charges collects a ticket's details (runtime.tickets); anything else has nothing to collect, and the
         procedure answers from the documentation."""
         key = (state["tenant_id"], state["case_id"])
-        texts = [m.get("content", "") for m in state.get("messages") or [] if m.get("role") == "user"]
+        texts = [m.get("content", "") for m in episode(state.get("messages") or []) if m["role"] == "user"]
         wanted, category = tickets.wants(self.decide, "\n".join(texts[-4:]))
         if not wanted:
             return {"parameters": {}, "missing": []}
@@ -624,8 +638,7 @@ class TurnLoop:
         return {"response": text} if text else {"error": f"no answer for the procedure ({why})"}
 
     def clarifying_question(self, state, masked):
-        thread = "\n".join(f"{m.get('role', 'user')}: {m.get('content', '')}"
-                           for m in (state.get("messages") or [])[-8:]) or masked
+        thread = dialogue(state.get("messages") or []) or masked
         reply = self.s.router.answer(
             [{"role": "system", "content": SYSTEM},
              {"role": "user", "content": f"{delimit(thread, 'conversation')}\nAsk the customer one short, "
@@ -634,6 +647,14 @@ class TurnLoop:
             self.decide, {"message": Masked(masked)},
             verify=lambda text: self.check(text).verdict == "deliver")
         return reply.text if reply.outcome == "answered" else None
+
+    def remember(self, config, text, **kind):
+        """Keep a sent reply in the case thread, so the next turn reads the whole dialogue. Called after the
+        final event: a retry of an answered turn stops before it, so a reply is never kept twice."""
+        try:
+            self.graph.append(config, messages=[{"role": "assistant", "content": text, **kind}])
+        except Exception:  # noqa: BLE001 - the customer has the reply; the next turn just reads one less
+            log.exception("could not keep the reply in case %s", config["configurable"]["thread_id"])
 
     # One turn ----------------------------------------------------------------------------------------------
 
@@ -704,6 +725,7 @@ class TurnLoop:
                        else "We answered from our documentation.")
                 self.record(turn, "answer", why, ["Content safety"], trace)
                 self.publish(turn, "final", disclose({"role": "assistant", "text": checked.text}))
+                self.remember(config, checked.text)
                 return "answered"
             if state.get("stage") == "AWAITING_CUSTOMER":
                 collected = "COLLECTING_PARAMS" in steps["stages"] and state.get("missing")
@@ -713,6 +735,7 @@ class TurnLoop:
                     self.record(turn, "ask_customer", "We need one more detail before we can help.",
                                 ["Content safety"], trace)
                     self.publish(turn, "final", disclose({"role": "assistant", "text": question}))
+                    self.remember(config, question, kind="question")
                     return "asked"
             uncovered = steps.get("answer", {}).get("outcome") == "NOTHING_TO_SAY"
             reason = NO_EVIDENCE if uncovered else "A specialist will look at this with you."
